@@ -19,7 +19,6 @@
  ***************************************************************************/
  
 #include <qapplication.h>
-#include "Error.h"
 #include "MainWindow.h"
 #include "IGPSDevice.h"
 #include "ISql.h"
@@ -31,7 +30,7 @@ int main( int argc, char ** argv )
 	int res;
 	
 	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
-	Error::verify(!ISql::pInstance()->open(), Error::SQL_OPEN);
+	ISql::pInstance()->open();
 	appl.setMainWidget(pMainWin);
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
