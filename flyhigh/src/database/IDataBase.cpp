@@ -44,6 +44,11 @@ bool IDataBase::flightList(Flight::FlightListType &flightList)
 	return false;
 }
 
+bool IDataBase::flightsPerYear(FlightsPerYearListType &fpyList)
+{
+	return false;
+}
+
 bool IDataBase::igcFile(uint flightNr, QByteArray &arr)
 {
 	return false;
