@@ -72,6 +72,9 @@ AirSpace::EdgePointListType& AirSpace::edgePointList()
 AirSpace& AirSpace::operator=(const AirSpace &airspace)
 {
 	m_name = airspace.m_name;
+	m_airspaceClass = airspace.m_airspaceClass;
+	m_high = airspace.m_high;
+	m_low = airspace.m_low;
 	m_edgePointList = airspace.m_edgePointList;
 	
 	return *this;
