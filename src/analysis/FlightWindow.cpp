@@ -27,6 +27,7 @@
 #include <qdatetime.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
+#include <qprinter.h>
 #include <qwidget.h>
 #include "Error.h"
 #include "FlightWindow.h"
@@ -70,6 +71,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	
 	pMenu->insertItem("&Save...", this, SLOT(file_save()));
 	pMenu->insertItem("&Print...", this, SLOT(print()));
+	TableWindow::printer().setOrientation(QPrinter::Landscape);
 	
 /*	- ground speed / time
 - vario / time

@@ -140,7 +140,6 @@ void TableWindow::print()
 	int page = 1;
 	
 	m_printer.setResolution(screen.logicalDpiY());
-	m_printer.setOrientation(QPrinter::Landscape);
 	m_printer.setPrintProgram("kprinter"); // this is a workaround, because qt won't print with cups
 	
 	if(m_printer.setup(this))
@@ -188,4 +187,9 @@ void TableWindow::print()
 		}
 	}
 #endif
+}
+
+QPrinter& TableWindow::printer()
+{
+	return m_printer;
 }
