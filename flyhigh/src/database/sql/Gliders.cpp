@@ -47,24 +47,29 @@ bool Gliders::add(Glider &glider)
 
 bool Gliders::glider(const QString &model, Glider &glider)
 {
-	QSqlCursor cur("Gliders");
-	QString filter;
-	bool exist;
+	QSqlQuery query(db());
+	QString sqls;
+	bool success;
 	
-	filter.sprintf("Model='%s'", model.ascii());
-	cur.setFilter(filter);
-	cur.select();
-	exist = cur.first();
+	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Model` = '%s'", model.ascii());
+	success = query.exec(sqls);
 	
-	if(exist)
+	if(success)
 	{
-		glider.setManufacturer(cur.value("Manufacturer").toString());
-		glider.setModel(cur.value("Model").toString());
+		success = query.first();
+		
+		if(success)
+		{
+			glider.setManufacturer(query.value(Manufacturer).toString());
+			glider.setModel(query.value(Model).toString());
+		}
 	}
-
-	Error::verify(exist, Error::SQL_CMD);
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
 	
-	return exist;
+	return success;
 }
 
 bool Gliders::gliderList(Glider::GliderListType &gliderList)
