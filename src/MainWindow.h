@@ -43,6 +43,7 @@ class MainWindow: public QMainWindow
 		void flights_fromSQL();
 		void flights_fromGPS();
 		void flights_experience();
+		void servicing();
 		void waypoints_fromSQL();
 		void waypoints_fromGPS();
 		void routes_fromSQL();
