@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  
 // A C++ interface to gnuplot. 
 //
@@ -36,6 +36,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include "Error.h"
 #include "GnuPlot.h"
 
 #define PATH_MAXNAMESZ       4096
@@ -47,8 +48,21 @@
 
 GnuPlot::GnuPlot(void)
 {
+	char gnuplotExec[] = "/usr/bin/gnuplot";
+	bool exist;
+	
 	m_nplots = 0;
-	m_pGnuPipe = popen("gnuplot", "w");
+	exist = (access(gnuplotExec, X_OK) == 0);
+	
+	if(exist)
+	{
+		m_pGnuPipe = popen(gnuplotExec, "w");
+	}
+	else
+	{
+		m_pGnuPipe = NULL;
+		Error::verify(false, Error::GNUPLOT_OPEN);
+	}
 
 	setStyle("lines");
 }
@@ -105,9 +119,12 @@ void GnuPlot::execCmd(const QString &cmd)
 {
 	QString locCmd = cmd;
 	
-	locCmd += "\n";
-	fputs(locCmd.ascii(), m_pGnuPipe);
-	fflush(m_pGnuPipe);
+	if(m_pGnuPipe != NULL)
+	{
+		locCmd += "\n";
+		fputs(locCmd.ascii(), m_pGnuPipe);
+		fflush(m_pGnuPipe);
+	}
 }
 
 void GnuPlot::setLabelX(const QString &label)
