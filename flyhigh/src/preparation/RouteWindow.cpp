@@ -60,6 +60,8 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBas
 	
 	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
 	pMenu->insertItem("&Update", this, SLOT(file_update()));
+	pMenu->insertItem("&Print...", this, SLOT(print()));
+	TableWindow::printer().setOrientation(QPrinter::Landscape);
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
