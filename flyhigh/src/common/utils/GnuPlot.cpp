@@ -253,7 +253,7 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 	
 		if(m_nplots > 0)
 		{
-			cmdstr.sprintf("replot \"%s\" with %s", file.name().ascii(), m_style.ascii());
+			cmdstr.sprintf("replot \"%s\" title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
 		}
 		else
 		{
