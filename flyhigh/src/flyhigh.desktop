@@ -1,7 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=FlyHigh
-Exec=/usr/bin/flyhigh
-Icon=/usr/share/flyhigh/flyhigh.png
-Type=Application
-Comment=Flight preparation and analysis
