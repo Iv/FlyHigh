@@ -48,6 +48,8 @@ class MainWindow: public QMainWindow
 		void waypoints_fromGPS();
 		void routes_fromSQL();
 		void routes_fromGPS();
+		void airspaces_fromSQL();
+		void airspaces_fromGPS();
 		void windows_tile_horizontally();
 		void windows_activated(int id);
 		void settings_port();
