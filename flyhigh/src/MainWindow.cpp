@@ -38,6 +38,7 @@
 #include "IGPSDevice.h"
 #include "IRouteForm.h"
 #include "RouteWindow.h"
+#include "ServicingWindow.h"
 #include "WayPointWindow.h"
 
 MainWindow::MainWindow()
@@ -62,6 +63,7 @@ MainWindow::MainWindow()
 	pMenu->insertItem("&Flights (DB)", this, SLOT(flights_fromSQL()));
 	pMenu->insertItem("&Flights (GPS)", this, SLOT(flights_fromGPS()));
 	pMenu->insertItem("&Flight Exp", this, SLOT(flights_experience()));
+	pMenu->insertItem("&Servicing", this, SLOT(servicing()));
 
 	// Preparation
 	pMenu = new QPopupMenu(this);
@@ -137,6 +139,14 @@ void MainWindow::flights_fromSQL()
 void MainWindow::flights_experience()
 {
 	MDIWindow* pWin = new FlightExpWindow(m_pWorkSpace, "Flight Experience", WDestructiveClose);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::servicing()
+{
+	MDIWindow* pWin = new ServicingWindow(m_pWorkSpace, "Servicing", WDestructiveClose);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
