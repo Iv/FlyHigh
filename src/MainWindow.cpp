@@ -1,8 +1,22 @@
-/* Copyright (c):  2004 by Alex Graf
-	This file is distributed under the terms of the General Public
-	Licence. See the file gpl.txt for the Licence or visit gnu.org 
-	for more information.
-*/
+/***************************************************************************
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #include <qworkspace.h>
 #include <qpopupmenu.h>
@@ -26,7 +40,7 @@
 #include "WayPointWindow.h"
 
 MainWindow::MainWindow()
-	:QMainWindow(0, "KFlyChart", WDestructiveClose)
+	:QMainWindow(0, "FlyHigh", WDestructiveClose)
 {
 	QPopupMenu *pMenu;
 	QVBox *pVBox;
@@ -41,34 +55,23 @@ MainWindow::MainWindow()
 	pMenu->insertSeparator();
 	pMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL+Key_Q);
 
-	// Flights
+	// Analysis
 	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&Flights", pMenu);
-	pMenu->insertItem("&From DB", this, SLOT(flights_fromSQL()), CTRL+Key_F);
-	pMenu->insertItem("&From GPS", this, SLOT(flights_fromGPS()), CTRL+Key_N);
+	menuBar()->insertItem("&Analysis", pMenu);
+	pMenu->insertItem("&Flights (DB)", this, SLOT(flights_fromSQL()));
+	pMenu->insertItem("&Flights (GPS)", this, SLOT(flights_fromGPS()));
 
-	// WayPoints
+	// Preparation
 	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&WayPoints", pMenu);
-	pMenu->insertItem("&From DB", this, SLOT(waypoints_fromSQL()), CTRL+Key_N);
-	pMenu->insertItem("&From GPS", this, SLOT(waypoints_fromGPS()), CTRL+Key_N);
-	
-	// Routes
-	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&Routes", pMenu);
-	pMenu->insertItem("&From DB", this, SLOT(routes_fromSQL()), CTRL+Key_N);
-	pMenu->insertItem("&From GPS", this, SLOT(routes_fromGPS()), CTRL+Key_N);
-	
-	// Menu Windows
-	m_pWindowsMenu = new QPopupMenu(this);
-	m_pWindowsMenu->setCheckable(true);
-	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),
-			this, SLOT(aboutToShow()));
-	menuBar()->insertItem("&Windows", m_pWindowsMenu);
+	menuBar()->insertItem("&Preparation", pMenu);
+	pMenu->insertItem("&WayPoints (DB)", this, SLOT(waypoints_fromSQL()));
+	pMenu->insertItem("&WayPoints (GPS)", this, SLOT(waypoints_fromGPS()));
+	pMenu->insertItem("&Routes (DB)", this, SLOT(routes_fromSQL()));
+	pMenu->insertItem("&Routes (GPS)", this, SLOT(routes_fromGPS()));
 
-	// Menu Settings
+	// Menu Configuration
 	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&Settings", pMenu);
+	menuBar()->insertItem("&Configuration", pMenu);
 	pMenu->insertItem("Port...", this, SLOT(settings_port()));
 	
 	// Menu Settings>Device
@@ -80,15 +83,21 @@ MainWindow::MainWindow()
 		add here other devices 
 		pSubMenu->insertItem("Flytec 5030", this, SLOT(settings_device(int)));
 	*/
-	pMenu->insertItem("&Device", m_pDevicesMenu, CTRL+Key_P);
-	
+	pMenu->insertItem("&Device", m_pDevicesMenu);
 	pMenu->insertItem("Configure Device...", this, SLOT(settings_configure_device()));
+
+	// Menu Windows
+	m_pWindowsMenu = new QPopupMenu(this);
+	m_pWindowsMenu->setCheckable(true);
+	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),
+			this, SLOT(aboutToShow()));
+	menuBar()->insertItem("&Windows", m_pWindowsMenu);
 
 	// Menu Help
 	menuBar()->insertSeparator();
 	pMenu = new QPopupMenu(this);
 	menuBar()->insertItem("&Help", pMenu);
-	pMenu->insertItem( "&About", this, SLOT(help_about()), Key_F1);
+	pMenu->insertItem( "&About", this, SLOT(help_about()));
 
 	// Frame
 	pVBox = new QVBox(this);
@@ -157,8 +166,8 @@ void MainWindow::routes_fromGPS()
 
 void MainWindow::help_about()
 {
-	QMessageBox::about(this, "KFlyChart Beta Version",
-			"Copyright (c):  2004 by Alex Graf\n"
+	QMessageBox::about(this, "FlyHigh Beta Version",
+			"Copyright (c):  2004 by Alex Graf, <grafal@sourceforge.net>\n"
 			"This file is distributed under the terms of the General Public\n"
 			"Licence. See the file gpl.txt for the Licence or visit gnu.org\n"
 			"for more information.");
