@@ -7,7 +7,7 @@
 -- Server version: 4.0.22
 -- PHP Version: 4.3.10-2
 -- 
--- Database: `flyhigh`
+-- Database: `kflychart`
 -- 
 
 -- --------------------------------------------------------
@@ -94,7 +94,7 @@ CREATE TABLE `Routes` (
   `WayPoint28` varchar(16) default NULL,
   `WayPoint29` varchar(16) default NULL,
   PRIMARY KEY  (`Name`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
