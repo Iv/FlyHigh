@@ -54,12 +54,12 @@ void AirSpace::setLow(const QString &low)
 	m_low = low;
 }
 
-AirSpace::AirspaceClassType AirSpace::airspaceClass()
+const QString& AirSpace::airspaceClass()
 {
 	return m_airspaceClass;
 }
 
-void AirSpace::setAirspaceClass(AirspaceClassType airspaceClass)
+void AirSpace::setAirspaceClass(const QString &airspaceClass)
 {
 	m_airspaceClass = airspaceClass;
 }

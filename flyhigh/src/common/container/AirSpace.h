@@ -29,15 +29,10 @@ class AirSpace
 		typedef QValueVector<AirSpace> AirSpaceListType;
 		typedef struct
 		{
-			double m_lat;
-			double m_lon;
+			double lat;
+			double lon;
 		}EdgePointType;
 		typedef QValueVector<EdgePointType> EdgePointListType;
-		typedef enum AirspaceClassType
-		{
-			Restricted, Danger, Prohibited, ClassA, ClassB, ClassC, ClassD,
-			GliderProhibited, CTR, WaveWindow
-		};
 
 		AirSpace();
 
@@ -47,15 +42,15 @@ class AirSpace
 		void setHigh(const QString &high);
 		const QString& low();
 		void setLow(const QString &low);
-		AirspaceClassType airspaceClass();
-		void setAirspaceClass(AirspaceClassType airspaceClass);
+		const QString& airspaceClass();
+		void setAirspaceClass(const QString &airspaceClass);
 		EdgePointListType& edgePointList();
 		
 		AirSpace& operator=(const AirSpace &airspace);
 	
 	private:
 		QString m_name;
-		AirSpace::AirspaceClassType m_airspaceClass;
+		QString m_airspaceClass;
 		QString m_high;
 		QString m_low;
 		EdgePointListType m_edgePointList;
