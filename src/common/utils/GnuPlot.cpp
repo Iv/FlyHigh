@@ -65,6 +65,7 @@ GnuPlot::GnuPlot(void)
 	}
 
 	setStyle("lines");
+	execCmd("set mouse");
 }
 
 GnuPlot::~GnuPlot()
@@ -277,7 +278,6 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 			cmdstr.sprintf("splot \"%s\" title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
 		}
 		
-		execCmd("set mouse");
 		execCmd(cmdstr);
 		m_nplots++;
 	}
