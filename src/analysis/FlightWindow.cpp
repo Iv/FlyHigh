@@ -28,6 +28,7 @@
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qwidget.h>
+#include "Error.h"
 #include "FlightWindow.h"
 #include "Glider.h"
 #include "WayPoint.h"
@@ -560,9 +561,9 @@ void FlightWindow::plot_3d()
 			
 				// show flight
 				m_gpligc.clearArguments();
-				m_gpligc.addArgument("openGLIGCexplorer");
+				m_gpligc.addArgument("openGLIGCexplorer1");
 				m_gpligc.addArgument(fileName);
-				m_gpligc.start();
+				Error::verify(m_gpligc.start(), Error::GPLIGC_OPEN);
 			}
 		}
 	}
