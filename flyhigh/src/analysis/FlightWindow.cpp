@@ -483,18 +483,6 @@ void FlightWindow::plot_OLC()
 			
 			if(olcOptimizer.optimize())
 			{
-				// free distance
-				dist = olcOptimizer.freeDistance(fpIndexList);
-				fpList.clear();
-				
-				for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
-				{
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
-				}
-				
-				title.sprintf("free distance: %.3f km", dist/1000.0);
-				plotFlighPointList(fpList, title);
-				
 				// fai triangle
 				dist = olcOptimizer.FAITriangle(fpIndexList);
 				fpList.clear();
@@ -502,7 +490,7 @@ void FlightWindow::plot_OLC()
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				title.sprintf("fai triangle: %.3f km", dist/1000.0);
+				title.sprintf("fai triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.75);
 				plotFlighPointList(fpList, title);
 				
 				// flat triangle
@@ -512,7 +500,19 @@ void FlightWindow::plot_OLC()
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
 				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				title.sprintf("flat triangle: %.3f km", dist/1000.0);
+				title.sprintf("flat triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*2.0);
+				plotFlighPointList(fpList, title);
+				
+				// free distance
+				dist = olcOptimizer.freeDistance(fpIndexList);
+				fpList.clear();
+				
+				for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+				{
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+				}
+				
+				title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.5);
 				plotFlighPointList(fpList, title);
 			}
 		}
