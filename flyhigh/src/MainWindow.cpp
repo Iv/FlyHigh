@@ -31,6 +31,7 @@
 #include "MainWindow.h"
 #include "IPortFrame.h"
 #include "FlightWindow.h"
+#include "FlightExpWindow.h"
 #include "MDIWindow.h"
 #include "Images.h"
 #include "IDataBase.h"
@@ -60,6 +61,7 @@ MainWindow::MainWindow()
 	menuBar()->insertItem("&Analysis", pMenu);
 	pMenu->insertItem("&Flights (DB)", this, SLOT(flights_fromSQL()));
 	pMenu->insertItem("&Flights (GPS)", this, SLOT(flights_fromGPS()));
+	pMenu->insertItem("&Flight Exp", this, SLOT(flights_experience()));
 
 	// Preparation
 	pMenu = new QPopupMenu(this);
@@ -127,6 +129,14 @@ void MainWindow::flights_fromGPS()
 void MainWindow::flights_fromSQL()
 {
 	MDIWindow* pWin = new FlightWindow(m_pWorkSpace, "Flights", WDestructiveClose, IDataBase::SqlDB);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::flights_experience()
+{
+	MDIWindow* pWin = new FlightExpWindow(m_pWorkSpace, "Flight Experience", WDestructiveClose);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
