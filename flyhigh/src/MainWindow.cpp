@@ -53,7 +53,7 @@ MainWindow::MainWindow()
 	pMenu = new QPopupMenu(this);
 	menuBar()->insertItem("&File", pMenu);
 	pMenu->insertSeparator();
-	pMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL+Key_Q);
+	pMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()));
 
 	// Analysis
 	pMenu = new QPopupMenu(this);
@@ -167,9 +167,9 @@ void MainWindow::routes_fromGPS()
 void MainWindow::help_about()
 {
 	QMessageBox::about(this, "FlyHigh Beta Version",
-			"Copyright (c):  2004 by Alex Graf, <grafal@sourceforge.net>\n"
+			"Copyright (c):  2005 by Alex Graf, <grafal@sourceforge.net>\n"
 			"This file is distributed under the terms of the General Public\n"
-			"Licence. See the file gpl.txt for the Licence or visit gnu.org\n"
+			"License. See the file gpl.txt for the Licence or visit www.gnu.org\n"
 			"for more information.");
 }
 

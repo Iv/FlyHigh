@@ -48,18 +48,18 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBas
 		case IDataBase::SqlDB:
 			m_pDb = ISql::pInstance();
 			caption = "Routes from DB";
-			pMenu->insertItem("&New...", this, SLOT(file_new()), CTRL+Key_A);
-			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGPS()), CTRL+Key_A);
+			pMenu->insertItem("&New...", this, SLOT(file_new()));
+			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGPS()));
 		break;
 		case IDataBase::GPSdevice:
 			m_pDb = IGPSDevice::pInstance();
 			caption = "Routes from GPS";
-			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()), CTRL+Key_A);
+			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
 		break;
 	}
 	
-	pMenu->insertItem("&Delete", this, SLOT(file_delete()), CTRL+Key_U);
-	pMenu->insertItem("&Update", this, SLOT(file_update()), CTRL+Key_U);
+	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
+	pMenu->insertItem("&Update", this, SLOT(file_update()));
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
