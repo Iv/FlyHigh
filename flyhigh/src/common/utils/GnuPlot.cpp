@@ -169,6 +169,7 @@ void GnuPlot::plotSlope(double a, double b, const QString &title)
 		cmdstr.sprintf("plot %f * x + % f title \"%s\" with %s", a, b, title.ascii(), m_style.ascii());
 	}
 	
+	setAxisData('x', Float);
 	execCmd(cmdstr);
 	m_nplots++;
 }
@@ -189,6 +190,7 @@ void GnuPlot::plotEquation(const QString &equation, const QString &title)
 		cmdstr.sprintf("plot %s title \"%s\" with %s", equation.ascii(), title.ascii(), m_style.ascii());
 	}
 
+	setAxisData('x', Float);
 	execCmd(cmdstr);
 	m_nplots++;
 }
@@ -218,6 +220,7 @@ void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 			cmdstr.sprintf("plot \"%s\" title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
 		}
 		
+		setAxisData('x', Float);
 		execCmd(cmdstr);
 		m_nplots++;
 	}
@@ -248,6 +251,38 @@ void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 			cmdstr.sprintf("plot \"%s\" title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
 		}
 		
+		setAxisData('x', Float);
+		execCmd(cmdstr);
+		m_nplots++;
+	}
+}
+
+void GnuPlot::plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title)
+{
+	QFile file;
+	QString cmdstr;
+	QString line;
+	uint valueNr;
+
+	if(openTmpFile(file))
+	{
+		for(valueNr=0; valueNr<x.size(); valueNr++)
+		{
+			line.sprintf("%s %f\n", x[valueNr].toString(Qt::ISODate).ascii(), y[valueNr]);
+			file.writeBlock(line.ascii(), line.length());
+		}
+		file.close();
+	
+		if(m_nplots > 0)
+		{
+			cmdstr.sprintf("replot \"%s\" using 1:2 with %s", file.name().ascii(), m_style.ascii());
+		}
+		else
+		{
+			cmdstr.sprintf("plot \"%s\" using 1:2 title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
+		}
+		
+		setAxisData('x', Time);
 		execCmd(cmdstr);
 		m_nplots++;
 	}
@@ -278,6 +313,7 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 			cmdstr.sprintf("splot \"%s\" title \"%s\" with %s", file.name().ascii(), title.ascii(), m_style.ascii());
 		}
 		
+		setAxisData('x', Float);
 		execCmd(cmdstr);
 		m_nplots++;
 	}
@@ -350,4 +386,28 @@ bool GnuPlot::openTmpFile(QFile &file)
 	}
 	
 	return success;
+}
+
+void GnuPlot::setAxisData(const char axis, AxisDataType axisData)
+{
+	QString cmd;
+	
+	switch(axisData)
+	{
+		case Time:
+			cmd.sprintf("set %cdata time", axis);
+			execCmd(cmd);
+			execCmd("set timefmt \"%H:%M:%S\"");
+			cmd.sprintf("set format %c ", axis);
+			cmd += "\"%H:%M:%S\"";
+			execCmd(cmd);
+		break;
+		case Float:
+			cmd.sprintf("set %cdata", axis);
+			execCmd(cmd);
+			cmd.sprintf("set format %c ", axis);
+			cmd += "\"%g\"";
+			execCmd(cmd);
+		break;
+	}
 }
