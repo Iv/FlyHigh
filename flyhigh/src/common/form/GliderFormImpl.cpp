@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-
+#include <qlineedit.h>
 #include "GliderFormImpl.h"
 #include "Glider.h"
 
@@ -31,10 +31,10 @@ GliderFormImpl::GliderFormImpl(QWidget* parent, const QString &caption, Glider *
 
 void GliderFormImpl::accept()
 {
+	m_pGlider->setManufacturer(lineEditManu->text());
+	m_pGlider->setModel(lineEditModel->text());
+
   QDialog::accept();
 }
 
-
-
 #include "GliderFormImpl.moc"
-
