@@ -60,7 +60,9 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 		case IDataBase::SqlDB:
 			m_pDb = ISql::pInstance();
 			caption = "Flights from DB";
+			pMenu->insertItem("&New...", this, SLOT(file_new()));
 			pMenu->insertItem("&Delete", this, SLOT(file_delete()));
+			pMenu->insertItem("&Import...", this, SLOT(file_import()));
 		break;
 		case IDataBase::GPSdevice:
 			m_pDb = IGPSDevice::pInstance();
@@ -69,7 +71,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 		break;
 	}
 	
-	pMenu->insertItem("&Save...", this, SLOT(file_save()));
+	pMenu->insertItem("&Export...", this, SLOT(file_export()));
 	pMenu->insertItem("&Print...", this, SLOT(print()));
 	TableWindow::printer().setOrientation(QPrinter::Landscape);
 	
@@ -311,7 +313,120 @@ void FlightWindow::file_AddToSqlDB()
 	}
 }
 
-void FlightWindow::file_save()
+void FlightWindow::file_import()
+{
+	IFlightForm newFlightForm(this, "New Flight");
+	IGCFileParser igcParser;
+	OLCOptimizer olcOptimizer;
+	QTime time;
+	QDate date;
+	Flight flight;
+	Glider glider;
+	WayPoint wp;
+	FlightPointList fpList;
+	OLCOptimizer::FlightPointIndexListType fpIndexList;
+	QString fileName;
+	QFile file;
+	int nr;
+	int startPtId;
+	int landPtId;
+	int duration;
+
+	fileName = QFileDialog::getOpenFileName(m_fileName, "IGC Files (*.igc)", this);
+	file.setName(fileName);
+
+	if(file.open(IO_ReadOnly))
+	{
+		flight.setIgcData(file.readAll());
+		file.close();
+	
+		// parse and optimize
+		igcParser.parse(flight.igcData());
+		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+		
+		if(olcOptimizer.optimize())
+		{
+			// distance
+			flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
+		}
+
+		// nr
+		nr = ISql::pInstance()->newFlightNr();
+		flight.setNumber(nr);
+		
+		// date
+		flight.setDate(igcParser.date());
+	
+		// start
+		startPtId = igcParser.flightPointList().firstValidFlightData();
+		
+		if(startPtId >= 0)
+		{
+			// start time
+			flight.setTime(igcParser.flightPointList().at(startPtId).time);
+		
+			// start place
+			wp = igcParser.flightPointList().at(startPtId).wp;
+			
+			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+			{
+				IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
+	
+				if(newWayPoint.exec())
+				{
+					ISql::pInstance()->add(wp);
+				}
+			}
+			flight.setStartPt(wp.name());
+		}
+		
+		// landing strip
+		landPtId = igcParser.flightPointList().lastValidFlightData();
+		
+		if(landPtId >= 0)
+		{
+			wp = igcParser.flightPointList().at(landPtId).wp;
+			
+			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+			{
+				IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
+	
+				if(newWayPoint.exec())
+				{
+					ISql::pInstance()->add(wp);
+				}
+			}
+			flight.setLandPt(wp.name());
+		}
+		
+		// duration
+		time = igcParser.flightPointList().at(startPtId).time;
+		duration = time.secsTo(igcParser.flightPointList().at(landPtId).time);
+		flight.setDuration(duration);
+	
+		// glider
+		if(!ISql::pInstance()->glider(igcParser.model(), glider))
+		{
+			IGliderForm newGlider(this, "New Glider", &glider);
+			
+			if(newGlider.exec())
+			{
+				ISql::pInstance()->add(glider);
+			}
+		}
+		flight.setGlider(glider.model());
+	
+		// a new flight
+		newFlightForm.setFlight(&flight);
+		
+		if(newFlightForm.exec())
+		{
+			ISql::pInstance()->add(flight);
+		}
+	}
+}
+
+void FlightWindow::file_export()
 {
 	QByteArray arr;
 	QString fileName;
@@ -333,6 +448,25 @@ void FlightWindow::file_save()
 				file.close();
 			}
 		}
+	}
+}
+
+void FlightWindow::file_new()
+{
+	IFlightForm newFlightForm(this, "New Flight");
+	Flight flight;
+	int nr;
+	
+	// nr
+	nr = ISql::pInstance()->newFlightNr();
+	flight.setNumber(nr);
+	
+	// a new flight
+	newFlightForm.setFlight(&flight);
+	
+	if(newFlightForm.exec())
+	{
+		ISql::pInstance()->add(flight);
 	}
 }
 
