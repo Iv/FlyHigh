@@ -33,22 +33,19 @@ class OpenAirFileParser
 		AirSpace::AirSpaceListType& airspaceList();
 		
 	private:
-		typedef enum RecordType
-		{
-			NewAirspace, Class, Name, High, Low, Variable, Point, Arc, Circle, Unknown
-		};
-		
 		AirSpace::AirSpaceListType m_airspaceList;
+		AirSpace::EdgePointType m_arcCenter;
+		bool m_arcDir;
 		
-		RecordType recordType(char *record);
-		void parseClass(char *record, AirSpace &airspace);
+		void parseAirspaceClass(char *record, AirSpace &airspace);
 		void parseName(char *record, AirSpace &airspace);
 		void parseHigh(char *record, AirSpace &airspace);
 		void parseLow(char *record, AirSpace &airspace);
+		void parseVarAssign(char *record);
 		void parsePoint(char *record, AirSpace &airspace);
-		void parseArc(char *record, bool cw, AirSpace::EdgePointType &center, AirSpace &airspace);
-		void parseCircle(char *record, AirSpace::EdgePointType &center, AirSpace &airspace);
-		bool parseCoordinate(char *record, double &lat, double &lon);
+		void parseArc(char *record, AirSpace &airspace);
+		void parseCircle(char *record, AirSpace &airspace);
+		bool parseCoordinate(char *record, AirSpace::EdgePointType &pt);
 };
 
 #endif
