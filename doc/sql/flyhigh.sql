@@ -16,6 +16,9 @@
 -- Table structure for table `Flights`
 -- 
 
+CREATE DATABASE flyhigh;
+USE flyhigh;
+
 CREATE TABLE `Flights` (
   `Number` int(11) NOT NULL default '0',
   `Date` date NOT NULL default '0000-00-00',
