@@ -25,8 +25,6 @@
 #include "Flights.h"
 #include "Routes.h"
 
-#include <qfile.h>
-
 ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
