@@ -103,8 +103,10 @@ bool Routes::route(const QString &name, Route &route)
 			}
 		}
 	}
-	
-	Error::verify(success, Error::SQL_CMD);
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
 	
 	return success;
 }

@@ -64,32 +64,37 @@ bool WayPoints::delWayPoint(const QString &name)
 
 bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
 {
-	QSqlCursor cur("WayPoints");
-	QString filter;
+	QSqlQuery query(db());
+	QString sqls;
 	double lon;
 	double lat;
 	int alt;
-	bool exist;
-
-	filter.sprintf("Name='%s'", name.ascii());
-	cur.setFilter(filter);
-	cur.select();	
-	exist = cur.first();
+	bool success;
 	
-	if(exist)
+	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Name` = '%s'", name.ascii());
+	success = query.exec(sqls);
+	
+	if(success)
 	{
-		wp.setName(cur.value("Name").toString());
-		wp.setDescription(cur.value("Description").toString());
+		success = query.first();
 		
-		lon = cur.value("Longitude").toDouble();
-		lat = cur.value("Latitude").toDouble();
-		alt = cur.value("Altitude").toInt();
-		wp.setCoordinates(lat, lon, alt);
+		if(success)
+		{
+			wp.setName(query.value(Name).toString());
+			wp.setDescription(query.value(Description).toString());
+			
+			lon = query.value(Longitude).toDouble();
+			lat = query.value(Latitude).toDouble();
+			alt = query.value(Altitude).toInt();
+			wp.setCoordinates(lat, lon, alt);
+		}
 	}
-
-	Error::verify(exist, Error::SQL_CMD);
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
 	
-	return exist;
+	return success;
 }
 
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
