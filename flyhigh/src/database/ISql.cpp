@@ -25,6 +25,7 @@
 #include "Gliders.h"
 #include "Flights.h"
 #include "Routes.h"
+#include "Servicings.h"
 
 ISql* ISql::m_pInst = NULL;
 
@@ -42,6 +43,7 @@ ISql::ISql()
 	m_pGliders = new Gliders(m_pDefaultDB);
 	m_pFlights = new Flights(m_pDefaultDB);
 	m_pRoutes = new Routes(m_pDefaultDB);
+	m_pServicings = new Servicings(m_pDefaultDB);
 }
 
 ISql::~ISql()
@@ -52,6 +54,7 @@ ISql::~ISql()
 	delete m_pGliders;
 	delete m_pFlights;
 	delete m_pRoutes;
+	delete m_pServicings;
 }
 
 void ISql::setName(const QString &name)
@@ -207,4 +210,9 @@ int ISql::routesLastModified()
 bool ISql::routeList(Route::RouteListType &routeList)
 {
 	return m_pRoutes->routeList(routeList);
+}
+
+bool ISql::servicingList(Servicing::ServicingListType &servicingList)
+{
+	return m_pServicings->servicingList(servicingList);
 }

@@ -29,6 +29,7 @@
 #include "Flight.h"
 #include "Glider.h"
 #include "Route.h"
+#include "Servicing.h"
 
 // this is the interface class of database
 class QSqlDatabase;
@@ -36,6 +37,7 @@ class WayPoints;
 class Gliders;
 class Flights;
 class Routes;
+class Servicings;
 
 class ISql: public IDataBase
 {
@@ -78,6 +80,10 @@ class ISql: public IDataBase
 		int routesLastModified();
 		bool routeList(Route::RouteListType &routeList);
 		
+		bool add(Servicing &servicing);
+		bool delServicing(int nr);
+		bool servicingList(Servicing::ServicingListType &servicingList);
+		
 		bool open();
 		
 	private:
@@ -86,6 +92,7 @@ class ISql: public IDataBase
 		Gliders *m_pGliders;
 		Flights *m_pFlights;
 		Routes *m_pRoutes;
+		Servicings *m_pServicings;
 		QSqlDatabase *m_pDefaultDB;
 		
 		ISql();
