@@ -27,6 +27,7 @@
 #include <qobjectlist.h>
 #include <qvbox.h>
 
+#include "AirSpaceWindow.h"
 #include "IFlytecConfig.h"
 #include "MainWindow.h"
 #include "IPortFrame.h"
@@ -72,6 +73,8 @@ MainWindow::MainWindow()
 	pMenu->insertItem("&WayPoints (GPS)", this, SLOT(waypoints_fromGPS()));
 	pMenu->insertItem("&Routes (DB)", this, SLOT(routes_fromSQL()));
 	pMenu->insertItem("&Routes (GPS)", this, SLOT(routes_fromGPS()));
+	pMenu->insertItem("&Airspaces (DB)", this, SLOT(airspaces_fromSQL()));
+	pMenu->insertItem("&Airspaces (GPS)", this, SLOT(airspaces_fromGPS()));
 
 	// Menu Configuration
 	pMenu = new QPopupMenu(this);
@@ -179,6 +182,26 @@ void MainWindow::routes_fromSQL()
 void MainWindow::routes_fromGPS()
 {
 	MDIWindow* pWin = new RouteWindow(m_pWorkSpace, "Routes from GPS", WDestructiveClose, IDataBase::GPSdevice);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+#include "IAirSpaceForm.h"
+#include "AirSpace.h"
+
+
+void MainWindow::airspaces_fromSQL()
+{
+	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from DB", WDestructiveClose, IDataBase::SqlDB);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::airspaces_fromGPS()
+{
+	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from GPS", WDestructiveClose, IDataBase::GPSdevice);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
