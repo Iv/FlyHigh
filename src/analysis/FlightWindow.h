@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -41,8 +41,10 @@ class FlightWindow : public TableWindow
 	private slots:
 		void file_update();
 		void file_AddToSqlDB();
-		void file_save();
+		void file_new();
 		void file_delete();
+		void file_import();
+		void file_export();
 		void plot_speedVsTime();
 		void plot_altVsTime();
 		void plot_varioVsTime();
