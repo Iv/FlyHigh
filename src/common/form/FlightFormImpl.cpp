@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,7 +35,7 @@
 #include "WayPoint.h"
 
 FlightFormImpl::FlightFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
-: FlightForm(parent, caption, true)
+ :FlightForm(parent, caption, true)
 {
 	FlightForm::setCaption(caption);
 	setFlight(pFlight);
@@ -48,6 +48,8 @@ void FlightFormImpl::updateWayPoints()
 	WayPoint::WayPointListType::iterator it;
 	
 	ISql::pInstance()->wayPointList(wpList);
+	comboBoxStart->clear();
+	comboBoxLand->clear();
 	
 	for(it=wpList.begin(); it!=wpList.end(); it++)
 	{
@@ -63,6 +65,7 @@ void FlightFormImpl::updateGlider()
 	Glider::GliderListType::iterator it;
 	
 	ISql::pInstance()->gliderList(gliderList);
+	comboBoxModel->clear();
 	
 	for(it=gliderList.begin(); it!=gliderList.end(); it++)
 	{
