@@ -80,9 +80,10 @@ class ISql: public IDataBase
 		int routesLastModified();
 		bool routeList(Route::RouteListType &routeList);
 		
-		bool add(Servicing &servicing);
+		bool add(Servicing &serv);
 		bool delServicing(int nr);
 		bool servicingList(Servicing::ServicingListType &servicingList);
+		int servicingsLastModified();
 		
 		bool open();
 		
