@@ -27,10 +27,12 @@
 #include <qvaluelist.h>
 #include "IGCFileParser.h"
 
+#define FLIGHT_POINT_INDEX_LIST_SIZE 5
+
 class OLCOptimizer
 {
 	public:
-		typedef uint FlightPointIndexListType[5];
+		typedef uint FlightPointIndexListType[FLIGHT_POINT_INDEX_LIST_SIZE];
 
 		OLCOptimizer();
 		~OLCOptimizer();
@@ -40,9 +42,10 @@ class OLCOptimizer
 		bool optimize();
 		
 		// returns the distance in meters and the used indexes of WayPoints from data
-		uint freeDistance(FlightPointIndexListType &indexList);
-		uint FAITriangle(FlightPointIndexListType &indexList);
-		uint flatTriangle(FlightPointIndexListType &indexList);
+		uint freeDistance(FlightPointIndexListType &turnpointList);
+		uint FAITriangle(FlightPointIndexListType &turnpointList);
+		uint flatTriangle(FlightPointIndexListType &turnpointList);
+		FlightPointList& flyPointList();
 
 	private:
 		FlightPointList m_flightPointList;
