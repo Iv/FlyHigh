@@ -65,7 +65,46 @@ double Vector2::norm()
 
 double Vector2::length() const
 {
-	return sqrt((*this)*(*this));
+	return sqrt(m_x * m_x + m_y * m_y);
+}
+
+double Vector2::arc() const
+{
+	double arc;
+	
+	// special case 0.0
+	if(m_x == 0)
+	{
+		if(m_y > 0)
+		{
+			arc = M_PI / 2;
+		}
+		else
+		{
+			arc = 3 * M_PI / 2;
+		}
+	}
+	
+	if(m_x >= 0)
+	{
+		if(m_y >= 0)
+		{
+			// 1. quadrant
+			arc = atan(m_y / m_x);
+		}
+		else
+		{
+			// 4. quadrant
+			arc = 2 * M_PI + atan(m_y / m_x);
+		}
+	}
+	else
+	{
+		// 2. + 3. quadrant
+		arc = M_PI + atan(m_y / m_x);
+	}
+	
+	return arc;
 }
 
 void Vector2::rot(double rad)
@@ -90,7 +129,7 @@ double Vector2::y()
 Vector2& Vector2::operator = (const Vector2 &v)
 {
 	m_x = v.m_x;
-	m_y=v.m_y;
+	m_y = v.m_y;
 	 
 	return *this;
 }
@@ -124,11 +163,6 @@ Vector2& Vector2::operator *= (double f)
 	return *this;
 }
 
-double Vector2::operator *= (const Vector2 &v)
-{
-	return m_x * v.m_x + m_y * v.m_y;
-}
-
 Vector2 operator + (const Vector2 &w, const Vector2 &v)
 {
 	return Vector2(w) += v;
@@ -151,16 +185,8 @@ Vector2 operator * (double f, const Vector2 &v)
 
 double operator * (const Vector2 &a, const Vector2 &b)
 {
-	Vector2 vec = a;
+	Vector2 loca = a;
+	Vector2 locb = b;
 
-	return (vec * b);
-}
-
-double arc(const Vector2 &a, const Vector2 &b)
-{
-	double cosPhi;
-	
-	cosPhi = (a * b) / (a.length() * b.length());
-	
-	return acos(cosPhi);
+	return (loca.x() * locb.x() + loca.y() + locb.y());
 }

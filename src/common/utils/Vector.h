@@ -33,6 +33,7 @@ class Vector2
 		void set(double a, double b);
 		void setCircle(double r, double rad);
 		double length() const;
+		double arc() const;
 		
 		double norm();
 		void normalize();
@@ -46,14 +47,12 @@ class Vector2
 		Vector2& operator += (const Vector2 &v);
 		Vector2& operator -= (const Vector2 & v);
 		Vector2& operator *= (double f);
-		double operator *= (const Vector2 &v);
 		
 		friend Vector2 operator + (const Vector2 &w, const Vector2 &v);
 		friend Vector2 operator - (const Vector2 &w, const Vector2 &v);
 		friend Vector2 operator * (const Vector2 &v, double f);
 		friend Vector2 operator * (double f, const Vector2 &v);
 		friend double operator * (const Vector2 &a, const Vector2 &b);
-		friend double arc(const Vector2 &a, const Vector2 &b);
 
 	private:
 		double m_x;
