@@ -26,7 +26,9 @@ const Error::ErrorType Error::m_errorList[NOF_ERRORS] =
 	"Can not connect to SQL Database.", "Make sure that DB Name = 'flyhigh', UserName = 'flyhigh',\nPassword = 'flyhigh', localhost is reachable, Port = 3306.",
 	"Can not execute SQL command.", "Make sure that SQL database is setup correct.",
 	"Can not connect to Flytec device.", "Make sure that the device is connected to the right port,\n and is set to menu mode.",
-	"Can not execute command on Flytec device.", "Make sure that the device is connected to the right port,\n and is set to menu mode."
+	"Can not execute command on Flytec device.", "Make sure that the device is connected to the right port,\n and is set to menu mode.",
+	"Can not open gnuplot.", "Make sure that gnuplot is proper installed.",
+	"Can not open openGLIGCexplorer.", "Make sure that openGLIGCexplorer is proper installed."
 };
 
 void Error::show(ErrorIdType error)

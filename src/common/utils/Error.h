@@ -33,6 +33,8 @@ class Error
 			SQL_CMD,
 			FLYTEC_OPEN,
 			FLYTEC_CMD,
+			GNUPLOT_OPEN,
+			GPLIGC_OPEN,
 			NOF_ERRORS
 		};
 	
