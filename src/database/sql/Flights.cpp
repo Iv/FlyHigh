@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <qdatetime.h>
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
@@ -116,6 +117,49 @@ bool Flights::flightList(Flight::FlightListType &flightList)
 	
 	return success;
 }
+
+bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	QDate now = QDate::currentDate();
+	FlightsPerYearType fpy;
+	bool success;
+	int year;
+	
+	for(year=2000; year<=now.year(); year++)
+	{
+		sqls.sprintf("SELECT * FROM `Flights` WHERE `Date` > '%i-01-01' \
+											AND `Date` < '%i-12-31'", year, year);
+		success = query.exec(sqls);
+	
+		if(success)
+		{
+			fpy.nFlights = 0;
+			fpy.airTimeSecs = 0;
+			fpy.year = year;
+			
+			while(query.next())
+			{
+				fpy.nFlights++;
+				fpy.airTimeSecs += query.value(Duration).toInt();
+			}
+			
+			if(fpy.nFlights > 0)
+			{
+				fpyList.push_back(fpy);
+			}
+		}
+		else
+		{
+			Error::verify(success, Error::SQL_CMD);
+			break;
+		}
+	}
+
+	return success;
+}
+
 
 bool Flights::igcFile(uint flightNr, QByteArray &arr)
 {
