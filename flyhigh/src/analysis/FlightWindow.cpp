@@ -351,7 +351,7 @@ void FlightWindow::plot_speedVsTime()
 	QTime time;
 	IGCFileParser igcParser;
 	FlightPointList fpList;
-	GnuPlot::PlotVectorType x;
+	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
 	uint fpListSize;
@@ -369,8 +369,9 @@ void FlightWindow::plot_speedVsTime()
 			
 			for(fpNr=0; fpNr<fpListSize; fpNr++)
 			{
+				x.push_back(fpList[fpNr].time);
 				y.push_back(fpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
-				x.push_back(fpList[fpNr].time.hour()*3600 + fpList[fpNr].time.minute()*60 + fpList[fpNr].time.second());
+//				x.push_back(fpList[fpNr].time.hour()*3600 + fpList[fpNr].time.minute()*60 + fpList[fpNr].time.second());
 			}
 		
 			m_plotter.clear();
@@ -387,7 +388,7 @@ void FlightWindow::plot_altVsTime()
 	QTime time;
 	IGCFileParser igcParser;
 	FlightPointList fpList;
-	GnuPlot::PlotVectorType x;
+	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
 	uint fpListSize;
@@ -405,8 +406,8 @@ void FlightWindow::plot_altVsTime()
 			
 			for(fpNr=0; fpNr<fpListSize; fpNr++)
 			{
+				x.push_back(fpList[fpNr].time);
 				y.push_back(fpList[fpNr].wp.altitude()); // in m
-				x.push_back(fpList[fpNr].time.hour()*3600 + fpList[fpNr].time.minute()*60 + fpList[fpNr].time.second());
 			}
 		
 			m_plotter.clear();
@@ -423,7 +424,7 @@ void FlightWindow::plot_varioVsTime()
 	QTime time;
 	IGCFileParser igcParser;
 	FlightPointList fpList;
-	GnuPlot::PlotVectorType x;
+	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
 	uint fpListSize;
@@ -441,8 +442,8 @@ void FlightWindow::plot_varioVsTime()
 			
 			for(fpNr=0; fpNr<fpListSize; fpNr++)
 			{
+				x.push_back(fpList[fpNr].time);
 				y.push_back(fpList.speedV(fpNr, fpNr+1)); // in m/s
-				x.push_back(fpList[fpNr].time.hour()*3600 + fpList[fpNr].time.minute()*60 + fpList[fpNr].time.second());
 			}
 		
 			m_plotter.clear();
