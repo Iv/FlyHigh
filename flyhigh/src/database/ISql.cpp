@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,8 +39,6 @@ ISql::ISql()
 	setHostName("localhost");
 	setPort(3306);
 	
-	m_pDefaultDB->open();
-
 	m_pWayPoints = new WayPoints(m_pDefaultDB);
 	m_pGliders = new Gliders(m_pDefaultDB);
 	m_pFlights = new Flights(m_pDefaultDB);
@@ -82,10 +80,9 @@ void ISql::setPort(int port)
 	m_pDefaultDB->setPort(port);
 }
 
-void ISql::setupDB()
+bool ISql::open()
 {
-QSqlError err = m_pDefaultDB->lastError();
-QString errTxt = err.text();
+	return m_pDefaultDB->open();
 }
 
 ISql* ISql::pInstance()
