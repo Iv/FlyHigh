@@ -35,25 +35,30 @@ OLCOptimizer::~OLCOptimizer()
 	cleanup();
 }
 
-uint OLCOptimizer::freeDistance(FlightPointIndexListType &indexList)
+uint OLCOptimizer::freeDistance(FlightPointIndexListType &turnpointList)
 {
-	memcpy(indexList, m_indexFree, sizeof(FlightPointIndexListType));
+	memcpy(turnpointList, m_indexFree, sizeof(m_indexFree));
 	
 	return m_bestFree;
 }
 
-uint OLCOptimizer::FAITriangle(FlightPointIndexListType &indexList)
+uint OLCOptimizer::FAITriangle(FlightPointIndexListType &turnpointList)
 {
-	memcpy(indexList, m_indexFAI, sizeof(FlightPointIndexListType));
-	
+	memcpy(turnpointList, m_indexFAI, sizeof(m_indexFree));
+
 	return m_bestFAI;
 }
 
-uint OLCOptimizer::flatTriangle(FlightPointIndexListType &indexList)
+uint OLCOptimizer::flatTriangle(FlightPointIndexListType &turnpointList)
 {
-	memcpy(indexList, m_indexFlat, sizeof(FlightPointIndexListType));
-	
+	memcpy(turnpointList, m_indexFlat, sizeof(m_indexFree));
+
 	return m_bestFlat;
+}
+
+FlightPointList& OLCOptimizer::flyPointList()
+{
+	return m_flightPointList;
 }
 
 void OLCOptimizer::cleanup()
