@@ -21,6 +21,7 @@
 #define FlightWindow_h
 
 #include <TableWindow.h>
+#include "FlightPointList.h"
 #include "IDataBase.h"
 #include "GnuPlot.h"
 
@@ -55,6 +56,7 @@ class FlightWindow : public TableWindow
 		GnuPlot m_plotter;
 		
 		void setFlightToRow(uint row, Flight &flight);
+		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 };
 
 #endif
