@@ -19,6 +19,7 @@
  ***************************************************************************/
  
 #include <qsqldatabase.h> 
+#include "Error.h"
 #include "ISql.h" 
 #include "WayPoints.h"
 #include "Gliders.h"
@@ -80,7 +81,12 @@ void ISql::setPort(int port)
 
 bool ISql::open()
 {
-	return m_pDefaultDB->open();
+	bool success;
+	
+	success = m_pDefaultDB->open();
+	Error::verify(success, Error::SQL_OPEN);
+	
+	return success;
 }
 
 ISql* ISql::pInstance()
