@@ -212,7 +212,22 @@ bool ISql::routeList(Route::RouteListType &routeList)
 	return m_pRoutes->routeList(routeList);
 }
 
+bool ISql::add(Servicing &serv)
+{
+	return m_pServicings->add(serv);
+}
+
+bool ISql::delServicing(int nr)
+{
+	return m_pServicings->delServicing(nr);
+}
+
 bool ISql::servicingList(Servicing::ServicingListType &servicingList)
 {
 	return m_pServicings->servicingList(servicingList);
+}
+
+int ISql::servicingsLastModified()
+{
+	return m_pServicings->lastModified("Servicings");
 }
