@@ -19,17 +19,25 @@
  ***************************************************************************/
  
 #include <qapplication.h>
+#include "ErrorWindow.h"
 #include "MainWindow.h"
 #include "IGPSDevice.h"
+#include "ISql.h"
 
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
+	ErrorWindow err;
 	MainWindow* pMainWin = new MainWindow();
 	int res;
 	
 	// only temporary here
 	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
+
+	if(!ISql::pInstance()->open())
+	{
+		err.showError(ErrorWindow::SQL_DB_CONNECTION);
+	}
 	
 	appl.setMainWidget(pMainWin);
 	pMainWin->show();
