@@ -1,0 +1,296 @@
+<html>
+<head>
+<title>Streckenflugoptimierung mit olc2002 (optigc)</title>
+</head>
+<body bgcolor="#B4C2DC">
+<h2>Thomas Streckenflugoptimierung</h2>
+<p>Hier findest Du ein kostenloses Programm welches aus einer IGC-Datei, die 5 besten
+Wegpunkte ermittelt. Eine <a href="olc.html">Kurzanleitung zur Dokumentation via GPS
+findest Du auf einer anderen Seite.</a></p>
+<i>Das Programm wurde von <b>optigc</b> in <b>olc2002</b> umbenannt, um
+Verwechslungen mit dem von Segelfliegern verwendeten
+<a href="http://www.segelflugzeug.de"><b>opti</b></a> zu vermeiden.
+Zuk&uuml;nftige Versionen des Programms bei Regel&auml;nderungen werden entsprechend
+<b>olc2003</b> usw. hei&szlig;en.</i>
+<p align="justify">
+Das folgende Programm ist mein geistiges Eigentum. Ich stelle es der Allgemeinheit
+kostenfrei zur Verf&uuml;gung. Der Quellcode und Teile daraus, d&uuml;rfen f&uuml;r
+eigene Entwicklungen verwendet werden, wenn die dabei enstehende Software ebenfalls
+kostenfrei angeboten wird.
+Dank an <a href="http://www.flugplatz-beilrode.de/dm">Dr.Dietrich M&uuml;nchmeyer</a>
+und Andreas Rieck f&uuml;r Anregungen!
+</p>Thomas Kuhlmann, Berlin. Kontakt: coooly @ freenet de
+<hr></hr>
+<h3>Benutzung (wie ist das Programm zu bedienen)</h3>
+<p align="justify">Das Programm hat keine graphische Schnittstelle. Es wird einfach von der Kommandozeile
+(MS-DOS-Eingabeaufforderung) mit <b>olc2002</b> <i>igc-Dateiname</i> gestartet (und eignet sich
+deshalb evtl. besonders f&uuml;r eine Serverbasierte Optimierung,
+oder zum Mitnehmen auf Diskette in den Urlaub f&uuml;rs Internetcafe).
+Trackpunkte werden aus einer vorhandenen IGC-Datei eingelesen. Das Auslesen von GPS-Loggern
+wird nicht unterst&uuml;tzt. Zum Auslesen und Erzeugen der IGC-Datei k&ouml;nnen z.B. Programme
+wie <a href="http://home.attbi.com/~g7towin/"><b><i>g7towin</i></b></a> oder
+<a href="http://www.multinett.no/~stein.sorensen/"><b><i>GpsDump3.23</i></b></a> verwendet werden.
+<br />
+Bei Tracks mit sehr vielen Punkten, die inhomogene Abst&auml;nde aufweisen kann die
+Berechnung einige Minuten dauern.
+Durch dr&uuml;cken von Ctrl-C kann man bereits vor Programmende die
+bisher besten Zwischenergebnisse ausgeben lassen.<br/>
+Das Programm hat den Anspruch eine der besten L&ouml;sungen zu finden, daher die manchmal etwas langsame Berechnung.
+Andere Optimierer lassen zur Einsparung von Rechenzeit Trackpunkte aus und verschenken dabei meist
+ein paar hunderstel Punkte, im Extremfall werden von solchen Optimieren auch FAI-Dreiecke
+&uuml;bersehen.</p>
+<table align="center" border="1">
+<tr><th>Download <font color="red">neu: 25.07.2002</font></th><th>Version2.03</th><th>Bytes</th></tr>
+<tr><td>Ausf&uuml;hrbares Programm f&uuml;r Windows</td><td><a href="olc2002.exe">olc2002.exe</a></td><td align="right">36751</td></tr>
+<tr><td>Ausf&uuml;hrbares Programm f&uuml;r Linux</td><td><a href="olc2002">olc2002</a></td><td align="right">17488</td></tr>
+<tr><td>Ausf&uuml;hrbares Programm f&uuml;r Solaris</td><td><a href="olc2002.sun">olc2002.sun</a></td><td align="right">24420</td></tr>
+<tr><td>Quellcode des C-Programms</td><td><a href="olc2002.c">olc2002.c</a></td><td align="right">26512</td></tr>
+</table>
+<p><i>Sollte es beim Download Probleme geben, probiere die <a href="http://fly.united.net.kg">mirror-site: fly.united.net.kg</a></i></p>
+<p align="justify">Ab <b>Version2</b> ist die Anzahl der Trackpunkte nur durch den vorhandenen Speicher
+begrenzt. Der Rechenaufwand f&uuml;r Tracks mit besonders vielen Punkten konnte reduziert
+werden (ist meist kleiner n^3). Es werden Warnungen ausgegeben, wenn unrealistische Trackpunkte mit sehr
+hoher Geschwindigkeit zwischen zwei Punkten gefunden werden oder Zeitspr&uuml;ne in die Vergangenheit im Track sind
+(diese sollte man aus dem Track entfernen, falls sie nicht korrekt sind, kann an GPS-Aufzeichnungsfehlern liegen).<br />
+Ab Version2 werden zus&auml;tzlich die Zeiten der Wertungspunkte ausgegeben (die man f&uuml;r die
+Meldung beim OLC gebrauchen kann).</p>
+<p>Mit der <b>Option <i>-v</i></b> wird der <i>verbose mode</i> eingeschaltet, bei dem
+alle eingelesenen Trackpunkte angezeigt werden (wenn man z.B. die Aufzeichnungsintervalle
+kontrollieren m&ouml;chte).<br />
+Mit der <b>Option -s<i>SPEED</i></b> kann man angeben, ab welcher Geschwindigkeit
+<i>SPEED</i> in km/h Warnungen ausgegeben werden sollen (Voreinstellung 90km/h
+&uuml;ber Grund).</p>
+<p>Mit der <b>Option -b<i>hh:mm:ss</i></b> kann man den Track<i>beginn</i> markieren (falls man ung&uuml;ltige
+Punkte am Anfang &uuml;berspringen m&ouml;chte. Bei der Angabe dieses Startzeitpunkts der Wertung
+kann man die Sekunden oder auch Sekunden und Minuten weglassen.</p>
+<p>Mit der <b>Option -e<i>hh:mm:ss</i></b> kann man den Track<i>ende</i> markieren (falls man ung&uuml;ltige
+Punkte am Ende auslassen m&ouml;chte. Bei der Angabe dieses Endzeitpunkts der Wertung
+kann man die Sekunden oder auch Sekunden und Minuten weglassen.</p>
+<p>Mit der <b>Option <i>-h</i></b> bekommt man eine Kurzhilfe zu den m&ouml;glichen Optionen
+und die Versionsnummer angezeigt (z.B. zur Mitteilung von Fehlern im Programm).</p>
+<hr></hr>
+<h3>OLC-Optimierung selbstprogrammiert / Wie funktionierts?</h3>
+Will man selbst eine OLC-Optimierung programmieren, wird man mit folgenden Problemen
+konfrontiert:
+<UL>
+<LI>Welches Format hat die IGC-Datei? Dazu gibts bei der FAI was!
+	Oder einfach mal mit einem Texteviewer anschauen, dann wirds schon klar</LI>
+<LI>Wie berechnet man die Distanz zweier Trackpunkte aus dem Log?</LI>
+<LI>Wie beschleunigt man das Rechenprogramm?</LI>
+</UL>
+
+<h4>Distanz zwischen zwei GPS-Tracklogpunkten</h4>
+Die Distanz zwischen 2 Punkten berechnet sich wie folgt:
+<p align="center">s=6371km*acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon1-lon2))</p>
+<p align="justify">Dabei ist 6371km der von der FAI vorgegebene Erdradius (man k&ouml;nnte auch mit einem
+anderen Radius (siehe Lehrb&uuml;cher) rechnen oder mit einer eliptischen N&auml;herung,
+bekommt dann aber vom OLC-Server leicht abweichende Ergebnisse).
+lat1, lat2 sind die georaphischen L&auml;ngen und lon1, lon2 die Breiten der Punkte 1 und 2
+im Bogenma&szlig;. Umrechnung von Winkel ins Bogenma&szlig;: *PI/180 (zuvor Minuten und
+Sekunden in Grad umrechnen). sin() und cos() sind die Sinus- und Kosinusfunktionen. acos()
+ist die Umkehrfunktion des Kosinus: Arcuskosinus.</p>
+Es gibt auch eine andere Formel die mit Arcussinus, Sinus, Kosinus und Wurzelfunktion
+arbeitet:
+<p align="center">
+  s=6371km*asin(sqrt(sin((lat1-lat2)/2))^2+sin((lon1-lon2)/2)^2*cos(lat1)*cos(lat2))
+</p>
+Diese Formel ist weniger anf&auml;llig f&uuml;r Rundungsfehler. Da Distanzen beim OLC aber
+ohnehin auf 100stel Kilometer = Dezimeter gerundet werden (zumindest die Punkte), ist diese
+aufw&auml;ndiger zu berechnende Formel nicht notw&auml;ndig.
+
+<h4>Berechnung der besten Punkte <i>brut force</i></h4>
+Ein stupides Rechenprogramm kann wie folgt vorgehen:
+<UL>
+<LI>Probiere alle M&ouml;glichkeiten den Startpunkt aus dem Track zu w&auml;hlen.
+Das mu&szlig; nicht der erste Punkt in der IGC-Datei sein, man kann den Wertungsflug
+an beliebiger Stelle beginnen lassen.</LI>
+<LI>F&uuml;r jeden gew&auml;hlten Startpunkt, w&auml;hle jeden m&ouml;glichen 1.WP</LI>
+<LI>F&uuml;r jeden gew&auml;hlten 1WP, w&auml;hle jeden m&ouml;glichen 2.WP</LI>
+<LI>F&uuml;r jeden gew&auml;hlten 2WP, w&auml;hle jeden m&ouml;glichen 3.WP</LI>
+<LI>F&uuml;r jeden gew&auml;hlten 3WP, w&auml;hle jeden m&ouml;glichen Endpunkt</LI>
+<LI>F&uuml;r jeden gew&auml;hlten Endpunkt: Berechne die Summe der Distanzen wischen den
+Punkten. Ist die Summe besser als die bisher beste, merke die neue Distanz als beste.
+Bilden die gew&auml;hlten Punkte ein Dreieck? vielleicht sogar ein FAI-Dreieck?
+Falls die Dreiecksstrecke besser als das bisher beste Dreieck ist, merke neues bestes Dreieck.
+</LI>
+</UL>
+Angenommen der Track hat <i>n</i> Logpunkte, dann ist die Rechenzeit eines solchen Programms
+proportional zu <i>n*n*n*n*n=n hoch 5</i>. In der Praxis rechnet ein Programm
+nach diesem Schema bei mehr als 200 Punkten auf den derzeit &uuml;blichen Rechnern
+mehrere Stunden, bei 1000 Punkten mu&szlig; man mehrere Tagen Rechenzeit einplanen.
+Das ist f&uuml;r die Praxis nicht brauchbar, so da&szlig; man verschiedene Methoden
+zur Rechenbeschleunigung ansetzen kann, von denen ich im Folgenden einige beschreibe.
+
+<h4>Berechnung der besten Punkte <i>einfach beschleunigt</i></h4>
+<p>
+Eine einfache Art der Beschleunigung ist: man nimmt einfach nur jeden xten Punkt
+aus dem Track, so da&szlig; man nur noch weniger als 200 Punkte betrachten mu&szlig;. Dann
+kann man nach obigem <i>brut force</i> Ansatz alle M&ouml;glichkeiten ausprobiern.
+Nachteil: man findet nicht mehr garantiert die allerbeste L&ouml;sung. In der Praxis
+findet man ganz gute L&ouml;sungen die nur selten um mehr als einen Punkt von der besten
+L&ouml;sung abweichen. Dabei kann man aber auch Pech haben, und bei ung&uuml;nstigem
+Trackverlauf insbesondere bei Dreiecken, z.B. ein FAI-Dreieck &uuml;bersehen und
+dann nur den Wichtungsfaktor f&uuml;r ein flaches Dreieck bekommen, so da&szlig; man evtl.
+doch mehr als einen Punkt je Flug weniger bekommt.
+</p>
+<p>
+Folgende Beschleunigungsm&ouml;glichkeiten haben <b>nicht</b> den Nachteil, da&szlig; man die beste
+L&ouml;sung evtl. &uuml;bersieht:
+<UL>
+<LI><b>Rechnen mit ganzen Zahlen</b>, statt mit Gleitkommazahlen:
+Da beim OLC ohnehin Punkte auf 100stel gerundet werden, kann man auch gleich in
+ganzen Dezimetern rechnen, wegen Rundungsfehlern jedoch zur Sicherheit in ganzen Metern.
+Bei Zwischenrechnungen mu&szlig; man aufpassen, da&szlig; der maximal darstellbare Ganzzahlbereich
+nicht &uuml;berschritten wird. in der Praxis fliegen wir weniger als 600km=600.000m,
+so da&szlig; Integerganzahlen ausreichend sind, wenn diese mind. 12 Bit lang sind.
+</LI>
+<LI><b>Vorausberechnen der Distanzen:</b>
+Anstatt bei jeden der n^5 Schleifendurchl&auml;ufe die Formel f&uuml;r die Distanz zu
+berechnen (viele Teilst&uuml;cke werden dabei sehr oft wiederholt berechnet), kann man
+alle auftretenden Distanzen vorab in einer Distanzmatrix berechnen (nur ein Dreieck der
+Matrix ist besetzt, da sie symmetrisch ist). Daf&uuml;r braucht man evtl. viel Speicherplatz.
+</LI>
+<LI>Vorausberechnen der Winkel im Bogenma&szlig; sowie von cosinus und sinus dieser Winkel.
+Damit kann man die Vorausberechnung der Distanzen noch mal ein St&uuml;ck beschleunigen.
+</LI>
+</UL>
+Alle diese Beschleunigungen bringen aber maximal den Faktor 10, was in Anbetracht eines
+Aufwandes von <i>n hoch 5</i> nicht allzuviel ist (bei gro&szlig;en Tracks).
+
+<h4>Berechnung der besten Wegpunkte <i><b>stark</b> beschleunigt</i></h4>
+<p>Man teilt die Strecke wie folgt in Teilstrecken auf, die man unabh&auml;ngig und getrennt
+voneinander optimieren kann.
+</p><p>
+Ich w&auml;hle Wegpunkte 1WP und 3WP fest und kann nun unabh&auml;ngig voneinander
+die 3 Teilstrecken e=SP-1WP, a=1WP-2WP + b=2WP-3WP, f=3WP-EP optimieren. Das macht Aufwand
+in der Gr&ouml;&szlig;enordnung von 3*n/3=n.
+Dann variere ich &uuml;ber alle 1WP und 3WP mit Aufwand n*n. Macht insgesamt Aufwand
+in der Gr&ouml;&szlig;enordnung von <i>n hoch 3</i>.
+</p><p>
+Dabei mu&szlig; man jedoch beachten, da&szlig; man f&uuml;r freie Strecke Start- und
+Endpunkt so optimiert, da&szlig; die Strecken <i>e</i> und <i>f</i> jede f&uuml;r sich
+maximal wird. Damit man das nicht innerhalb der n^3 Schleife immer wieder machen mu&szlig;,
+macht man es vorab, und speichert die besten Startpunkte f&uuml;r jeden ersten Wendepunkt
+und die besten Endpunkte f&uuml;r jeden dritten Wendepunkt in Vektoren ab.
+</p><p>
+Die so optimierten Start- und Endpunkte kann man f&uuml;r Dreiecke nicht verwenden, den
+f&uuml;r Dreiecke gilt es bei festem ersten und dritten Wegpunkt (unabh&auml;ngig von der
+Lage des zweiten Wendepunktes), Start- und Endpunkt so zu w&auml;hlen, da&szlig; die
+Strecke <i>d</i> zwischen Start- und Endpunkt minimal wird. Dabei k&ouml;nnen Start- und
+erster Wendepunkt, sowie End- und dritter Wendepunkt jeweils zusammenfallen, in diesem
+Fall entspricht <i>d</i> dem dritten Dreiecksschenkel <i>c</i>.
+</p><p>
+Das Finden eines minimalen <i>d</i> f&uuml;r alle 1WP und 2WP kann man auch ausserhalb
+der n^3-Schleife vorab mit quadratischem Aufwand machen und das Ergebnis in einer
+<i>dmin(WP1, WP3)</i>-Matrix abspeichern. Dabei kann man sich zu Nutze machen, da&szlig; man
+nicht alle Kombinationen von SP, EP, WP1, WP3 durchrechnen mu&szlig;, sondern sich die Ergebnisse
+sukksessive aus vorherigen Ergbnissen berechnen lassen. Beispiel: Man w&auml;hlt den Startpunkt
+ganz vorne und den Endpunkt ganz hinten (nun hat man f&uuml;r WP1=erster Punkt, WP3=letzter
+Punkt) bereits das beste <i>d</i> gefunden. Nun erh&ouml;ht man den Startpunkt um einen
+Trackpunkt und falls dabei ein kleiners <i>d</i> ensteht hat man sofort den Matrixeintrag
+f&uuml;r <i>dmin(2ter Punkt, letzter Punkt)</i> gefunden. Wenn man alle M&ouml;glichkeiten
+f&uuml;r den Startpunkt durch ist, legt man den Endpunkt einen Trackpunkt weiter nach vorne,
+und macht das gleiche nochmals, wobei man auf die bereits gefundenen besten L&ouml;sungen
+f&uuml;r den Endpunkt ganz hinten zur&uuml;ckgreifen kann. Dann schiebt man den Endpunkt
+noch ein St&uuml;ck nach vorne usw. ...
+</p>
+<h4>Zus&auml;tzliche Beschleunigung durch Auslassen von Punkten die keine bessere L&ouml;sung liefern (in Version2 umgesetzt)</h4>
+<p>Ein weiterer L&ouml;sungsinvarianter Ansatz macht sich zu Nutze, da&szlig; wir mit
+einer gewissen, Minimal bzw. Maximalgeschwindigkeit fliegen. Das bedeutet, da&szlig; bei
+festem Aufzeichnungsintervall die zur&uuml;ckgelegte Strecke zwischen zwei aufeinanderfolgenden
+Trackpunkten einen bestimmten Maximalwert nicht &uuml;berschreitet.
+Selbt wenn das Aufzeichnungsintervall variabel ist, gibt es eine maximale Entfernung
+zwischen zwei aufeinanderfolgenden Trackpunkten, die man bereits beim Einlesen der Punkte
+bestimmen kann.<br></br>
+Angenommen die bisher beste gefundene Gesamtstrecke sei 20km. Seien erster und dritter
+Wendepunkt schon fest gew&auml;hlt und die besten Start- und Endpunkte vorab berechnet.
+Wir haben also die Teilstrecken e, f, d und c schon bestimmt.
+Nun probieren wir einen zweiten Wendepunkt aus, so da&szlig; man die Strecken a und b berechnen
+kann. Es ergibt sich f&uuml;r freie Strecke eine Streckensumme von <i>e+a+b+f</i> von z.B. 18km.
+Dieser zweite Wendepunkt ist also nicht besser als das bisherige Maximum. Wenn wir aber wissen, da&szlig;
+der n&auml;chst Punkt maximal z.B. 100m entfernt liegt, k&ouml;nnen wir uns sparen,
+den n&auml;chsten Punkt auszuprobieren, da die Gesamtstrecke maximal 200m gr&ouml;&szlig;er
+sein kann (a und b k&ouml;nnten bestenfalls jeweils um diesen Wert wachsen).
+Wir k&ouml;nnen sogar noch weiter gehen und die n&auml;chsten 20km-18km/200m=10
+Punkte &uuml;berspringen, da auch die keine bessere freie Strecke liefern werden.<br></br>
+Es ist zu pr&uuml;fen, ob durch das &Uuml;berspringen von Punkten nicht Dreiecke ausgelassen
+werden. F&uuml;r Dreiecke mu&szlig; gelten: <i>d*5 <= a+b+c</i>.
+Angenommen c=10km, a=6km, b=6km, d=9km, damit ein Dreieck ensteht mu&szlig; gelten:
+<i>a+b >= d*5 - c = 45km - 10km = 35km</i>. Um eine solche Summe a+b zu erreichen m&uuml;&szlig;ten
+a+b von derzeit jeweils 6km auf 17.5km anwachsen. Bei einem maximalen Punkteabstand von 100m k&ouml;nnen
+wir also die n&auml;chsten 17.5km-6km/100m=115 Punkte f&uuml;r Dreiecke &uuml;berspringen.
+Nicht nur diese auch die 115 Punkte davor!
+Man k&ouml;nnte also Stichprobenweise im Track Punkte ausprobieren und dadurch ganze Bereiche
+als <i>nicht besser</i> markieren.
+</p>
+<p>F&uuml;r <b>Version2</b> wurde folgendes Verfahren umgesetzt:</p>
+In der <b>innersten Programmschleife</b> wird der 2te Wendepunkt variiert um bessere
+L&ouml;sungen zu finden. F&uuml;r <i>Freie Strecke</i> ist die Wertungsstrecke:
+<p align="center"><i>w = e + a + b + f</i></p>
+Probiert man nun f&uuml;r WP2 einen Nachbartrackpunkt, so &auml;ndern sich dadurch nur die
+Teilstrecken <i>a + b</i>. Sei <i>dMax</i> die maximale Distanz zwischen zwei beliebigen
+Trackpunkten, dann werden durch Verschieben von WP2 um einen Trackpunkt <i>a+b</i> je
+maximal um <i>dMax</i> gr&ouml;&szlig;er. Verschiebt man um <i>k</i> Trackpunkte, so
+ist die neue Wertungsstrecke dann:
+<p align="center"><i>w' <= e + a + b + k*2*dMax +f = w + k*2*dMax</i></p>
+Daraus kann man die Schrittweite <i>k</i> berechnen, wieviele direkte Nachbarpunkte
+man auslassen kann, wenn man mindestens die Wertungsstrecke <i>w'</i> erreichen m&ouml;chte.
+<p align="center"><i>k >= (w' - w)/(2*dMax)</i></p>
+Nimmt man f&uuml;r <i>w'</i> die beste bisher gefundene Wertungsstrecke, so berechnet man
+also wieviele Trackpunkte man mindestens weitergehen mu&szlig; um eine noch bessere
+L&ouml;sung zu finden (dann mu&szlig; <i>k</i> sogar echt gr&ouml;&szlig;er als der
+angebene Term sein).
+<p>Man mu&szlig; dabei nat&uuml;rlich aufpassen, keine Dreicke zu &uuml;berspringen,
+f&uuml;r die gelten mu&szlig;:</p>
+<p align="center"><i>d <= 20% (a+b+c)<br />
+		d.h.:  5*d <= a + b + c</i></p>
+Durch verschieben von WP2 ver&auml;ndern sich wieder nur <i>a+b</i>, <i>c</i> und <i>d</i>
+bleiben unber&uuml;hrt. Angenommen diese Dreiecksbedingung war gerade nicht erf&uuml;llt,
+wieviele Trackpunkte <i>kd</i>sollte man dann mindestens weitergehen, damit sie erf&uuml;llt wird?:
+<p align="center"><i>5*d <= a + b + kd*2*dMax + c<br />
+	d.h.: kd >= (5*d - a - b - c)/(2*dMax)</i></p>
+Um keine Dreiecke und keine besseren Freien Strecken zu &uuml;berspringen, geht man also:
+<p align="center"><i>MIN( k, kd )</i></p>
+Trackpunkte weiter (d.h. man l&auml;&szlig;t genau diese Punkte aus).
+<p>
+Allerdings kann man u.U. doch weitere Punkte auslassen, wenn man n&auml;lich keine
+besseren Dreiecke als bereits gefunden, zu erwarten hat. F&uuml;r die Wertungsstrecke
+beim Dreieck gilt:
+</p>
+<p align="center"><i>w = a + b + c - d</i></p>
+Wie bei Freier Stecke ergibt sich daraus f&uuml;r ein flaches Dreieck <i>kflach</i>:
+<p align="center"><i>kflach >= (w' - w)/2*dMax</i></p>
+wenn man f&uuml;r <i>w'</i> das beste bisherige flache Dreieck nimmt.
+Analog berechnet man f&uuml;r das FAI-Dreick eine Schrittweite <i>kfai</i>.
+Die tats&auml;chliche Schrittweite ist dann:
+<p align="center"><i>MAX(1,MIN(k,MAX(kd,MIN(kflach,kfai))</i></p>
+<p>Diesen Ansatz kann man auch f&uuml;r die zweitinnerste Schleife verfolgen in der der
+dritte Wendepunkt WP3 variiert wird. Dabei ist jedoch zu beachten, da&szlig; sich nun mehr
+Teilstrecken &auml;ndern k&ouml;nnen (also andere Faktoren als <i>2*dMax</i>).
+Ausserdem mu&szlig; man zur Berechnung der aktuellen Wertungsstrecke <i>w</i> die beste
+Wertungsstrecke f&uuml;r den zuletzt betrachteten WP3 ansetzten.
+Die Details entnehme man dem getesteten Quellcode.</p>
+Auch f&uuml;r die Schleife die &uuml;ber die erste Wende WP1 variiert, kann man jeweils
+wieder neue variable Schrittweiten berechnen. Allerdings mu&szlig; man dazu die lokalen
+Maxima f&uuml;r den letzten Schleifendurchlauf f&uuml;r <i>w</i> berechnen. Dies ist in
+Version2 noch nicht implementiert.
+<h4>Bewertung der letzten Beschleunigungsmethode (variable Schrittweite)</h4>
+Die Methode erzeugt zun&auml;chst einmal zus&auml;tzlichen Berechnungsaufwand in allen
+Schleifen (auch der innersten), da die adaptiven Schrittweiten <i>k...</i> berechnet
+werden m&uuml;ssen. F&uuml;r <i>ung&uuml;nstige</i> Tracks kann sich also sogar eine
+l&auml;ngere Berechnung ergeben. Dies ist genau dann der Fall, wenn die Maximale Distanz
+zwischen 2 benachbarten Punkten gegen&uuml;ber der Wertungsstrecke <i>w</i> nicht klein
+genug ist. Beispielsweise ein Track mit maximal 50km freier Strecke, aber es gibt zwei
+Punkte mit 5km Abstand. In der Regel deutet sowas auf variierende Aufzeichnungsintervalle
+oder Aufzeichnungsfehler des GPS hin (Zwischenpunkte liegen vollkommen neben der Route).
+Diese Punkte sollte man aus dem Track entfernen. Sie werden durch die Warnungen
+(&uuml;bergro&szlig;e Geschwindigkeiten) entdeckt.
+<p>F&uuml;r Tracks mit durchweg kleinen Aufzeichnungsintervallen und vielen Trackpunkten
+wird eine deutliche Beschleunigung erreicht, da zwischen benachbarten Trackpunkten meist
+nur eine kleine Distanz liegt, so da&szlig; man sehr viele Trackpunkte f&uuml;r die
+n&auml;chstbeste L&ouml;sung &uuml;berspringen kann. (Ein Track mit 6800 Punkten im
+Sekundenabstand wurde in wenigen Minuten Optimiert).
+<hr></hr>
+Falls jemand einen Fehler entdeckt bitte bei mir melden: coooly @ freenet . de
+</body>
+</html>
