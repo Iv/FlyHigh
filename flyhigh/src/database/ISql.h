@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -76,7 +76,7 @@ class ISql: public IDataBase
 		int routesLastModified();
 		bool routeList(Route::RouteListType &routeList);
 		
-		void setupDB();
+		bool open();
 		
 	private:
 		static ISql* m_pInst;
