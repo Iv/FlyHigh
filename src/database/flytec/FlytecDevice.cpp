@@ -34,10 +34,7 @@ FlytecDevice::FlytecDevice()
 
 void FlytecDevice::setPort(const QString &port)
 {
-	DeviceInfoType devInfo;
-
 	ft_init(port.ascii());
-	Error::verify((ft_deviceInfoRead(&devInfo) == 0), Error::FLYTEC_OPEN);
 }
 
 // memory
