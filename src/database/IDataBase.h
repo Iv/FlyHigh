@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2005 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,7 +22,7 @@
 #define IDataBase_h
 
 #include <qdatetime.h>
-#include <qvaluelist.h>
+#include "ContainerDef.h"
 #include "Flight.h"
 #include "Route.h"
 #include "WayPoint.h"
@@ -32,14 +32,6 @@ class IDataBase
 	public:
 		typedef enum SourceType{GPSdevice, SqlDB};
 		
-		typedef struct
-		{
-			uint year;
-			uint nFlights;
-			QTime airTime;
-		}FlightsPerYearType;
-		typedef QValueList<FlightsPerYearType> FlightsPerYearListType;
-				
 		IDataBase();
 		virtual ~IDataBase();
 

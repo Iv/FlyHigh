@@ -22,6 +22,7 @@
 #define Flights_h
 
 #include <qdatetime.h>
+#include "ContainerDef.h"
 #include "DataBaseSub.h"
 #include "Flight.h"
 
@@ -35,6 +36,7 @@ class Flights: public DataBaseSub
 		bool flight(int nr, Flight &flight);
 		int newFlightNr();
 		bool flightList(Flight::FlightListType &flightList);
+		bool flightsPerYear(FlightsPerYearListType &fpyList);
 		bool igcFile(uint flightNr, QByteArray &arr);
 		
 	private:
