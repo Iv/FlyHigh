@@ -111,9 +111,14 @@ void Vector2::rot(double rad)
 {
 	double c = cos(rad);
 	double s = sin(rad);
+	double newX;
+	double newY;
 	
-	m_x = m_x * c - m_y * s;
-	m_y = m_x * s + m_y * c;
+	newX = m_x * c - m_y * s;
+	newY = m_x * s + m_y * c;
+	
+	m_x = newX;
+	m_y = newY;
 }
 
 double Vector2::x()
