@@ -28,7 +28,7 @@ typedef struct
 {
 	int year;
 	uint nFlights;
-	QTime airTime;
+	uint airTimeSecs;
 }FlightsPerYearType;
 
 typedef QValueList<FlightsPerYearType> FlightsPerYearListType;
