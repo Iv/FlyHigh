@@ -44,7 +44,7 @@ class WayPoints: public DataBaseSub
 	private:
 		enum Elements
 		{
-			Name, Longitude, Latitude, Altitude
+			Name, Longitude, Latitude, Altitude, Description
 		};
 };
 
