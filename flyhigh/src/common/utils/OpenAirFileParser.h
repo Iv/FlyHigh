@@ -36,6 +36,7 @@ class OpenAirFileParser
 		AirSpace::AirSpaceListType m_airspaceList;
 		AirSpace::EdgePointType m_arcCenter;
 		bool m_arcDir;
+		static const uint m_maxSeg;
 		
 		void parseAirspaceClass(char *record, AirSpace &airspace);
 		void parseName(char *record, AirSpace &airspace);
@@ -46,6 +47,9 @@ class OpenAirFileParser
 		void parseArc(char *record, AirSpace &airspace);
 		void parseCircle(char *record, AirSpace &airspace);
 		bool parseCoordinate(char *record, AirSpace::EdgePointType &pt);
+		
+		double deltaArc(double arcA, double arcB);
+		uint maxSegments(double arc);
 };
 
 #endif

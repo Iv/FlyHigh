@@ -24,7 +24,9 @@
 #include "OpenAirFileParser.h"
 #include "Vector.h"
 
-#define MAX_REC_SIZE 50
+#define MAX_REC_SIZE 100
+
+const uint OpenAirFileParser::m_maxSeg = 8;
 
 OpenAirFileParser::OpenAirFileParser()
 {
@@ -35,7 +37,6 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 	QBuffer buff;
 	QString str;
 	char record[MAX_REC_SIZE];
-	int pos;
 	AirSpace airspace;
 	
 	buff.setBuffer(openAirData);
@@ -44,44 +45,43 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 	{
 		while(buff.readLine(record, MAX_REC_SIZE) > 0)
 		{
-			pos = str.find(' ');
-			str = str.left(pos);
+			str = record;
 			
-			if(str == "*")
-			{
-//				type = NewAirspace;
-			}
-			else if(str == "AC")
+			if(str.left(2) == "AC")
 			{
 				parseAirspaceClass(record, airspace);
 			}
-			else if(str == "AN")
+			else if(str.left(2) == "AN")
 			{
 				parseName(record, airspace);
 			}
-			else if(str == "AH")
+			else if(str.left(2) == "AH")
 			{
 				parseHigh(record, airspace);
 			}
-			else if(str == "AL")
+			else if(str.left(2) == "AL")
 			{
 				parseLow(record, airspace);
 			}
-			else if(str == "V")
+			else if(str.left(1) == "V")
 			{
 				parseVarAssign(record);
 			}
-			else if(str == "DP")
+			else if(str.left(2) == "DP")
 			{
 				parsePoint(record, airspace);
 			}
-			else if(str == "DB")
+			else if(str.left(2) == "DB")
 			{
 				parseArc(record, airspace);
 			}
-			else if(str == "DC")
+			else if(str.left(2) == "DC")
 			{
 				parseCircle(record, airspace);
+			}
+			else if((str.at(0) == '*') && (str.at(1) == '\r'))
+			{
+				m_airspaceList.push_back(airspace);
 			}
 		}
 		buff.close();
@@ -96,10 +96,12 @@ AirSpace::AirSpaceListType& OpenAirFileParser::airspaceList()
 void OpenAirFileParser::parseAirspaceClass(char *record, AirSpace &airspace)
 {
 	QString str = record;
-	int pos;
+	int begin;
+	int end;
 	
-	pos = str.find(' ');
-	str = str.right(pos);
+	begin = str.find(' ') + 1;
+	end = str.find('\r');
+	str = str.mid(begin, end-begin);
 
 	airspace.setAirspaceClass(str);
 }
@@ -107,10 +109,12 @@ void OpenAirFileParser::parseAirspaceClass(char *record, AirSpace &airspace)
 void OpenAirFileParser::parseName(char *record, AirSpace &airspace)
 {
 	QString str = record;
-	int pos;
+	int begin;
+	int end;
 	
-	pos = str.find(' ');
-	str = str.right(pos);
+	begin = str.find(' ') + 1;
+	end = str.find('\r');
+	str = str.mid(begin, end-begin);
 
 	airspace.setName(str);
 }
@@ -118,10 +122,12 @@ void OpenAirFileParser::parseName(char *record, AirSpace &airspace)
 void OpenAirFileParser::parseHigh(char *record, AirSpace &airspace)
 {
 	QString str = record;
-	int pos;
+	int begin;
+	int end;
 	
-	pos = str.find(' ');
-	str = str.right(pos);
+	begin = str.find(' ') + 1;
+	end = str.find('\r');
+	str = str.mid(begin, end-begin);
 
 	airspace.setHigh(str);
 }
@@ -129,10 +135,12 @@ void OpenAirFileParser::parseHigh(char *record, AirSpace &airspace)
 void OpenAirFileParser::parseLow(char *record, AirSpace &airspace)
 {
 	QString str = record;
-	int pos;
+	int begin;
+	int end;
 	
-	pos = str.find(' ');
-	str = str.right(pos);
+	begin = str.find(' ') + 1;
+	end = str.find('\r');
+	str = str.mid(begin, end-begin);
 
 	airspace.setLow(str);
 }
@@ -147,13 +155,13 @@ V X=46:09:46 N   008:50:13 E
 	int pos;
 	QChar type;
 	
-	pos = str.find(' ');
-	type = str.at(pos+1);
+	pos = str.find(' ') + 1;
+	type = str.at(pos);
 	
 	if(type == 'D')
 	{
-			pos = str.find('=');
-			m_arcDir = (str.at(pos+1) == '-'); // math direction
+			pos = str.find('=') + 1;
+			m_arcDir = (str.at(pos) == '-'); // math direction
 	}
 	else if(type == 'X')
 	{
@@ -183,39 +191,36 @@ DB  45:53:03 N 008:52:59 E,  45:55:49 N 008:46:20 E*/
 	Vector2 resVec;
 	Vector2 centerVec(m_arcCenter.lat, m_arcCenter.lon);
 	QString str = record;
-	double abArc;
+	double arcA;
+	double arcB;
+	double arcAB;
 	double segArc;
 	uint segNr;
 	uint maxSeg;
 	char pos;
 	
-	// begin vector
+	// vector a
 	parseCoordinate(record, startPt);
 	a.set(startPt.lat, startPt.lon);
 	a -= centerVec;
 	
-	// end vector
+	// vector b
 	pos = str.find(',');
 	parseCoordinate(&record[pos], endPt);
 	b.set(endPt.lat, endPt.lon);
 	b -= centerVec;
 	
-	abArc = arc(a, b);
+	// delta arc
+	arcA = a.arc();
+	arcB = b.arc();
+	arcAB = deltaArc(arcA, arcB);
+	maxSeg = maxSegments(arcAB);
 	
-	if(abArc <= M_PI_4)
-	{
-		maxSeg = 2;
-	}
-	else
-	{
-		maxSeg = 4;
-	}
-
 	// start point
+	segArc = arcAB / maxSeg;
 	airspace.edgePointList().push_back(startPt);
 	
 	// 1st point
-	segArc = abArc / maxSeg;
 	a *= 1 / cos(segArc / 2); // scale
 	a.rot(segArc / 2);
 	resVec = a + centerVec;
@@ -253,16 +258,19 @@ DC 2.00
 	double radius;
 	const double nautmil = 1.852;
 	uint segNr;
-	uint maxSeg = 16;
-	int pos;
+	int begin;
+	int end;
 	
-	segArc = 2 * M_PI / maxSeg;
-	pos = str.find(' ');
-	radius = str.right(pos).toDouble() * nautmil;
+	begin = str.find(' ') + 1;
+	end = str.find('\r');
+	str = str.mid(begin, end-begin);
+	
+	segArc = 2 * M_PI / m_maxSeg;
+	radius = str.toDouble() * nautmil;
 	startVec.setCircle(radius, 0.0);
 	startVec *= 1 / cos(segArc / 2); // scale
 	
-	// first point
+	// 1st point
 	a = startVec;
 	resVec = a + centerVec;
 	pt.lat = resVec.x();
@@ -270,7 +278,7 @@ DC 2.00
 	airspace.edgePointList().push_back(pt);
 
 	// other points
-	for(segNr=1; segNr<maxSeg; segNr++)
+	for(segNr=1; segNr<m_maxSeg; segNr++)
 	{
 		a.rot(segArc);
 		resVec = a + centerVec;
@@ -303,11 +311,11 @@ bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &p
 		switch(state)
 		{
 			case Lat:
-				if(isalnum(*pRider))
+				if(isdigit(*pRider))
 				{
-					if(sscanf(pRider, "%2d*c%2d%*c%2d%*c%c", &deg, &minute, &sec, &dir) == 4)
+					if(sscanf(pRider, "%2d%*c%2d%*c%2d%*c%c", &deg, &minute, &sec, &dir) == 4)
 					{
-						pt.lat = deg + minute / 60.0 + sec / 60000.0;
+						pt.lat = deg + minute / 60.0 + sec / 3600.0;
 						
 						if(dir == 'S')
 						{
@@ -324,13 +332,13 @@ bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &p
 				}
 			break;
 			case Lon:
-				if(isalnum(*pRider))
+				if(isdigit(*pRider))
 				{
-					if(sscanf(pRider, "%3d*c%2d%*c%2d%*c%c", &deg, &minute, &sec, &dir) == 4)
+					if(sscanf(pRider, "%3d%*c%2d%*c%2d%*c%c", &deg, &minute, &sec, &dir) == 4)
 					{
-						pt.lon = deg + minute / 60.0 + sec / 60000.0;
+						pt.lon = deg + minute / 60.0 + sec / 3600.0;
 						
-						if(dir == 'E')
+						if(dir == 'W')
 						{
 							pt.lon *= -1;
 						}
@@ -353,22 +361,53 @@ bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &p
 // V X=45:54:15 N   008:49:30 E
 }
 
-/*
-*
-AC CTR
-AN LUGANO CTR
-AL SFC
-AH 6500ALT
-DP 46:02:46 N 008:53:48 E
-V D=+
-V X=46:01:26 N   008:56:14 E
-DB  46:02:46 N 008:53:48 E,  46:00:17 N 008:58:52 E
-DP 46:00:17 N 008:58:52 E
-DP 45:53:03 N 008:52:59 E
-V D=+
-V X=45:54:15 N   008:49:30 E
-DB  45:53:03 N 008:52:59 E,  45:55:49 N 008:46:20 E
-DP 45:55:49 N 008:46:20 E
-DP 46:02:46 N 008:53:48 E
-*/
+double OpenAirFileParser::deltaArc(double arcA, double arcB)
+{
+	double arc;
+	
+	if(arcA > arcB)
+	{
+		if(m_arcDir)
+		{
+			arc = 2 * M_PI - (arcA - arcB);
+		}
+		else
+		{
+			arc = arcB - arcA;
+		}
+	}
+	else
+	{
+		if(m_arcDir)
+		{
+			arc = arcB - arcA;
+		}
+		else
+		{
+			arc = (arcB - arcA) - 2 * M_PI;
+		}
+	}
+	
+	return arc;
+}
 
+uint OpenAirFileParser::maxSegments(double arc)
+{
+	double absArc = fabs(arc);
+	uint maxSeg = m_maxSeg / 4;
+	
+	if(absArc >= 3 * M_PI / 2)
+	{
+		maxSeg = m_maxSeg;
+	}
+	else if(absArc >= M_PI)
+	{
+		maxSeg = 3 * m_maxSeg / 2;
+	}
+	else if(absArc >= M_PI / 2)
+	{
+		maxSeg = m_maxSeg / 2;
+	}
+
+	return maxSeg;
+}
