@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,8 @@
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
-#include "WayPoints.h" 
+#include "Error.h"
+#include "WayPoints.h"
 
 WayPoints::WayPoints(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
@@ -42,6 +43,7 @@ bool WayPoints::add(WayPoint &wp)
 	pRec->setValue("Altitude", wp.altitude());
 	cur.insert();
 	
+	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
 	
 	return true;
@@ -56,6 +58,7 @@ bool WayPoints::delWayPoint(const QString &name)
 	sqls.sprintf("DELETE FROM `WayPoints` WHERE `Name` = '%s'", name.ascii());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }
@@ -85,6 +88,8 @@ bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
 		wp.setCoordinates(lat, lon, alt);
 	}
 
+	Error::verify(exist, Error::SQL_CMD);
+	
 	return exist;
 }
 
@@ -98,7 +103,7 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 	bool found = false;
  
 	// select all
-	cur.select();
+	Error::verify(cur.select(), Error::SQL_CMD);
 
 	while(cur.next())
 	{
@@ -145,6 +150,8 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 			wpList.push_back(wp);
 		}
 	}
+	
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,6 +20,7 @@
  
 #include <qbuffer.h>
 #include <qdatetime.h>
+#include "Error.h"
 #include "FlytecDevice.h"
 extern "C"
 {
@@ -33,7 +34,10 @@ FlytecDevice::FlytecDevice()
 
 void FlytecDevice::setPort(const QString &port)
 {
+	DeviceInfoType devInfo;
+
 	ft_init(port.ascii());
+	Error::verify((ft_deviceInfoRead(&devInfo) == 0), Error::FLYTEC_OPEN);
 }
 
 // memory
@@ -64,6 +68,8 @@ bool FlytecDevice::memoryRead(QByteArray &arr)
 		pageAddr = ft_MemSize - ft_PageSize;
 		success = (ft_memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr)) == 0);
 	}
+	
+	Error::verify(success, Error::FLYTEC_CMD);
 	
 	return success;
 }
@@ -104,6 +110,8 @@ bool FlytecDevice::memoryWrite(QByteArray &arr)
 		ft_updateConfiguration();
 	}
 	
+	Error::verify(success, Error::FLYTEC_CMD);
+	
 	return success;
 }
 
@@ -126,6 +134,8 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 			flightList.push_back(flight);
 		}
 	}
+	
+	Error::verify((flightList.size() > 0), Error::FLYTEC_CMD);
 	
 	return success;
 }
@@ -151,12 +161,15 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 		buff.close();
 	}
 	
+	Error::verify(success, Error::FLYTEC_CMD);
+	
 	return success;
 }
 
 // waypoints
 bool FlytecDevice::add(WayPoint &wp)
 {
+	bool success;
 	ft_WayPointType ftWp;
 	
 	ft_string2ftstring(wp.name().ascii(), ftWp.name);
@@ -164,12 +177,20 @@ bool FlytecDevice::add(WayPoint &wp)
 	ftWp.longitude = wp.longitude();
 	ftWp.altitude = wp.altitude();
 
-	return (ft_wayPointSnd(&ftWp) == 0);
+	success = (ft_wayPointSnd(&ftWp) == 0);
+	Error::verify(success, Error::FLYTEC_CMD);
+	
+	return success;
 }
 
 bool FlytecDevice::delWayPoint(const QString &name)
 {
-	return (ft_wayPointDel(name.ascii()) == 0);
+	bool success;
+	
+	success = (ft_wayPointDel(name.ascii()) == 0);
+	Error::verify(success, Error::FLYTEC_CMD);
+	
+	return success;
 }
 
 bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
@@ -192,6 +213,8 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 			wpList.push_back(wp);
 		}
 	}
+	
+	Error::verify((wpList.size() > 0), Error::FLYTEC_CMD);
 	
 	return success;
 }
@@ -230,6 +253,8 @@ bool FlytecDevice::add(Route &route)
 			}
 		}
 	}
+	
+	Error::verify(success, Error::FLYTEC_CMD);
 	
 	return success;
 }
@@ -272,14 +297,16 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 		}
 	}
 	
+	Error::verify((routeList.size() > 0), Error::FLYTEC_CMD);
+	
 	return success;
 }
 
 bool FlytecDevice::delRoute(const QString &name)
 {
-	ft_routeDel(name.ascii());
-	sleep(1);
-	ft_routeDel(name.ascii());
-		sleep(1);
-	return (ft_routeDel(name.ascii()) == 0);
+	bool success;
+	
+	success = (ft_routeDel(name.ascii()) == 0);
+	
+	return success;
 }

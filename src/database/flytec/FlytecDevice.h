@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -41,7 +41,7 @@ class FlytecDevice: public IGPSDevice
 		
 		bool flightList(Flight::FlightListType &flightList);
 		bool igcFile(uint flightNr, QByteArray &arr);
-		
+
 		bool add(WayPoint &wp);
 		bool delWayPoint(const QString &name);
 		bool wayPointList(WayPoint::WayPointListType &wpList);
