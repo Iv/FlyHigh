@@ -23,7 +23,10 @@
 
 const Error::ErrorType Error::m_errorList[NOF_ERRORS] =
 {
-	"Can not connect to SQL Database.", "Make sure that DB Name = 'flyhigh', UserName = 'flyhigh',\nPassword = 'flyhigh', localhost is reachable, Port = 3306."
+	"Can not connect to SQL Database.", "Make sure that DB Name = 'flyhigh', UserName = 'flyhigh',\nPassword = 'flyhigh', localhost is reachable, Port = 3306.",
+	"Can not execute SQL command.", "Make sure that SQL database is setup correct.",
+	"Can not connect to Flytec device.", "Make sure that the device is connected to the right port,\n and is set to menu mode.",
+	"Can not execute command on Flytec device.", "Make sure that the device is connected to the right port,\n and is set to menu mode."
 };
 
 void Error::show(ErrorIdType error)
@@ -38,7 +41,7 @@ void Error::show(ErrorIdType error)
 
 void Error::verify(bool expression, ErrorIdType error)
 {
-	if(expression)
+	if(!expression)
 	{
 		show(error);
 	}
