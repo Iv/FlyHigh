@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,6 +21,7 @@
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
+#include "Error.h"
 #include "Flights.h" 
 
 Flights::Flights(QSqlDatabase *pDB)
@@ -32,6 +33,8 @@ bool Flights::add(Flight &flight)
 {
 	QSqlCursor cur("Flights");
 	QSqlRecord *pRec;
+	
+	QSqlQuery query(db());
 	
 	// insert record
 	pRec = cur.primeInsert();
@@ -45,8 +48,8 @@ bool Flights::add(Flight &flight)
 	pRec->setValue("Distance", flight.distance());
 	pRec->setValue("Comment", flight.comment());
 	pRec->setValue("IGCFile", flight.igcData());
-	cur.insert();
-
+	
+	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
 
 	return true;
@@ -61,6 +64,7 @@ bool Flights::delFlight(int nr)
 	sqls.sprintf("DELETE FROM `Flights` WHERE `Number` = '%i'", nr);
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Flights");
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }
@@ -108,6 +112,8 @@ bool Flights::flightList(Flight::FlightListType &flightList)
 		}
 	}
 	
+	Error::verify(success, Error::SQL_CMD);
+	
 	return success;
 }
 
@@ -125,6 +131,8 @@ bool Flights::igcFile(uint flightNr, QByteArray &arr)
 	{
 		arr = query.value(IGCFile).toByteArray();
 	}
+	
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }

@@ -39,8 +39,12 @@ int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 	
 	if(res == 0)
 	{
-			res = flytec_ll_recieve(ProductResp, &buff[0], &len);
+		res = flytec_ll_recieve(ProductResp, &buff[0], &len);
+		
+		if(res == 0)
+		{
 			res = memcmp(&buff[0], "PBRSNP", 6);
+		}
 	}
 	
 	/* read the response */
