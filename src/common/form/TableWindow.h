@@ -28,6 +28,7 @@ class TableWindow: public MDIWindow
 		void print();
 		
 	protected:
+		QPrinter& printer();
 		QTable* getTable();
 		void setupHeader(const QStringList &colNameList);
 
