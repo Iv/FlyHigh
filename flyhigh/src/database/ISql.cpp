@@ -169,6 +169,11 @@ bool ISql::flightList(Flight::FlightListType &flightList)
 	return m_pFlights->flightList(flightList);
 }
 
+bool ISql::flightsPerYear(FlightsPerYearListType &fpyList)
+{
+	return m_pFlights->flightsPerYear(fpyList);
+}
+
 bool ISql::igcFile(uint flightNr, QByteArray &arr)
 {
 	return m_pFlights->igcFile(flightNr, arr);

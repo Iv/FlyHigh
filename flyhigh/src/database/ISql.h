@@ -23,6 +23,7 @@
 
 #include <qstring.h>
 #include <qvaluelist.h>
+#include "ContainerDef.h"
 #include "IDataBase.h"
 #include "WayPoint.h"
 #include "Flight.h"
@@ -67,6 +68,7 @@ class ISql: public IDataBase
 		bool flight(int nr, Flight &flight);
 		int newFlightNr();
 		bool flightList(Flight::FlightListType &flightList);
+		bool flightsPerYear(FlightsPerYearListType &fpyList);
 		bool igcFile(uint flightNr, QByteArray &arr);
 		int flightsLastModified();
 		
