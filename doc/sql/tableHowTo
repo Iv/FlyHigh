@@ -9,23 +9,27 @@ innodb_data_file_path=ibdata1:10M:autoextend
 
 # /etc/init.d/mysql restart
 
-create a new user "kflychart" with password "kflychart" from localhost with 
+create a new database flyhigh
+
+create a new user "flyhigh" with password "flyhigh" from localhost with 
 these rights:
 SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, CREATE 
 TEMPORARY TABLES
 
 create initial database
-$ mysql -u kflychart -p < CreateTables.sql
+$ mysql -u flyhigh -p < CreateTables.sql
 Enter password:
 
+
+OTHERS
 backup the database
-$ mysqldump database kflychart -h localhost -u kflychart -p kflychart > kflychart.backup
+$ mysqldump database flyhigh -h localhost -u flyhigh -p flyhigh > flyhigh.backup
 
 restore the database
-$ mysql -u kflychart -p kflychart < kflychart.backup
+$ mysql -u flyhigh -p flyhigh < flyhigh.backup
 Enter password:
 
 remove the database
-$ mysqladmin -u kflychart -p drop kflychart
+$ mysqladmin -u flyhigh -p drop flyhigh
 Enter password:
 
