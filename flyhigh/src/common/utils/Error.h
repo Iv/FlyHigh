@@ -30,6 +30,9 @@ class Error
 		typedef enum ErrorIdType
 		{
 			SQL_OPEN,
+			SQL_CMD,
+			FLYTEC_OPEN,
+			FLYTEC_CMD,
 			NOF_ERRORS
 		};
 	
