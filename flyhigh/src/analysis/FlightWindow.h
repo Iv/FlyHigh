@@ -20,6 +20,7 @@
 #ifndef FlightWindow_h
 #define FlightWindow_h
 
+#include <qprocess.h>
 #include <TableWindow.h>
 #include "FlightPointList.h"
 #include "IDataBase.h"
@@ -45,6 +46,7 @@ class FlightWindow : public TableWindow
 		void plot_speedVsTime();
 		void plot_altVsTime();
 		void plot_varioVsTime();
+		void plot_OLC();
 		void plot_3d();
 		
 	private:
@@ -54,6 +56,7 @@ class FlightWindow : public TableWindow
 		IDataBase *m_pDb;
 		QString m_fileName;
 		GnuPlot m_plotter;
+		QProcess m_gpligc;
 		
 		void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);

@@ -80,6 +80,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	pMenu->insertItem("&Speed vs Time", this, SLOT(plot_speedVsTime()), CTRL+Key_U);
 	pMenu->insertItem("&Alt vs Time", this, SLOT(plot_altVsTime()), CTRL+Key_U);
 	pMenu->insertItem("&Vario vs Time", this, SLOT(plot_varioVsTime()), CTRL+Key_U);
+	pMenu->insertItem("&OLC", this, SLOT(plot_OLC()), CTRL+Key_U);
 	pMenu->insertItem("&3D View", this, SLOT(plot_3d()), CTRL+Key_U);
 	
 	TableWindow::setCaption(caption);
@@ -452,7 +453,7 @@ void FlightWindow::plot_varioVsTime()
 	}
 }
 
-void FlightWindow::plot_3d()
+void FlightWindow::plot_OLC()
 {
 	QByteArray igcData;
 	QString title;
@@ -536,4 +537,34 @@ void FlightWindow::plotFlighPointList(FlightPointList &fpList, const QString& ti
 	}
 	
 	m_plotter.plotXYZ(x, y, z, title);
+}
+
+void FlightWindow::plot_3d()
+{
+	QByteArray arr;
+	QString fileName = "/tmp/track.igc";
+	QFile file;
+	int row;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), arr))
+		{
+			file.setName(fileName);
+				
+			if(file.open(IO_WriteOnly))
+			{
+				file.writeBlock(arr);
+				file.close();
+			
+				// show flight
+				m_gpligc.clearArguments();
+				m_gpligc.addArgument("openGLIGCexplorer");
+				m_gpligc.addArgument(fileName);
+				m_gpligc.start();
+			}
+		}
+	}
 }
