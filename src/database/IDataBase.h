@@ -21,6 +21,8 @@
 #ifndef IDataBase_h
 #define IDataBase_h
 
+#include <qdatetime.h>
+#include <qvaluelist.h>
 #include "Flight.h"
 #include "Route.h"
 #include "WayPoint.h"
@@ -29,6 +31,14 @@ class IDataBase
 {
 	public:
 		typedef enum SourceType{GPSdevice, SqlDB};
+		
+		typedef struct
+		{
+			uint year;
+			uint nFlights;
+			QTime airTime;
+		}FlightsPerYearType;
+		typedef QValueList<FlightsPerYearType> FlightsPerYearListType;
 				
 		IDataBase();
 		virtual ~IDataBase();
@@ -37,6 +47,7 @@ class IDataBase
 		virtual bool delFlight(int nr);
 		virtual int flightsLastModified();
 		virtual bool flightList(Flight::FlightListType &flightList);
+		virtual bool flightsPerYear(FlightsPerYearListType &fpyList);
 		virtual bool igcFile(uint flightNr, QByteArray &arr);
 		
 		// waypoints
