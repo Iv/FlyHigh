@@ -41,7 +41,6 @@ bool WayPoints::add(WayPoint &wp)
 	pRec->setValue("Longitude", wp.longitude());
 	pRec->setValue("Latitude", wp.latitude());
 	pRec->setValue("Altitude", wp.altitude());
-	cur.insert();
 	
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
