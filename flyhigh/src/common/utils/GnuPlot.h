@@ -27,11 +27,13 @@
 #include <qvaluevector.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qdatetime.h>
 
 class GnuPlot
 {
 	public:
 		typedef QValueVector<double> PlotVectorType;
+		typedef QValueVector<QTime> TimeVectorType;
 		
 		GnuPlot();
 		~GnuPlot();
@@ -55,6 +57,7 @@ class GnuPlot
 		// plot vectors
 		void plotX(PlotVectorType &d, const QString &title);
 		void plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title);
+		void plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title);
 		void plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, const QString &title);
 
 		void clear();
@@ -63,12 +66,14 @@ class GnuPlot
 		void setOutput(const QString &name);
 	
 	private:
+		typedef enum {Float, Time}AxisDataType;
 		FILE *m_pGnuPipe;
 		QString m_style;
 		QStringList m_filesToDel;
 		int m_nplots;
 		
 		bool openTmpFile(QFile &file);
+		void setAxisData(const char axis, AxisDataType axisData);
 };
 
 #endif
