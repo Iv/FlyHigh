@@ -69,6 +69,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	}
 	
 	pMenu->insertItem("&Save...", this, SLOT(file_save()));
+	pMenu->insertItem("&Print...", this, SLOT(print()));
 	
 /*	- ground speed / time
 - vario / time
@@ -92,7 +93,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	
 	// header
 	nameList += "Nr";
-	nameList += "Date\n[DD-MM-YYYY]";
+	nameList += "Date\n[DD.MM.YYYY]";
 	nameList += "Time\n[hh:mm:ss]";
 	nameList += "Duration\n[hh:mm:ss]";
 	nameList += "Glider";
