@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+	remove|upgrade|remove-in-favour|deconfigure-in-favour)
+		#
+		# do here pre removes
+		#
+		;;
+	failed-upgrade)
+		;;
+esac
+
+exit 0
