@@ -94,7 +94,7 @@ CREATE TABLE `Routes` (
   `WayPoint28` varchar(16) default NULL,
   `WayPoint29` varchar(16) default NULL,
   PRIMARY KEY  (`Name`)
-) TYPE=MyISAM;
+) TYPE=InnoDB;
 
 -- --------------------------------------------------------
 
