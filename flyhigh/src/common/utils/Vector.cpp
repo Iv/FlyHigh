@@ -40,7 +40,7 @@ void Vector2::set(double a, double b)
 	m_x = a;
 	m_y = b;
 }
-	
+
 void Vector2::setCircle(double r, double rad)
 {
 	m_x = r * cos(rad);
