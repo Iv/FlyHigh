@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,6 +20,7 @@
  
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
+#include "Error.h"
 #include "Routes.h"
 
 Routes::Routes(QSqlDatabase *pDB)
@@ -49,8 +50,7 @@ bool Routes::add(Route &route)
 		pRec->setValue(wpField, wpName);
 	}
 
-	cur.insert();
-	
+	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Routes");
 	
 	return true;
@@ -65,6 +65,7 @@ bool Routes::delRoute(const QString &name)
 	sqls.sprintf("DELETE FROM `Routes` WHERE `Name` = '%s'", name.ascii());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Routes");
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }
@@ -103,6 +104,8 @@ bool Routes::route(const QString &name, Route &route)
 		}
 	}
 	
+	Error::verify(success, Error::SQL_CMD);
+	
 	return success;
 }
 
@@ -139,6 +142,8 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			routeList.push_back(route);
 		}
 	}
+	
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }

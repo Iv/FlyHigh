@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,6 +21,7 @@
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
+#include "Error.h"
 #include "Gliders.h" 
 
 Gliders::Gliders(QSqlDatabase *pDB)
@@ -37,7 +38,7 @@ bool Gliders::add(Glider &glider)
 	pRec = cur.primeInsert();
 	pRec->setValue("Manufacturer", glider.manufacturer());
 	pRec->setValue("Model", glider.model());
-	cur.insert();
+	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	
 	DataBaseSub::setLastModified("'Gliders'");
 
@@ -61,6 +62,8 @@ bool Gliders::glider(const QString &model, Glider &glider)
 		glider.setModel(cur.value("Model").toString());
 	}
 
+	Error::verify(exist, Error::SQL_CMD);
+	
 	return exist;
 }
 
@@ -83,6 +86,8 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 			gliderList.push_back(glider);
 		}
 	}
+	
+	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
 }
