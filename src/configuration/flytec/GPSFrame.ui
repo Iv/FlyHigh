@@ -1,0 +1,176 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>GPSFrame</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>GPSFrame</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>424</width>
+            <height>390</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>GPS</string>
+    </property>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_GridSys</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>40</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Grid System</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>dd'mm.mm</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>dd.dddd</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>dd'mm''ss</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>UTM</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>Swiss Grid</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_GridSys</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>214</x>
+                <y>34</y>
+                <width>151</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_UTCoffset</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>90</y>
+                <width>150</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>UTC Offset</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_UTCoffsetUnit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>340</x>
+                <y>90</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[h]</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_GeoID</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>140</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Geodic ID</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_UTCoffset</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>90</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>13</number>
+        </property>
+        <property name="minValue">
+            <number>-13</number>
+        </property>
+        <property name="lineStep">
+            <number>1</number>
+        </property>
+        <property name="value">
+            <number>0</number>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_GeoID</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>140</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="specialValueText">
+            <string>WGS84</string>
+        </property>
+        <property name="maxValue">
+            <number>192</number>
+        </property>
+        <property name="minValue">
+            <number>1</number>
+        </property>
+        <property name="lineStep">
+            <number>1</number>
+        </property>
+        <property name="value">
+            <number>1</number>
+        </property>
+    </widget>
+</widget>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

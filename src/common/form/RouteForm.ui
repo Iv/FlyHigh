@@ -1,0 +1,261 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>RouteForm</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>RouteForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>589</width>
+            <height>498</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Route</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonUp</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>520</x>
+                <y>190</y>
+                <width>50</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>up</string>
+        </property>
+    </widget>
+    <widget class="QListBox">
+        <property name="name">
+            <cstring>listBoxRouteWayPoints</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>300</x>
+                <y>70</y>
+                <width>210</width>
+                <height>350</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QListBox">
+        <property name="name">
+            <cstring>listBoxDBWayPoints</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>70</y>
+                <width>210</width>
+                <height>350</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonToRight</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>250</x>
+                <y>230</y>
+                <width>40</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>&gt;</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonDown</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>520</x>
+                <y>270</y>
+                <width>50</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>down</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>30</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Name</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonRemove</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>520</x>
+                <y>230</y>
+                <width>50</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>X</string>
+        </property>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>100</x>
+                <y>450</y>
+                <width>476</width>
+                <height>33</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <spacer>
+                <property name="name">
+                    <cstring>Horizontal Spacing2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonOk</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;OK</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+                <property name="default">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonCancel</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;Cancel</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEditName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>80</x>
+                <y>30</y>
+                <width>160</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="maxLength">
+            <number>16</number>
+        </property>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonToRight</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>toRight()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonDown</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>down()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonUp</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>up()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRemove</sender>
+        <signal>clicked()</signal>
+        <receiver>RouteForm</receiver>
+        <slot>remove()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>toRight()</slot>
+    <slot>up()</slot>
+    <slot>down()</slot>
+    <slot>remove()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
