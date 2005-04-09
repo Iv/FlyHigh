@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -40,6 +40,7 @@ void IGCFileParser::parse(QByteArray &igcData)
 	debugFile.close();
 #endif
 
+	m_flightPointList.clear();
 	buff.setBuffer(igcData);
 
 	if(buff.open(IO_ReadOnly))
