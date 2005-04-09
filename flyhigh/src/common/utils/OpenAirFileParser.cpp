@@ -82,6 +82,7 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			else if((str.at(0) == '*') && (str.at(1) == '\r'))
 			{
 				m_airspaceList.push_back(airspace);
+				airspace.edgePointList().clear();
 			}
 		}
 		buff.close();
@@ -161,7 +162,7 @@ V X=46:09:46 N   008:50:13 E
 	if(type == 'D')
 	{
 			pos = str.find('=') + 1;
-			m_arcDir = (str.at(pos) == '-'); // math direction
+			m_arcDir = (str.at(pos) == '+'); // math direction
 	}
 	else if(type == 'X')
 	{
@@ -221,25 +222,27 @@ DB  45:53:03 N 008:52:59 E,  45:55:49 N 008:46:20 E*/
 	airspace.edgePointList().push_back(startPt);
 	
 	// 1st point
-	a *= 1 / cos(segArc / 2); // scale
-	a.rot(segArc / 2);
-	resVec = a + centerVec;
+	//a *= 1 / cos(segArc / 2); // scale
+/*	resVec = a;
+	resVec.rot(segArc / 2);
+	resVec += centerVec;
 	pt.lat = resVec.x();
 	pt.lon = resVec.y();
 	airspace.edgePointList().push_back(pt);
-	
+	*/
 	// other points
-	for(segNr=1; segNr<maxSeg; segNr++)
+	for(segNr=0; segNr<maxSeg; segNr++)
 	{
-		a.rot(segArc);
-		resVec = a + centerVec;
+		resVec = a;
+		resVec.rot(segArc / 2 + segNr * segArc);
+		resVec += centerVec;
 		pt.lat = resVec.x();
 		pt.lon = resVec.y();
 		airspace.edgePointList().push_back(pt);
 	}
 	
 	// end point
-	airspace.edgePointList().push_back(endPt);
+//	airspace.edgePointList().push_back(endPt);
 }
 
 void OpenAirFileParser::parseCircle(char *record, AirSpace &airspace)
@@ -267,32 +270,19 @@ DC 2.00
 	
 	segArc = 2 * M_PI / m_maxSeg;
 	radius = str.toDouble() * nautmil;
-	startVec.setCircle(radius, 0.0);
+	startVec.setCircle(radius, 0);
 	startVec *= 1 / cos(segArc / 2); // scale
-	
-	// 1st point
-	a = startVec;
-	resVec = a + centerVec;
-	pt.lat = resVec.x();
-	pt.lon = resVec.y();
-	airspace.edgePointList().push_back(pt);
 
-	// other points
-	for(segNr=1; segNr<m_maxSeg; segNr++)
+	// points
+	for(segNr=0; segNr<=m_maxSeg; segNr++)
 	{
-		a.rot(segArc);
-		resVec = a + centerVec;
+		resVec = startVec;
+		resVec.rot(segNr*segArc);
+		resVec += centerVec;
 		pt.lat = resVec.x();
 		pt.lon = resVec.y();
 		airspace.edgePointList().push_back(pt);
 	}
-
-	// last point
-	a = startVec;
-	resVec = a + centerVec;
-	pt.lat = resVec.x();
-	pt.lon = resVec.y();
-	airspace.edgePointList().push_back(pt);
 }
 
 bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &pt)
