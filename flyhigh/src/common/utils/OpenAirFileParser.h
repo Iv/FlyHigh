@@ -23,6 +23,7 @@
 
 #include <qcstring.h>
 #include "AirSpace.h"
+#include "Vector.h"
 
 class OpenAirFileParser
 {
