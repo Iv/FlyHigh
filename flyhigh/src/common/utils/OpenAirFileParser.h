@@ -24,6 +24,7 @@
 #include <qcstring.h>
 #include "AirSpace.h"
 #include "Vector.h"
+#include "WayPoint.h"
 
 class OpenAirFileParser
 {
@@ -35,7 +36,7 @@ class OpenAirFileParser
 		
 	private:
 		AirSpace::AirSpaceListType m_airspaceList;
-		AirSpace::EdgePointType m_arcCenter;
+		WayPoint m_arcCenter;
 		bool m_arcDir;
 		static const uint m_maxSeg;
 		
@@ -47,7 +48,7 @@ class OpenAirFileParser
 		void parsePoint(char *record, AirSpace &airspace);
 		void parseArc(char *record, AirSpace &airspace);
 		void parseCircle(char *record, AirSpace &airspace);
-		bool parseCoordinate(char *record, AirSpace::EdgePointType &pt);
+		bool parseCoordinate(char *record, WayPoint &pt);
 		
 		double deltaArc(double arcA, double arcB);
 		uint maxSegments(double arc);
