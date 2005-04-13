@@ -26,7 +26,7 @@
 
 #define MAX_REC_SIZE 100
 
-const uint OpenAirFileParser::m_maxSeg = 10;
+const uint OpenAirFileParser::m_maxSeg = 16;
 
 OpenAirFileParser::OpenAirFileParser()
 {
@@ -163,7 +163,7 @@ void OpenAirFileParser::parseVarAssign(char *record)
 void OpenAirFileParser::parsePoint(char *record, AirSpace &airspace)
 {
 // DP 46:57:47 N 007:16:59 E
-	AirSpace::EdgePointType pt;
+	WayPoint pt;
 	
 	parseCoordinate(record, pt);
 	airspace.edgePointList().push_back(pt);
@@ -171,13 +171,14 @@ void OpenAirFileParser::parsePoint(char *record, AirSpace &airspace)
 
 void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
 {
-	AirSpace::EdgePointType pt;
-	AirSpace::EdgePointType startPt;
-	AirSpace::EdgePointType endPt;
+	WayPoint pt;
+	WayPoint startPt;
+	WayPoint endPt;
 	Vector2 a;
 	Vector2 b;
-	Vector2 resVec;
-	Vector2 center(m_arcCenter.lat, m_arcCenter.lon);
+	Vector2 origVec;
+	Vector2 rotVec;
+	Vector2 center(m_arcCenter.latitude(), m_arcCenter.longitude());
 	QString str = record;
 	double arcA;
 	double arcB;
@@ -189,12 +190,12 @@ void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
 
 	// vector a
 	parseCoordinate(record, startPt);
-	a.set(startPt.lat, startPt.lon);
+	a.set(startPt.latitude(), startPt.longitude());
 	a -= center;
 	
 	// vector b
 	parseCoordinate(record+str.find(',')+1, endPt);
-	b.set(endPt.lat, endPt.lon);
+	b.set(endPt.latitude(), endPt.longitude());
 	b -= center;
 
 	// delta arc
@@ -206,71 +207,53 @@ void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
 	// mid radius
 	midR = (a.length() + b.length()) / 2.0;
 	segArc = arcAB / maxSeg;
-	resVec.setCircle(midR, a.arc());
+	origVec.setCircle(midR, a.arc());
 	
 	// points
 	for(segNr=1; segNr<maxSeg; segNr++)
 	{
-		a = resVec;
-		a.rot(segNr * segArc);
-		a += center;
-		pt.lat = a.x();
-		pt.lon = a.y();
+		rotVec = origVec;
+		rotVec.rot(segNr * segArc);
+		rotVec += center;
+		pt.setCoordinates(rotVec.x(), rotVec.y());
 		airspace.edgePointList().push_back(pt);
 	}
 }
 
 void OpenAirFileParser::parseCircle(char *record, AirSpace &airspace)
 {
-/*
-V X=58:16:18 N   026:29:46 E 
-DC 2.00    
-*/
-	Vector2 startVec;
-	Vector2 a;
-	Vector2 resVec;
-	Vector2 center(m_arcCenter.lat, m_arcCenter.lon);
-	AirSpace::EdgePointType pt;
+	Vector2 origVec;
+	Vector2 rotVec;
+	Vector2 center(m_arcCenter.latitude(), m_arcCenter.longitude());
+	WayPoint pt;
 	QString str = record;
-	double arc;
 	double segArc;
-	double radius;
-	const double nautmil = 1.852;
+	double radiusArc;
 	uint segNr;
-	int begin;
-	int end;
-	
-	begin = str.find(' ') + 1;
-	end = str.find('\r');
-	str = str.mid(begin, end-begin);
 	
 	segArc = 2 * M_PI / m_maxSeg;
-	radius = str.toDouble() * nautmil;
-//	startVec.setCircle(radius, 0);
-	arc = (radius * nautmil) / 6371.0;
-	arc *= 180.0 / M_PI;
-	
-	startVec.set(arc, 0);
-	startVec *= 1 / cos(segArc / 2); // scale
+	radiusArc = WayPoint::arc(WayPoint::meters(atof(record)));
+	origVec.set(radiusArc, 0);
 
 	// points
 	for(segNr=0; segNr<=m_maxSeg; segNr++)
 	{
-		resVec = startVec;
-		resVec.rot(segNr*segArc);
-		resVec += center;
-		pt.lat = resVec.x();
-		pt.lon = resVec.y();
+		rotVec = origVec;
+		rotVec.rot(segNr*segArc);
+		rotVec += center;
+		pt.setCoordinates(rotVec.x(), rotVec.y());
 		airspace.edgePointList().push_back(pt);
 	}
 }
 
-bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &pt)
+bool OpenAirFileParser::parseCoordinate(char *record, WayPoint &pt)
 {
 	char lat[15];
 	char NS[5];
 	char lon[15];
 	char EW[5];
+	double latitude = 0.0;
+	double longitude = 0.0;
 	int deg;
 	int min;
 	int sec;
@@ -284,11 +267,11 @@ bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &p
 		
 		if(success)
 		{
-			pt.lat = deg + min / 60.0 + sec / 3600.0;
+			latitude = deg + min / 60.0 + sec / 3600.0;
 			
 			if(strcmp(NS, "S") == 0)
 			{
-				pt.lat *= -1;
+				latitude *= -1;
 			}
 		}
 		
@@ -296,14 +279,16 @@ bool OpenAirFileParser::parseCoordinate(char *record, AirSpace::EdgePointType &p
 		
 		if(success)
 		{
-			pt.lon = deg + min / 60.0 + sec / 3600.0;
+			longitude = deg + min / 60.0 + sec / 3600.0;
 			
 			if(strcmp(EW, "W") == 0)
 			{
-				pt.lon *= -1;
+				longitude *= -1;
 			}
 		}
 	}
+	
+	pt.setCoordinates(latitude, longitude);
 	
 	return success;
 }
