@@ -64,9 +64,9 @@ void AirSpace::setAirspaceClass(const QString &airspaceClass)
 	m_airspaceClass = airspaceClass;
 }
 
-AirSpace::EdgePointListType& AirSpace::edgePointList()
+WayPoint::WayPointListType& AirSpace::edgePointList()
 {
-	return m_edgePointList;
+	return m_wpList;
 }
 
 AirSpace& AirSpace::operator=(const AirSpace &airspace)
@@ -75,7 +75,7 @@ AirSpace& AirSpace::operator=(const AirSpace &airspace)
 	m_airspaceClass = airspace.m_airspaceClass;
 	m_high = airspace.m_high;
 	m_low = airspace.m_low;
-	m_edgePointList = airspace.m_edgePointList;
+	m_wpList = airspace.m_wpList;
 	
 	return *this;
 }
