@@ -22,18 +22,19 @@
 
 #include <qstring.h>
 #include <qvaluevector.h>
+#include "WayPoint.h"
 
 class AirSpace
 {
 	public:
 		typedef QValueVector<AirSpace> AirSpaceListType;
-		typedef struct
+/*		typedef struct
 		{
 			double lat;
 			double lon;
 		}EdgePointType;
 		typedef QValueVector<EdgePointType> EdgePointListType;
-
+*/
 		AirSpace();
 
 		const QString& name();
@@ -44,7 +45,7 @@ class AirSpace
 		void setLow(const QString &low);
 		const QString& airspaceClass();
 		void setAirspaceClass(const QString &airspaceClass);
-		EdgePointListType& edgePointList();
+		WayPoint::WayPointListType& edgePointList();
 		
 		AirSpace& operator=(const AirSpace &airspace);
 	
@@ -53,7 +54,7 @@ class AirSpace
 		QString m_airspaceClass;
 		QString m_high;
 		QString m_low;
-		EdgePointListType m_edgePointList;
+		WayPoint::WayPointListType m_wpList;
 };
 
 #endif
