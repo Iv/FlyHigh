@@ -128,7 +128,7 @@ double WayPoint::arc(uint distance)
 	return (a * 180.0 / M_PI);
 }
 
-double WayPoint::meters(double nautmil)
+uint WayPoint::meters(double nautmil)
 {
-	return 1852.0 * nautmil;
+	return (uint)round(1852.0 * nautmil);
 }

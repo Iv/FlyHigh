@@ -53,7 +53,7 @@ class WayPoint
 		uint distance(WayPoint &wp);
 		static uint distance(WayPoint &wp1, WayPoint &wp2);
 		static double arc(uint distance);
-		static double meters(double nautmil);
+		static uint meters(double nautmil);
 		
 		WayPoint& operator=(const WayPoint &wp);
 		
