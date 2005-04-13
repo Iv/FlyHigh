@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,12 +24,18 @@
 #include <qstring.h>
 #include <qvaluevector.h>
 
+/****************************************
+COMMON
+distance in meters, arc in degrees
+****************************************/
+
 class WayPoint
 {
 	public:
 		typedef QValueVector<WayPoint> WayPointListType;
 		typedef QValueVector<int> WayPointIdListType;
 		static const uint startLandRadius; // in meters
+		static const double earthRadius; // in meters
 		
 		WayPoint();
 
@@ -39,13 +45,15 @@ class WayPoint
 		void setDescription(const QString &desc);
 		void setWayPoint(const WayPoint &wp);
 		// latitude and longitude are in WGS84 (degree)
-		void setCoordinates(double lat, double lon, int alt);
+		void setCoordinates(double lat, double lon, int alt=0);
 		double latitude();
 		double longitude();
 		int altitude();
 		
-		// distance to an other WayPoint in meters
 		uint distance(WayPoint &wp);
+		static uint distance(WayPoint &wp1, WayPoint &wp2);
+		static double arc(uint distance);
+		static double meters(double nautmil);
 		
 		WayPoint& operator=(const WayPoint &wp);
 		
