@@ -23,6 +23,7 @@
 
 #include <qstring.h>
 
+class QWidget;
 class AirSpace;
 class AirSpaceFormImpl;
 
@@ -32,7 +33,10 @@ class IAirSpaceForm
 		IAirSpaceForm(QWidget* parent, const QString &caption, AirSpace *pAirSpace);
 		~IAirSpaceForm();
 	
+	void show();
 	bool exec();
+	void setModal(bool modal);
+	void setAirSpace(AirSpace *pAirSpace);
 		
 	private:
 		AirSpaceFormImpl *m_pAirSpaceForm;
