@@ -31,14 +31,24 @@ class AirSpaceFormImpl: public AirSpaceForm
 	
 	public:
 		AirSpaceFormImpl(QWidget* parent, const QString &caption, AirSpace *pAirSpace);
+
+		void setAirSpace(AirSpace *pAirSpace);
 		
+	protected slots:
+		void tableChanged(int col, int row);
+
 	protected:
+		void closeEvent(QCloseEvent * e);
 		void paintEvent(QPaintEvent *pEvent);
 	
 	private:
 		enum Fields{Use, Longitude, Latitude};
 		
-		void setAirSpace(AirSpace *pAirSpace);
+		QRect m_drawRect;
+		AirSpace *m_pAirSpace;
+		
+		void clearEdgePointTable();
+		void scaleEdgePts(QPointArray &edgePts, double sx, double sy);
 };
 
 #endif
