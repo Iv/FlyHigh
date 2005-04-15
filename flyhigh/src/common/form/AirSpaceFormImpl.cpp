@@ -19,6 +19,7 @@
  ***************************************************************************/
  
 #include <qbrush.h>
+#include <qtable.h>
 #include <qheader.h>
 #include <qpainter.h>
 #include <qtable.h>
@@ -27,7 +28,8 @@
 #include "AirSpaceFormImpl.h"
 
 AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirSpace *pAirSpace)
-	:AirSpaceForm(parent, caption)
+	:AirSpaceForm(parent, caption),
+	m_drawRect(290, 10, 350, 350)
 {
 	QHeader *pHeader;
 	
@@ -48,47 +50,134 @@ AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirS
 
 void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 {
-	QTableItem *pTabItem;
-	uint sentNr;
-	uint maxSent = 1;
+	QString str;
+	QCheckTableItem *pTabItem;
+	uint ptNr;
+	uint maxPts;
 	
 	if(pAirSpace != NULL)
 	{
-		textEditComment->setText("Hallo");
+		clearEdgePointTable();
+		m_pAirSpace = pAirSpace;
+		AirSpaceForm::setCaption(m_pAirSpace->name());
 		
-		pTabItem = new QCheckTableItem(tableEdgePoints, "");
+		maxPts = m_pAirSpace->edgePointList().size();
 		
-		for(sentNr=0; sentNr<maxSent; sentNr++)
+		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
-			tableEdgePoints->insertRows(sentNr);
-			tableEdgePoints->setItem(sentNr, Use, pTabItem);
+			tableEdgePoints->insertRows(ptNr);
+			pTabItem = new QCheckTableItem(tableEdgePoints, "");
+			pTabItem->setChecked(true);
+			tableEdgePoints->setItem(ptNr, Use, pTabItem);
+			
+			str.sprintf("%.5f", m_pAirSpace->edgePointList().at(ptNr).longitude());
+			tableEdgePoints->setText(ptNr, Longitude, str);
+			
+			str.sprintf("%.5f", m_pAirSpace->edgePointList().at(ptNr).latitude());
+			tableEdgePoints->setText(ptNr, Latitude, str);
 		}
-		
+		repaint();
 	}
+}
+
+void AirSpaceFormImpl::tableChanged(int row, int col)
+{
+	repaint();
+}
+
+void AirSpaceFormImpl::closeEvent(QCloseEvent * e)
+{
+	// prevent from closing
 }
 
 void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 {
 	QPainter paint(this);
-
-	QBrush b1(Qt::blue);
-	QBrush b2(Qt::green, Qt::Dense6Pattern); // green 12% fill
-	QBrush b3(Qt::NoBrush); // void brush
-	QBrush b4(Qt::CrossPattern); // black cross pattern
-
-	paint.setPen(Qt::red);
-	paint.setBrush(b1);
-	paint.drawRect(290, 100, 350, 350);
-	/*
-	paint.setBrush( b2 );
-	paint.drawRoundRect( 10, 150, 200, 100, 20, 20 );
-	paint.setBrush( b3 );
-	paint.drawEllipse( 250, 10, 200, 100 );
-	paint.setBrush( b4 );
-	paint.drawPie( 250, 150, 200, 100, 45*16, 90*16 );
-	*/
+	QPointArray edgePts;
+	QRect boundRect;
+	QCheckTableItem *pTabItem;
+	uint ptNr;
+	uint maxPts;
+	uint nPts = 0;
+	int lat;
+	int lon;
+	int dx;
+	int dy;
+	double sx;
+	double sy;
+	
+	// fill points to point array
+	maxPts = m_pAirSpace->edgePointList().size();
+	edgePts.resize(maxPts);
+		
+	for(ptNr=0; ptNr<maxPts; ptNr++)
+	{
+		pTabItem = (QCheckTableItem*)tableEdgePoints->item(ptNr, Use);
+	
+		if(pTabItem->isChecked())
+		{
+			lat = (int)(m_pAirSpace->edgePointList().at(ptNr).longitude() * 1000);
+			lon = -(int)(m_pAirSpace->edgePointList().at(ptNr).latitude() * 1000); // y axis is inverse
+			edgePts.setPoint(nPts, lat, lon);
+			nPts++;
+		}
+	}
+	
+	edgePts.resize(nPts);
+	
+	// calc translation and scale
+	boundRect = edgePts.boundingRect();
+	dx = boundRect.left() - m_drawRect.left();
+	dy = boundRect.top() - m_drawRect.top();
+	sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
+	sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
+	
+	// translate and scale to draw rect
+	edgePts.translate(-boundRect.left(), -boundRect.top());
+	scaleEdgePts(edgePts, sx, sy);
+	edgePts.translate(m_drawRect.left(), m_drawRect.top());
+	
+	// draw
+	paint.setPen(Qt::black);
+	paint.drawPolyline(edgePts);
 	
 	AirSpaceForm::paintEvent(pEvent);
+}
+
+void AirSpaceFormImpl::clearEdgePointTable()
+{
+	int rowNr;
+	int maxRows;
+	
+	maxRows = tableEdgePoints->numRows();
+	
+	for(rowNr=0; rowNr<maxRows; rowNr++)
+	{
+		tableEdgePoints->removeRow(0);
+	}
+}
+
+void AirSpaceFormImpl::scaleEdgePts(QPointArray &edgePts, double sx, double sy)
+{
+	uint ptNr;
+	uint maxPts;
+	double scale;
+	
+	if(sx > sy)
+	{
+		scale = sx;
+	}
+	else
+	{
+		scale = sy;
+	}
+	
+	maxPts = edgePts.size();
+	
+	for(ptNr=0; ptNr<maxPts; ptNr++)
+	{
+		edgePts[ptNr] /= scale;
+	}
 }
 
 #include "AirSpaceFormImpl.moc"
