@@ -28,13 +28,7 @@ class AirSpace
 {
 	public:
 		typedef QValueVector<AirSpace> AirSpaceListType;
-/*		typedef struct
-		{
-			double lat;
-			double lon;
-		}EdgePointType;
-		typedef QValueVector<EdgePointType> EdgePointListType;
-*/
+
 		AirSpace();
 
 		const QString& name();
