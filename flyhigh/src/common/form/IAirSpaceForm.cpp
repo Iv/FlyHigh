@@ -34,7 +34,22 @@ IAirSpaceForm::~IAirSpaceForm()
 	delete m_pAirSpaceForm;
 }
 
+void IAirSpaceForm::show()
+{
+	m_pAirSpaceForm->show();
+}
+
 bool IAirSpaceForm::exec()
 {
 	return (m_pAirSpaceForm->exec() == QDialog::Accepted);
+}
+
+void IAirSpaceForm::setModal(bool modal)
+{
+	m_pAirSpaceForm->setModal(modal);
+}
+
+void IAirSpaceForm::setAirSpace(AirSpace *pAirSpace)
+{
+	m_pAirSpaceForm->setAirSpace(pAirSpace);
 }
