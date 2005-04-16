@@ -308,6 +308,7 @@ void FlightWindow::file_AddToSqlDB()
 		if(newFlightForm.exec())
 		{
 			ISql::pInstance()->add(flight);
+			flight.setNumber(row); // restore original track nr or gps will be confused
 			setFlightToRow(row, flight);
 		}
 	}
