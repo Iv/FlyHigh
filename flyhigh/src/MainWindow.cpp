@@ -75,6 +75,7 @@ MainWindow::MainWindow()
 	pMenu->insertItem("&Routes (GPS)", this, SLOT(routes_fromGPS()));
 	pMenu->insertItem("&Airspaces (DB)", this, SLOT(airspaces_fromSQL()));
 	pMenu->insertItem("&Airspaces (GPS)", this, SLOT(airspaces_fromGPS()));
+	pMenu->insertItem("&Airspaces (File)", this, SLOT(airspaces_fromFile()));
 
 	// Menu Configuration
 	pMenu = new QPopupMenu(this);
@@ -202,6 +203,14 @@ void MainWindow::airspaces_fromSQL()
 void MainWindow::airspaces_fromGPS()
 {
 	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from GPS", WDestructiveClose, IDataBase::GPSdevice);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::airspaces_fromFile()
+{
+	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from OpenAirTextFile", WDestructiveClose, IDataBase::File);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
