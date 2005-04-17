@@ -37,7 +37,7 @@ class Routes: public DataBaseSub
 		bool routeList(Route::RouteListType &routeList);
 		
 	private:
-		enum Elements{Name, MaxWayPoints=30};
+		enum Elements{Name, WayPoint0, MaxWayPoints=30};
 };
 
 #endif
