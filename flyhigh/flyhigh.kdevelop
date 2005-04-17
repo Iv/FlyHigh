@@ -14,7 +14,7 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <ignoreparts>
       <part>KDevBookmarks</part>
       <part>KDevClearCase</part>
@@ -29,7 +29,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/common/form/libform.a</activetarget>
+      <activetarget>src/preparation/libpreparation.a</activetarget>
       <useconfiguration>debug</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
@@ -176,11 +176,11 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <programargs/>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -219,6 +219,11 @@
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
     <references/>
+    <designerintegration>
+      <qtdesigner>
+        <implementation class="CTRFormImpl" path="/home/grafal/projects/flyhigh/src/common/form/CTRForm.ui" implementationpath="/home/grafal/projects/flyhigh/src/common/form/CTRFormImpl.h" />
+      </qtdesigner>
+    </designerintegration>
   </kdevcppsupport>
   <kdevcvsservice>
     <recursivewhenupdate>true</recursivewhenupdate>
