@@ -23,6 +23,7 @@
 
 #include <qdatetime.h>
 #include "ContainerDef.h"
+#include "AirSpace.h"
 #include "Flight.h"
 #include "Route.h"
 #include "WayPoint.h"
@@ -54,6 +55,12 @@ class IDataBase
 		virtual bool route(const QString &name, Route &route);
 		virtual int routesLastModified();
 		virtual bool routeList(Route::RouteListType &routeList);
+		
+		virtual bool add(AirSpace &airspace);
+		virtual bool delAirSpace(const QString &name);
+		virtual bool airspace(const QString &name, AirSpace &airspace);
+		virtual int airspacesLastModified();
+		virtual bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 };
 
 #endif

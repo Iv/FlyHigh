@@ -98,3 +98,28 @@ bool IDataBase::routeList(Route::RouteListType &routeList)
 {
 	return false;
 }
+
+bool IDataBase::add(AirSpace &airspace)
+{
+	return false;
+}
+
+bool IDataBase::delAirSpace(const QString &name)
+{
+	return false;
+}
+
+bool IDataBase::airspace(const QString &name, AirSpace &airspace)
+{
+	return false;
+}
+
+int IDataBase::airspacesLastModified()
+{
+	return 0;
+}
+
+bool IDataBase::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+{
+	return false;
+}
