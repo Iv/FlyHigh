@@ -34,5 +34,5 @@ shellrc_DATA = flyhighui.rc
 
 SUBDIRS = configuration common database analysis images preparation
 flyhigh_SOURCES = main.cpp MainWindow.h MainWindow.cpp
-kde_icon_KDEICON =  5020.png document.xpm polare.png
+kde_icon_KDEICON = 5020.png document.xpm polare.png
 
