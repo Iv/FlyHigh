@@ -92,7 +92,7 @@ bool Routes::route(const QString &name, Route &route)
 			
 			for(wpNr=0; wpNr<MaxWayPoints; wpNr++)
 			{
-				wpName = query.value(wpNr+1).toString();
+				wpName = query.value(WayPoint0+wpNr).toString();
 				
 				if(wpName == "")
 				{
@@ -131,7 +131,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			
 			for(wpNr=0; wpNr<MaxWayPoints; wpNr++)
 			{
-				wpName = query.value(wpNr+1).toString();
+				wpName = query.value(WayPoint0+wpNr).toString();
 				
 				if(wpName == "")
 				{
