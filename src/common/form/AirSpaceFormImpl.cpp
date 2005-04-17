@@ -54,13 +54,13 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 	QCheckTableItem *pTabItem;
 	uint ptNr;
 	uint maxPts;
+
+	m_pAirSpace = pAirSpace;
+	tableEdgePoints->setNumRows(0); // clear table
 	
 	if(pAirSpace != NULL)
 	{
-		tableEdgePoints->setNumRows(0); // clear table
-		m_pAirSpace = pAirSpace;
 		AirSpaceForm::setCaption(m_pAirSpace->name());
-		
 		maxPts = m_pAirSpace->edgePointList().size();
 		
 		for(ptNr=0; ptNr<maxPts; ptNr++)
@@ -106,40 +106,43 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	double sx;
 	double sy;
 	
-	// fill points to point array
-	maxPts = m_pAirSpace->edgePointList().size();
-	edgePts.resize(maxPts);
-		
-	for(ptNr=0; ptNr<maxPts; ptNr++)
+	if(m_pAirSpace != NULL)
 	{
-		pTabItem = (QCheckTableItem*)tableEdgePoints->item(ptNr, Use);
-	
-		if(pTabItem->isChecked())
+		// fill points to point array
+		maxPts = m_pAirSpace->edgePointList().size();
+		edgePts.resize(maxPts);
+			
+		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
-			lat = (int)(m_pAirSpace->edgePointList().at(ptNr).longitude() * 1000);
-			lon = -(int)(m_pAirSpace->edgePointList().at(ptNr).latitude() * 1000); // y axis is inverse
-			edgePts.setPoint(nPts, lat, lon);
-			nPts++;
+			pTabItem = (QCheckTableItem*)tableEdgePoints->item(ptNr, Use);
+		
+			if(pTabItem->isChecked())
+			{
+				lat = (int)(m_pAirSpace->edgePointList().at(ptNr).longitude() * 1000);
+				lon = -(int)(m_pAirSpace->edgePointList().at(ptNr).latitude() * 1000); // y axis is inverse
+				edgePts.setPoint(nPts, lat, lon);
+				nPts++;
+			}
 		}
+		
+		edgePts.resize(nPts);
+		
+		// calc translation and scale
+		boundRect = edgePts.boundingRect();
+		dx = boundRect.left() - m_drawRect.left();
+		dy = boundRect.top() - m_drawRect.top();
+		sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
+		sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
+		
+		// translate and scale to draw rect
+		edgePts.translate(-boundRect.left(), -boundRect.top());
+		scaleEdgePts(edgePts, sx, sy);
+		edgePts.translate(m_drawRect.left(), m_drawRect.top());
+		
+		// draw
+		paint.setPen(Qt::black);
+		paint.drawPolyline(edgePts);
 	}
-	
-	edgePts.resize(nPts);
-	
-	// calc translation and scale
-	boundRect = edgePts.boundingRect();
-	dx = boundRect.left() - m_drawRect.left();
-	dy = boundRect.top() - m_drawRect.top();
-	sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
-	sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
-	
-	// translate and scale to draw rect
-	edgePts.translate(-boundRect.left(), -boundRect.top());
-	scaleEdgePts(edgePts, sx, sy);
-	edgePts.translate(m_drawRect.left(), m_drawRect.top());
-	
-	// draw
-	paint.setPen(Qt::black);
-	paint.drawPolyline(edgePts);
 	
 	AirSpaceForm::paintEvent(pEvent);
 }
