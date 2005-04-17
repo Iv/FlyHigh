@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `AirSpaces` (
   `Low` varchar(16) NOT NULL default '',
   `High` varchar(16) NOT NULL default '',
   `Class` varchar(16) NOT NULL default '',
-  `IGCFile` mediumblob,
+  `EdgePoints` mediumblob,
   PRIMARY KEY  (`Name`)
  ) TYPE=InnoDB;
 
