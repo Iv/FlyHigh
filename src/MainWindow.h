@@ -50,6 +50,7 @@ class MainWindow: public QMainWindow
 		void routes_fromGPS();
 		void airspaces_fromSQL();
 		void airspaces_fromGPS();
+		void airspaces_fromFile();
 		void windows_tile_horizontally();
 		void windows_activated(int id);
 		void settings_port();
