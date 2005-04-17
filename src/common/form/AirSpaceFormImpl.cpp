@@ -57,7 +57,7 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 	
 	if(pAirSpace != NULL)
 	{
-		clearEdgePointTable();
+		tableEdgePoints->setNumRows(0); // clear table
 		m_pAirSpace = pAirSpace;
 		AirSpaceForm::setCaption(m_pAirSpace->name());
 		
@@ -142,19 +142,6 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	paint.drawPolyline(edgePts);
 	
 	AirSpaceForm::paintEvent(pEvent);
-}
-
-void AirSpaceFormImpl::clearEdgePointTable()
-{
-	int rowNr;
-	int maxRows;
-	
-	maxRows = tableEdgePoints->numRows();
-	
-	for(rowNr=0; rowNr<maxRows; rowNr++)
-	{
-		tableEdgePoints->removeRow(0);
-	}
 }
 
 void AirSpaceFormImpl::scaleEdgePts(QPointArray &edgePts, double sx, double sy)
