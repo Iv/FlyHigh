@@ -39,7 +39,6 @@ class AirSpaceWindow: public TableWindow
 		void currentChanged(int row, int col);
 	
 	private slots:
-		void file_new();
 		void file_import();
 		void file_delete();
 		void file_update();
@@ -55,7 +54,6 @@ class AirSpaceWindow: public TableWindow
 		AirSpace::AirSpaceListType m_airSpaceList;
 		
 		void setAirSpaceToRow(uint row, AirSpace &airspace);
-		void plotAirSpace(AirSpace &airspace, const QString& title);
 };
 
 #endif
