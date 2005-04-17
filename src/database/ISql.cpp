@@ -19,6 +19,7 @@
  ***************************************************************************/
  
 #include <qsqldatabase.h> 
+#include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h" 
 #include "WayPoints.h"
@@ -39,6 +40,7 @@ ISql::ISql()
 	setHostName("localhost");
 	setPort(3306);
 	
+	m_pAirSpaces = new AirSpaces(m_pDefaultDB);
 	m_pWayPoints = new WayPoints(m_pDefaultDB);
 	m_pGliders = new Gliders(m_pDefaultDB);
 	m_pFlights = new Flights(m_pDefaultDB);
@@ -50,6 +52,7 @@ ISql::~ISql()
 {
 	m_pDefaultDB->close();
 	
+	delete m_pAirSpaces;
 	delete m_pWayPoints;
 	delete m_pGliders;
 	delete m_pFlights;
@@ -210,6 +213,31 @@ int ISql::routesLastModified()
 bool ISql::routeList(Route::RouteListType &routeList)
 {
 	return m_pRoutes->routeList(routeList);
+}
+
+bool ISql::add(AirSpace &airspace)
+{
+	return m_pAirSpaces->add(airspace);
+}
+
+bool ISql::delAirSpace(const QString &name)
+{
+	return m_pAirSpaces->delAirSpace(name);
+}
+
+bool ISql::airspace(const QString &name, AirSpace &airspace)
+{
+	return m_pAirSpaces->airspace(name, airspace);
+}
+
+int ISql::airspacesLastModified()
+{
+	return m_pAirSpaces->lastModified("AirSpaces");
+}
+
+bool ISql::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+{
+	return m_pAirSpaces->airspaceList(airspaceList);
 }
 
 bool ISql::add(Servicing &serv)

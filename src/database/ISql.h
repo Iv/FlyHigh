@@ -23,6 +23,7 @@
 
 #include <qstring.h>
 #include <qvaluelist.h>
+#include "AirSpace.h"
 #include "ContainerDef.h"
 #include "IDataBase.h"
 #include "WayPoint.h"
@@ -33,6 +34,7 @@
 
 // this is the interface class of database
 class QSqlDatabase;
+class AirSpaces;
 class WayPoints;
 class Gliders;
 class Flights;
@@ -80,6 +82,12 @@ class ISql: public IDataBase
 		int routesLastModified();
 		bool routeList(Route::RouteListType &routeList);
 		
+		bool add(AirSpace &airspace);
+		bool delAirSpace(const QString &name);
+		bool airspace(const QString &name, AirSpace &airspace);
+		int airspacesLastModified();
+		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		
 		bool add(Servicing &serv);
 		bool delServicing(int nr);
 		bool servicingList(Servicing::ServicingListType &servicingList);
@@ -89,6 +97,7 @@ class ISql: public IDataBase
 		
 	private:
 		static ISql* m_pInst;
+		AirSpaces *m_pAirSpaces;
 		WayPoints *m_pWayPoints;
 		Gliders *m_pGliders;
 		Flights *m_pFlights;
