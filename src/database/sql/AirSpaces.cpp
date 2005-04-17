@@ -100,7 +100,7 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 			
 			for(edgePtNr=0; edgePtNr<MaxEdgePoints; edgePtNr++)
 			{
-				strEdgePt = query.value(edgePtNr+1).toString();
+				strEdgePt = query.value(EdgePoint0+edgePtNr).toString();
 				
 				if(strEdgePt == "")
 				{
@@ -145,10 +145,13 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 		{
 			airspace.edgePointList().clear();
 			airspace.setName(query.value(Name).toString());
+			airspace.setLow(query.value(Low).toString());
+			airspace.setHigh(query.value(High).toString());
+			airspace.setAirspaceClass(query.value(Class).toString());
 			
 			for(edgePtNr=0; edgePtNr<MaxEdgePoints; edgePtNr++)
 			{
-				strEdgePt = query.value(edgePtNr+1).toString();
+				strEdgePt = query.value(EdgePoint0+edgePtNr).toString();
 				
 				if(strEdgePt == "")
 				{
