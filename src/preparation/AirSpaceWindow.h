@@ -47,7 +47,7 @@ class AirSpaceWindow: public TableWindow
 		void file_AddToSqlDB();
 		
 	private:
-		enum Fields{Name, High, Low, Class};
+		enum Fields{Name, Low, High, Class};
 		
 		IDataBase *m_pDb;
 		int m_lastModified;
