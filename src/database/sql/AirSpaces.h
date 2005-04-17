@@ -37,7 +37,7 @@ class AirSpaces: public DataBaseSub
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 		
 	private:
-		enum Elements{Name, Low, High, Class, MaxEdgePoints=25};
+		enum Elements{Name, Low, High, Class, EdgePoint0, MaxEdgePoints=25};
 };
 
 #endif
