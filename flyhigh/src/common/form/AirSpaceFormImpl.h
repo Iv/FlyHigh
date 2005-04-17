@@ -47,7 +47,6 @@ class AirSpaceFormImpl: public AirSpaceForm
 		QRect m_drawRect;
 		AirSpace *m_pAirSpace;
 		
-		void clearEdgePointTable();
 		void scaleEdgePts(QPointArray &edgePts, double sx, double sy);
 };
 
