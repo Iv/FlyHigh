@@ -77,8 +77,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 
 	// header	
 	nameList += "Name";
-	nameList += "High";
 	nameList += "Low";
+	nameList += "High";
 	nameList += "Class";
 	setupHeader(nameList);
 	
@@ -139,12 +139,12 @@ void AirSpaceWindow::file_import()
 	
 	parser.parse(openAirData);
 	m_airSpaceList = parser.airspaceList();
-	maxAirspaceNr = m_airSpaceList.size();// parser.airspaceList().size();
+	maxAirspaceNr = m_airSpaceList.size();
 	
 	for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 	{
 		pTable->insertRows(airspaceNr);
-		setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));//parser.airspaceList().at(airspaceNr));
+		setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 	}
 	
 	pTable->selectRow(0);
