@@ -63,7 +63,9 @@ MainWindow::MainWindow()
 	menuBar()->insertItem("&Analysis", pMenu);
 	pMenu->insertItem("&Flights (DB)", this, SLOT(flights_fromSQL()));
 	pMenu->insertItem("&Flights (GPS)", this, SLOT(flights_fromGPS()));
+	pMenu->insertSeparator();
 	pMenu->insertItem("&Flight Exp", this, SLOT(flights_experience()));
+	pMenu->insertSeparator();
 	pMenu->insertItem("&Servicing", this, SLOT(servicing()));
 
 	// Preparation
@@ -71,8 +73,10 @@ MainWindow::MainWindow()
 	menuBar()->insertItem("&Preparation", pMenu);
 	pMenu->insertItem("&WayPoints (DB)", this, SLOT(waypoints_fromSQL()));
 	pMenu->insertItem("&WayPoints (GPS)", this, SLOT(waypoints_fromGPS()));
+	pMenu->insertSeparator();
 	pMenu->insertItem("&Routes (DB)", this, SLOT(routes_fromSQL()));
 	pMenu->insertItem("&Routes (GPS)", this, SLOT(routes_fromGPS()));
+	pMenu->insertSeparator();
 	pMenu->insertItem("&Airspaces (DB)", this, SLOT(airspaces_fromSQL()));
 	pMenu->insertItem("&Airspaces (GPS)", this, SLOT(airspaces_fromGPS()));
 	pMenu->insertItem("&Airspaces (File)", this, SLOT(airspaces_fromFile()));
