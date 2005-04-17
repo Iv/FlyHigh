@@ -129,8 +129,7 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 	
 	for(year=2000; year<=now.year(); year++)
 	{
-		sqls.sprintf("SELECT * FROM `Flights` WHERE `Date` > '%i-01-01' \
-											AND `Date` < '%i-12-31'", year, year);
+		sqls.sprintf("SELECT * FROM `Flights` WHERE `Date` >= '%i-01-01' AND `Date` <= '%i-12-31'", year, year);
 		success = query.exec(sqls);
 	
 		if(success)
