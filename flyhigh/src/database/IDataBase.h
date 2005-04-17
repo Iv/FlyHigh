@@ -31,7 +31,7 @@
 class IDataBase
 {
 	public:
-		typedef enum SourceType{GPSdevice, SqlDB};
+		typedef enum SourceType{GPSdevice, SqlDB, File};
 		
 		IDataBase();
 		virtual ~IDataBase();
