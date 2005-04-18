@@ -29,8 +29,8 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/preparation/libpreparation.a</activetarget>
-      <useconfiguration>debug</useconfiguration>
+      <activetarget>src/database/sql/libsql.a</activetarget>
+      <useconfiguration>release</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
     <run>
@@ -46,13 +46,6 @@
       <envvars/>
     </run>
     <configurations>
-      <optimized>
-        <builddir>optimized</builddir>
-        <ccompiler>kdevgccoptions</ccompiler>
-        <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O2 -g0</cxxflags>
-      </optimized>
       <debug>
         <configargs>--enable-debug=full</configargs>
         <builddir>debug</builddir>
@@ -69,6 +62,23 @@
         <cflags/>
         <f77flags/>
       </debug>
+      <release>
+        <envvars/>
+        <configargs/>
+        <builddir>release</builddir>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevg77options</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags/>
+        <f77flags/>
+      </release>
     </configurations>
     <make>
       <envvars>
