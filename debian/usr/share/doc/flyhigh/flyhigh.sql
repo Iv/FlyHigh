@@ -118,9 +118,9 @@ CREATE TABLE IF NOT EXISTS `AirSpaces` (
   PRIMARY KEY  (`Name`)
  ) TYPE=InnoDB;
 
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Gliders', '2005-03-06 14:36:53')
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Servicings', '2005-03-06 14:36:53')
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('WayPoints', '2005-03-06 14:36:53')
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Routes', '2005-03-06 14:36:53')
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Flights', '2005-03-06 14:36:53')
-INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('AirSpaces', '2005-03-06 14:36:53')
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Gliders', '2005-03-06 14:36:53');
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Servicings', '2005-03-06 14:36:53');
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('WayPoints', '2005-03-06 14:36:53');
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Routes', '2005-03-06 14:36:53');
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('Flights', '2005-03-06 14:36:53');
+INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('AirSpaces', '2005-03-06 14:36:53');
