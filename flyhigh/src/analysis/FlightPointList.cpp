@@ -83,15 +83,15 @@ int FlightPointList::lastValidFlightData()
 
 double FlightPointList::speedH(uint index1, uint index2)
 {
-	int deltaTime;
+	double deltaTime;
 	uint nFlightPoints = size();
 	double speedH = - 1.0;
-	int distance;
+	double distance;
 	
 	if((index1 < nFlightPoints) && (index2 < nFlightPoints))
 	{
-		distance = m_flightPointList[index1].wp.distance(m_flightPointList[index2].wp);
-		deltaTime = m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
+		distance = (double)m_flightPointList[index1].wp.distance(m_flightPointList[index2].wp);
+		deltaTime = (double)m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
 		
 		if(deltaTime > 0.0)
 		{
@@ -104,15 +104,15 @@ double FlightPointList::speedH(uint index1, uint index2)
 
 double FlightPointList::speedV(uint index1, uint index2)
 {
-	int deltaTime;
+	double deltaTime;
 	uint nFlightPoints = size();
 	double speedV = - 1.0;
-	int deltaAlt;
+	double deltaAlt;
 	
 	if((index1 < nFlightPoints) && (index2 < nFlightPoints))
 	{
-		deltaAlt = m_flightPointList[index2].wp.altitude() - m_flightPointList[index1].wp.altitude();
-		deltaTime = m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
+		deltaAlt = (double)m_flightPointList[index2].wp.altitude() - m_flightPointList[index1].wp.altitude();
+		deltaTime = (double)m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
 		
 		if(deltaTime > 0.0)
 		{
