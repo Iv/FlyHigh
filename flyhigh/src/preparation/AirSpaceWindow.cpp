@@ -23,6 +23,7 @@
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qheader.h>
+#include <qinputdialog.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qstring.h>
@@ -196,9 +197,27 @@ void AirSpaceWindow::file_AddToGPS()
 
 void AirSpaceWindow::file_AddToSqlDB()
 {
+	QTable *pTable = TableWindow::getTable();
+	QString airSpaceName;
+	QString command;
 	int row;
+	bool ok;
 	
-	row = getTable()->currentRow();
+	row = pTable->currentRow();
+	airSpaceName = pTable->text(row, Name);
+	command.sprintf("AirSpace Name must be < %i characters.", AirSpace::MaxNameSize);
+	
+	while(airSpaceName.length() > AirSpace::MaxNameSize)
+	{
+		airSpaceName = QInputDialog::getText("AirSpace Name", command, QLineEdit::Normal, airSpaceName, &ok, this);
+		
+		if(!ok)
+		{
+			return;
+		}
+	}
+	
+	m_airSpaceList.at(row).setName(airSpaceName);
 	ISql::pInstance()->add(m_airSpaceList.at(row));
 }
 
