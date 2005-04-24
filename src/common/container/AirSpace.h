@@ -27,6 +27,7 @@
 class AirSpace
 {
 	public:
+		enum {MaxNameSize=17};
 		typedef QValueVector<AirSpace> AirSpaceListType;
 
 		AirSpace();
