@@ -21,6 +21,7 @@
 #ifndef FlightPointList_h
 #define FlightPointList_h
 
+#include <qtextstream.h>
 #include <qdatetime.h>
 #include <qvaluevector.h>
 #include "WayPoint.h"
@@ -51,6 +52,7 @@ class FlightPointList
 		int duration(uint index1, uint index2);
 		
 		FlightPointType& operator[] (int index);
+		friend QTextStream& operator<<(QTextStream &s, const FlightPointType &flightPt);
 		FlightPointType& at(int index);
 
 	private:
