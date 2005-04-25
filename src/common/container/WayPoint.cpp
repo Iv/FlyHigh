@@ -96,6 +96,52 @@ WayPoint& WayPoint::operator=(const WayPoint &wp)
 	return *this;
 }
 
+QTextStream& operator<<(QTextStream& s, const WayPoint &wp)
+{
+	WayPoint locWp = wp;
+	QString str;
+	double lat;
+	double lon;
+	int deg;
+	double min;
+	
+	lat = locWp.latitude();
+
+	if(lat < 0)
+	{
+		s << "S ";
+		lat *= -1.0;
+	}
+	else
+	{
+		s << "N ";
+	}
+	
+	deg = (int)lat;
+	min = (lat - deg) * 60.0;
+	str.sprintf("%i:%.3f ", deg, min);
+	s << str;
+	
+	lon = locWp.longitude();
+
+	if(lon < 0)
+	{
+		s << "W ";
+		lon *= -1.0;
+	}
+	else
+	{
+		s << "E ";
+	}
+	
+	deg = (int)lon;
+	min = (lon - deg) * 60.0;
+	str.sprintf("%i:%.3f", deg, min);
+	s << str;
+	
+	return s;
+}
+
 uint WayPoint::distance(WayPoint &wp1, WayPoint &wp2)
 {
 	double dist;
