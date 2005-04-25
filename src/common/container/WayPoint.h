@@ -21,6 +21,7 @@
 #ifndef WayPoint_h
 #define WayPoint_h
 
+#include <qtextstream.h>
 #include <qstring.h>
 #include <qvaluevector.h>
 
@@ -56,6 +57,7 @@ class WayPoint
 		static uint meters(double nautmil);
 		
 		WayPoint& operator=(const WayPoint &wp);
+		friend QTextStream& operator<<(QTextStream& s, const WayPoint &wp);
 		
 	private:
 		QString m_name;

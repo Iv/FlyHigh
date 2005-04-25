@@ -44,6 +44,16 @@ FlightPointList::FlightPointType& FlightPointList::operator[] (int index)
 	return m_flightPointList[index];
 }
 
+QTextStream& operator<<(QTextStream &s, const FlightPointList::FlightPointType &flightPt)
+{
+	s << flightPt.wp;
+	s << " (";
+	s << flightPt.time.toString(Qt::ISODate);
+	s << " UTC)";
+	
+	return s;
+}
+
 FlightPointList::FlightPointType& FlightPointList::at(int index)
 {
 	return m_flightPointList[index];
