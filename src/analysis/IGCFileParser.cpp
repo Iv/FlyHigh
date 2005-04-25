@@ -63,9 +63,19 @@ void IGCFileParser::parse(QByteArray &igcData)
 	}
 }
 
+const QString& IGCFileParser::pilot()
+{
+	return m_pilot;
+}
+
 const QString& IGCFileParser::model()
 {
 	return m_model;
+}
+
+const QString& IGCFileParser::gliderId()
+{
+	return m_gliderId;
 }
 
 const QDate& IGCFileParser::date()
@@ -80,18 +90,18 @@ FlightPointList& IGCFileParser::flightPointList()
 
 void IGCFileParser::parseHRecord(const char *record)
 {
-	QString rec = record;
-	QString subType = rec.mid(2, 3);
 	int y;
 	int m;
 	int d;
-	int start;
-	int end;
-	uint length;
 	
-	if(subType == "GTY") // Glider
+	if(strncmp(record, "HFPLTPILOT", 10) == 0) // Pilot
 	{
-		// HFGTYGLIDERTYPE:Spirit
+		colonValue(record, m_pilot);
+	}
+	else if(strncmp(record, "HFGTYGLIDERTYPE", 15) == 0) // Glider
+	{
+		colonValue(record, m_model);
+/*		// HFGTYGLIDERTYPE:Spirit
 		start = rec.find(':') + 1;
 		length = rec.length() - 2; // without \r\n
 		
@@ -103,14 +113,16 @@ void IGCFileParser::parseHRecord(const char *record)
 				break;
 			}
 		}
-		m_model = rec.mid(start, end-start);
+		m_model = rec.mid(start, end-start);*/
 	}
-	else if(subType == "DTE") // Date
+	else if(strncmp(record, "HFGIDGLIDERID", 13) == 0) // Glider ID
+	{
+		colonValue(record, m_gliderId);
+	}
+	else if(strncmp(record, "HFDTE", 5) == 0) // Date
 	{
 		// HFDTE221204
-		if(sscanf(record,
-				"%*5c%2d%2d%2d",
-				&d, &m, &y) == 3)
+		if(sscanf(record, "%*5c%2d%2d%2d", &d, &m, &y) == 3)
 		{
 			y += 2000;
 			m_date.setYMD(y, m, d);
@@ -176,4 +188,26 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 		flightPoint.wp.setCoordinates(lat, lon, alt);
 		m_flightPointList.add(flightPoint);
 	}
+}
+
+void IGCFileParser::colonValue(const char *record, QString &str)
+{
+	QString rec = record;
+	int length;
+	int start;
+	int end;
+	
+	start = rec.find(':') + 1;
+	length = rec.length() - 2; // without \r\n
+	
+	// strip white space @ end
+	for(end=length;end>0;end--)
+	{
+		if(rec[end-1] != ' ')
+		{
+			break;
+		}
+	}
+	
+	str = rec.mid(start, end-start);
 }
