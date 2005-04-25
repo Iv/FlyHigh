@@ -137,20 +137,21 @@ void AirSpaceWindow::file_import()
 	{
 		openAirData = file.readAll();
 		file.close();
+	
+		parser.parse(openAirData);
+		m_airSpaceList = parser.airspaceList();
+		maxAirspaceNr = m_airSpaceList.size();
+		pTable->setNumRows(0);
+		
+		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+		{
+			pTable->insertRows(airspaceNr);
+			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+		}
+		
+		pTable->selectRow(0);
+		m_curAirSpace.show();
 	}
-	
-	parser.parse(openAirData);
-	m_airSpaceList = parser.airspaceList();
-	maxAirspaceNr = m_airSpaceList.size();
-	
-	for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
-	{
-		pTable->insertRows(airspaceNr);
-		setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
-	}
-	
-	pTable->selectRow(0);
-	m_curAirSpace.show();
 }
 
 void AirSpaceWindow::file_delete()
