@@ -34,17 +34,22 @@ class IGCFileParser
 		IGCFileParser();
 		
 		void parse(QByteArray &igcData);
+		const QString& pilot();
 		const QString& model();
+		const QString& gliderId();
 		const QDate& date();
 		FlightPointList& flightPointList();
 
 	private:
+		QString m_pilot;
 		QString m_model;
+		QString m_gliderId;
 		QDate m_date;
 		FlightPointList m_flightPointList;
 		
 		void parseHRecord(const char *record);
 		void parseBRecord(const char *record, bool gpsAlt);
+		void colonValue(const char *record, QString &str);
 };
 
 #endif
