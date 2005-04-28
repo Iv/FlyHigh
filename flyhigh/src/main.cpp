@@ -27,10 +27,11 @@
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
-	MainWindow* pMainWin = new MainWindow();
+	MainWindow* pMainWin;
 	int res;
-	
+
 	IFlyHighRC::pInstance()->loadRC();
+	pMainWin = new MainWindow();
 	
 	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
 	IGPSDevice::pInstance()->open();
