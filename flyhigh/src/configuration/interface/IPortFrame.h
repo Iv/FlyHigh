@@ -32,7 +32,6 @@ class IPortFrame
 		virtual ~IPortFrame();
 		
 		bool show();
-		void getPort(QString &port);
 		
 	private:
 		PortFrameImpl *m_pFrame;
