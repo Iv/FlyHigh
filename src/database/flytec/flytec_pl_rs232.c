@@ -50,7 +50,16 @@ int flytec_pl_init(const char* pDevName)
 		}
 	}
 	return 0;
-} 
+}
+
+int flytec_pl_exit()
+{
+	if(ftty != -1)
+	{
+		close(ftty);
+	}
+	return 0;
+}
 
 int flytec_pl_getChar(u_char *pch)
 {

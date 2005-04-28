@@ -11,6 +11,7 @@
 
 /* 0 = OK, -1 = fail */
 extern int flytec_pl_init(const char* pDevName);
+extern int  flytec_pl_exit();
 extern int flytec_pl_getChar(u_char *pch);
 extern int flytec_pl_putChar(u_char ch);
 
