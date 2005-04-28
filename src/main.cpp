@@ -30,12 +30,16 @@ int main( int argc, char ** argv )
 	int res;
 	
 	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
+	IGPSDevice::pInstance()->open();
 	ISql::pInstance()->open();
 	appl.setMainWidget(pMainWin);
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
 	
 	res = appl.exec();
+
+	// exit
+	IGPSDevice::pInstance()->close();
 	
 	return res;
 }
