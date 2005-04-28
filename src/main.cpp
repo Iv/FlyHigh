@@ -20,6 +20,7 @@
  
 #include <qapplication.h>
 #include "MainWindow.h"
+#include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "ISql.h"
 
@@ -28,6 +29,8 @@ int main( int argc, char ** argv )
 	QApplication appl(argc, argv);
 	MainWindow* pMainWin = new MainWindow();
 	int res;
+	
+	IFlyHighRC::pInstance()->loadRC();
 	
 	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
 	IGPSDevice::pInstance()->open();
@@ -40,6 +43,7 @@ int main( int argc, char ** argv )
 
 	// exit
 	IGPSDevice::pInstance()->close();
+	IFlyHighRC::pInstance()->saveRC();
 	
 	return res;
 }
