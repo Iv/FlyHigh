@@ -47,6 +47,9 @@ void IGPSDevice::setDevice(GPSDeviceType dev)
 		case Flytec5020:
 			m_pGPSDevice = new FlytecDevice;
 		break;
+		default:
+			m_pGPSDevice = new FlytecDevice;
+		break;
 	}
 }
 
@@ -55,7 +58,11 @@ IGPSDevice* IGPSDevice::pInstance()
 	return m_pGPSDevice;
 }
 
-void IGPSDevice::setPort(QString &port)
+void IGPSDevice::open()
+{
+}
+
+void IGPSDevice::close()
 {
 }
 
