@@ -18,14 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
- #include <qlineedit.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
  
+#include "IFlyHighRC.h"
 #include "IPortFrame.h"
 #include "PortFrameImpl.h"
 
 IPortFrame::IPortFrame(QWidget* parent)
 {
 	m_pFrame = new PortFrameImpl(parent, "", Qt::WType_Modal);
+	m_pFrame->lineEdit_Port->setText(IFlyHighRC::pInstance()->deviceLine());
+	m_pFrame->comboBox_Baud->insertStringList(IFlyHighRC::pInstance()->deviceSpeedList());
 }
 
 IPortFrame::~IPortFrame()
@@ -35,10 +39,15 @@ IPortFrame::~IPortFrame()
 
 bool IPortFrame::show()
 {
-	return (m_pFrame->exec() == QDialog::Accepted);
-}
-
-void IPortFrame::getPort(QString &port)
-{
-	port = m_pFrame->lineEdit_Port->text();
+	bool ok;
+	
+	ok = (m_pFrame->exec() == QDialog::Accepted);
+	
+	if(ok)
+	{
+		IFlyHighRC::pInstance()->setDeviceLine(m_pFrame->lineEdit_Port->text());
+		IFlyHighRC::pInstance()->setDeviceSpeed(m_pFrame->comboBox_Baud->currentItem());
+	}
+	
+	return ok;
 }
