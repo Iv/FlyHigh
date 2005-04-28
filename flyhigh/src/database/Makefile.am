@@ -4,6 +4,6 @@ METASOURCES = AUTO
 SUBDIRS = sql flytec
 
 
-noinst_HEADERS =  IDataBase.h IGPSDevice.h ISql.h
+noinst_HEADERS = IDataBase.h IGPSDevice.h ISql.h IFlyHighRC.h
 lib_LIBRARIES =  libdatabase.a
-libdatabase_a_SOURCES =  IDataBase.cpp IGPSDevice.cpp ISql.cpp
+libdatabase_a_SOURCES = IDataBase.cpp IGPSDevice.cpp ISql.cpp IFlyHighRC.cpp
