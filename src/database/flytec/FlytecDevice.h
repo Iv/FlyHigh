@@ -33,7 +33,8 @@ class FlytecDevice: public IGPSDevice
 		FlytecDevice();
 		
 	protected:
-		void setPort(const QString &port);
+		void open();
+		void close();
 			
 		// memory
 		bool memoryRead(QByteArray &arr);

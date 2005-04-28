@@ -22,6 +22,8 @@
 #include <qdatetime.h>
 #include "Error.h"
 #include "FlytecDevice.h"
+#include "IFlyHighRC.h"
+
 extern "C"
 {
 	#include "flytec_al.h"
@@ -29,12 +31,16 @@ extern "C"
 
 FlytecDevice::FlytecDevice()
 {
-	setPort("/dev/ttyS0");
 }
 
-void FlytecDevice::setPort(const QString &port)
+void FlytecDevice::open()
 {
-	ft_init(port.ascii());
+	ft_init(IFlyHighRC::pInstance()->serialDevice().ascii());
+}
+
+void FlytecDevice::close()
+{
+	ft_exit();
 }
 
 // memory

@@ -37,7 +37,8 @@ class IGPSDevice: public IDataBase
 		void setDevice(GPSDeviceType dev);
 		static IGPSDevice* pInstance();
 		
-		virtual void setPort(QString &port);
+		virtual void open();
+		virtual void close();
 
 		// memory
 		virtual bool memoryRead(QByteArray &arr);
