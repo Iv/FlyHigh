@@ -20,6 +20,7 @@
 
 #include <qspinbox.h>
 #include <qcombobox.h>
+#include "IFlyHighRC.h"
 
 #include "GPSFrameImpl.h"
 extern "C"
@@ -55,6 +56,9 @@ void GPSFrameImpl::store(QByteArray &arr)
 	
 	// UTC Offset
 	arr[UTC_OFFSET_POS] = spinBox_UTCoffset->value();
+	
+	// sync UTC Offset with ressources
+	IFlyHighRC::pInstance()->setUtcOffset(spinBox_UTCoffset->value());
 
 	// Geodic ID
 	arr[GEO_ID_POS] = spinBox_GeoID->value();
