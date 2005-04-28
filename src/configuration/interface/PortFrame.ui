@@ -31,24 +31,6 @@
             <string>Baudrate</string>
         </property>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>57'600</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Baud</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>200</x>
-                <y>80</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel_Port</cstring>
@@ -129,6 +111,19 @@
         </property>
         <property name="default">
             <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBox_Baud</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>200</x>
+                <y>80</y>
+                <width>98</width>
+                <height>28</height>
+            </rect>
         </property>
     </widget>
 </widget>
