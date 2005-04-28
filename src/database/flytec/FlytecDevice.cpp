@@ -35,7 +35,7 @@ FlytecDevice::FlytecDevice()
 
 void FlytecDevice::open()
 {
-	ft_init(IFlyHighRC::pInstance()->serialDevice().ascii());
+	ft_init(IFlyHighRC::pInstance()->deviceLine().ascii());
 }
 
 void FlytecDevice::close()
