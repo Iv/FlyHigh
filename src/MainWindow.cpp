@@ -28,8 +28,10 @@
 #include <qvbox.h>
 
 #include "AirSpaceWindow.h"
+#include "IFlyHighRC.h"
 #include "IFlytecConfig.h"
 #include "MainWindow.h"
+#include "IFlyHighRC.h"
 #include "IPortFrame.h"
 #include "FlightWindow.h"
 #include "FlightExpWindow.h"
@@ -47,7 +49,11 @@ MainWindow::MainWindow()
 {
 	QPopupMenu *pMenu;
 	QVBox *pVBox;
+	QString devName;
+	int curId = 0;
 	int id;
+	int devNr;
+	int maxDevNr;
 	
 	m_pActiveWin = NULL;
 	m_selectedDevice = 0;
@@ -89,12 +95,20 @@ MainWindow::MainWindow()
 	// Menu Settings>Device
 	m_pDevicesMenu = new QPopupMenu(this);
 	m_pDevicesMenu->setCheckable(true);
-	id = m_pDevicesMenu->insertItem("Flytec 5020", this, SLOT(settings_device(int)));
-	m_pDevicesMenu->setItemChecked(id, true);
-	/*
-		add here other devices 
-		pSubMenu->insertItem("Flytec 5030", this, SLOT(settings_device(int)));
-	*/
+	maxDevNr = IFlyHighRC::pInstance()->deviceNameList().size();
+	
+	for(devNr=0; devNr<maxDevNr; devNr++)
+	{
+		devName = *(IFlyHighRC::pInstance()->deviceNameList().at(devNr));
+		id = m_pDevicesMenu->insertItem(devName, this, SLOT(settings_device(int)));
+		
+		if(devNr == IFlyHighRC::pInstance()->deviceName())
+		{
+			curId = id;
+		}
+	}
+	m_pDevicesMenu->setItemChecked(curId, true);
+
 	pMenu->insertItem("&Device", m_pDevicesMenu);
 	pMenu->insertItem("Configure Device...", this, SLOT(settings_configure_device()));
 
@@ -192,10 +206,6 @@ void MainWindow::routes_fromGPS()
 	showWindow(pWin);
 }
 
-#include "IAirSpaceForm.h"
-#include "AirSpace.h"
-
-
 void MainWindow::airspaces_fromSQL()
 {
 	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from DB", WDestructiveClose, IDataBase::SqlDB);
@@ -222,7 +232,7 @@ void MainWindow::airspaces_fromFile()
 
 void MainWindow::help_about()
 {
-	QMessageBox::about(this, "FlyHigh Beta Version",
+	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
 			"Copyright (c):  2005 by Alex Graf, <grafal@sourceforge.net>\n"
 			"This file is distributed under the terms of the General Public\n"
 			"License. See the file gpl.txt for the Licence or visit www.gnu.org\n"
@@ -379,12 +389,12 @@ void MainWindow::settings_device(int id)
 void MainWindow::settings_port()
 {
 	IPortFrame portFrame;
-	QString port;
+	QString value;
 
 	if(portFrame.show())
 	{
-		portFrame.getPort(port);
-		IGPSDevice::pInstance()->setPort(port);
+		IGPSDevice::pInstance()->close();
+		IGPSDevice::pInstance()->open();
 	}
 }
 
