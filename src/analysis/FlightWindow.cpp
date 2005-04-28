@@ -29,6 +29,7 @@
 #include <qpopupmenu.h>
 #include <qprinter.h>
 #include <qwidget.h>
+#include "IFlyHighRC.h"
 #include "Error.h"
 #include "FlightWindow.h"
 #include "Glider.h"
@@ -366,9 +367,10 @@ void FlightWindow::file_import()
 		
 		if(startPtId >= 0)
 		{
-			// start time
-			flight.setTime(igcParser.flightPointList().at(startPtId).time);
-		
+			// add UTC offset to start time
+			time = igcParser.flightPointList().at(startPtId).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+			flight.setTime(time);
+			
 			// start place
 			wp = igcParser.flightPointList().at(startPtId).wp;
 			
