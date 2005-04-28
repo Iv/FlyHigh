@@ -252,7 +252,8 @@ void FlightWindow::file_AddToSqlDB()
 		if(id >= 0)
 		{
 			// start time
-			flight.setTime(igcParser.flightPointList().at(id).time);
+			time = igcParser.flightPointList().at(id).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+			flight.setTime(time);
 		
 			// start place
 			wp = igcParser.flightPointList().at(id).wp;
