@@ -25,6 +25,11 @@ int ft_init(const char *pDevName)
 {
 	return flytec_pl_init(pDevName);
 }
+
+int ft_exit()
+{
+	return flytec_pl_exit();
+}
  
 int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 {
