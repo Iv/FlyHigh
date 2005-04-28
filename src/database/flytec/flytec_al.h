@@ -134,6 +134,7 @@ typedef struct CTR
 
 /* services */
 extern int ft_init(const char *pDevName);
+extern int ft_exit();
 extern int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo);
 
 extern int ft_memoryRead(u_int addr, u_char *pPage);
