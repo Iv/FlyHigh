@@ -41,9 +41,6 @@ class OpenAirFileParser
 		static const uint m_maxSeg;
 		
 		void parseAirspaceClass(char *record, AirSpace &airspace);
-		void parseName(char *record, AirSpace &airspace);
-		void parseHigh(char *record, AirSpace &airspace);
-		void parseLow(char *record, AirSpace &airspace);
 		void parseVarAssign(char *record);
 		void parsePoint(char *record, AirSpace &airspace);
 		void parseArc(char *record, AirSpace &airspace);
