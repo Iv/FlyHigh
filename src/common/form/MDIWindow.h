@@ -12,6 +12,7 @@
 class QPopupMenu;
 class QWidget;
 class QString;
+class QTimer;
 
 class MDIWindow: public QMainWindow
 {
@@ -22,6 +23,16 @@ class MDIWindow: public QMainWindow
 		
 	signals:
 		void message(const QString&, int);
+		
+	protected:
+		virtual bool periodicalUpdate();
+		
+		
+	private slots:
+		void updateTimeout();
+		
+	private:
+		QTimer *m_pUpdateTimer;
 };
 
 #endif
