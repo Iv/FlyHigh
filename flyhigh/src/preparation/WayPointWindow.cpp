@@ -57,6 +57,9 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 			caption = "WayPoints from GPS";
 			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
 		break;
+		default:
+			Q_ASSERT(false);
+		break;
 	}
 	
 	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
@@ -82,23 +85,21 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setColumnWidth(Altitude, 70);
 	
 	m_lastModified = 0;
-	startTimer(1);
 }
 
-void WayPointWindow::timerEvent(QTimerEvent *pEvent)
+bool WayPointWindow::periodicalUpdate()
 {
 	int lastModified;
 	
-	if(pEvent != NULL)
+	lastModified = m_pDb->wayPointsLastModified();
+	
+	if(m_lastModified < lastModified)
 	{
-		lastModified = m_pDb->wayPointsLastModified();
-		
-		if(m_lastModified < lastModified)
-		{
-			file_update();
-			m_lastModified = lastModified;
-		}
+		file_update();
+		m_lastModified = lastModified;
 	}
+	
+	return true;
 }
 
 void WayPointWindow::file_update()

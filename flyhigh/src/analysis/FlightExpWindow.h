@@ -32,7 +32,7 @@ class FlightExpWindow: public TableWindow
 		FlightExpWindow(QWidget* parent, const char* name, int wflags);
 	
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 	
 	private slots:
 		void file_update();

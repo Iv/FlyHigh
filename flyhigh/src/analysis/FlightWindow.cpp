@@ -28,6 +28,7 @@
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qprinter.h>
+#include <qtimer.h>
 #include <qwidget.h>
 #include "IFlyHighRC.h"
 #include "Error.h"
@@ -131,23 +132,21 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 
 	m_fileName = "";
 	m_lastModified = 0;
-	startTimer(1);
 }
 
-void FlightWindow::timerEvent(QTimerEvent *pEvent)
+bool FlightWindow::periodicalUpdate()
 {
 	int lastModified;
+
+	lastModified = m_pDb->flightsLastModified();
 	
-	if(pEvent != NULL)
+	if(m_lastModified < lastModified)
 	{
-		lastModified = m_pDb->flightsLastModified();
-		
-		if(m_lastModified < lastModified)
-		{
-			file_update();
-			m_lastModified = lastModified;
-		}
+		file_update();
+		m_lastModified = lastModified;
 	}
+
+	return true;
 }
 
 void FlightWindow::file_update()
