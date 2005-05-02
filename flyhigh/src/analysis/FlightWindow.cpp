@@ -471,14 +471,23 @@ void FlightWindow::file_export()
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			// IGC file
+			igcParser.parse(igcData);
+			
 			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (*.igc; *.olc)", this,
 					"IGC file export", true);
+			
+			fileName = getOLCchar(igcParser.date().year() % 100);
+			fileName += getOLCchar(igcParser.date().month());
+			fileName += getOLCchar(igcParser.date().day());
+			fileName += igcParser.pilot().left(4);
+			fileName += "1";
+			
+			fileDlg.setSelection(fileName);
 
 			if(fileDlg.exec() == QDialog::Accepted)
 			{
 				IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
 				fileName = fileDlg.selectedFile();
-					
 				file.setName(fileName + ".igc");
 				
 				if(file.open(IO_WriteOnly))
@@ -486,9 +495,8 @@ void FlightWindow::file_export()
 					file.writeBlock(igcData);
 					file.close();
 				}
-			
+				
 				// OLC file
-				igcParser.parse(igcData);
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 				file.setName(fileName + ".olc");
 				
@@ -811,4 +819,24 @@ void FlightWindow::plot_3d()
 			}
 		}
 	}
+}
+
+char FlightWindow::getOLCchar(int value)
+{
+	char resChar;
+	
+	if((value >= 0) && (value <=9))
+	{
+		resChar = '0' + value;
+	}
+	else if((value >= 10) && (value <=31))
+	{
+		resChar = 'a' + value - 10;
+	}
+	else
+	{
+		resChar = '0';
+	}
+	
+	return resChar;
 }
