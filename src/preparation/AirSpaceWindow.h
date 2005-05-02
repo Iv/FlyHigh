@@ -33,7 +33,7 @@ class AirSpaceWindow: public TableWindow
 		AirSpaceWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
 	
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 		
 	protected slots:
 		void currentChanged(int row, int col);

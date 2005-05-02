@@ -34,7 +34,7 @@ class WayPointWindow: public TableWindow
 		WayPointWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
 	
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 		
 	private slots:
 		void file_update();

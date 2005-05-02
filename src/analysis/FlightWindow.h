@@ -28,6 +28,7 @@
 
 class QWidget;
 class QTimerEvent;
+class QTimer;
 
 class FlightWindow : public TableWindow
 {
@@ -36,7 +37,7 @@ class FlightWindow : public TableWindow
 		FlightWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
 	
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 		
 	private slots:
 		void file_update();
@@ -59,6 +60,7 @@ class FlightWindow : public TableWindow
 		QString m_fileName;
 		GnuPlot m_plotter;
 		QProcess m_gpligc;
+		QTimer *m_pUpdateTimer;
 		
 		void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);

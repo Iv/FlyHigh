@@ -59,29 +59,26 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, int wflags)
 	pTable->setColumnWidth(Airtime, 100);
 
 	m_lastModified = 0;
-	startTimer(1);
 }
 
-void FlightExpWindow::timerEvent(QTimerEvent *pEvent)
+bool FlightExpWindow::periodicalUpdate()
 {
 	int lastModified;
 	
-	if(pEvent != NULL)
+	lastModified = m_pDb->flightsLastModified();
+	
+	if(m_lastModified < lastModified)
 	{
-		lastModified = m_pDb->flightsLastModified();
-		
-		if(m_lastModified < lastModified)
-		{
-			file_update();
-			m_lastModified = lastModified;
-		}
+		file_update();
+		m_lastModified = lastModified;
 	}
+	
+	return true;
 }
 
 void FlightExpWindow::file_update()
 {
 	FlightsPerYearListType fpyList; 
-	FlightsPerYearType fpy;
 	QTable *pTable = TableWindow::getTable();
 	QString str;
 	uint yearNr;

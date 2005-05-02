@@ -97,17 +97,15 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	connect(pTable, SIGNAL(currentChanged(int, int)),
 			this, SLOT(currentChanged(int, int)));
 	m_curAirSpace.setModal(false);
-//	m_curAirSpace.show();
 	
 	m_lastModified = 0;
-	startTimer(1);
 }
 
-void AirSpaceWindow::timerEvent(QTimerEvent *pEvent)
+bool AirSpaceWindow::periodicalUpdate()
 {
 	int lastModified;
 	
-	if((pEvent != NULL) && (m_pDb != NULL))
+	if(m_pDb != NULL)
 	{
 		lastModified = m_pDb->airspacesLastModified();
 		
@@ -117,6 +115,8 @@ void AirSpaceWindow::timerEvent(QTimerEvent *pEvent)
 			m_lastModified = lastModified;
 		}
 	}
+	
+	return true;
 }
 
 void AirSpaceWindow::file_import()
