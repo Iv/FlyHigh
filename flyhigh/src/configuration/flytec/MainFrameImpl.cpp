@@ -36,6 +36,7 @@
 #include "DisplayFrameImpl.h"
 #include "FlyCalcFrameImpl.h"
 #include "DeviceFrameImpl.h"
+#include "IFlyHighRC.h"
 #include "MemoryFrameImpl.h"
 #include "PolareFrameImpl.h"
 #include "UnitFrameImpl.h"
@@ -148,25 +149,26 @@ void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 
 void MainFrameImpl::open()
 {
-	QString fileName = QFileDialog::getOpenFileName(m_fileName, "Flytec Files (*.flt)", this);
-	
-	if(!fileName.isEmpty())
+	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
+					"Flytec config file open", true);
+
+	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		m_fileName = fileName;
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		m_fileName = fileDlg.selectedFile();
 		execThreadCmd(OpenConfig);
 	}
 }
 
 void MainFrameImpl::save()
 {
-	QString fileName;
-	QFile file;
-	
-	fileName = QFileDialog::getSaveFileName(m_fileName, "Flytec Files (*.flt)", this);
-	
-	if(!fileName.isEmpty())
+	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
+					"Flytec config file open", true);
+
+	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		m_fileName = fileName;
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		m_fileName = fileDlg.selectedFile();
 		execThreadCmd(SaveConfig);
 	}
 }
