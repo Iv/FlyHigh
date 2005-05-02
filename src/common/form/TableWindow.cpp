@@ -159,12 +159,6 @@ void TableWindow::print()
 		tableAsHTML(doc);
 		string = doc.toString();
 
-/*	
-		QFile f("table.html");
-		f.open(IO_WriteOnly);
-		f.writeBlock(string, qstrlen(string));
-		f.close();
-*/
 		QSimpleRichText richText(string, font);
 		richText.setWidth(&p, body.width());
 		QRect view(body);
