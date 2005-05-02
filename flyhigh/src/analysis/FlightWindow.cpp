@@ -19,6 +19,7 @@
  ***************************************************************************/
  
 #include <qcursor.h>
+#include <qdir.h>
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qstring.h>
@@ -38,6 +39,7 @@
 #include "IGPSDevice.h"
 #include "IGliderForm.h"
 #include "IFlightForm.h"
+#include "IFlyHighRC.h"
 #include "IWayPointForm.h"
 #include "ISql.h"
 #include "Flight.h"
@@ -337,97 +339,103 @@ void FlightWindow::file_import()
 	int landPtId;
 	int duration;
 
-	fileName = QFileDialog::getOpenFileName(m_fileName, "IGC Files (*.igc)", this);
-	file.setName(fileName);
+	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (*.igc; *.IGC)", this,
+			"IGC file import", true);
 
-	if(file.open(IO_ReadOnly))
+	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		flight.setIgcData(file.readAll());
-		file.close();
-	
-		// parse and optimize
-		igcParser.parse(flight.igcData());
-		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		file.setName(fileDlg.selectedFile());
 		
-		if(olcOptimizer.optimize())
+		if(file.open(IO_ReadOnly))
 		{
-			// distance
-			flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
-		}
-
-		// nr
-		nr = ISql::pInstance()->newFlightNr();
-		flight.setNumber(nr);
+			flight.setIgcData(file.readAll());
+			file.close();
 		
-		// date
-		flight.setDate(igcParser.date());
-	
-		// start
-		startPtId = igcParser.flightPointList().firstValidFlightData();
-		
-		if(startPtId >= 0)
-		{
-			// add UTC offset to start time
-			time = igcParser.flightPointList().at(startPtId).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
-			flight.setTime(time);
+			// parse and optimize
+			igcParser.parse(flight.igcData());
+			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 			
-			// start place
-			wp = igcParser.flightPointList().at(startPtId).wp;
-			
-			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+			if(olcOptimizer.optimize())
 			{
-				IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
+				// distance
+				flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
+			}
 	
-				if(newWayPoint.exec())
+			// nr
+			nr = ISql::pInstance()->newFlightNr();
+			flight.setNumber(nr);
+			
+			// date
+			flight.setDate(igcParser.date());
+		
+			// start
+			startPtId = igcParser.flightPointList().firstValidFlightData();
+			
+			if(startPtId >= 0)
+			{
+				// add UTC offset to start time
+				time = igcParser.flightPointList().at(startPtId).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+				flight.setTime(time);
+				
+				// start place
+				wp = igcParser.flightPointList().at(startPtId).wp;
+				
+				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
-					ISql::pInstance()->add(wp);
+					IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
+		
+					if(newWayPoint.exec())
+					{
+						ISql::pInstance()->add(wp);
+					}
+				}
+				flight.setStartPt(wp.name());
+			}
+			
+			// landing strip
+			landPtId = igcParser.flightPointList().lastValidFlightData();
+			
+			if(landPtId >= 0)
+			{
+				wp = igcParser.flightPointList().at(landPtId).wp;
+				
+				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+				{
+					IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
+		
+					if(newWayPoint.exec())
+					{
+						ISql::pInstance()->add(wp);
+					}
+				}
+				flight.setLandPt(wp.name());
+			}
+			
+			// duration
+			time = igcParser.flightPointList().at(startPtId).time;
+			duration = time.secsTo(igcParser.flightPointList().at(landPtId).time);
+			flight.setDuration(duration);
+		
+			// glider
+			if(!ISql::pInstance()->glider(igcParser.model(), glider))
+			{
+				IGliderForm newGlider(this, "New Glider", &glider);
+				
+				if(newGlider.exec())
+				{
+					ISql::pInstance()->add(glider);
 				}
 			}
-			flight.setStartPt(wp.name());
-		}
+			flight.setGlider(glider.model());
 		
-		// landing strip
-		landPtId = igcParser.flightPointList().lastValidFlightData();
-		
-		if(landPtId >= 0)
-		{
-			wp = igcParser.flightPointList().at(landPtId).wp;
+			// a new flight
+			newFlightForm.setFlight(&flight);
 			
-			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+			if(newFlightForm.exec())
 			{
-				IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
-	
-				if(newWayPoint.exec())
-				{
-					ISql::pInstance()->add(wp);
-				}
+				ISql::pInstance()->add(flight);
 			}
-			flight.setLandPt(wp.name());
-		}
-		
-		// duration
-		time = igcParser.flightPointList().at(startPtId).time;
-		duration = time.secsTo(igcParser.flightPointList().at(landPtId).time);
-		flight.setDuration(duration);
-	
-		// glider
-		if(!ISql::pInstance()->glider(igcParser.model(), glider))
-		{
-			IGliderForm newGlider(this, "New Glider", &glider);
-			
-			if(newGlider.exec())
-			{
-				ISql::pInstance()->add(glider);
-			}
-		}
-		flight.setGlider(glider.model());
-	
-		// a new flight
-		newFlightForm.setFlight(&flight);
-		
-		if(newFlightForm.exec())
-		{
-			ISql::pInstance()->add(flight);
 		}
 	}
 }
@@ -463,77 +471,85 @@ void FlightWindow::file_export()
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			// IGC file
-			fileName = QFileDialog::getSaveFileName(m_fileName, "Track Files (*.igc; *.olc)", this);
-			file.setName(fileName + ".igc");
-			
-			if(file.open(IO_WriteOnly))
+			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (*.igc; *.olc)", this,
+					"IGC file export", true);
+
+			if(fileDlg.exec() == QDialog::Accepted)
 			{
-				file.writeBlock(igcData);
-				file.close();
-			}
-		
-			// OLC file
-			igcParser.parse(igcData);
-			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-			file.setName(fileName + ".olc");
-			
-			if(file.open(IO_WriteOnly))
-			{
-				QTextStream textStream(&file);
+				IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+				fileName = fileDlg.selectedFile();
+					
+				file.setName(fileName + ".igc");
 				
-				textStream << "Pilot: " << igcParser.pilot() << "\n";
-				textStream << "Take-off location: " << getTable()->text(row, StartPt) << "\n";
-				textStream << "Callsign: " << igcParser.gliderId() << "\n";
-				textStream << "IGC-filename: " << fileName << ".olc\n";
-				textStream << "Date of flight: " << igcParser.date().toString("dd.MM.yyyy") << "\n";
-				textStream << "Model of glider: " << igcParser.model() << "\n";
-				
-				if(olcOptimizer.optimize())
+				if(file.open(IO_WriteOnly))
 				{
-					distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
-					ptsFree = distFree * 1.5;
-					distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
-					ptsFAI = distFAI  * 1.75;
-					distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
-					ptsFlat = distFlat * 2.0;
-					
-					if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
-					{
-						textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFree[0]) << "\n";
-						textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[1]) << "\n";
-						textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[2]) << "\n";
-						textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[3]) << "\n";
-						textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFree[4]) << "\n";
-						pts = ptsFree;
-						dist = distFree;
-					}
-					else if(ptsFlat > ptsFAI)
-					{
-						textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFlat[0]) << "\n";
-						textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[1]) << "\n";
-						textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[2]) << "\n";
-						textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[3]) << "\n";
-						textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFlat[4]) << "\n";
-						pts = ptsFlat;
-						dist = distFlat;
-					}
-					else
-					{
-						textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFAI[0]) << "\n";
-						textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[1]) << "\n";
-						textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[2]) << "\n";
-						textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[3]) << "\n";
-						textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFAI[4]) << "\n";
-						pts = ptsFAI;
-						dist = distFAI;
-					}
-					
-					textStream << "Flight distance: " << dist << " km\n";
-					textStream << "Points for the flight: " << pts << "\n";
-					textStream << "Comment Pilot: " << getTable()->text(row, Comment) << "\n";
+					file.writeBlock(igcData);
+					file.close();
 				}
+			
+				// OLC file
+				igcParser.parse(igcData);
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+				file.setName(fileName + ".olc");
 				
-				file.close();
+				if(file.open(IO_WriteOnly))
+				{
+					QTextStream textStream(&file);
+					
+					textStream << "Pilot: " << igcParser.pilot() << "\n";
+					textStream << "Take-off location: " << getTable()->text(row, StartPt) << "\n";
+					textStream << "Callsign: " << igcParser.gliderId() << "\n";
+					textStream << "IGC-filename: " << fileName << ".olc\n";
+					textStream << "Date of flight: " << igcParser.date().toString("dd.MM.yyyy") << "\n";
+					textStream << "Model of glider: " << igcParser.model() << "\n";
+					
+					if(olcOptimizer.optimize())
+					{
+						distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
+						ptsFree = distFree * 1.5;
+						distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
+						ptsFAI = distFAI  * 1.75;
+						distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
+						ptsFlat = distFlat * 2.0;
+						
+						if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
+						{
+							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFree[0]) << "\n";
+							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[1]) << "\n";
+							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[2]) << "\n";
+							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[3]) << "\n";
+							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFree[4]) << "\n";
+							pts = ptsFree;
+							dist = distFree;
+						}
+						else if(ptsFlat > ptsFAI)
+						{
+							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFlat[0]) << "\n";
+							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[1]) << "\n";
+							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[2]) << "\n";
+							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[3]) << "\n";
+							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFlat[4]) << "\n";
+							pts = ptsFlat;
+							dist = distFlat;
+						}
+						else
+						{
+							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFAI[0]) << "\n";
+							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[1]) << "\n";
+							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[2]) << "\n";
+							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[3]) << "\n";
+							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFAI[4]) << "\n";
+							pts = ptsFAI;
+							dist = distFAI;
+						}
+						
+						textStream << "Flight distance: " << dist << " km\n";
+						textStream << "Points for the flight: " << pts << "\n";
+						textStream << "Comment Pilot: " << getTable()->text(row, Comment) << "\n";
+					}
+					
+					file.close();
+				}
 			}
 		}
 		
