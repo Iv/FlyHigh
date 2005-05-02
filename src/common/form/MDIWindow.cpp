@@ -17,7 +17,7 @@ MDIWindow::MDIWindow(QWidget* parent, const char* name, int wflags)
 {
 	m_pUpdateTimer = new QTimer(this);
 	connect(m_pUpdateTimer, SIGNAL(timeout()), this, SLOT(updateTimeout()));
-	m_pUpdateTimer->start(UPDATE_TIME, true);
+	m_pUpdateTimer->start(0, true);
 }
 
 MDIWindow::~MDIWindow()
