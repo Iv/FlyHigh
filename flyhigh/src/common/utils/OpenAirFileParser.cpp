@@ -34,9 +34,12 @@ OpenAirFileParser::OpenAirFileParser()
 
 void OpenAirFileParser::parse(QByteArray &openAirData)
 {
+	typedef enum RecordType{Unspecified, OpenAirspace, Flytec};
+
 	QBuffer buff;
 	char record[MAX_REC_SIZE];
 	AirSpace airspace;
+	RecordType recordType = Unspecified;
 	
 	m_airspaceList.clear();
 	buff.setBuffer(openAirData);
@@ -45,13 +48,25 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 	{
 		while(buff.readLine(record, MAX_REC_SIZE) > 0)
 		{
-			if(strncmp(record, "AC", 2) == 0)
+			if(strncmp(record, "*## ", 4) == 0) // this is a Flytec airspace name
 			{
+				airspace.setName(record+4);
+				recordType = Flytec;
+			}
+			else if(strncmp(record, "AC", 2) == 0)
+			{
+				if(recordType == Unspecified)
+				{
+					recordType = OpenAirspace;
+				}
 				airspace.setAirspaceClass(record+3);
 			}
 			else if(strncmp(record, "AN", 2) == 0)
 			{
-				airspace.setName(record+3);
+				if(recordType != Flytec) // skip AN on Flytec record 
+				{
+					airspace.setName(record+3);
+				}
 			}
 			else if(strncmp(record, "AH", 2) == 0)
 			{
@@ -79,8 +94,17 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			}
 			else if(strncmp(record, "*\r", 2) == 0)
 			{
-				m_airspaceList.push_back(airspace);
-				airspace.edgePointList().clear();
+				if(recordType != Unspecified)
+				{
+					if(recordType == Flytec) // Flytec removes closing edgePoint
+					{
+						airspace.edgePointList().push_back(airspace.edgePointList().at(0));
+					}
+					
+					m_airspaceList.push_back(airspace);
+					airspace.edgePointList().clear();
+					recordType = Unspecified;
+				}
 			}
 		}
 		buff.close();
@@ -103,45 +127,6 @@ void OpenAirFileParser::parseAirspaceClass(char *record, AirSpace &airspace)
 	str = str.mid(begin, end-begin);
 
 	airspace.setAirspaceClass(str);
-}
-
-void OpenAirFileParser::parseName(char *record, AirSpace &airspace)
-{
-	QString str = record;
-	int begin;
-	int end;
-	
-	begin = str.find(' ') + 1;
-	end = str.find('\r');
-	str = str.mid(begin, end-begin);
-
-	airspace.setName(str);
-}
-
-void OpenAirFileParser::parseHigh(char *record, AirSpace &airspace)
-{
-	QString str = record;
-	int begin;
-	int end;
-	
-	begin = str.find(' ') + 1;
-	end = str.find('\r');
-	str = str.mid(begin, end-begin);
-
-	airspace.setHigh(str);
-}
-
-void OpenAirFileParser::parseLow(char *record, AirSpace &airspace)
-{
-	QString str = record;
-	int begin;
-	int end;
-	
-	begin = str.find(' ') + 1;
-	end = str.find('\r');
-	str = str.mid(begin, end-begin);
-
-	airspace.setLow(str);
 }
 
 void OpenAirFileParser::parseVarAssign(char *record)
