@@ -63,23 +63,21 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 	pTable->setColumnWidth(Comment, 200);
 	
 	m_lastModified = 0;
-	startTimer(1);
 }
 
-void ServicingWindow::timerEvent(QTimerEvent *pEvent)
+bool ServicingWindow::periodicalUpdate()
 {
 	int lastModified;
 	
-	if(pEvent != NULL)
+	lastModified = m_pDb->servicingsLastModified();
+	
+	if(m_lastModified < lastModified)
 	{
-		lastModified = m_pDb->servicingsLastModified();
-		
-		if(m_lastModified < lastModified)
-		{
-			file_update();
-			m_lastModified = lastModified;
-		}
+		file_update();
+		m_lastModified = lastModified;
 	}
+	
+	return true;
 }
 
 void ServicingWindow::file_update()

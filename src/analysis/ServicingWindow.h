@@ -32,7 +32,7 @@ class ServicingWindow: public TableWindow
 		ServicingWindow(QWidget* parent, const char* name, int wflags);
 		
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 	
 	private slots:
 		void file_update();

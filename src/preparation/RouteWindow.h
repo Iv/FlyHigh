@@ -34,7 +34,7 @@ class RouteWindow : public TableWindow
 		RouteWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
 
 	protected:
-		void timerEvent(QTimerEvent *pEvent);
+		bool periodicalUpdate();
 		
 	private slots:
 		void file_new();
