@@ -32,13 +32,6 @@ void IGCFileParser::parse(QByteArray &igcData)
 	#define MAX_REC_SIZE 50
 	QBuffer buff;
 	char record[MAX_REC_SIZE];
-	
-#ifdef _DEBUG
-	QFile debugFile("debugFile.igc");
-	debugFile.open(IO_WriteOnly);
-	debugFile.writeBlock(igcData);
-	debugFile.close();
-#endif
 
 	m_flightPointList.clear();
 	buff.setBuffer(igcData);
