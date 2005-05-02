@@ -7,13 +7,32 @@
 #include <qwidget.h>
 #include <qpopupmenu.h>
 #include <qstring.h>
+#include <qtimer.h>
 #include "MDIWindow.h"
+
+#define UPDATE_TIME 1000 // 1 second
 
 MDIWindow::MDIWindow(QWidget* parent, const char* name, int wflags)
    :QMainWindow(parent, name, wflags)
 {
+	m_pUpdateTimer = new QTimer(this);
+	connect(m_pUpdateTimer, SIGNAL(timeout()), this, SLOT(updateTimeout()));
+	m_pUpdateTimer->start(UPDATE_TIME, true);
 }
 
 MDIWindow::~MDIWindow()
 {
+}
+ 
+bool MDIWindow::periodicalUpdate()
+{
+	return false;
+}
+
+void MDIWindow::updateTimeout()
+{
+	if(periodicalUpdate())
+	{
+		m_pUpdateTimer->start(UPDATE_TIME, true);
+	}
 }
