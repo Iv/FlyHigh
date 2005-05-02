@@ -33,6 +33,7 @@
 #include "IGPSDevice.h"
 #include "Images.h"
 #include "IAirSpaceForm.h"
+#include "IFlyHighRC.h"
 #include "ISql.h"
 #include "OpenAirFileParser.h"
 
@@ -130,27 +131,33 @@ void AirSpaceWindow::file_import()
 	uint airspaceNr;
 	uint maxAirspaceNr;
 	
-	fileName = QFileDialog::getOpenFileName("", "OpenAir Files (*.*)", this);
-	file.setName(fileName);
+	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "OpenAir Files (*.txt; *.fas)", this,
+					"OpenAir Files", true);
 
-	if(file.open(IO_ReadOnly))
+	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		openAirData = file.readAll();
-		file.close();
-	
-		parser.parse(openAirData);
-		m_airSpaceList = parser.airspaceList();
-		maxAirspaceNr = m_airSpaceList.size();
-		pTable->setNumRows(0);
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		file.setName(fileDlg.selectedFile());
 		
-		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+		if(file.open(IO_ReadOnly))
 		{
-			pTable->insertRows(airspaceNr);
-			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
-		}
+			openAirData = file.readAll();
+			file.close();
 		
-		pTable->selectRow(0);
-		m_curAirSpace.show();
+			parser.parse(openAirData);
+			m_airSpaceList = parser.airspaceList();
+			maxAirspaceNr = m_airSpaceList.size();
+			pTable->setNumRows(0);
+			
+			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+			{
+				pTable->insertRows(airspaceNr);
+				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+			}
+		
+			pTable->selectRow(0);
+			m_curAirSpace.show();
+		}
 	}
 }
 
