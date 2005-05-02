@@ -96,11 +96,6 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			{
 				if(recordType != Unspecified)
 				{
-					if(recordType == Flytec) // Flytec removes closing edgePoint
-					{
-						airspace.edgePointList().push_back(airspace.edgePointList().at(0));
-					}
-					
 					m_airspaceList.push_back(airspace);
 					airspace.edgePointList().clear();
 					recordType = Unspecified;
