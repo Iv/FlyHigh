@@ -46,6 +46,7 @@
 #include "Images.h"
 #include "IGCFileParser.h"
 #include "OLCOptimizer.h"
+#include "OLCWebForm.h"
 
 FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -451,15 +452,14 @@ void FlightWindow::file_export()
 	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
+	OLCWebForm olcWebForm;
 	FlightPointList fpList;
 	double distFree;
 	double distFAI;
 	double distFlat;
-	double dist;
 	double ptsFree;
 	double ptsFAI;
 	double ptsFlat;
-	double pts;
 	int row;
 	
 	row = getTable()->currentRow();
@@ -467,22 +467,21 @@ void FlightWindow::file_export()
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-			
+		
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			// IGC file
 			igcParser.parse(igcData);
 			
-			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (*.igc; *.olc)", this,
+			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (igc.*)", this,
 					"IGC file export", true);
 			
-			fileName = getOLCchar(igcParser.date().year() % 100);
-			fileName += getOLCchar(igcParser.date().month());
-			fileName += getOLCchar(igcParser.date().day());
-			fileName += igcParser.pilot().left(4);
-			fileName += "1";
+			olcWebForm.setPilot(igcParser.pilot());
+			olcWebForm.setDate(igcParser.date());
+			olcWebForm.olcFileName(fileName);
 			
 			fileDlg.setSelection(fileName);
+			fileDlg.setMode(QFileDialog::AnyFile);
 
 			if(fileDlg.exec() == QDialog::Accepted)
 			{
@@ -498,66 +497,48 @@ void FlightWindow::file_export()
 				
 				// OLC file
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-				file.setName(fileName + ".olc");
 				
-				if(file.open(IO_WriteOnly))
+				olcWebForm.setTakeOffLoc(getTable()->text(row, StartPt));
+				olcWebForm.setCallSign(igcParser.gliderId());
+				olcWebForm.setGlider(igcParser.model());
+				olcWebForm.setComment(getTable()->text(row, Comment));
+				
+				if(olcOptimizer.optimize())
 				{
-					QTextStream textStream(&file);
+					distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
+					ptsFree = distFree * 1.5;
+					distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
+					ptsFAI = distFAI  * 1.75;
+					distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
+					ptsFlat = distFlat * 2.0;
 					
-					textStream << "Pilot: " << igcParser.pilot() << "\n";
-					textStream << "Take-off location: " << getTable()->text(row, StartPt) << "\n";
-					textStream << "Callsign: " << igcParser.gliderId() << "\n";
-					textStream << "IGC-filename: " << fileName << ".olc\n";
-					textStream << "Date of flight: " << igcParser.date().toString("dd.MM.yyyy") << "\n";
-					textStream << "Model of glider: " << igcParser.model() << "\n";
-					
-					if(olcOptimizer.optimize())
+					if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
 					{
-						distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
-						ptsFree = distFree * 1.5;
-						distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
-						ptsFAI = distFAI  * 1.75;
-						distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
-						ptsFlat = distFlat * 2.0;
-						
-						if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
-						{
-							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFree[0]) << "\n";
-							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[1]) << "\n";
-							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[2]) << "\n";
-							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFree[3]) << "\n";
-							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFree[4]) << "\n";
-							pts = ptsFree;
-							dist = distFree;
-						}
-						else if(ptsFlat > ptsFAI)
-						{
-							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFlat[0]) << "\n";
-							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[1]) << "\n";
-							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[2]) << "\n";
-							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFlat[3]) << "\n";
-							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFlat[4]) << "\n";
-							pts = ptsFlat;
-							dist = distFlat;
-						}
-						else
-						{
-							textStream << "Departure: " << olcOptimizer.flyPointList().at(fpIndexListFAI[0]) << "\n";
-							textStream << "1st waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[1]) << "\n";
-							textStream << "2nd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[2]) << "\n";
-							textStream << "3rd waypoint: " << olcOptimizer.flyPointList().at(fpIndexListFAI[3]) << "\n";
-							textStream << "Finish: " << olcOptimizer.flyPointList().at(fpIndexListFAI[4]) << "\n";
-							pts = ptsFAI;
-							dist = distFAI;
-						}
-						
-						textStream << "Flight distance: " << dist << " km\n";
-						textStream << "Points for the flight: " << pts << "\n";
-						textStream << "Comment Pilot: " << getTable()->text(row, Comment) << "\n";
+						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFree[0]));
+						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[1]).wp);
+						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[2]).wp);
+						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[3]).wp);
+						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFree[4]));
 					}
-					
-					file.close();
+					else if(ptsFlat > ptsFAI)
+					{
+						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
+						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[1]).wp);
+						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[2]).wp);
+						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[3]).wp);
+						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
+					}
+					else
+					{
+						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
+						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[1]).wp);
+						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[2]).wp);
+						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[3]).wp);
+						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
+					}
 				}
+					
+				olcWebForm.save(fileName + ".html");
 			}
 		}
 		
@@ -819,24 +800,4 @@ void FlightWindow::plot_3d()
 			}
 		}
 	}
-}
-
-char FlightWindow::getOLCchar(int value)
-{
-	char resChar;
-	
-	if((value >= 0) && (value <=9))
-	{
-		resChar = '0' + value;
-	}
-	else if((value >= 10) && (value <=31))
-	{
-		resChar = 'a' + value - 10;
-	}
-	else
-	{
-		resChar = '0';
-	}
-	
-	return resChar;
 }
