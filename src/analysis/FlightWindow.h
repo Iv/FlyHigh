@@ -64,7 +64,6 @@ class FlightWindow : public TableWindow
 		
 		void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
-		char getOLCchar(int value);
 };
 
 #endif
