@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>424</width>
+            <width>473</width>
             <height>387</height>
         </rect>
     </property>
@@ -31,57 +31,6 @@
             <string>Pilot Name</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEdit_PilotName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>30</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-        <property name="maxLength">
-            <number>16</number>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_GliderType</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>80</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Glider Type</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_GliderID</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>130</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Glider ID</string>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel_SerialNr</cstring>
@@ -96,25 +45,6 @@
         </property>
         <property name="text">
             <string>Serial Number</string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEdit_SerialNr</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>180</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
         </property>
     </widget>
     <widget class="QLabel">
@@ -133,25 +63,6 @@
             <string>Device Identifier</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEdit_DeviceIdent</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>230</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel_SwVersion</cstring>
@@ -168,42 +79,36 @@
             <string>Software Version</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>lineEdit_SwVersion</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
+            <cstring>textLabel_GliderID</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
-                <y>280</y>
-                <width>160</width>
+                <x>40</x>
+                <y>130</y>
+                <width>150</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string></string>
+            <string>Call Sign</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>lineEdit_GliderType</cstring>
+            <cstring>textLabelModel</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
+                <x>40</x>
                 <y>80</y>
-                <width>160</width>
+                <width>94</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string></string>
-        </property>
-        <property name="maxLength">
-            <number>16</number>
+            <string>Model of glider</string>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -212,7 +117,7 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
+                <x>190</x>
                 <y>130</y>
                 <width>160</width>
                 <height>20</height>
@@ -225,7 +130,123 @@
             <number>16</number>
         </property>
     </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_DeviceIdent</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>230</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_SerialNr</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>180</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_SwVersion</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>280</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_PilotName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>30</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="maxLength">
+            <number>16</number>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBoxModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>74</y>
+                <width>160</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonGlider</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>370</x>
+                <y>74</y>
+                <width>60</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>new...</string>
+        </property>
+    </widget>
 </widget>
+<connections>
+    <connection>
+        <sender>pushButtonGlider</sender>
+        <signal>clicked()</signal>
+        <receiver>DeviceFrame</receiver>
+        <slot>newGlider()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>newGlider()</slot>
+</slots>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
