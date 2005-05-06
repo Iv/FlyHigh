@@ -35,6 +35,7 @@ class Glider
 		void setManufacturer(const QString &manu);
 		const QString& model();
 		void setModel(const QString &model);
+		void modelOfGlider(QString &name);
 		
 		Glider& operator=(const Glider &glider);
 		
