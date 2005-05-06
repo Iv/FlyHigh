@@ -44,7 +44,7 @@ class OLCWebForm
 		void setComment(const QString &comment);
 		
 		bool save(const QString & name);
-		void olcFileName(QString &fileName); // without .igc (setPilot() and setDate() must be called!)
+		void olcFileName(QString &fileName); // without file ending (setPilot() and setDate() must be called before!)
 		
 	private:
 		QString m_firstName;
@@ -60,8 +60,20 @@ class OLCWebForm
 		FlightPointList::FlightPointType m_finish;
 		QString m_comment;
 		
-		void streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp);
+		void streamHead(QTextStream& s);
+		void streamName(QTextStream& s);
+		void streamTakeoffLoc(QTextStream& s);
+		void streamCallsign(QTextStream& s);
+		void streamTrack(QTextStream& s);
 		void streamFlightDate(QTextStream& s);
+		void streamModel(QTextStream& s);
+		void streamTakeOffTime(QTextStream& s);
+		void streamDepartureTime(QTextStream& s);
+		void streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp);
+		void streamFinishTime(QTextStream& s);
+		void streamComment(QTextStream& s);
+		void streamSubmit(QTextStream& s);
+		
 		char getOLCchar(int value);
 };
 
