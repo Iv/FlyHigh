@@ -52,7 +52,6 @@ class FlightPointList
 		int duration(uint index1, uint index2);
 		
 		FlightPointType& operator[] (int index);
-		friend QTextStream& operator<<(QTextStream &s, const FlightPointType &flightPt);
 		FlightPointType& at(int index);
 
 	private:
