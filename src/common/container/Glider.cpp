@@ -46,6 +46,13 @@ void Glider::setModel(const QString &model)
 	m_model = model;
 }
 
+void Glider::modelOfGlider(QString &name)
+{
+	name = manufacturer();
+	name += " ";
+	name += model();
+}
+
 Glider& Glider::operator=(const Glider &glider)
 {
 	m_manu = glider.m_manu;
