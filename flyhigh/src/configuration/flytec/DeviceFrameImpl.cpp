@@ -18,7 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <qcombobox.h>
 #include <qlineedit.h>
+#include "Glider.h"
+#include "IGliderForm.h"
+#include "ISql.h"
 
 #include "DeviceFrameImpl.h"
 extern "C"
@@ -29,10 +33,23 @@ extern "C"
 DeviceFrameImpl::DeviceFrameImpl(QWidget* parent, const char* name, WFlags fl)
 : DeviceFrame(parent,name,fl)
 {
+	updateGlider();
 }
 
 DeviceFrameImpl::~DeviceFrameImpl()
 {
+}
+
+void DeviceFrameImpl::newGlider()
+{
+	Glider glider;
+	IGliderForm newGlider(this, "New Glider", &glider);
+	
+	if(newGlider.exec())
+	{
+		ISql::pInstance()->add(glider);
+		updateGlider();
+	}
 }
 
 void DeviceFrameImpl::update(QByteArray &arr)
@@ -53,8 +70,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	lineEdit_PilotName->setText(qstr);
 	
 	ft_ftstring2string(str, (char*)&arr[GLYDER_TYPE_POS]);
-	qstr = str;
-	lineEdit_GliderType->setText(qstr);
+	selectGlider(str);
 
 	ft_ftstring2string(str, (char*)&arr[GLYDER_ID_POS]);
 	qstr = str;
@@ -68,13 +84,51 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	qstr = lineEdit_PilotName->text();
 	ft_string2ftstring(qstr.ascii(), (char*)&arr[PILOT_NAME_POS]);
 	
-	qstr = lineEdit_GliderType->text();
+//	qstr = lineEdit_GliderType->text();
+	qstr = comboBoxModel->currentText();
 	ft_string2ftstring(qstr.ascii(), (char*)&arr[GLYDER_TYPE_POS]);
 
 	qstr = lineEdit_GliderID->text();
 	ft_string2ftstring(qstr.ascii(), (char*)&arr[GLYDER_ID_POS]);
 }
 
+void DeviceFrameImpl::updateGlider()
+{
+	QStringList list;
+	QString gliderModel;
+	Glider::GliderListType gliderList;
+	Glider::GliderListType::iterator it;
+	
+	ISql::pInstance()->gliderList(gliderList);
+	comboBoxModel->clear();
+	
+	for(it=gliderList.begin(); it!=gliderList.end(); it++)
+	{
+		(*it).modelOfGlider(gliderModel);
+		comboBoxModel->insertItem(gliderModel);
+	}
+}
+
+void DeviceFrameImpl::selectGlider(const QString &name)
+{
+	QString str;
+	int index;
+	int maxIndex;
+	bool found = false;
+	
+	maxIndex = comboBoxModel->count();
+	
+	for(index=0; index<maxIndex; index++)
+	{
+		found = (comboBoxModel->text(index) == name);
+		
+		if(found)
+		{
+			comboBoxModel->setCurrentItem(index);
+			break;
+		}
+	}
+}
 
 #include "DeviceFrameImpl.moc"
 
