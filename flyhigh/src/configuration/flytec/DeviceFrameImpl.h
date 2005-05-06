@@ -31,9 +31,16 @@ class DeviceFrameImpl: public DeviceFrame, public Frame
 	public:
 		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
 		~DeviceFrameImpl();
-
+		
 		void update(QByteArray &arr);
 		void store(QByteArray &arr);
+		
+	protected slots:
+		void newGlider();
+		
+	private:
+		void updateGlider();
+		void selectGlider(const QString &name);
 };
 
 #endif
