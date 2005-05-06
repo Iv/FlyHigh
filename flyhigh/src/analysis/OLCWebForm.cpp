@@ -100,107 +100,32 @@ bool OLCWebForm::save(const QString & name)
 	
 		s << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" >\n";
 		s << "<HTML>\n";
-		s << "<HEAD>\n";
-		s << "	<TITLE>HGPG Online-CONTEST International flight claim</TITLE>\n";
-		s << "	<META http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n";
-		s << "	<LINK href=\"/holc/css/styles.css\" rel=\"stylesheet\" type=\"text/css\">\n";
-		s << "	<STYLE type=\"text/css\">\n";
-		s << "		<!--\n";
-		s << "			.navi { font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: normal; text-decoration: none}\n";
-		s << "			.ta { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
-		s << "			.td { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
-		s << "			.td { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
-		s << "		-->\n";
-		s << "	</STYLE>\n";
-		s << "</HEAD>\n";
+		
+		streamHead(s);
+		
 		s << "<BODY bgcolor=\"#FFFFFF\" text=\"#000000\" link=\"#0000CC\" vlink=\"#0000CC\" alink=\"#0000CC\" leftmargin=\"0\" topmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">\n";
 		s << "	<CENTER>\n";
 		s << "		<FONT FACE=Arial COLOR='#666666' SIZE='+2'><B> flight claim for <i>HGPG</i> Online-<i>CONTEST</i> International 2005</B></FONT><BR>\n";
 		s << "		<FORM action=\"http://www.onlinecontest.org/olc-cgi/2005/holc-i/olc\" method=get>\n";
 		s << "			<TABLE>\n";
-		s << "				<TR>\n";
-		s << "				<TD>First/Given name </TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "				<INPUT TYPE=TEXT MAXLENGTH=60 SIZE=60 NAME=\"OLCvnolc\" VALUE=\"" << m_firstName << "\">\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Surname</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=TEXT MAXLENGTH=60 SIZE=60 NAME=\"na\" VALUE=\"" << m_surName << "\">\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Take-off location</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"20\" SIZE=\"20\" NAME=\"sta\" VALUE=\"" << m_takeoffLoc << "\">&nbsp;&nbsp;no ICAO-identifiers please!\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Callsign</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"20\" SIZE=\"20\" NAME=\"gid\" VALUE=\"" << m_callsign <<"\">\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
 		
-		// IGC file name
-		s << "			<TR>\n";
-		olcFileName(str);
-		
-		s << "				<TD>IGC-filename</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"igcfn\" VALUE=\"" << str <<"\">.igc\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		
-		// flight date
+		streamName(s);
+		streamTakeoffLoc(s);
+		streamCallsign(s);
+		streamTrack(s);
 		streamFlightDate(s);
-		
-		s << "			<TR>\n";
-		s << "				<TD>Model of glider</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"50\" SIZE=\"50\" NAME=\"gty\" VALUE=\"" << m_glider << "\">&nbsp;&nbsp;&nbsp;&nbsp;enter [manufacturer glidertype]\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Take-off time</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"t0\" VALUE=\"" << m_departure.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Departure time</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"s0\" VALUE=\"" << m_departure.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>\n";
-	
+		streamModel(s);
+		streamTakeOffTime(s);
+		streamDepartureTime(s);
 		streamWayPoint(s, 0, m_departure.wp);
 		streamWayPoint(s, 1, m_1stWayPoint);
 		streamWayPoint(s, 2, m_2ndWayPoint);
 		streamWayPoint(s, 3, m_3rdWayPoint);
 		streamWayPoint(s, 4, m_finish.wp);
-	
-		s << "			<TR>\n";
-		s << "				<TD>Finish time</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"s4\" VALUE=\"" << m_finish.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD>Comment Pilot</TD>\n";
-		s << "				<TD COLSPAN=2>\n";
-		s << "					<TEXTAREA ROWS=\"5\" COLS=\"60\" NAME=\"cpilo\" VALUE=\"" << m_comment << "\"></TEXTAREA>\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
-		s << "			<TR>\n";
-		s << "				<TD></TD>\n";
-		s << "				<TD>\n";
-		s << "					<INPUT TYPE=\"SUBMIT\" NAME=\"test\" VALUE=\"Check entry\"> &nbsp;\n";
-		s << "				</TD>\n";
-		s << "			</TR>\n";
+		streamFinishTime(s);
+		streamComment(s);
+		streamSubmit(s);
+		
 		s << "			</TABLE>\n";
 		s << "		</FORM>\n";
 		s << "	</CENTER>\n";
@@ -220,6 +145,123 @@ void OLCWebForm::olcFileName(QString &fileName)
 	fileName += getOLCchar(m_date.day());
 	fileName += m_surName.left(4).lower();
 	fileName += "1";
+}
+
+void OLCWebForm::streamHead(QTextStream& s)
+{
+	s << "<HEAD>\n";
+	s << "	<TITLE>HGPG Online-CONTEST International flight claim</TITLE>\n";
+	s << "	<META http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n";
+	s << "	<LINK href=\"/holc/css/styles.css\" rel=\"stylesheet\" type=\"text/css\">\n";
+	s << "	<STYLE type=\"text/css\">\n";
+	s << "		<!--\n";
+	s << "			.navi { font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: normal; text-decoration: none}\n";
+	s << "			.ta { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
+	s << "			.td { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
+	s << "			.td { font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; text-decoration: none}\n";
+	s << "		-->\n";
+	s << "	</STYLE>\n";
+	s << "</HEAD>\n";
+}
+
+void OLCWebForm::streamName(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>First/Given name </TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=TEXT MAXLENGTH=60 SIZE=60 NAME=\"OLCvnolc\" VALUE=\"" << m_firstName << "\">\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+	s << "			<TR>\n";
+	s << "				<TD>Surname</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=TEXT MAXLENGTH=60 SIZE=60 NAME=\"na\" VALUE=\"" << m_surName << "\">\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamTakeoffLoc(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Take-off location</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"20\" SIZE=\"20\" NAME=\"sta\" VALUE=\"" << m_takeoffLoc << "\">&nbsp;&nbsp;no ICAO-identifiers please!\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamCallsign(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Callsign</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"20\" SIZE=\"20\" NAME=\"gid\" VALUE=\"" << m_callsign <<"\">\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamTrack(QTextStream& s)
+{
+	QString str;
+	
+	olcFileName(str);
+	
+	s << "			<TR>\n";
+	s << "				<TD>IGC-filename</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"igcfn\" VALUE=\"" << str <<"\">.igc\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamFlightDate(QTextStream& s)
+{
+	QDate refDate(2005, 5, 1);  // <OPTION VALUE=147678 > 1 May 2005 551 &nbsp;OLC\n";
+	const int refDays = 147678;
+	QString str;
+	int daysTo;
+	
+	daysTo = refDate.daysTo(m_date);
+	str.sprintf("%i", refDays + daysTo);
+
+	s << "			<TR>\n";
+	s << "				<TD>Date of flight</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<SELECT NAME=\"ft\" >\n";
+	s << "						<OPTION VALUE=" << str << " SELECTED> " << m_date.toString("d MMM yyyy") << "&nbsp;OLC\n";
+	s << "					</SELECT>\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamModel(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Model of glider</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"50\" SIZE=\"50\" NAME=\"gty\" VALUE=\"" << m_glider << "\">&nbsp;&nbsp;&nbsp;&nbsp;enter [manufacturer glidertype]\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamTakeOffTime(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Take-off time</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"t0\" VALUE=\"" << m_departure.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamDepartureTime(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Departure time</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"s0\" VALUE=\"" << m_departure.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
 }
 
 void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
@@ -329,30 +371,32 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	s << "			</TR>\n";
 }
 
-void OLCWebForm::streamFlightDate(QTextStream& s)
+void OLCWebForm::streamFinishTime(QTextStream& s)
 {
-// igcParser.date().toString("dd.MM.yyyy")
-
 	s << "			<TR>\n";
-	s << "				<TD>Date of flight</TD>\n";
+	s << "				<TD>Finish time</TD>\n";
 	s << "				<TD COLSPAN=2>\n";
-	s << "					<SELECT NAME=\"ft\" >\n";
-	s << "						<OPTION VALUE=147666 >19 April 2005 54J &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147667 >20 April 2005 54K &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147668 >21 April 2005 54L &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147669 >22 April 2005 54M &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147670 >23 April 2005 54N &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147671 >24 April 2005 54O &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147672 >25 April 2005 54P &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147673 >26 April 2005 54Q &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147674 >27 April 2005 54R &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147675 >28 April 2005 54S &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147676 >29 April 2005 54T &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147677 >30 April 2005 54U &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147678 > 1 May 2005 551 &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147679 > 2 May 2005 552 &nbsp;OLC\n";
-	s << "						<OPTION VALUE=147680 SELECTED> 3 May 2005 553 &nbsp;OLC\n";
-	s << "					</SELECT>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"s4\" VALUE=\"" << m_finish.time.toString(Qt::ISODate) << "\">(hh:mm:ss) (UTC)\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamComment(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Comment Pilot</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<TEXTAREA ROWS=\"5\" COLS=\"60\" NAME=\"cpilo\" VALUE=\"" << m_comment << "\"></TEXTAREA>\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamSubmit(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD></TD>\n";
+	s << "				<TD>\n";
+	s << "					<INPUT TYPE=\"SUBMIT\" NAME=\"test\" VALUE=\"Check entry\"> &nbsp;\n";
 	s << "				</TD>\n";
 	s << "			</TR>\n";
 }
