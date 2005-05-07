@@ -160,13 +160,12 @@ void FlightWindow::file_update()
 	uint flightNr;
 	uint maxFlightNr;
 
-	pTable->setNumRows(0);
 	m_pDb->flightList(flightList);
 	maxFlightNr = flightList.size();
+	pTable->setNumRows(maxFlightNr);
 	
 	for(flightNr=0; flightNr<maxFlightNr; flightNr++)
 	{
-		pTable->insertRows(flightNr);
 		setFlightToRow(flightNr, flightList[flightNr]);
 	}
 }
