@@ -130,7 +130,9 @@ void WayPointWindow::file_AddToGps()
 	
 	if(setCurRowToWp(wp))
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		IGPSDevice::pInstance()->add(wp);
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -142,7 +144,9 @@ void WayPointWindow::file_delete()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delWayPoint(getTable()->text(row, Name));
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -156,7 +160,9 @@ void WayPointWindow::file_AddToSqlDB()
 		
 		if(wayPointForm.exec())
 		{
+			TableWindow::setCursor(QCursor(Qt::WaitCursor));
 			ISql::pInstance()->add(wp);
+			TableWindow::unsetCursor();
 		}
 	}
 }

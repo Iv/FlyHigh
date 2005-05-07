@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
+#include <qcursor.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qtable.h>
@@ -87,7 +88,9 @@ void ServicingWindow::file_update()
 	QString str;
 	uint servNr;
 	uint maxServNr;
-
+	
+	TableWindow::setCursor(QCursor(Qt::WaitCursor));
+	
 	if(m_pDb->servicingList(servList))
 	{
 		maxServNr = servList.size();
@@ -103,6 +106,8 @@ void ServicingWindow::file_update()
 			pTable->setText(servNr, Comment, servList[servNr].comment());
 		}
 	}
+	
+	TableWindow::unsetCursor();
 }
 
 void ServicingWindow::file_new()
@@ -112,7 +117,9 @@ void ServicingWindow::file_new()
 	
 	if(newServicing.exec())
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		ISql::pInstance()->add(serv);
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -125,7 +132,9 @@ void ServicingWindow::file_delete()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		nr = getTable()->text(row, Nr).toInt();
 		m_pDb->delServicing(nr);
+		TableWindow::unsetCursor();
 	}
 }
