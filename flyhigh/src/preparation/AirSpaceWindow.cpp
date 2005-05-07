@@ -198,7 +198,11 @@ void AirSpaceWindow::file_AddToGPS()
 	int row;
 	
 	row = getTable()->currentRow();
-	IGPSDevice::pInstance()->add(m_airSpaceList.at(row));
+	
+	if(row >= 0)
+	{
+		IGPSDevice::pInstance()->add(m_airSpaceList.at(row));
+	}
 }
 
 void AirSpaceWindow::file_AddToSqlDB()
@@ -210,21 +214,25 @@ void AirSpaceWindow::file_AddToSqlDB()
 	bool ok;
 	
 	row = pTable->currentRow();
-	airSpaceName = pTable->text(row, Name);
-	command.sprintf("AirSpace Name must be < %i characters.", AirSpace::MaxNameSize);
 	
-	while(airSpaceName.length() > AirSpace::MaxNameSize)
+	if(row >= 0)
 	{
-		airSpaceName = QInputDialog::getText("AirSpace Name", command, QLineEdit::Normal, airSpaceName, &ok, this);
+		airSpaceName = pTable->text(row, Name);
+		command.sprintf("AirSpace Name must be < %i characters.", AirSpace::MaxNameSize);
 		
-		if(!ok)
+		while(airSpaceName.length() > AirSpace::MaxNameSize)
 		{
-			return;
+			airSpaceName = QInputDialog::getText("AirSpace Name", command, QLineEdit::Normal, airSpaceName, &ok, this);
+			
+			if(!ok)
+			{
+				return;
+			}
 		}
+		
+		m_airSpaceList.at(row).setName(airSpaceName);
+		ISql::pInstance()->add(m_airSpaceList.at(row));
 	}
-	
-	m_airSpaceList.at(row).setName(airSpaceName);
-	ISql::pInstance()->add(m_airSpaceList.at(row));
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
