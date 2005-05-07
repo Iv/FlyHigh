@@ -92,7 +92,7 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			{
 				parseCircle(record+3, airspace);
 			}
-			else if(strncmp(record, "*\r", 2) == 0)
+			else if(strncmp(record, "*", 1) == 0)
 			{
 				if(recordType != Unspecified)
 				{
