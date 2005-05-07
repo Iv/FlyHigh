@@ -239,5 +239,8 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
 
 void AirSpaceWindow::currentChanged(int row, int col)
 {
-	m_curAirSpace.setAirSpace(&(m_airSpaceList.at(row)));
+	if(row < m_airSpaceList.size())
+	{
+		m_curAirSpace.setAirSpace(&(m_airSpaceList.at(row)));
+	}
 }
