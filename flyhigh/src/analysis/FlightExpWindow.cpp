@@ -86,18 +86,16 @@ void FlightExpWindow::file_update()
 	uint flightsTotal = 0;
 	uint airtimeTotal = 0;
 
-	pTable->setNumRows(0);
-	
 	if(m_pDb->flightsPerYear(fpyList))
 	{
 		maxYearNr = fpyList.size();
+		pTable->setNumRows(maxYearNr);
 		
 		if(maxYearNr > 0)
 		{
 			// statistics
 			for(yearNr=0; yearNr<maxYearNr; yearNr++)
 			{
-				pTable->insertRows(yearNr);
 				str.sprintf("%i", fpyList[yearNr].year);
 				pTable->setText(yearNr, Year, str);
 				str.sprintf("%i", fpyList[yearNr].nFlights);

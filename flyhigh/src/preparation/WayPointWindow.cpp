@@ -112,13 +112,12 @@ void WayPointWindow::file_update()
 
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
-	pTable->setNumRows(0);
 	m_pDb->wayPointList(wpList);
 	maxWpNr = wpList.size();
+	pTable->setNumRows(maxWpNr);
 	
 	for(wpNr=0; wpNr<maxWpNr; wpNr++)
 	{
-		pTable->insertRows(wpNr);
 		setWpToRow(wpNr, wpList[wpNr]);
 	}
 	

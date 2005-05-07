@@ -119,13 +119,12 @@ void RouteWindow::file_update()
 
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
-	pTable->setNumRows(0);
 	m_pDb->routeList(routeList);
 	maxRouteNr = routeList.size();
+	pTable->setNumRows(maxRouteNr);
 	
 	for(routeNr=0; routeNr<maxRouteNr; routeNr++)
 	{
-		pTable->insertRows(routeNr);
 		setRouteToRow(routeNr, routeList[routeNr]);
 	}
 	
