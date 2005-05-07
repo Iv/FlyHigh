@@ -60,7 +60,7 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 	pTable->setColumnWidth(Glider, 100);
 	pTable->setColumnWidth(Date, 80);
 	pTable->setColumnWidth(Responsibility, 100);
-	pTable->setColumnWidth(Comment, 200);
+	pTable->setColumnWidth(Comment, 800);
 	
 	m_lastModified = 0;
 }
@@ -88,15 +88,13 @@ void ServicingWindow::file_update()
 	uint servNr;
 	uint maxServNr;
 
-	pTable->setNumRows(0);
-	
 	if(m_pDb->servicingList(servList))
 	{
 		maxServNr = servList.size();
+		pTable->setNumRows(maxServNr);
 		
 		for(servNr=0; servNr<maxServNr; servNr++)
 		{
-			pTable->insertRows(servNr);
 			str.sprintf("%i", servList[servNr].nr());
 			pTable->setText(servNr, Nr, str);
 			pTable->setText(servNr, Glider, servList[servNr].glider());
