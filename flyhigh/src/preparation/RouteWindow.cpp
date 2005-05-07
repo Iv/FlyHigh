@@ -105,7 +105,9 @@ void RouteWindow::file_delete()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delRoute(getTable()->text(row, Name));
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	}
 }
 
@@ -119,6 +121,7 @@ void RouteWindow::file_update()
 
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
+	pTable->setNumRows(0); // clear table, because of different nr of waypoints
 	m_pDb->routeList(routeList);
 	maxRouteNr = routeList.size();
 	pTable->setNumRows(maxRouteNr);
@@ -138,7 +141,9 @@ void RouteWindow::file_new()
 	
 	if(routeForm.exec())
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		ISql::pInstance()->add(route);
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -155,6 +160,7 @@ void RouteWindow::file_AddToGPS()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		name = getTable()->text(row, Name);
 		
 		if(ISql::pInstance()->route(name, route))
@@ -172,6 +178,8 @@ void RouteWindow::file_AddToGPS()
 			// Route
 			IGPSDevice::pInstance()->add(route);
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -188,6 +196,8 @@ void RouteWindow::file_AddToSqlDB()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
 		// Coordinates
 		str = getTable()->text(row, Name);
 		
@@ -210,6 +220,8 @@ void RouteWindow::file_AddToSqlDB()
 		{
 			ISql::pInstance()->add(wp);
 		}
+		
+		TableWindow::unsetCursor();
 	}
 	*/
 }

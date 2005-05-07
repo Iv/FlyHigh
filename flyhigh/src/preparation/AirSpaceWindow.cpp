@@ -136,6 +136,8 @@ void AirSpaceWindow::file_import()
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
 		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
 		file.setName(fileDlg.selectedFile());
 		
@@ -157,6 +159,8 @@ void AirSpaceWindow::file_import()
 			pTable->selectRow(0);
 			m_curAirSpace.show();
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -168,7 +172,9 @@ void AirSpaceWindow::file_delete()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delAirSpace(getTable()->text(row, Name));
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -201,7 +207,9 @@ void AirSpaceWindow::file_AddToGPS()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		IGPSDevice::pInstance()->add(m_airSpaceList.at(row));
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -217,6 +225,8 @@ void AirSpaceWindow::file_AddToSqlDB()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		
 		airSpaceName = pTable->text(row, Name);
 		command.sprintf("AirSpace Name must be < %i characters.", AirSpace::MaxNameSize);
 		
@@ -232,6 +242,7 @@ void AirSpaceWindow::file_AddToSqlDB()
 		
 		m_airSpaceList.at(row).setName(airSpaceName);
 		ISql::pInstance()->add(m_airSpaceList.at(row));
+		TableWindow::unsetCursor();
 	}
 }
 
