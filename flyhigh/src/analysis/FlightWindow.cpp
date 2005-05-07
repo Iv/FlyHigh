@@ -159,6 +159,8 @@ void FlightWindow::file_update()
 	QTable *pTable = TableWindow::getTable();
 	uint flightNr;
 	uint maxFlightNr;
+	
+	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
 	m_pDb->flightList(flightList);
 	maxFlightNr = flightList.size();
@@ -168,6 +170,8 @@ void FlightWindow::file_update()
 	{
 		setFlightToRow(flightNr, flightList[flightNr]);
 	}
+	
+	TableWindow::unsetCursor();
 }
 
 void FlightWindow::setFlightToRow(uint row, Flight &flight)
@@ -344,6 +348,8 @@ void FlightWindow::file_import()
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
 		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
 		file.setName(fileDlg.selectedFile());
 		
@@ -437,6 +443,8 @@ void FlightWindow::file_import()
 				ISql::pInstance()->add(flight);
 			}
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -560,7 +568,9 @@ void FlightWindow::file_new()
 	
 	if(newFlightForm.exec())
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		ISql::pInstance()->add(flight);
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -572,7 +582,9 @@ void FlightWindow::file_delete()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delFlight(getTable()->text(row, Nr).toInt());
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	}
 }
 
@@ -592,6 +604,8 @@ void FlightWindow::plot_speedVsTime()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+	
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			igcParser.parse(igcData);
@@ -602,7 +616,6 @@ void FlightWindow::plot_speedVsTime()
 			{
 				x.push_back(fpList[fpNr].time);
 				y.push_back(fpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
-//				x.push_back(fpList[fpNr].time.hour()*3600 + fpList[fpNr].time.minute()*60 + fpList[fpNr].time.second());
 			}
 		
 			m_plotter.clear();
@@ -610,6 +623,8 @@ void FlightWindow::plot_speedVsTime()
 			m_plotter.setLabelY("speed [km/h]");
 			m_plotter.plotXY(x, y, "Speed vs Time");
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -629,6 +644,8 @@ void FlightWindow::plot_altVsTime()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			igcParser.parse(igcData);
@@ -646,6 +663,8 @@ void FlightWindow::plot_altVsTime()
 			m_plotter.setLabelY("altitude [m]");
 			m_plotter.plotXY(x, y, "Altitude vs Time");
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -665,6 +684,8 @@ void FlightWindow::plot_varioVsTime()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			igcParser.parse(igcData);
@@ -682,6 +703,8 @@ void FlightWindow::plot_varioVsTime()
 			m_plotter.setLabelY("vario [m/s]");
 			m_plotter.plotXY(x, y, "Vario vs Time");
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 
@@ -701,6 +724,8 @@ void FlightWindow::plot_OLC()
 	
 	if(row >= 0)
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			igcParser.parse(igcData);
@@ -748,6 +773,8 @@ void FlightWindow::plot_OLC()
 				plotFlighPointList(fpList, title);
 			}
 		}
+		
+		TableWindow::unsetCursor();
 	}
 }
 

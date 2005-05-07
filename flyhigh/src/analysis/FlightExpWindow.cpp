@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <qcursor.h>
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qstringlist.h>
@@ -85,6 +86,8 @@ void FlightExpWindow::file_update()
 	uint maxYearNr;
 	uint flightsTotal = 0;
 	uint airtimeTotal = 0;
+	
+	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
 	if(m_pDb->flightsPerYear(fpyList))
 	{
@@ -123,4 +126,6 @@ void FlightExpWindow::file_update()
 			pTable->setText(yearNr+1, Airtime, str);
 		}
 	}
+	
+	TableWindow::unsetCursor();
 }
