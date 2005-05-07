@@ -31,8 +31,10 @@ const QString& AirSpace::name()
 
 void AirSpace::setName(const QString &name)
 {
-	m_name = name;
-	m_name.remove('#');
+	QString locName = name;
+	
+	locName.remove('#');
+	m_name = locName.stripWhiteSpace();
 }
 
 const QString& AirSpace::high()
