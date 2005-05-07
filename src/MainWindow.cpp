@@ -52,8 +52,8 @@ MainWindow::MainWindow()
 	QString devName;
 	int curId = 0;
 	int id;
-	int devNr;
-	int maxDevNr;
+	uint devNr;
+	uint maxDevNr;
 	
 	m_pActiveWin = NULL;
 	m_selectedDevice = 0;
