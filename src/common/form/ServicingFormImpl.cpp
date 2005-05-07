@@ -64,6 +64,7 @@ void ServicingFormImpl::newGlider()
 void ServicingFormImpl::updateGlider()
 {
 	QStringList list;
+	QString gliderModel;
 	Glider::GliderListType gliderList;
 	Glider::GliderListType::iterator it;
 	
@@ -72,7 +73,8 @@ void ServicingFormImpl::updateGlider()
 	
 	for(it=gliderList.begin(); it!=gliderList.end(); it++)
 	{
-		comboBoxModel->insertItem((*it).model());
+		(*it).modelOfGlider(gliderModel);
+		comboBoxModel->insertItem(gliderModel);
 	}
 }
 
