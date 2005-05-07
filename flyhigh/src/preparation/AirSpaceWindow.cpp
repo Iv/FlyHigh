@@ -147,11 +147,10 @@ void AirSpaceWindow::file_import()
 			parser.parse(openAirData);
 			m_airSpaceList = parser.airspaceList();
 			maxAirspaceNr = m_airSpaceList.size();
-			pTable->setNumRows(0);
+			pTable->setNumRows(maxAirspaceNr);
 			
 			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 			{
-				pTable->insertRows(airspaceNr);
 				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 			}
 		
@@ -181,14 +180,13 @@ void AirSpaceWindow::file_update()
 
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
-	pTable->setNumRows(0);
 	m_airSpaceList.clear();
 	m_pDb->airspaceList(m_airSpaceList);
 	maxAirspaceNr = m_airSpaceList.size();
+	pTable->setNumRows(maxAirspaceNr);
 	
 	for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 	{
-		pTable->insertRows(airspaceNr);
 		setAirSpaceToRow(airspaceNr, m_airSpaceList[airspaceNr]);
 	}
 	
