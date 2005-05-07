@@ -57,7 +57,7 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Nr, 40);
-	pTable->setColumnWidth(Glider, 100);
+	pTable->setColumnWidth(Glider, 140);
 	pTable->setColumnWidth(Date, 80);
 	pTable->setColumnWidth(Responsibility, 100);
 	pTable->setColumnWidth(Comment, 800);
