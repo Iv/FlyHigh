@@ -182,6 +182,7 @@ bool FlytecDevice::add(WayPoint &wp)
 
 	success = (ft_wayPointSnd(&ftWp) == 0);
 	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
 	
 	return success;
 }
@@ -192,6 +193,7 @@ bool FlytecDevice::delWayPoint(const QString &name)
 	
 	success = (ft_wayPointDel(name.ascii()) == 0);
 	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
 	
 	return success;
 }
@@ -258,6 +260,7 @@ bool FlytecDevice::add(Route &route)
 	}
 	
 	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	
 	return success;
 }
@@ -310,6 +313,7 @@ bool FlytecDevice::delRoute(const QString &name)
 	bool success;
 	
 	success = (ft_routeDel(name.ascii()) == 0);
+	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	
 	return success;
 }
