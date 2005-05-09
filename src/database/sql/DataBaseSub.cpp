@@ -61,14 +61,21 @@ void DataBaseSub::setLastModified(const QString &field)
 	date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
 	sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = '%s'", 
 										date.ascii(), field.ascii());
-	query.exec(sqls);
+	
+	if(!query.exec(sqls))
+	{
+		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('%s', '%s')", 
+										date.ascii(), field.ascii());
+		query.exec(sqls);
+	}
 }
 
 int DataBaseSub::lastModified(const QString &field)
 {
 	QString sqls;
+	QString date;
 	QSqlQuery query(db());
-	int time = -1;
+	int time = 1;
 	
 	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = '%s'", field.ascii());
 	
