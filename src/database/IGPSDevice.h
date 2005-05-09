@@ -44,8 +44,20 @@ class IGPSDevice: public IDataBase
 		virtual bool memoryRead(QByteArray &arr);
 		virtual bool memoryWrite(QByteArray &arr);
 		
+		// update
+		int flightsLastModified();
+		int wayPointsLastModified();
+		int routesLastModified();
+		int airspacesLastModified();
+		
+	protected:
+		typedef enum {Flights, WayPoints, Routes, AirSpaces, NofFields}FieldType;
+		
+		void setLastModified(FieldType field);
+		
 	private:
 		static IGPSDevice *m_pGPSDevice;
+		int m_lastModifiedList[NofFields];
 };
 
 #endif

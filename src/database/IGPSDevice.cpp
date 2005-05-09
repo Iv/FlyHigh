@@ -17,7 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- #include <stdlib.h>
+
+#include <qdatetime.h>
+#include <stdlib.h>
 #include "IGPSDevice.h"
 #include "FlytecDevice.h"
 
@@ -25,6 +27,12 @@ IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
 
 IGPSDevice::IGPSDevice()
 {
+	uint fieldNr;
+	
+	for(fieldNr=0; fieldNr<NofFields; fieldNr++)
+	{
+		setLastModified((FieldType)fieldNr);
+	}
 }
 
 IGPSDevice::~IGPSDevice()
@@ -77,3 +85,34 @@ bool IGPSDevice::memoryWrite(QByteArray &arr)
 	return -1;
 }
 
+void IGPSDevice::setLastModified(FieldType field)
+{
+	switch(field)
+	{
+		case Flights: case WayPoints: case Routes: case AirSpaces:
+			m_lastModifiedList[field] = QDateTime::currentDateTime().toTime_t();
+		break;
+		default:
+		break;
+	}
+}
+
+int IGPSDevice::flightsLastModified()
+{
+	return m_lastModifiedList[Flights];
+}
+
+int IGPSDevice::wayPointsLastModified()
+{
+	return m_lastModifiedList[WayPoints];
+}
+
+int IGPSDevice::routesLastModified()
+{
+	return m_lastModifiedList[Routes];
+}
+
+int IGPSDevice::airspacesLastModified()
+{
+	return m_lastModifiedList[AirSpaces];
+}
