@@ -45,23 +45,27 @@ bool Gliders::add(Glider &glider)
 	return true;
 }
 
-bool Gliders::glider(const QString &model, Glider &glider)
+bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 {
 	QSqlQuery query(db());
 	QString sqls;
+	QString dbModel;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Model` = '%s'", model.ascii());
+	sqls.sprintf("SELECT * FROM `Gliders`");
 	success = query.exec(sqls);
 	
 	if(success)
 	{
-		success = query.first();
-		
-		if(success)
+		while(query.next())
 		{
-			glider.setManufacturer(query.value(Manufacturer).toString());
-			glider.setModel(query.value(Model).toString());
+			dbModel = query.value(Manufacturer).toString() + " " + query.value(Model).toString();
+			
+			if(dbModel == modelOfGlider)
+			{
+				glider.setManufacturer(query.value(Manufacturer).toString());
+				glider.setModel(query.value(Model).toString());
+			}
 		}
 	}
 	else
