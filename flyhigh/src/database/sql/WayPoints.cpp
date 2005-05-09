@@ -71,7 +71,7 @@ bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
 	int alt;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Name` = '%s'", name.ascii());
+	sqls.sprintf("SELECT * FROM `WayPoints` WHERE `Name` = '%s'", name.ascii());
 	success = query.exec(sqls);
 	
 	if(success)
