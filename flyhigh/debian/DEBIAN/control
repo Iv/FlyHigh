@@ -1,16 +1,16 @@
 Package: flyhigh
-Version: 0.2-0
+Version: 0.3-0
 Section: kde
 Priority: optional
 Architecture: i386
-Depends: kdelibs4 (>= 3.3.2-1), libqt3c102-mt (>= 3.3.3-4.1), libqt3c102-mt-mysql (>= 3.3.3-8), gnuplot (>= 4.0.0-2), mysql-server (>= 4.0.23-1), mysql-common (>= 4.0.23-1)
+Depends: kdelibs4 (>= 3.3.2-1), libqt3c102-mt (>= 3.3.3-4.1), libqt3c102-mt-mysql (>= 3.3.3-8), gnuplot (>= 4.0.0-2), mysql-server (>= 4.0.22-6), mysql-common (>= 4.0.22-6)
 Provides: flyhigh
-Installed-Size: 571896
+Installed-Size: 604906
 Maintainer: Alex Graf <grafal@sourceforge.net>
 Description: Manage flights
  SQL database for waypoints, routes, flights, gliders, airspaces
  Flight preparation: sync waypoints, routes with database and Flytec 5020
- Flight analysis: 2D, 3D Plots with OLC optimization (gnuplot), 3D topografie (openGPLIGCexplorer) 
+ Flight analysis: 2D, 3D Plots with OLC optimization, 3D topografie (openGPLIGCexplorer) 
  Statistics (flights per year)
  Import of airspaces from OpenAir files
  Full support of Flytec 5020 and Competino
