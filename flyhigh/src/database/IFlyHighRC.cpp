@@ -53,7 +53,14 @@ IFlyHighRC::IFlyHighRC()
 //	m_deviceNameList += "Flytec5030";
 	m_deviceSpeedList = "57600";
 //	m_deviceSpeedList += "115200";
-
+	
+	m_deviceName = 0;
+	m_deviceLine = "/dev/ttyS0";
+	m_deviceSpeed = 0;
+	m_utcOffset = 0;
+	m_lastDir = QDir::homeDirPath();
+	
+	m_versionInfo = "FlyHigh Version 0.3";
 	m_rcFile.setName("/home/grafal/.flyhighrc");
 }
 
@@ -161,16 +168,6 @@ void IFlyHighRC::loadRC()
 		}
 		buff.close();
 	}
-	else
-	{
-		m_deviceName = 0;
-		m_deviceLine = "/dev/ttyS0";
-		m_deviceSpeed = 0;
-		m_utcOffset = 0;
-		m_lastDir = QDir::homeDirPath();
-	}
-	
-	m_versionInfo = "FlyHigh Version 0.3";
 }
 
 void IFlyHighRC::saveRC()
