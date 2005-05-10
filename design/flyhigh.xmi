@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="org.omg/standards/UML" verified="false" timestamp="" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.2.90</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.model xmi.name="umbrello6NTNnb" href="/tmp/kde-grafal/umbrello6NTNnb.tmp" />
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <UML:Model>
+   <UML:Stereotype visibility="public" xmi.id="3" name="datatype" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="2" name="int" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="4" name="char" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="5" name="bool" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="6" name="float" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="7" name="double" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="8" name="long" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="9" name="short" />
+   <UML:DataType stereotype="3" visibility="public" xmi.id="10" name="string" />
+   <UML:Package visibility="public" xmi.id="11" name="analysis" />
+   <UML:Package visibility="public" xmi.id="12" name="preparation" />
+   <UML:Package visibility="public" xmi.id="15" name="database" >
+    <UML:Package visibility="public" xmi.id="47" name="flytec" />
+    <UML:Package visibility="public" xmi.id="46" name="sql" />
+   </UML:Package>
+   <UML:Package visibility="public" xmi.id="16" name="common" >
+    <UML:Package visibility="public" xmi.id="41" name="utils" />
+    <UML:Package visibility="public" xmi.id="40" name="form" />
+    <UML:Package visibility="public" xmi.id="39" name="container" />
+   </UML:Package>
+   <UML:Package visibility="public" xmi.id="17" name="images" />
+   <UML:Package visibility="public" xmi.id="27" name="configuration" >
+    <UML:Package visibility="public" xmi.id="21" name="flytec" />
+    <UML:Package visibility="public" xmi.id="22" name="interface" >
+     <UML:Package visibility="public" xmi.id="20" name="flytec" />
+    </UML:Package>
+   </UML:Package>
+   <UML:Package visibility="public" xmi.id="30" name="main" />
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello" >
+  <docsettings viewid="38" documentation="" uniqueid="62" />
+  <diagrams>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="814" snapy="10" showatts="1" xmi.id="1" documentation="" type="402" showops="1" showpackage="0" name="overview" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="helvetica,12,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="589" >
+    <widgets>
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="60" linecolour="none" y="79" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="11" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="0" width="88" usesdiagramusefillcolour="0" x="198" linecolour="#ff0000" y="79" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="42" usefillcolor="1" isinstance="0" xmi.id="12" showstereotype="0" font="Bitstream Vera Sans,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="73" usesdiagramusefillcolour="1" x="203" linecolour="none" y="331" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="15" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="374" linecolour="none" y="332" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="16" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="99" usesdiagramusefillcolour="1" x="336" linecolour="none" y="81" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="27" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="62" linecolour="none" y="330" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="17" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="420" usesdiagramusefillcolour="1" x="42" linecolour="none" y="50" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="122" usefillcolor="1" isinstance="0" xmi.id="35" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="290" usesdiagramusefillcolour="1" x="40" linecolour="none" y="296" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="102" usefillcolor="1" isinstance="0" xmi.id="36" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="140" usesdiagramusefillcolour="1" x="348" linecolour="none" y="296" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="104" usefillcolor="1" isinstance="0" xmi.id="37" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="151" usesdiagramusefillcolour="1" x="53" linecolour="none" y="54" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="50" text="&lt;&lt;layer>> application" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="111" usesdiagramusefillcolour="1" x="43" linecolour="none" y="376" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="51" text="&lt;&lt;layer>> data" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="130" usesdiagramusefillcolour="1" x="351" linecolour="none" y="378" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="52" text="&lt;&lt;layer>> runtime" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="4" indexa="2" visibilityB="200" totalcountb="4" indexb="2" widgetbid="15" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="242" starty="121" />
+       <endpoint endx="239" endy="331" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="2" visibilityB="200" totalcountb="4" indexb="1" widgetbid="15" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="95" starty="121" />
+       <endpoint endx="221" endy="331" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="2" visibilityB="200" totalcountb="4" indexb="3" widgetbid="15" widgetaid="27" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="385" starty="123" />
+       <endpoint endx="257" endy="331" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="1" visibilityB="200" totalcountb="4" indexb="2" widgetbid="17" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="220" starty="121" />
+       <endpoint endx="97" endy="330" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="1" visibilityB="200" totalcountb="4" indexb="3" widgetbid="17" widgetaid="27" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="360" starty="123" />
+       <endpoint endx="114" endy="330" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="1" visibilityB="200" totalcountb="4" indexb="1" widgetbid="17" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="77" starty="121" />
+       <endpoint endx="79" endy="330" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="3" visibilityB="200" totalcountb="4" indexb="1" widgetbid="16" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="112" starty="121" />
+       <endpoint endx="391" endy="332" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="3" visibilityB="200" totalcountb="4" indexb="2" widgetbid="16" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="264" starty="121" />
+       <endpoint endx="409" endy="332" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="3" visibilityB="200" totalcountb="4" indexb="3" widgetbid="16" widgetaid="27" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="410" starty="123" />
+       <endpoint endx="426" endy="332" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="16" widgetaid="15" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="276" starty="352" />
+       <endpoint endx="374" endy="353" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="814" snapy="10" showatts="1" xmi.id="38" documentation="" type="402" showops="1" showpackage="0" name="common" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="helvetica,12,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="589" >
+    <widgets>
+     <packagewidget usesdiagramfillcolour="1" width="73" usesdiagramusefillcolour="1" x="225" linecolour="none" y="238" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="39" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="385" linecolour="none" y="238" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="40" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="75" linecolour="none" y="236" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="41" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="127" linecolour="none" y="36" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="11" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="88" usesdiagramusefillcolour="1" x="279" linecolour="none" y="36" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="12" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="73" usesdiagramusefillcolour="1" x="168" linecolour="none" y="389" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="15" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="438" usesdiagramusefillcolour="1" x="52" linecolour="none" y="206" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="114" usefillcolor="1" isinstance="0" xmi.id="56" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="159" usesdiagramusefillcolour="1" x="322" linecolour="none" y="296" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="57" text="&lt;&lt;package>> common" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="8" usesdiagramusefillcolour="1" x="88" linecolour="none" y="312" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="58" text="" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="4" indexa="2" visibilityB="200" totalcountb="3" indexb="1" widgetbid="39" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="162" starty="78" />
+       <endpoint endx="249" endy="238" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="3" visibilityB="200" totalcountb="3" indexb="1" widgetbid="40" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="179" starty="78" />
+       <endpoint endx="408" endy="238" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="41" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="144" starty="78" />
+       <endpoint endx="110" endy="236" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="3" indexb="2" widgetbid="39" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="308" starty="78" />
+       <endpoint endx="273" endy="238" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="3" indexb="2" widgetbid="40" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="337" starty="78" />
+       <endpoint endx="431" endy="238" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="2" indexb="1" widgetbid="39" widgetaid="15" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="216" starty="389" />
+       <endpoint endx="261" endy="280" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="41" widgetaid="15" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="192" starty="389" />
+       <endpoint endx="110" endy="278" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="814" snapy="10" showatts="1" xmi.id="42" documentation="" type="402" showops="1" showpackage="0" name="configuration" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="helvetica,12,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="589" >
+    <widgets>
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="63" linecolour="none" y="60" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="21" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="233" linecolour="none" y="62" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="22" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="73" usesdiagramusefillcolour="1" x="162" linecolour="none" y="228" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="15" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="310" usesdiagramusefillcolour="1" x="34" linecolour="none" y="30" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="88" usefillcolor="1" isinstance="0" xmi.id="59" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="189" usesdiagramusefillcolour="1" x="40" linecolour="none" y="34" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="60" text="&lt;&lt;package>> configuration" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="3" indexb="2" widgetbid="15" widgetaid="22" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="268" starty="104" />
+       <endpoint endx="210" endy="228" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="3" indexb="1" widgetbid="15" widgetaid="21" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="98" starty="102" />
+       <endpoint endx="186" endy="228" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="814" snapy="10" showatts="1" xmi.id="45" documentation="" type="402" showops="1" showpackage="0" name="database" localid="30000" showstereotype="0" showscope="1" snapcsgrid="0" font="helvetica,12,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="589" >
+    <widgets>
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="281" linecolour="none" y="254" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="46" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="135" linecolour="none" y="254" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="47" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="27" linecolour="none" y="24" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="11" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="99" usesdiagramusefillcolour="1" x="341" linecolour="none" y="22" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="27" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="88" usesdiagramusefillcolour="1" x="183" linecolour="none" y="22" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="42" usefillcolor="1" isinstance="0" xmi.id="12" showstereotype="0" font="helvetica,12,-1,5,75,0,0,0,0,0" />
+     <boxwidget usesdiagramfillcolour="1" width="256" usesdiagramusefillcolour="1" x="112" linecolour="none" y="225" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="102" usefillcolor="1" isinstance="0" xmi.id="61" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+     <floatingtext usesdiagramfillcolour="1" width="166" usesdiagramusefillcolour="1" x="120" linecolour="none" y="302" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="700" fillcolour="none" height="20" usefillcolor="1" pretext="" isinstance="0" xmi.id="62" text="&lt;&lt;package>> database" font="helvetica,12,-1,5,50,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="4" indexb="1" widgetbid="47" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="50" starty="66" />
+       <endpoint endx="152" endy="254" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="4" indexb="1" widgetbid="46" widgetaid="11" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="73" starty="66" />
+       <endpoint endx="298" endy="254" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="4" indexb="2" widgetbid="47" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="212" starty="64" />
+       <endpoint endx="170" endy="254" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="4" indexb="2" widgetbid="46" widgetaid="12" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="241" starty="64" />
+       <endpoint endx="316" endy="254" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="4" indexb="3" widgetbid="47" widgetaid="27" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="374" starty="64" />
+       <endpoint endx="187" endy="254" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="4" indexb="3" widgetbid="46" widgetaid="27" roleBdoc="" documentation="" roleAdoc="" type="502" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="407" starty="64" />
+       <endpoint endx="333" endy="254" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+  </diagrams>
+  <listview>
+   <listitem open="1" type="800" id="-1" label="Views" >
+    <listitem open="1" type="801" id="-1" label="Logical View" >
+     <listitem open="0" type="807" id="38" label="common" />
+     <listitem open="0" type="807" id="42" label="configuration" />
+     <listitem open="0" type="807" id="45" label="database" />
+     <listitem open="0" type="807" id="1" label="overview" />
+     <listitem open="1" type="818" id="11" />
+     <listitem open="0" type="818" id="16" >
+      <listitem open="0" type="818" id="39" />
+      <listitem open="0" type="818" id="40" />
+      <listitem open="0" type="818" id="41" />
+     </listitem>
+     <listitem open="0" type="818" id="27" >
+      <listitem open="0" type="818" id="21" />
+      <listitem open="0" type="818" id="22" >
+       <listitem open="1" type="818" id="20" />
+      </listitem>
+     </listitem>
+     <listitem open="0" type="818" id="15" >
+      <listitem open="0" type="818" id="47" />
+      <listitem open="0" type="818" id="46" />
+     </listitem>
+     <listitem open="1" type="818" id="17" />
+     <listitem open="1" type="818" id="30" />
+     <listitem open="1" type="818" id="12" />
+     <listitem open="0" type="830" id="-1" label="Datatypes" >
+      <listitem open="1" type="829" id="5" />
+      <listitem open="1" type="829" id="4" />
+      <listitem open="1" type="829" id="7" />
+      <listitem open="1" type="829" id="6" />
+      <listitem open="1" type="829" id="2" />
+      <listitem open="1" type="829" id="8" />
+      <listitem open="1" type="829" id="9" />
+      <listitem open="1" type="829" id="10" />
+     </listitem>
+    </listitem>
+    <listitem open="1" type="802" id="-1" label="Use Case View" />
+    <listitem open="1" type="821" id="-1" label="Component View" />
+    <listitem open="1" type="827" id="-1" label="Deployment View" />
+   </listitem>
+  </listview>
+  <codegeneration/>
+ </XMI.extensions>
+</XMI>
