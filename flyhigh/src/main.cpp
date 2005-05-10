@@ -22,6 +22,7 @@
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
+#include "Images.h"
 #include "ISql.h"
 
 int main( int argc, char ** argv ) 
@@ -31,12 +32,13 @@ int main( int argc, char ** argv )
 	int res;
 
 	IFlyHighRC::pInstance()->loadRC();
-	pMainWin = new MainWindow();
-	
-	IGPSDevice::pInstance()->setDevice(IGPSDevice::Flytec5020);
 	IGPSDevice::pInstance()->open();
 	ISql::pInstance()->open();
+	
+	pMainWin = new MainWindow();
 	appl.setMainWidget(pMainWin);
+	pMainWin->setIcon(Images::pInstance()->getImage("logo.png"));
+	
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
 	
