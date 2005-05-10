@@ -20,6 +20,7 @@
 
 #include <qdatetime.h>
 #include <stdlib.h>
+#include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "FlytecDevice.h"
 
@@ -43,26 +44,40 @@ IGPSDevice::~IGPSDevice()
 	}
 }
 
-void IGPSDevice::setDevice(GPSDeviceType dev)
-{
-	if(m_pGPSDevice != NULL)
-	{
-		delete m_pGPSDevice;
-	}
-	
-	switch(dev)
-	{
-		case Flytec5020:
-			m_pGPSDevice = new FlytecDevice;
-		break;
-		default:
-			m_pGPSDevice = new FlytecDevice;
-		break;
-	}
-}
-
 IGPSDevice* IGPSDevice::pInstance()
 {
+	uint curDevice;
+	bool newDevice = false;
+	
+	curDevice = IFlyHighRC::pInstance()->deviceName();
+	newDevice = (m_pGPSDevice == NULL);
+	
+	if(!newDevice)
+	{
+		newDevice = (curDevice != m_pGPSDevice->oldDevice());
+		
+		if(newDevice)
+		{
+			delete m_pGPSDevice;
+		}
+	}
+	
+	if(newDevice)
+	{
+		switch(curDevice)
+		{
+			case 0:
+				m_pGPSDevice = new FlytecDevice;
+			break;
+			default:
+				m_pGPSDevice = new FlytecDevice;
+				IFlyHighRC::pInstance()->setDeviceName(0);
+			break;
+		}
+		
+		m_pGPSDevice->setOldDevice(curDevice);
+	}
+
 	return m_pGPSDevice;
 }
 
@@ -115,4 +130,14 @@ int IGPSDevice::routesLastModified()
 int IGPSDevice::airspacesLastModified()
 {
 	return m_lastModifiedList[AirSpaces];
+}
+
+void IGPSDevice::setOldDevice(uint devNr)
+{
+	m_oldDevice = devNr;
+}
+
+uint IGPSDevice::oldDevice()
+{
+	return m_oldDevice;
 }
