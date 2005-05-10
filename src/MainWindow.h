@@ -66,9 +66,9 @@ class MainWindow: public QMainWindow
 		QPopupMenu* m_pSpecialMenu;
 		MDIWindow* m_pActiveWin;
 		int m_specialMenuId;
-		uint m_selectedDevice;
 
 		void showWindow(QMainWindow *pWin);
+		void setCurrentDevice(int id);
 };
 
 #endif
