@@ -50,13 +50,13 @@ MainWindow::MainWindow()
 	QPopupMenu *pMenu;
 	QVBox *pVBox;
 	QString devName;
-	int curId = 0;
 	int id;
 	uint devNr;
+	uint curDev;
 	uint maxDevNr;
 	
 	m_pActiveWin = NULL;
-	m_selectedDevice = 0;
+	QMainWindow::setCaption("FlyHigh");
 	
 	// Menu File
 	pMenu = new QPopupMenu(this);
@@ -96,18 +96,18 @@ MainWindow::MainWindow()
 	m_pDevicesMenu = new QPopupMenu(this);
 	m_pDevicesMenu->setCheckable(true);
 	maxDevNr = IFlyHighRC::pInstance()->deviceNameList().size();
+	curDev = IFlyHighRC::pInstance()->deviceName();
 	
 	for(devNr=0; devNr<maxDevNr; devNr++)
 	{
 		devName = *(IFlyHighRC::pInstance()->deviceNameList().at(devNr));
 		id = m_pDevicesMenu->insertItem(devName, this, SLOT(settings_device(int)));
 		
-		if(devNr == IFlyHighRC::pInstance()->deviceName())
+		if(devNr == curDev)
 		{
-			curId = id;
+			setCurrentDevice(id);
 		}
 	}
-	m_pDevicesMenu->setItemChecked(curId, true);
 
 	pMenu->insertItem("&Device", m_pDevicesMenu);
 	pMenu->insertItem("Configure Device...", this, SLOT(settings_configure_device()));
@@ -366,10 +366,32 @@ void MainWindow::showWindow(QMainWindow *pWin)
 
 void MainWindow::settings_device(int id)
 {
-	unsigned int itemNr;
-	unsigned int nofItems = m_pDevicesMenu->count();
+	uint itemNr;
+	uint nofItems;
+	int itemId;
+	
+	for(itemNr=0; itemNr<nofItems; itemNr++)
+	{
+		itemId = m_pDevicesMenu->idAt(itemNr);
+
+		if(itemId == id)
+		{
+			break;
+		}
+	}
+
+	IFlyHighRC::pInstance()->setDeviceName(itemNr);
+	setCurrentDevice(id);
+}
+
+void MainWindow::setCurrentDevice(int id)
+{
+	uint itemNr;
+	uint nofItems;
 	int itemId;
 	bool selected;
+
+	nofItems = m_pDevicesMenu->count();
 	
 	// check the selected item
 	for(itemNr=0; itemNr<nofItems; itemNr++)
@@ -378,11 +400,6 @@ void MainWindow::settings_device(int id)
 		
 		selected = (itemId == id);
 		m_pDevicesMenu->setItemChecked(itemId, selected);
-		
-		if(selected)
-		{
-			m_selectedDevice = itemNr;
-		}
 	}
 }
 
@@ -402,7 +419,7 @@ void MainWindow::settings_configure_device()
 {
 	IFlytecConfig *pFrame;
 	
-	switch(m_selectedDevice)
+	switch(IFlyHighRC::pInstance()->deviceName())
 	{
 		case 0:
 			pFrame = new IFlytecConfig();
