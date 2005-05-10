@@ -1,6 +1,7 @@
 IMAGES = ft_5020.png \
 	polare.png \
-	document.xpm
+	document.xpm \
+	logo.png
 
 all:
 	uic -embed images $(IMAGES) -o ImgCollection.cpp
