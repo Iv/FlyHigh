@@ -24,13 +24,12 @@
 #include <qbuffer.h>
 #include <qfile.h>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qtextstream.h>
 
 class IFlyHighRC
 {
 	public:
-		typedef QStringList DeviceNameListType;
-		
 		static IFlyHighRC* pInstance();
 		
 		void loadRC();

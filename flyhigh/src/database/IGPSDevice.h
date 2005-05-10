@@ -34,7 +34,6 @@ class IGPSDevice: public IDataBase
 		IGPSDevice();
 		virtual ~IGPSDevice();
 	
-		void setDevice(GPSDeviceType dev);
 		static IGPSDevice* pInstance();
 		
 		virtual void open();
@@ -58,6 +57,10 @@ class IGPSDevice: public IDataBase
 	private:
 		static IGPSDevice *m_pGPSDevice;
 		int m_lastModifiedList[NofFields];
+		uint m_oldDevice;
+
+		uint oldDevice();
+		void setOldDevice(uint devNr);
 };
 
 #endif
