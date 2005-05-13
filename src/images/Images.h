@@ -28,14 +28,11 @@
 class Images
 {
 	public:
-		typedef enum ImageType{ft_5020, Polare, Document, NofImages};
-	
 		static Images* pInstance();
 		QImage getImage(const QString &img);
 		
 	private:
 		static Images* m_pInst;
-		QPixmap m_images[NofImages];
 
 		Images();
 };
