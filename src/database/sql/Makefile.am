@@ -1,4 +1,5 @@
-INCLUDES = -I$(top_srcdir)/src/common/container -I$(top_srcdir)/src/common/utils -I$(top_srcdir)/src/track $(all_includes)
+INCLUDES = -I$(top_srcdir)/src/common/container \
+	-I$(top_srcdir)/src/common/utils -I$(top_srcdir)/src/database $(all_includes)
 METASOURCES = AUTO
 lib_LIBRARIES =  libsql.a
 libsql_a_SOURCES = DataBaseSub.cpp Flights.cpp Gliders.cpp WayPoints.cpp \
