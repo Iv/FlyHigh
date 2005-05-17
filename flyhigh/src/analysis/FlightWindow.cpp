@@ -610,18 +610,21 @@ void FlightWindow::plot_speedVsTime()
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size() - 1;
+			fpListSize = fpList.size();
 			
-			for(fpNr=0; fpNr<fpListSize; fpNr++)
+			if(fpListSize > 0)
 			{
-				x.push_back(fpList[fpNr].time);
-				y.push_back(fpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
+				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				{
+					x.push_back(fpList[fpNr].time);
+					y.push_back(fpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
+				}
+			
+				m_plotter.clear();
+				m_plotter.setLabelX("time [s]");
+				m_plotter.setLabelY("speed [km/h]");
+				m_plotter.plotXY(x, y, "Speed vs Time");
 			}
-		
-			m_plotter.clear();
-			m_plotter.setLabelX("time [s]");
-			m_plotter.setLabelY("speed [km/h]");
-			m_plotter.plotXY(x, y, "Speed vs Time");
 		}
 		
 		TableWindow::unsetCursor();
@@ -650,18 +653,21 @@ void FlightWindow::plot_altVsTime()
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size() - 1;
+			fpListSize = fpList.size();
 			
-			for(fpNr=0; fpNr<fpListSize; fpNr++)
+			if(fpListSize > 0)
 			{
-				x.push_back(fpList[fpNr].time);
-				y.push_back(fpList[fpNr].wp.altitude()); // in m
+				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				{
+					x.push_back(fpList[fpNr].time);
+					y.push_back(fpList[fpNr].wp.altitude()); // in m
+				}
+			
+				m_plotter.clear();
+				m_plotter.setLabelX("time [s]");
+				m_plotter.setLabelY("altitude [m]");
+				m_plotter.plotXY(x, y, "Altitude vs Time");
 			}
-		
-			m_plotter.clear();
-			m_plotter.setLabelX("time [s]");
-			m_plotter.setLabelY("altitude [m]");
-			m_plotter.plotXY(x, y, "Altitude vs Time");
 		}
 		
 		TableWindow::unsetCursor();
@@ -690,18 +696,21 @@ void FlightWindow::plot_varioVsTime()
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size() - 1;
+			fpListSize = fpList.size();
 			
-			for(fpNr=0; fpNr<fpListSize; fpNr++)
+			if(fpListSize > 0)
 			{
-				x.push_back(fpList[fpNr].time);
-				y.push_back(fpList.speedV(fpNr, fpNr+1)); // in m/s
+				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				{
+					x.push_back(fpList[fpNr].time);
+					y.push_back(fpList.speedV(fpNr, fpNr+1)); // in m/s
+				}
+			
+				m_plotter.clear();
+				m_plotter.setLabelX("time [s]");
+				m_plotter.setLabelY("vario [m/s]");
+				m_plotter.plotXY(x, y, "Vario vs Time");
 			}
-		
-			m_plotter.clear();
-			m_plotter.setLabelX("time [s]");
-			m_plotter.setLabelY("vario [m/s]");
-			m_plotter.plotXY(x, y, "Vario vs Time");
 		}
 		
 		TableWindow::unsetCursor();
@@ -729,48 +738,51 @@ void FlightWindow::plot_OLC()
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			igcParser.parse(igcData);
-
-			m_plotter.clear();
-			m_plotter.setLabelX("latitude [deg.min]");
-			m_plotter.setLabelY("longitude [deg.min]");
-			m_plotter.setLabelZ("altitude [m]");
-			plotFlighPointList(igcParser.flightPointList(), "track");
-			
-			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-			
-			if(olcOptimizer.optimize())
+	
+			if(igcParser.flightPointList().size() > 0)
 			{
-				// fai triangle
-				dist = olcOptimizer.FAITriangle(fpIndexList);
-				fpList.clear();
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				title.sprintf("fai triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.75);
-				plotFlighPointList(fpList, title);
+				m_plotter.clear();
+				m_plotter.setLabelX("latitude [deg.min]");
+				m_plotter.setLabelY("longitude [deg.min]");
+				m_plotter.setLabelZ("altitude [m]");
+				plotFlighPointList(igcParser.flightPointList(), "track");
 				
-				// flat triangle
-				dist = olcOptimizer.flatTriangle(fpIndexList);
-				fpList.clear();
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-				fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-				title.sprintf("flat triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*2.0);
-				plotFlighPointList(fpList, title);
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 				
-				// free distance
-				dist = olcOptimizer.freeDistance(fpIndexList);
-				fpList.clear();
-				
-				for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+				if(olcOptimizer.optimize())
 				{
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+					// fai triangle
+					dist = olcOptimizer.FAITriangle(fpIndexList);
+					fpList.clear();
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					title.sprintf("fai triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.75);
+					plotFlighPointList(fpList, title);
+					
+					// flat triangle
+					dist = olcOptimizer.flatTriangle(fpIndexList);
+					fpList.clear();
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
+					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					title.sprintf("flat triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*2.0);
+					plotFlighPointList(fpList, title);
+					
+					// free distance
+					dist = olcOptimizer.freeDistance(fpIndexList);
+					fpList.clear();
+					
+					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+					{
+						fpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+					}
+					
+					title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.5);
+					plotFlighPointList(fpList, title);
 				}
-				
-				title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.5);
-				plotFlighPointList(fpList, title);
 			}
 		}
 		
@@ -787,7 +799,7 @@ void FlightWindow::plotFlighPointList(FlightPointList &fpList, const QString& ti
 	uint fpNr;
 	
 	fpListSize = fpList.size();
-			
+	
 	for(fpNr=0; fpNr<fpListSize; fpNr++)
 	{
 		y.push_back(fpList[fpNr].wp.latitude());
