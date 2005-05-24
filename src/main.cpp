@@ -37,7 +37,7 @@ int main( int argc, char ** argv )
 	
 	pMainWin = new MainWindow();
 	appl.setMainWidget(pMainWin);
-	pMainWin->setIcon(Images::pInstance()->getImage("logo.png"));
+	pMainWin->setIcon(Images::pInstance()->getImage("flyhigh.png"));
 	
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));

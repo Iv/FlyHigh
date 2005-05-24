@@ -5,10 +5,10 @@
 **      ft_5020.png
 **      polare.png
 **      document.xpm
-**      logo.png
+**      flyhigh.png
 **
-** Created: Tue May 10 20:10:34 2005
-**      by: The User Interface Compiler ($Id: ImgCollection.cpp,v 1.3 2005-05-13 20:03:04 grafal Exp $)
+** Created: Tue May 24 21:26:16 2005
+**      by: The User Interface Compiler ($Id: ImgCollection.cpp,v 1.4 2005-05-24 19:26:43 grafal Exp $)
 **
 ** WARNING! All changes made in this file will be lost!
 ****************************************************************************/
@@ -1235,7 +1235,7 @@ static const QRgb image_2_ctable[] = {
     0xff040404,0xc6c6c6,0xffffffff,0xff808304,0xff000000,0xfff3f7f3
 };
 
-// logo.png
+// flyhigh.png
 static const unsigned char image_3_data[] = {
     0x00,0x00,0xa2,0x90,0x78,0x9c,0xed,0x9d,0xf7,0x77,0x1c,0xc7,0x95,0xef,
     0xf7,0x9f,0x7a,0x2b,0x26,0x45,0xcb,0x92,0x2c,0x67,0x4b,0x24,0x08,0x60,
@@ -2337,7 +2337,7 @@ static struct EmbedImage {
     { 117, 149, 32, (const unsigned char*)image_0_data, 16162, 0, 0, FALSE, "ft_5020.png" },
     { 297, 81, 32, (const unsigned char*)image_1_data, 571, 0, 0, FALSE, "polare.png" },
     { 12, 16, 8, (const unsigned char*)image_2_data, 65, 6, image_2_ctable, TRUE, "document.xpm" },
-    { 102, 102, 32, (const unsigned char*)image_3_data, 15199, 0, 0, TRUE, "logo.png" },
+    { 102, 102, 32, (const unsigned char*)image_3_data, 15199, 0, 0, TRUE, "flyhigh.png" },
     { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
