@@ -8,7 +8,7 @@ case "$1" in
 	configure)
 		# Compatibility symlinks into /usr/doc
 		echo "Setup flyhigh SQL database"
-		mysql -u root -p < /usr/share/doc/flyhigh/flyhigh.sql
+		mysql -u root -p < /usr/share/flyhigh/flyhigh.sql
 		;;
 	*)
 		#
