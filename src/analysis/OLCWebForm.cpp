@@ -20,6 +20,7 @@
 
 #include <qfile.h>
 #include <qtextstream.h>
+#include <math.h>
 #include "OLCWebForm.h"
 
 OLCWebForm::OLCWebForm()
@@ -268,8 +269,8 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 {
 	double lat;
 	double lon;
+	double deg;
 	double min;
-	int dmin;
 	QString strDeg;
 	QString strMin;
 	QString strDmin;
@@ -324,11 +325,13 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	
 	s << "					</SELECT>\n";
 	
-	min = (lat - (int)lat) * 60.0;
-	dmin = (int)((min - (int)min) * 1000);
-	strDeg.sprintf("%2i", (int)lat);
-	strMin.sprintf("%2i", (int)min);
-	strDmin.sprintf("%3i", dmin);
+	// 46.840083
+	deg = trunc(lat); // 46
+	min = (lat - deg) * 60.0 * 1000.0; // min = 50404.98
+	min = round(min); // 50405
+	strDeg.sprintf("%02i", (int)deg); // 46
+	strMin.sprintf("%02i", (int)min / 1000); // 50
+	strDmin.sprintf("%03i", (int)min % 1000); // 405
 	
 	s << "					<INPUT TYPE=\"text\" VALUE=\"" << strDeg <<  "\" MAXLENGTH=\"2\" SIZE=\"2\" NAME=\"w";
 	s << strWpNr << "bg\">:<INPUT TYPE=\"text\" VALUE=\"" << strMin << "\" MAXLENGTH=\"2\" SIZE=\"2\" NAME=\"w";
@@ -354,13 +357,15 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 
 	s << "					</SELECT>\n";
 	
-	min = (lon - (int)lon) * 60.0;
-	dmin = (int)((min - (int)min) * 1000);
-	strDeg.sprintf("%2i", (int)lon);
-	strMin.sprintf("%2i", (int)min);
-	strDmin.sprintf("%3i", dmin);
+	// 8.422713
+	deg = trunc(lon); // 8
+	min = (lon - deg) * 60.0 * 1000.0; // min = 25362.78
+	min = round(min); // 25363
+	strDeg.sprintf("%03i", (int)deg); // 008
+	strMin.sprintf("%02i", (int)min / 1000); // 25
+	strDmin.sprintf("%03i", (int)min % 1000); // 363
 	
-	s << "					<INPUT TYPE=\"text\" VALUE=\"" << strDeg <<  "\" MAXLENGTH=\"2\" SIZE=\"2\" NAME=\"w";
+	s << "					<INPUT TYPE=\"text\" VALUE=\"" << strDeg <<  "\" MAXLENGTH=\"3\" SIZE=\"3\" NAME=\"w";
 	s << strWpNr << "lg\">:<INPUT TYPE=\"text\" VALUE=\"" << strMin << "\" MAXLENGTH=\"2\" SIZE=\"2\" NAME=\"w";
 	s << strWpNr << "lm\">.<INPUT TYPE=\"text\" VALUE=\"" << strDmin << "\" MAXLENGTH=\"3\" SIZE=\"3\" NAME=\"w";
 	s << strWpNr << "lmd\">&nbsp; &nbsp;\n";
@@ -386,7 +391,7 @@ void OLCWebForm::streamComment(QTextStream& s)
 	s << "			<TR>\n";
 	s << "				<TD>Comment Pilot</TD>\n";
 	s << "				<TD COLSPAN=2>\n";
-	s << "					<TEXTAREA ROWS=\"5\" COLS=\"60\" NAME=\"cpilo\" VALUE=\"" << m_comment << "\"></TEXTAREA>\n";
+	s << "					<TEXTAREA ROWS=\"5\" COLS=\"60\" NAME=\"cpilo\">" << m_comment << "</TEXTAREA>\n";
 	s << "				</TD>\n";
 	s << "			</TR>\n";
 }
