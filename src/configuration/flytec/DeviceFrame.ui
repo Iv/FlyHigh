@@ -17,22 +17,6 @@
     </property>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_PilotName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>30</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Pilot Name</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_SerialNr</cstring>
         </property>
         <property name="geometry">
@@ -111,14 +95,27 @@
             <string>Model of glider</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
+    <widget class="QComboBox">
         <property name="name">
-            <cstring>lineEdit_GliderID</cstring>
+            <cstring>comboBoxModel</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>190</x>
-                <y>130</y>
+                <y>74</y>
+                <width>160</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_PilotName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>30</y>
                 <width>160</width>
                 <height>20</height>
             </rect>
@@ -128,25 +125,6 @@
         </property>
         <property name="maxLength">
             <number>16</number>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEdit_DeviceIdent</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>230</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -166,6 +144,22 @@
         </property>
         <property name="text">
             <string></string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonGlider</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>370</x>
+                <y>74</y>
+                <width>60</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>new...</string>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -189,12 +183,31 @@
     </widget>
     <widget class="QLineEdit">
         <property name="name">
-            <cstring>lineEdit_PilotName</cstring>
+            <cstring>lineEdit_DeviceIdent</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
         </property>
         <property name="geometry">
             <rect>
                 <x>190</x>
-                <y>30</y>
+                <y>230</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit_GliderID</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>130</y>
                 <width>160</width>
                 <height>20</height>
             </rect>
@@ -206,33 +219,20 @@
             <number>16</number>
         </property>
     </widget>
-    <widget class="QComboBox">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>comboBoxModel</cstring>
+            <cstring>textLabel_PilotName</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>190</x>
-                <y>74</y>
-                <width>160</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pushButtonGlider</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>370</x>
-                <y>74</y>
-                <width>60</width>
-                <height>28</height>
+                <x>40</x>
+                <y>30</y>
+                <width>140</width>
+                <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>new...</string>
+            <string>Pilot (First Surname)</string>
         </property>
     </widget>
 </widget>
