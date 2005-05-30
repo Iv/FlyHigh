@@ -454,6 +454,7 @@ void FlightWindow::file_export()
 	QFile file;
 	QString fileName;
 	QString line;
+	QString comment;
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
@@ -508,7 +509,10 @@ void FlightWindow::file_export()
 				olcWebForm.setTakeOffLoc(getTable()->text(row, StartPt));
 				olcWebForm.setCallSign(igcParser.gliderId());
 				olcWebForm.setGlider(igcParser.model());
-				olcWebForm.setComment(getTable()->text(row, Comment));
+				
+				comment = "optimized and claimed with http://flyhigh.sourceforge.net\n";
+				comment += getTable()->text(row, Comment);
+				olcWebForm.setComment(comment);
 				
 				if(olcOptimizer.optimize())
 				{
