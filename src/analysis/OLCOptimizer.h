@@ -24,18 +24,22 @@
 #ifndef OLCOptimizer_h
 #define OLCOptimizer_h
 
+#include <qobject.h>
 #include <qvaluelist.h>
 #include "IGCFileParser.h"
 
 #define FLIGHT_POINT_INDEX_LIST_SIZE 5
 
-class OLCOptimizer
+class OLCOptimizer: public QObject
 {
+	Q_OBJECT
 	public:
 		typedef uint FlightPointIndexListType[FLIGHT_POINT_INDEX_LIST_SIZE];
 
 		OLCOptimizer();
-		~OLCOptimizer();
+		virtual ~OLCOptimizer();
+		
+		void connectProgress(QObject *receiver, const char *progressSlot);
 
 		// sets the flight data for optimizing. minor speed (distances) in m/s
 		void setFlightPoints(FlightPointList &flightPoints, double minDeltaSpeed);
@@ -46,9 +50,16 @@ class OLCOptimizer
 		uint FAITriangle(FlightPointIndexListType &turnpointList);
 		uint flatTriangle(FlightPointIndexListType &turnpointList);
 		FlightPointList& flyPointList();
+		
+	signals:
+		void progress(char percent);
+		
+	public slots:
+		void cancel();
 
 	private:
 		FlightPointList m_flightPointList;
+		bool m_cancel;
 		
 		void initmaxend();
 		void initdmin();
