@@ -137,8 +137,8 @@ void AirSpaceWindow::file_import()
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dir()->absPath());
+		delete fileDlg.dir();
 		file.setName(fileDlg.selectedFile());
 		
 		if(file.open(IO_ReadOnly))
