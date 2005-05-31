@@ -284,6 +284,7 @@ bool OLCOptimizer::optimize()
 	uint i1, i2, i3, i4;
 	uint i, a, b, c, d, e, u, w, tmp, aplusb, c25, d5;
 	
+	m_cancel = false;
 	nFlightPts = m_flightPointList.size();
 	i4cmp = nFlightPts - 2;
 	i2cmp = nFlightPts - 2;
@@ -294,10 +295,15 @@ bool OLCOptimizer::optimize()
 		return false;
 	}
 	
+	emit progress(0);
 	cleanup();
+	emit progress(25);
 	initdmval();
+	emit progress(50);
 	initdmin();
+	emit progress(75);
 	initmaxend();
+	emit progress(100);
 		
 	m_indexFree[0] = 0;
 	m_indexFree[1] = 0;
@@ -310,6 +316,13 @@ bool OLCOptimizer::optimize()
 		
 	for(i2=0; i2<i2cmp; i2++)
 	{
+		if(m_cancel)
+		{
+			return false;
+		}
+		
+		emit progress(i2*100/i2cmp);
+	
 		for(i=i1=e=0; i<i2; i++)
 		{ // optimize 1st turnpoint for free distance separately
 			tmp = m_pDistanceMatrix[i+nFlightPts*i2];
@@ -393,4 +406,9 @@ bool OLCOptimizer::optimize()
 	}
 	
 	return true;
+}
+
+void OLCOptimizer::cancel()
+{
+	m_cancel = true;
 }
