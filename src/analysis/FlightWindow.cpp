@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <qcursor.h>
 #include <qdir.h>
 #include <qfile.h>
@@ -55,7 +55,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	QStringList nameList;
 	QTable *pTable = TableWindow::getTable();
 	QPopupMenu *pMenu;
-
+	
 	pMenu = new QPopupMenu(this);
 	menuBar()->insertItem("&File", pMenu);
 	pMenu->insertItem("&Update", this, SLOT(file_update()));
@@ -148,7 +148,7 @@ bool FlightWindow::periodicalUpdate()
 		file_update();
 		m_lastModified = lastModified;
 	}
-
+	
 	return true;
 }
 
@@ -233,12 +233,15 @@ void FlightWindow::file_AddToSqlDB()
 		igcParser.parse(flight.igcData());
 		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 		
+		connectProgressDlg("optimize flight...", &olcOptimizer);
+		
 		if(olcOptimizer.optimize())
 		{
 			// distance
 			flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
 		}
 		
+		disconnectProgressDlg();
 		TableWindow::unsetCursor();
 		
 		// nr
@@ -329,6 +332,7 @@ void FlightWindow::file_import()
 	IFlightForm newFlightForm(this, "New Flight");
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
+	const QDir *pDir;
 	QTime time;
 	QDate date;
 	Flight flight;
@@ -350,7 +354,9 @@ void FlightWindow::file_import()
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+		pDir = fileDlg.dir();
+		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+		delete pDir;
 		file.setName(fileDlg.selectedFile());
 		
 		if(file.open(IO_ReadOnly))
@@ -362,11 +368,15 @@ void FlightWindow::file_import()
 			igcParser.parse(flight.igcData());
 			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 			
+			connectProgressDlg("optimize flight...", &olcOptimizer);
+			
 			if(olcOptimizer.optimize())
 			{
 				// distance
 				flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
 			}
+			
+			disconnectProgressDlg();
 	
 			// nr
 			nr = ISql::pInstance()->newFlightNr();
@@ -451,6 +461,7 @@ void FlightWindow::file_import()
 void FlightWindow::file_export()
 {
 	QByteArray igcData;
+	const QDir *pDir;
 	QFile file;
 	QString fileName;
 	QString line;
@@ -493,7 +504,9 @@ void FlightWindow::file_export()
 
 			if(fileDlg.exec() == QDialog::Accepted)
 			{
-				IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
+				pDir =  fileDlg.dir();
+				IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+				delete pDir;
 				fileName = fileDlg.selectedFile();
 				file.setName(fileName + ".igc");
 				
@@ -513,6 +526,8 @@ void FlightWindow::file_export()
 				comment = "optimized and claimed with http://flyhigh.sourceforge.net\n";
 				comment += getTable()->text(row, Comment);
 				olcWebForm.setComment(comment);
+				
+				connectProgressDlg("optimize flight...", &olcOptimizer);
 				
 				if(olcOptimizer.optimize())
 				{
@@ -547,9 +562,11 @@ void FlightWindow::file_export()
 						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[3]).wp);
 						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
 					}
-				}
 					
-				olcWebForm.save(fileName + ".html");
+					olcWebForm.save(fileName + ".html");
+				}
+				
+				disconnectProgressDlg();
 			}
 		}
 		
@@ -753,6 +770,8 @@ void FlightWindow::plot_OLC()
 				
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 				
+				connectProgressDlg("optimize flight...", &olcOptimizer);
+				
 				if(olcOptimizer.optimize())
 				{
 					// fai triangle
@@ -787,6 +806,8 @@ void FlightWindow::plot_OLC()
 					title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.5);
 					plotFlighPointList(fpList, title);
 				}
+				
+				disconnectProgressDlg();
 			}
 		}
 		
