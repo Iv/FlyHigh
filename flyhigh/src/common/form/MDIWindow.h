@@ -10,6 +10,7 @@
 #include <qmainwindow.h>
 
 class QPopupMenu;
+class QProgressDialog;
 class QWidget;
 class QString;
 class QTimer;
@@ -19,20 +20,25 @@ class MDIWindow: public QMainWindow
 	Q_OBJECT
 	public:
 		MDIWindow(QWidget* parent, const char* name, int wflags);
-		virtual ~MDIWindow();
 		
 	signals:
 		void message(const QString&, int);
 		
 	protected:
 		virtual bool periodicalUpdate();
+		// connects pProgressObj with progress() and cancel() in pProgressObj
+		void connectProgressDlg(const QString &label, QObject *pProgressObj);
+		void disconnectProgressDlg();
 		
+	protected slots:
+		void progress(int percent);
 		
 	private slots:
 		void updateTimeout();
 		
 	private:
 		QTimer *m_pUpdateTimer;
+		QProgressDialog *m_pProgressDlg;
 };
 
 #endif
