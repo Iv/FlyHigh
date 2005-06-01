@@ -39,8 +39,6 @@ class OLCOptimizer: public QObject
 		OLCOptimizer();
 		virtual ~OLCOptimizer();
 		
-		void connectProgress(QObject *receiver, const char *progressSlot);
-
 		// sets the flight data for optimizing. minor speed (distances) in m/s
 		void setFlightPoints(FlightPointList &flightPoints, double minDeltaSpeed);
 		bool optimize();
@@ -52,7 +50,7 @@ class OLCOptimizer: public QObject
 		FlightPointList& flyPointList();
 		
 	signals:
-		void progress(char percent);
+		void progress(int percent);
 		
 	public slots:
 		void cancel();
