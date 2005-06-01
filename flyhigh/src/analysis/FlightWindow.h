@@ -21,6 +21,7 @@
 #define FlightWindow_h
 
 #include <qprocess.h>
+#include <qprogressdialog.h>
 #include <TableWindow.h>
 #include "FlightPointList.h"
 #include "IDataBase.h"
@@ -61,7 +62,7 @@ class FlightWindow : public TableWindow
 		GnuPlot m_plotter;
 		QProcess m_gpligc;
 		QTimer *m_pUpdateTimer;
-		
+
 		void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 };
