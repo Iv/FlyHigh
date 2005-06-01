@@ -123,6 +123,7 @@ bool AirSpaceWindow::periodicalUpdate()
 void AirSpaceWindow::file_import()
 {
 	QTable *pTable = TableWindow::getTable();
+	const QDir *pDir;
 	QByteArray openAirData;
 	QString fileName;
 	QFile file;
@@ -137,8 +138,9 @@ void AirSpaceWindow::file_import()
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dir()->absPath());
-		delete fileDlg.dir();
+		pDir = fileDlg.dir();
+		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+		delete pDir;
 		file.setName(fileDlg.selectedFile());
 		
 		if(file.open(IO_ReadOnly))
