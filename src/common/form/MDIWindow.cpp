@@ -6,7 +6,6 @@
 
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qprogressdialog.h>
 #include <qwidget.h>
 #include <qpopupmenu.h>
 #include <qstring.h>
@@ -18,7 +17,6 @@
 MDIWindow::MDIWindow(QWidget* parent, const char* name, int wflags)
 	:QMainWindow(parent, name, wflags)
 {
-	m_pProgressDlg = NULL;
 	m_pUpdateTimer = new QTimer(this);
 	connect(m_pUpdateTimer, SIGNAL(timeout()), this, SLOT(updateTimeout()));
 	m_pUpdateTimer->start(0, true);
