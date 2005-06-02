@@ -29,13 +29,12 @@
 class QProgressBar;
 class Frame;
 
-class MainFrameImpl: public MainFrame, public QThread
+class MainFrameImpl: public MainFrame
 {
 	Q_OBJECT
 
 	public:
 		MainFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-		~MainFrameImpl();
 
 	public slots:
 		virtual void addPage(QWidget * pFrame, int * pPos);
@@ -45,7 +44,6 @@ class MainFrameImpl: public MainFrame, public QThread
 		void save();
 		void read();
 		void write();
-		void run();
 
 	private:
 		typedef std::vector<Frame*> FrameListType;

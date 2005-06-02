@@ -39,6 +39,7 @@
 #include "IFlyHighRC.h"
 #include "MemoryFrameImpl.h"
 #include "PolareFrameImpl.h"
+#include "ProgressDlg.h"
 #include "UnitFrameImpl.h"
 #include "Frame.h"
 #include "MainFrameImpl.h"
@@ -132,10 +133,6 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	statusBar()->addWidget(m_pProgressBar, 1, true);*/
 }
 
-MainFrameImpl::~MainFrameImpl()
-{
-}
-
 void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 {
 	QWidget *pWidget;
@@ -149,96 +146,78 @@ void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 
 void MainFrameImpl::open()
 {
+	QFile file;
+	const QDir *pDir;
 	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
 					"Flytec config file open", true);
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
-		m_fileName = fileDlg.selectedFile();
-		execThreadCmd(OpenConfig);
+		pDir = fileDlg.dir();
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.dir()->absPath());
+		delete pDir;
+		
+		file.setName(fileDlg.selectedFile());
+		
+		if(file.open(IO_WriteOnly))
+		{
+			storeFrames();
+			file.writeBlock(m_flytecMem);
+			file.close();
+		}
 	}
 }
 
 void MainFrameImpl::save()
 {
+	QFile file;
+	const QDir *pDir;
 	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
 					"Flytec config file open", true);
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dirPath());
-		m_fileName = fileDlg.selectedFile();
-		execThreadCmd(SaveConfig);
+		pDir = fileDlg.dir();
+		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+		delete pDir;
+		
+		file.setName(fileDlg.selectedFile());
+	
+		if(file.open(IO_WriteOnly))
+		{
+			storeFrames();
+			file.writeBlock(m_flytecMem);
+			file.close();
+		}
 	}
 }
 
 void MainFrameImpl::read()
 {
-	execThreadCmd(ReadConfig);
+	ProgressDlg dlg(this);
+	
+	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
+
+	if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
+	{
+		updateFrames();
+	}
+	
+	dlg.endProgress();
 }
 
 void MainFrameImpl::write()
 {
+	ProgressDlg dlg(this);
+		
 	if(QMessageBox::question(this, tr("write configuration"), 
 		tr("Write current configuration to the device?"), 1, 2) == 1)
 	{
-		execThreadCmd(WriteConfig);
+		storeFrames();
+		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
+		IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
+		dlg.endProgress();
 	}
-}
-
-void MainFrameImpl::execThreadCmd(CmdType cmd)
-{
-	m_cmd = cmd;
-	QThread::start();
-}
-
-void MainFrameImpl::run()
-{
-	QFile file;
-	
-/*	m_pProgressBar->setProgress(0);
-	m_pProgressBar->setShown(true);
-	*/
-	MainFrame::setCursor(QCursor(Qt::WaitCursor));
-	
-	switch(m_cmd)
-	{
-		case OpenConfig:
-			file.setName(m_fileName);
-			
-			if(file.open(IO_ReadOnly))
-			{
-				m_flytecMem = file.readAll();
-				file.close();
-				updateFrames();
-			}
-		break;
-		case SaveConfig:
-			file.setName(m_fileName);
-		
-			if(file.open(IO_WriteOnly))
-			{
-				storeFrames();
-				file.writeBlock(m_flytecMem);
-				file.close();
-			}
-		break;
-		case ReadConfig:
-			if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
-			{
-				updateFrames();
-			}
-		break;
-		case WriteConfig:
-			storeFrames();
-			IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
-		break;
-	}
-	
-	MainFrame::unsetCursor();
-	
-//	m_pProgressBar->setShown(false);
 }
 
 void MainFrameImpl::storeFrames()
