@@ -55,6 +55,7 @@ bool FlytecDevice::memoryRead(QByteArray &arr)
 	
 	for(pageNr=0; pageNr<nofPages; pageNr++)
 	{
+		emit progress(pageNr*100/nofPages);
 		pageAddr = pageNr * ft_PageSize;
 		success = (ft_memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr)) == 0);
 		
@@ -91,6 +92,7 @@ bool FlytecDevice::memoryWrite(QByteArray &arr)
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
 	{
+		emit progress(pageNr*100/nofPages);
 		pageAddr = pageNr * ft_PageSize;
 		success = (ft_memoryWrite(pageAddr, (u_char*)(arr.data()+pageAddr)) == 0);
 
@@ -131,6 +133,8 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 	{
 		while(ft_trackListRec(&track) == 0)
 		{
+			emit progress(track.trackNum*100/track.totalNum);
+			
 			flight.setNumber(track.trackNum);
 			flight.setDate(QDate(track.date.year, track.date.month, track.date.day));
 			flight.setDuration(track.duration.hour*3600 + track.duration.min*60 + track.duration.sec);
@@ -149,6 +153,7 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 	uchar line[255];
 	uchar size;
 	bool success;
+	int prog = 0;
 	
 	buff.setBuffer(arr);
 	success = (ft_trackReq(flightNr) == 0);
@@ -159,6 +164,8 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 	
 		while(ft_trackRec(&line[0], &size) == 0)
 		{
+			prog = (prog + 1) % 100;
+			emit progress(prog);
 			buff.writeBlock((char*)&line[0], size);
 		}
 		buff.close();
@@ -204,6 +211,7 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 	ft_WayPointType ftWp;
 	bool success;
 	char name[20];
+	int prog = 0;
 
 	success = (ft_wayPointListReq() == 0);
 	
@@ -211,10 +219,12 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 	{
 		while(ft_wayPointListRec(&ftWp) == 0)
 		{
+			prog = (prog + 10) % 100;
+			emit progress(prog);
+			
 			wp.setCoordinates(ftWp.latitude, ftWp.longitude, ftWp.altitude);
 			ft_ftstring2string(name, ftWp.name);
 			wp.setName(name);
-			
 			wpList.push_back(wp);
 		}
 	}
@@ -247,6 +257,8 @@ bool FlytecDevice::add(Route &route)
 		// WayPoints
 		for(wpNr=0; wpNr<nofWp; wpNr++)
 		{
+			emit progress(wpNr*100/nofWp);
+			
 			name = *route.wayPointList().at(wpNr);
 			ft_string2ftstring(name.ascii(), ftRoute.name);
 			ftRoute.actSent = wpNr + 1;
@@ -272,6 +284,7 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 	ft_RouteType ftRoute;
 	bool success;
 	char name[20];
+	int prog = 0;
 
 	success = (ft_routeListReq() == 0);
 	
@@ -280,6 +293,9 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 		// route
 		while(ft_routeListRec(&ftRoute) == 0)
 		{
+			prog = (prog + 10) % 100;
+			emit progress(prog);
+		
 			// name
 			ft_ftstring2string(name, ftRoute.name);
 			route.setName(name);
