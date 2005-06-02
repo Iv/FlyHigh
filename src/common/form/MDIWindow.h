@@ -26,19 +26,12 @@ class MDIWindow: public QMainWindow
 		
 	protected:
 		virtual bool periodicalUpdate();
-		// connects pProgressObj with progress() and cancel() in pProgressObj
-		void connectProgressDlg(const QString &label, QObject *pProgressObj);
-		void disconnectProgressDlg();
-		
-	protected slots:
-		void progress(int percent);
 		
 	private slots:
 		void updateTimeout();
 		
 	private:
 		QTimer *m_pUpdateTimer;
-		QProgressDialog *m_pProgressDlg;
 };
 
 #endif
