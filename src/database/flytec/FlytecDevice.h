@@ -35,6 +35,7 @@ class FlytecDevice: public IGPSDevice
 	protected:
 		void open();
 		void close();
+		void cancel();
 			
 		// memory
 		bool memoryRead(QByteArray &arr);
@@ -50,6 +51,9 @@ class FlytecDevice: public IGPSDevice
 		bool add(Route &route);
 		bool routeList(Route::RouteListType &routeList);
 		bool delRoute(const QString &name);
+		
+	private:
+		bool m_cancel;
 };
 
 #endif
