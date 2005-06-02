@@ -580,9 +580,7 @@ void FlightWindow::file_new()
 	
 	if(newFlightForm.exec())
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		ISql::pInstance()->add(flight);
-		TableWindow::unsetCursor();
 	}
 }
 
@@ -594,9 +592,7 @@ void FlightWindow::file_delete()
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delFlight(getTable()->text(row, Nr).toInt());
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	}
 }
 
@@ -606,19 +602,23 @@ void FlightWindow::plot_speedVsTime()
 	QTime time;
 	IGCFileParser igcParser;
 	FlightPointList fpList;
+	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
 	uint fpListSize;
 	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData);
+		progDlg.endProgress();
 	
-		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
+		if(success)
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
@@ -649,19 +649,23 @@ void FlightWindow::plot_altVsTime()
 	QTime time;
 	IGCFileParser igcParser;
 	FlightPointList fpList;
+	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
 	uint fpListSize;
 	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData);
+		progDlg.endProgress();
 		
-		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
+		if(success)
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
@@ -694,17 +698,21 @@ void FlightWindow::plot_varioVsTime()
 	FlightPointList fpList;
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
+	ProgressDlg progDlg(this);
 	uint fpNr;
 	uint fpListSize;
 	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData);
+		progDlg.endProgress();
 		
-		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
+		if(success)
 		{
 			igcParser.parse(igcData);
 			fpList = igcParser.flightPointList();
@@ -738,18 +746,20 @@ void FlightWindow::plot_OLC()
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
 	FlightPointList fpList;
 	ProgressDlg progDlg(this);
-
 	uint fpNr;
 	uint dist;
 	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData);
+		progDlg.endProgress();
 		
-		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
+		if(success)
 		{
 			igcParser.parse(igcData);
 	
@@ -762,7 +772,6 @@ void FlightWindow::plot_OLC()
 				plotFlighPointList(igcParser.flightPointList(), "track");
 				
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-				
 				progDlg.beginProgress("optimize flight...", &olcOptimizer);
 				
 				if(olcOptimizer.optimize())
@@ -833,13 +842,19 @@ void FlightWindow::plot_3d()
 	QByteArray arr;
 	QString fileName = "/tmp/track.igc";
 	QFile file;
+	ProgressDlg progDlg(this);
 	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
-		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), arr))
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), arr);
+		progDlg.endProgress();
+	
+		if(success)
 		{
 			file.setName(fileName);
 				
