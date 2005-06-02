@@ -114,16 +114,17 @@ void RouteWindow::file_delete()
 
 void RouteWindow::file_update()
 {
+	ProgressDlg progDlg(this);
 	Route::RouteListType routeList;
 	Route route;
 	QTable *pTable = TableWindow::getTable();
 	uint routeNr;
 	uint maxRouteNr;
 
-	TableWindow::setCursor(QCursor(Qt::WaitCursor));
-	
 	pTable->setNumRows(0); // clear table, because of different nr of waypoints
+	progDlg.beginProgress("read routes...", m_pDb);
 	m_pDb->routeList(routeList);
+	progDlg.endProgress();
 	maxRouteNr = routeList.size();
 	pTable->setNumRows(maxRouteNr);
 	
