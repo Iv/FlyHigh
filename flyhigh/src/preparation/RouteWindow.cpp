@@ -26,6 +26,7 @@
 #include <qtable.h>
 #include "IGPSDevice.h"
 #include "Images.h"
+#include "ProgressDlg.h"
 #include "IRouteForm.h"
 #include "ISql.h"
 #include "Route.h"
@@ -149,6 +150,7 @@ void RouteWindow::file_new()
 
 void RouteWindow::file_AddToGPS()
 {
+	ProgressDlg progDlg(this);
 	QString name;
 	Route route;
 	WayPoint wp;
@@ -160,13 +162,13 @@ void RouteWindow::file_AddToGPS()
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		name = getTable()->text(row, Name);
 		
 		if(ISql::pInstance()->route(name, route))
 		{
 			// make sure all WayPoints exist on GPS
 			nofWp = route.wayPointList().size();
+			progDlg.beginProgress("writing waypoints...", IGPSDevice::pInstance());
 			
 			for(wpNr=0; wpNr<nofWp; wpNr++)
 			{
@@ -175,11 +177,13 @@ void RouteWindow::file_AddToGPS()
 				IGPSDevice::pInstance()->add(wp);
 			}
 			
+			progDlg.endProgress();
+			
 			// Route
+			progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
 			IGPSDevice::pInstance()->add(route);
+			progDlg.endProgress();
 		}
-		
-		TableWindow::unsetCursor();
 	}
 }
 
