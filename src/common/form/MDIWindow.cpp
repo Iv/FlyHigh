@@ -36,32 +36,3 @@ void MDIWindow::updateTimeout()
 		m_pUpdateTimer->start(UPDATE_TIME, true);
 	}
 }
-
-void MDIWindow::connectProgressDlg(const QString &label, QObject *pProgressObj)
-{
-	if(m_pProgressDlg != NULL)
-	{
-		delete m_pProgressDlg;
-	}
-	
-	m_pProgressDlg = new QProgressDialog(label, "Cancel", 100, this, "progress", true);
-	m_pProgressDlg->setAutoClose(false);
-	
-	connect(pProgressObj, SIGNAL(progress(int)), this, SLOT(progress(int)));
-	connect(m_pProgressDlg, SIGNAL(canceled()), pProgressObj, SLOT(cancel()));
-	
-	m_pProgressDlg->show();
-}
-
-void MDIWindow::disconnectProgressDlg()
-{
-//	m_pProgressDlg->hide();
-	delete m_pProgressDlg;
-	m_pProgressDlg = NULL;
-}
-
-void MDIWindow::progress(int percent)
-{
-	m_pProgressDlg->setProgress(percent);
-	QApplication::eventLoop()->processEvents(QEventLoop::AllEvents);
-}
