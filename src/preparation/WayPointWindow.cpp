@@ -112,10 +112,10 @@ void WayPointWindow::file_update()
 	uint wpNr;
 	uint maxWpNr;
 	
+	pTable->setNumRows(0); // clear table, because of different nr of waypoints
 	progDlg.beginProgress("reading waypoints...", m_pDb);
 	m_pDb->wayPointList(wpList);
 	progDlg.endProgress();
-	
 	maxWpNr = wpList.size();
 	pTable->setNumRows(maxWpNr);
 	
