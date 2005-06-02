@@ -123,3 +123,7 @@ bool IDataBase::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 {
 	return false;
 }
+
+void IDataBase::cancel()
+{
+}

@@ -22,14 +22,16 @@
 #define IDataBase_h
 
 #include <qdatetime.h>
+#include <qobject.h>
 #include "ContainerDef.h"
 #include "AirSpace.h"
 #include "Flight.h"
 #include "Route.h"
 #include "WayPoint.h"
 
-class IDataBase
+class IDataBase: public QObject
 {
+	Q_OBJECT
 	public:
 		typedef enum SourceType{GPSdevice, SqlDB, File};
 		
@@ -61,6 +63,12 @@ class IDataBase
 		virtual bool airspace(const QString &name, AirSpace &airspace);
 		virtual int airspacesLastModified();
 		virtual bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		
+	signals:
+		void progress(int percent);
+		
+	public slots:
+		virtual void cancel();
 };
 
 #endif
