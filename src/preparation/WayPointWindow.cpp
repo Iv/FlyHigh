@@ -29,6 +29,7 @@
 #include "Images.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
+#include "ProgressDlg.h"
 #include "IWayPointForm.h"
 #include "WayPointWindow.h"
 #include "WayPoint.h"
@@ -107,12 +108,14 @@ void WayPointWindow::file_update()
 	WayPoint::WayPointListType wpList;
 	WayPoint wp;
 	QTable *pTable = TableWindow::getTable();
+	ProgressDlg progDlg(this);
 	uint wpNr;
 	uint maxWpNr;
-
-	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
+	progDlg.beginProgress("reading waypoints...", m_pDb);
 	m_pDb->wayPointList(wpList);
+	progDlg.endProgress();
+	
 	maxWpNr = wpList.size();
 	pTable->setNumRows(maxWpNr);
 	
@@ -120,8 +123,6 @@ void WayPointWindow::file_update()
 	{
 		setWpToRow(wpNr, wpList[wpNr]);
 	}
-	
-	TableWindow::unsetCursor();
 }
 
 void WayPointWindow::file_AddToGps()
