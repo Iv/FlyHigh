@@ -52,10 +52,17 @@ bool FlytecDevice::memoryRead(QByteArray &arr)
 	bool success = false;
 
 	arr.resize(ft_MemSize);
+	m_cancel = false;
 	
 	for(pageNr=0; pageNr<nofPages; pageNr++)
 	{
 		emit progress(pageNr*100/nofPages);
+		
+		if(m_cancel)
+		{
+			return false;
+		}
+		
 		pageAddr = pageNr * ft_PageSize;
 		success = (ft_memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr)) == 0);
 		
@@ -89,10 +96,18 @@ bool FlytecDevice::memoryWrite(QByteArray &arr)
 	{
 		return false;
 	}
-
+	
+	m_cancel = false;
+	
 	for(pageNr=0; pageNr<nofPages; pageNr++)
 	{
 		emit progress(pageNr*100/nofPages);
+		
+		if(m_cancel)
+		{
+			return false;
+		}
+		
 		pageAddr = pageNr * ft_PageSize;
 		success = (ft_memoryWrite(pageAddr, (u_char*)(arr.data()+pageAddr)) == 0);
 
@@ -128,12 +143,18 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 	Flight flight;
 	
 	success = (ft_trackListReq() == 0);
+	m_cancel = false;
 	
 	if(success)
 	{
 		while(ft_trackListRec(&track) == 0)
 		{
 			emit progress(track.trackNum*100/track.totalNum);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
 			
 			flight.setNumber(track.trackNum);
 			flight.setDate(QDate(track.date.year, track.date.month, track.date.day));
@@ -157,6 +178,7 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 	
 	buff.setBuffer(arr);
 	success = (ft_trackReq(flightNr) == 0);
+	m_cancel = false;
 	
 	if(success)
 	{
@@ -166,6 +188,12 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 		{
 			prog = (prog + 1) % 100;
 			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
+			
 			buff.writeBlock((char*)&line[0], size);
 		}
 		buff.close();
@@ -214,6 +242,7 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 	int prog = 0;
 
 	success = (ft_wayPointListReq() == 0);
+	m_cancel = false;
 	
 	if(success)
 	{
@@ -221,6 +250,11 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 		{
 			prog = (prog + 10) % 100;
 			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
 			
 			wp.setCoordinates(ftWp.latitude, ftWp.longitude, ftWp.altitude);
 			ft_ftstring2string(name, ftWp.name);
@@ -254,10 +288,17 @@ bool FlytecDevice::add(Route &route)
 	
 	if(success)
 	{
+		m_cancel = false;
+	
 		// WayPoints
 		for(wpNr=0; wpNr<nofWp; wpNr++)
 		{
 			emit progress(wpNr*100/nofWp);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
 			
 			name = *route.wayPointList().at(wpNr);
 			ft_string2ftstring(name.ascii(), ftRoute.name);
@@ -290,11 +331,18 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 	
 	if(success)
 	{
+		m_cancel = false;
+		
 		// route
 		while(ft_routeListRec(&ftRoute) == 0)
 		{
 			prog = (prog + 10) % 100;
 			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
 		
 			// name
 			ft_ftstring2string(name, ftRoute.name);
@@ -332,4 +380,9 @@ bool FlytecDevice::delRoute(const QString &name)
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	
 	return success;
+}
+
+void FlytecDevice::cancel()
+{
+	m_cancel = true;
 }
