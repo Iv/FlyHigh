@@ -47,6 +47,7 @@
 #include "IGCFileParser.h"
 #include "OLCOptimizer.h"
 #include "OLCWebForm.h"
+#include "ProgressDlg.h"
 
 FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -157,12 +158,14 @@ void FlightWindow::file_update()
 	Flight::FlightListType flightList; 
 	Flight flight;
 	QTable *pTable = TableWindow::getTable();
+	ProgressDlg progDlg(this);
 	uint flightNr;
 	uint maxFlightNr;
 	
-	TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
+	progDlg.beginProgress("reading flights...", m_pDb);
 	m_pDb->flightList(flightList);
+	progDlg.endProgress();
+		
 	maxFlightNr = flightList.size();
 	pTable->setNumRows(maxFlightNr);
 	
@@ -170,8 +173,6 @@ void FlightWindow::file_update()
 	{
 		setFlightToRow(flightNr, flightList[flightNr]);
 	}
-	
-	TableWindow::unsetCursor();
 }
 
 void FlightWindow::setFlightToRow(uint row, Flight &flight)
@@ -203,6 +204,7 @@ void FlightWindow::setFlightToRow(uint row, Flight &flight)
 void FlightWindow::file_AddToSqlDB()
 {
 	IFlightForm newFlightForm(this, "New Flight");
+	ProgressDlg progDlg(this);
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	QTime time;
@@ -226,14 +228,12 @@ void FlightWindow::file_AddToSqlDB()
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->igcFile(row, flight.igcData());
 	
 		// parse and optimize
 		igcParser.parse(flight.igcData());
 		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-		
-		connectProgressDlg("optimize flight...", &olcOptimizer);
+		progDlg.beginProgress("optimize flight...", &olcOptimizer);
 		
 		if(olcOptimizer.optimize())
 		{
@@ -241,8 +241,7 @@ void FlightWindow::file_AddToSqlDB()
 			flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
 		}
 		
-		disconnectProgressDlg();
-		TableWindow::unsetCursor();
+		progDlg.endProgress();
 		
 		// nr
 		id = ISql::pInstance()->newFlightNr();
@@ -330,6 +329,7 @@ void FlightWindow::file_AddToSqlDB()
 void FlightWindow::file_import()
 {
 	IFlightForm newFlightForm(this, "New Flight");
+	ProgressDlg progDlg(this);
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	const QDir *pDir;
@@ -352,8 +352,6 @@ void FlightWindow::file_import()
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
 		pDir = fileDlg.dir();
 		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
 		delete pDir;
@@ -367,8 +365,7 @@ void FlightWindow::file_import()
 			// parse and optimize
 			igcParser.parse(flight.igcData());
 			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
-			
-			connectProgressDlg("optimize flight...", &olcOptimizer);
+			progDlg.beginProgress("optimize flight...", &olcOptimizer);
 			
 			if(olcOptimizer.optimize())
 			{
@@ -376,7 +373,7 @@ void FlightWindow::file_import()
 				flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
 			}
 			
-			disconnectProgressDlg();
+			progDlg.endProgress();
 	
 			// nr
 			nr = ISql::pInstance()->newFlightNr();
@@ -453,8 +450,6 @@ void FlightWindow::file_import()
 				ISql::pInstance()->add(flight);
 			}
 		}
-		
-		TableWindow::unsetCursor();
 	}
 }
 
@@ -473,6 +468,7 @@ void FlightWindow::file_export()
 	OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
 	OLCWebForm olcWebForm;
 	FlightPointList fpList;
+	ProgressDlg progDlg(this);
 	double distFree;
 	double distFAI;
 	double distFlat;
@@ -485,8 +481,6 @@ void FlightWindow::file_export()
 	
 	if(row >= 0)
 	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		
 		if(m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData))
 		{
 			// IGC file
@@ -525,9 +519,8 @@ void FlightWindow::file_export()
 				
 				comment = "optimized and claimed with http://flyhigh.sourceforge.net\n";
 				comment += getTable()->text(row, Comment);
-				olcWebForm.setComment(comment);
-				
-				connectProgressDlg("optimize flight...", &olcOptimizer);
+				olcWebForm.setComment(comment);	
+				progDlg.beginProgress("optimize flight...", &olcOptimizer);
 				
 				if(olcOptimizer.optimize())
 				{
@@ -566,11 +559,9 @@ void FlightWindow::file_export()
 					olcWebForm.save(fileName + ".html");
 				}
 				
-				disconnectProgressDlg();
+				progDlg.endProgress();
 			}
 		}
-		
-		TableWindow::unsetCursor();
 	}
 }
 
@@ -746,6 +737,8 @@ void FlightWindow::plot_OLC()
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
 	FlightPointList fpList;
+	ProgressDlg progDlg(this);
+
 	uint fpNr;
 	uint dist;
 	int row;
@@ -770,7 +763,7 @@ void FlightWindow::plot_OLC()
 				
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
 				
-				connectProgressDlg("optimize flight...", &olcOptimizer);
+				progDlg.beginProgress("optimize flight...", &olcOptimizer);
 				
 				if(olcOptimizer.optimize())
 				{
@@ -806,8 +799,8 @@ void FlightWindow::plot_OLC()
 					title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.5);
 					plotFlighPointList(fpList, title);
 				}
-				
-				disconnectProgressDlg();
+
+				progDlg.endProgress();
 			}
 		}
 		
