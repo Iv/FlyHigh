@@ -60,7 +60,7 @@ IFlyHighRC::IFlyHighRC()
 	m_utcOffset = 0;
 	m_lastDir = QDir::homeDirPath();
 	
-	m_versionInfo = "FlyHigh Version 0.3";
+	m_versionInfo = "FlyHigh Version 0.3.1";
 	m_rcFile.setName("/home/grafal/.flyhighrc");
 }
 
