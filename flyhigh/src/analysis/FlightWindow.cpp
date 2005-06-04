@@ -228,7 +228,9 @@ void FlightWindow::file_AddToSqlDB()
 	
 	if(row >= 0)
 	{
+		progDlg.beginProgress("read igc file...", m_pDb);
 		m_pDb->igcFile(row, flight.igcData());
+		progDlg.endProgress();
 	
 		// parse and optimize
 		igcParser.parse(flight.igcData());
