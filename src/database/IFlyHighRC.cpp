@@ -61,7 +61,7 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homeDirPath();
 	
 	m_versionInfo = "FlyHigh Version 0.3.1";
-	m_rcFile.setName("/home/grafal/.flyhighrc");
+	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
 uint IFlyHighRC::deviceName()
