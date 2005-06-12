@@ -65,20 +65,6 @@ CREATE TABLE IF NOT EXISTS `Routes` (
   PRIMARY KEY  (`Name`)
 ) TYPE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `Flights` (
-  `Number` int(11) NOT NULL default '0',
-  `Date` date NOT NULL default '0000-00-00',
-  `Time` time NOT NULL default '00:00:00',
-  `Glider` varchar(16) NOT NULL default '0'  REFERENCES Gliders(Model),
-  `StartPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),
-  `LandPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),
-  `Duration` int(11) NOT NULL default '0',
-  `Distance` int(11) default '0',
-  `Comment` varchar(200) default NULL,
-  `IGCFile` mediumblob,
-  PRIMARY KEY  (`Number`)
-) TYPE=InnoDB;
-
 CREATE TABLE IF NOT EXISTS `LastModified` (
   `Name` varchar(16) NOT NULL default '',
   `Time` datetime default NULL,
