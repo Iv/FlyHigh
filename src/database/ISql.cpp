@@ -91,6 +91,7 @@ bool ISql::open()
 	
 	success = m_pDefaultDB->open();
 	Error::verify(success, Error::SQL_OPEN);
+	m_pFlights->setupTable();
 	
 	return success;
 }
@@ -187,7 +188,7 @@ bool ISql::igcFile(uint flightNr, QByteArray &arr)
 
 int ISql::flightsLastModified()
 {
-	return m_pFlights->lastModified("Flights");
+	return m_pFlights->lastModified();
 }
 
 bool ISql::add(Route &route)
