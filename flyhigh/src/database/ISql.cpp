@@ -29,6 +29,7 @@
 #include "Servicings.h"
 
 ISql* ISql::m_pInst = NULL;
+const QString ISql::m_curTableVersion = "2005.06.12 20:00:00"; // equal version_0_3_2
 
 ISql::ISql()
 {
@@ -91,7 +92,7 @@ bool ISql::open()
 	
 	success = m_pDefaultDB->open();
 	Error::verify(success, Error::SQL_OPEN);
-	m_pFlights->setupTable();
+	setupTables();
 	
 	return success;
 }
@@ -259,4 +260,54 @@ bool ISql::servicingList(Servicing::ServicingListType &servicingList)
 int ISql::servicingsLastModified()
 {
 	return m_pServicings->lastModified("Servicings");
+}
+
+void ISql::setupTables()
+{
+	QString sqls;
+	int tabVers = QDateTime::fromString(m_curTableVersion, Qt::ISODate).toTime_t();
+	
+	if(tableVersion() < tabVers)
+	{
+		m_pFlights->fromV_0_3_1toV_0_3_2();
+		setTableVersion();
+	}
+	
+	m_pFlights->setupTable();
+}
+
+int ISql::tableVersion()
+{
+	QString sqls;
+	QString date;
+	QSqlQuery query(m_pDefaultDB);
+	int time = 1;
+	
+	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = 'TableVersion'");
+	
+	if(query.exec(sqls) && query.first())
+	{
+		time = query.value(1).toDateTime().toTime_t();
+	}
+	
+	return time;
+}
+
+void ISql::setTableVersion()
+{
+	QString sqls;
+	QSqlQuery query(m_pDefaultDB);
+	
+	if(tableVersion() > 1)
+	{
+		sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'TableVersion'", 
+				m_curTableVersion.ascii());
+		query.exec(sqls);
+	}
+	else
+	{
+		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('TableVersion', '%s')",
+				m_curTableVersion.ascii());
+		query.exec(sqls);
+	}
 }
