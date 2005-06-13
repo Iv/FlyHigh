@@ -22,6 +22,7 @@
 #define IFlyHighRC_h
 
 #include <qbuffer.h>
+#include <qdatetime.h>
 #include <qfile.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -50,6 +51,14 @@ class IFlyHighRC
 		const QStringList& deviceNameList();
 		const QStringList& deviceSpeedList();
 		
+		// pilot info
+		const QString& pilotName();
+		void setPilotName(const QString &name);
+		const QDate& pilotBirth();
+		void setPilotBirth(const QDate &date);
+		const QString& callsign();
+		void setCallsign(const QString &id);
+		
 	private:
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
@@ -59,6 +68,9 @@ class IFlyHighRC
 		char m_utcOffset;
 		QString m_lastDir;
 		QString m_versionInfo;
+		QString m_callsign;
+		QString m_pilotName;
+		QDate m_pilotBirth;
 		
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
@@ -71,6 +83,8 @@ class IFlyHighRC
 		void saveDateTime(QTextStream &stream);
 		void parseDirectory(QBuffer &buff);
 		void saveDirectory(QTextStream &stream);
+		void parsePilot(QBuffer &buff);
+		void savePilot(QTextStream &stream);
 		void parseValue(char *line, QString &var, QString &val);
 };
 
