@@ -33,6 +33,10 @@ const QString DeviceSpeedVar = "speed=";
 const QString DateTimeTag = "[datetime]\n";
 const QString DateTimeUtcVar = "utc=";
 const QString DirectoryTag = "[directory]\n";
+const QString PilotTag = "[pilot]\n";
+const QString PilotName = "name=";
+const QString PilotBirthDate = "birthdate=";
+const QString PilotCallsign = "callsign=";
 const QString DirectoryLastVar = "last=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
@@ -59,6 +63,10 @@ IFlyHighRC::IFlyHighRC()
 	m_deviceSpeed = 0;
 	m_utcOffset = 0;
 	m_lastDir = QDir::homeDirPath();
+
+	QString m_pilotName = "";
+	QDate m_pilotBirth = QDate(1970, 1, 1);
+	QString m_callsign = "";
 	
 	m_versionInfo = "FlyHigh Version 0.3.1";
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
@@ -138,6 +146,36 @@ const QStringList& IFlyHighRC::deviceSpeedList()
 	return m_deviceSpeedList;
 }
 
+const QString& IFlyHighRC::callsign()
+{
+	return m_callsign;
+}
+
+void IFlyHighRC::setCallsign(const QString &id)
+{
+	m_callsign = id;
+}
+
+const QString& IFlyHighRC::pilotName()
+{
+	return m_pilotName;
+}
+
+void IFlyHighRC::setPilotName(const QString &name)
+{
+	m_pilotName = name;
+}
+
+const QDate& IFlyHighRC::pilotBirth()
+{
+	return m_pilotBirth;
+}
+
+void IFlyHighRC::setPilotBirth(const QDate &date)
+{
+	m_pilotBirth = date;
+}
+
 void IFlyHighRC::loadRC()
 {
 	QByteArray rcFileData;
@@ -165,6 +203,10 @@ void IFlyHighRC::loadRC()
 			{
 				parseDirectory(buff);
 			}
+			else if(line == PilotTag)
+			{
+				parsePilot(buff);
+			}
 		}
 		buff.close();
 	}
@@ -179,6 +221,7 @@ void IFlyHighRC::saveRC()
 		saveSerialLine(stream);
 		saveDateTime(stream);
 		saveDirectory(stream);
+		savePilot(stream);
 		
 		m_rcFile.close();
 	}
@@ -282,6 +325,48 @@ void IFlyHighRC::saveDirectory(QTextStream &stream)
 {
 	stream << DirectoryTag;
 	stream << DirectoryLastVar << m_lastDir << "\n";
+	stream << "\n";
+}
+
+void IFlyHighRC::parsePilot(QBuffer &buff)
+{
+	char line[MAX_LINE_SIZE];
+	QString var;
+	QString val;
+	int DD;
+	int MM;
+	int YY;
+	
+	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
+	{
+		parseValue(line, var, val);
+		
+		if(PilotName.find(var) == 0)
+		{
+			setPilotName(val);
+		}
+		else if(PilotBirthDate.find(var) == 0)
+		{
+			sscanf(val.ascii(), "%2d%*c%2d%*c%4d", &DD, &MM, &YY);
+			setPilotBirth(QDate(YY, MM, DD));
+		}
+		else if(PilotCallsign.find(var) == 0)
+		{
+			setCallsign(val);
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void IFlyHighRC::savePilot(QTextStream &stream)
+{
+	stream << PilotTag;
+	stream << PilotName << m_pilotName << "\n";
+	stream << PilotBirthDate << m_pilotBirth.toString("dd.MM.yyyy") << "\n";
+	stream << PilotCallsign << m_callsign << "\n";
 	stream << "\n";
 }
 
