@@ -31,6 +31,7 @@ class Flights: public DataBaseSub
 	public:
 		Flights(QSqlDatabase *pDB);
 		bool setupTable();
+		void fromV_0_3_1toV_0_3_2();
 		int lastModified();
 
 		bool add(Flight &flight);

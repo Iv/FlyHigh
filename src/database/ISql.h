@@ -97,6 +97,7 @@ class ISql: public IDataBase
 		
 	private:
 		static ISql* m_pInst;
+		static const QString m_curTableVersion;
 		AirSpaces *m_pAirSpaces;
 		WayPoints *m_pWayPoints;
 		Gliders *m_pGliders;
@@ -106,6 +107,9 @@ class ISql: public IDataBase
 		QSqlDatabase *m_pDefaultDB;
 		
 		ISql();
+		void setupTables();
+		int tableVersion();
+		void setTableVersion();
 };
 
 #endif

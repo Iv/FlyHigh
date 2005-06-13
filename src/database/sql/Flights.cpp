@@ -217,6 +217,15 @@ bool Flights::setupTable()
 	return success;
 }
 
+void Flights::fromV_0_3_1toV_0_3_2()
+{
+	QString sqls;
+	QSqlQuery query(db());
+	
+	sqls.sprintf("RENAME TABLE `Flights` TO `%s`", m_tableName.ascii());
+	query.exec(sqls);
+}
+
 int Flights::lastModified()
 {
 	QString sqls;
