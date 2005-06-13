@@ -56,6 +56,7 @@ class MainWindow: public QMainWindow
 		void settings_port();
 		void settings_device(int id);
 		void settings_configure_device();
+		void settings_pilotInfo();
 		void help_about();
 		void aboutToShow();
 		
