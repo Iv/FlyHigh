@@ -35,6 +35,7 @@
 #include "IPortFrame.h"
 #include "FlightWindow.h"
 #include "FlightExpWindow.h"
+#include "IFlyHighRCFrame.h"
 #include "MDIWindow.h"
 #include "Images.h"
 #include "IDataBase.h"
@@ -111,6 +112,7 @@ MainWindow::MainWindow()
 
 	pMenu->insertItem("&Device", m_pDevicesMenu);
 	pMenu->insertItem("Configure Device...", this, SLOT(settings_configure_device()));
+	pMenu->insertItem("Pilot Info...", this, SLOT(settings_pilotInfo()));
 
 	// Menu Windows
 	m_pWindowsMenu = new QPopupMenu(this);
@@ -430,4 +432,11 @@ void MainWindow::settings_configure_device()
 			break;
 			*/
 	}
+}
+
+void MainWindow::settings_pilotInfo()
+{
+	IFlyHighRCFrame rcFrame;
+	
+	rcFrame.show();
 }
