@@ -492,6 +492,7 @@ void FlightWindow::file_export()
 					"IGC file export", true);
 			
 			olcWebForm.setPilot(igcParser.pilot());
+			olcWebForm.setPilotBirth(IFlyHighRC::pInstance()->pilotBirth());
 			olcWebForm.setDate(igcParser.date());
 			olcWebForm.olcFileName(fileName);
 			
