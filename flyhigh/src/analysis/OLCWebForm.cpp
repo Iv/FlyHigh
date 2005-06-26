@@ -41,6 +41,11 @@ void OLCWebForm::setTakeOffLoc(const QString &takeoff)
 	m_takeoffLoc = takeoff;
 }
 
+void OLCWebForm::setPilotBirth(const QDate &birth)
+{
+	m_birth = birth;
+}
+
 void OLCWebForm::setCallSign(const QString &callsign)
 {
 	m_callsign = callsign;
@@ -111,6 +116,7 @@ bool OLCWebForm::save(const QString & name)
 		s << "			<TABLE>\n";
 		
 		streamName(s);
+		streamBirth(s);
 		streamTakeoffLoc(s);
 		streamCallsign(s);
 		streamTrack(s);
@@ -177,6 +183,16 @@ void OLCWebForm::streamName(QTextStream& s)
 	s << "				<TD>Surname</TD>\n";
 	s << "				<TD COLSPAN=2>\n";
 	s << "					<INPUT TYPE=TEXT MAXLENGTH=60 SIZE=60 NAME=\"na\" VALUE=\"" << m_surName << "\">\n";
+	s << "				</TD>\n";
+	s << "			</TR>\n";
+}
+
+void OLCWebForm::streamBirth(QTextStream& s)
+{
+	s << "			<TR>\n";
+	s << "				<TD>Date of birth</TD>\n";
+	s << "				<TD COLSPAN=2>\n";
+	s << "					<INPUT TYPE=\"TEXT\" MAXLENGTH=\"8\" SIZE=\"8\" NAME=\"geb\" VALUE=\"" << m_birth.toString("dd.MM.yy") << "\"> (dd.mm.yy)";
 	s << "				</TD>\n";
 	s << "			</TR>\n";
 }
