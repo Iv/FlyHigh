@@ -32,6 +32,7 @@ class OLCWebForm
 		OLCWebForm();
 		
 		void setPilot(const QString &name);
+		void setPilotBirth(const QDate &birth);
 		void setTakeOffLoc(const QString &takeoff);
 		void setCallSign(const QString &callsign);
 		void setDate(const QDate &date);
@@ -49,6 +50,7 @@ class OLCWebForm
 	private:
 		QString m_firstName;
 		QString m_surName;
+		QDate m_birth;
 		QString m_takeoffLoc;
 		QString m_callsign;
 		QDate m_date;
@@ -62,6 +64,7 @@ class OLCWebForm
 		
 		void streamHead(QTextStream& s);
 		void streamName(QTextStream& s);
+		void streamBirth(QTextStream& s);
 		void streamTakeoffLoc(QTextStream& s);
 		void streamCallsign(QTextStream& s);
 		void streamTrack(QTextStream& s);
