@@ -23,6 +23,7 @@
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "FlytecDevice.h"
+#include "GarminDevice.h"
 
 IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
 
@@ -38,10 +39,6 @@ IGPSDevice::IGPSDevice()
 
 IGPSDevice::~IGPSDevice()
 {
-	if(m_pGPSDevice != NULL)
-	{
-		delete m_pGPSDevice;
-	}
 }
 
 IGPSDevice* IGPSDevice::pInstance()
@@ -68,6 +65,9 @@ IGPSDevice* IGPSDevice::pInstance()
 		{
 			case 0:
 				m_pGPSDevice = new FlytecDevice;
+			break;
+			case 1:
+				m_pGPSDevice = new GarminDevice;
 			break;
 			default:
 				m_pGPSDevice = new FlytecDevice;
