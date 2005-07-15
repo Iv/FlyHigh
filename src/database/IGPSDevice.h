@@ -29,8 +29,6 @@
 class IGPSDevice: public IDataBase
 {
 	public:
-		typedef enum GPSDeviceType{Flytec5020};
-		
 		IGPSDevice();
 		virtual ~IGPSDevice();
 	

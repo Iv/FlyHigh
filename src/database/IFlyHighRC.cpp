@@ -54,9 +54,11 @@ IFlyHighRC* IFlyHighRC::pInstance()
 IFlyHighRC::IFlyHighRC()
 {
 	m_deviceNameList = "Flytec5020";
-//	m_deviceNameList += "Flytec5030";
-	m_deviceSpeedList = "57600";
-//	m_deviceSpeedList += "115200";
+	m_deviceNameList += "Garmin";
+	m_deviceSpeedList = "9600";
+	m_deviceSpeedList += "19200";
+	m_deviceSpeedList += "38400";
+	m_deviceSpeedList += "57600";
 	
 	m_deviceName = 0;
 	m_deviceLine = "/dev/ttyS0";
@@ -68,7 +70,7 @@ IFlyHighRC::IFlyHighRC()
 	QDate m_pilotBirth = QDate(1970, 1, 1);
 	QString m_callsign = "";
 	
-	m_versionInfo = "FlyHigh Version 0.3.1";
+	m_versionInfo = "FlyHigh Version 0.3.2";
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
