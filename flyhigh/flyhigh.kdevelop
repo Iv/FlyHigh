@@ -29,8 +29,8 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/database/sql/libsql.a</activetarget>
-      <useconfiguration>release</useconfiguration>
+      <activetarget>src/database/garmin/libgarmin.a</activetarget>
+      <useconfiguration>debug</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
     <run>
@@ -231,7 +231,7 @@
     <references/>
     <designerintegration>
       <qtdesigner>
-        <implementation class="CTRFormImpl" path="/home/grafal/projects/flyhigh/src/common/form/CTRForm.ui" implementationpath="/home/grafal/projects/flyhigh/src/common/form/CTRFormImpl.h" />
+        <implementation class="FlyHighRCFrameImpl" path="/home/grafal/projects/flyhigh/src/configuration/database/FlyHighRCFrame.ui" implementationpath="/home/grafal/projects/flyhigh/src/configuration/database/FlyHighRCFrameImpl.h" />
       </qtdesigner>
     </designerintegration>
   </kdevcppsupport>
