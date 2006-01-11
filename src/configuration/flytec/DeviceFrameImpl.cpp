@@ -60,10 +60,12 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	QString rcPilot;
 	QString callsign;
 	QString rcCallsign;
+	QString glider;
+	QString rcGlider;
 	DeviceInfoType devInfo;
 	char str[FT_STRING_SIZE];
 	int syncRes;
-    
+	
 	if(ft_deviceInfoRead(&devInfo) == 0)
 	{
 		lineEdit_SerialNr->setText(QString("%1").arg(devInfo.serialNr));
@@ -98,7 +100,28 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	
 	// glider
 	ft_ftstring2string(str, (char*)&arr[GLYDER_TYPE_POS]);
-	selectGlider(str);
+	glider = str;
+	rcGlider = IFlyHighRC::pInstance()->glider();
+	
+	if(glider != rcGlider)
+	{
+		syncRes = QMessageBox::question(this, "Different gliders", "Glider on GPS differ from glider in database. Sync gliders?",
+			 	"GPS to DB", "DB to GPS", "Ignore");
+		
+		switch(syncRes)
+		{
+			case 0: // From GPS
+				IFlyHighRC::pInstance()->setGlider(glider);
+			break;
+			case 1: // From database
+				glider = rcGlider;
+			break;
+			default:
+			break;
+		}
+	}
+	
+	selectGlider(glider);
 
 	// callsign
 	ft_ftstring2string(str, (char*)&arr[GLYDER_ID_POS]);
@@ -132,8 +155,9 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	QString rcPilot;
 	QString callsign;
 	QString rcCallsign;
-	int syncRes;
 	QString glider;
+	QString rcGlider;
+	int syncRes;
 	
 	// pilot
 	pilot = lineEdit_PilotName->text();
@@ -162,6 +186,27 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	
 	// glider
 	glider = comboBoxModel->currentText();
+	rcGlider = IFlyHighRC::pInstance()->glider();
+	
+	if(glider != rcGlider)
+	{
+		syncRes = QMessageBox::question(this, "Different gliders", "Glider in database differ from glider in dialog. Sync gliders?",
+				"Dialog to DB", "DB to GPS", "Ignore");
+		
+		switch(syncRes)
+		{
+			case 0: // From lineEdit
+				IFlyHighRC::pInstance()->setGlider(glider);
+			break;
+			case 1: // From database
+				glider = rcGlider;
+				selectGlider(glider);
+			break;
+			default:
+			break;
+		}
+	}
+
 	ft_string2ftstring(glider.ascii(), (char*)&arr[GLYDER_TYPE_POS]);
 
 	// callsign
