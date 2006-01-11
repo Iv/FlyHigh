@@ -31,8 +31,8 @@ flyhigh_LDADD = $(top_builddir)/src/preparation/libpreparation.a \
 	$(top_builddir)/src/configuration/interface/libinterface.a $(top_builddir)/src/images/libimages.a \
 	$(top_builddir)/src/configuration/flytec/libflytec.a $(top_builddir)/src/database/libdatabase.a \
 	$(top_builddir)/src/database/sql/libsql.a $(top_builddir)/src/database/flytec/libflytec.a \
-	$(top_builddir)/src/common/container/libcontainer.a $(top_builddir)/src/common/utils/libutils.a \
-	$(top_builddir)/src/configuration/database/libdatabase.a $(LIB_KDEUI)
+	$(top_builddir)/src/database/garmin/libgarmin.a $(top_builddir)/src/common/container/libcontainer.a \
+	$(top_builddir)/src/common/utils/libutils.a $(top_builddir)/src/configuration/database/libdatabase.a $(LIB_KDEUI)
 
 # this is where the desktop file will go 
 shelldesktopdir = $(kde_appsdir)/Utilities

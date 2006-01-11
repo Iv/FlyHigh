@@ -26,6 +26,7 @@
 #include "IFlyHighRC.h"
 
 #include "gpsapp.h"
+#include "gpsmem.h"
 
 GarminDevice::GarminDevice()
 {
@@ -87,7 +88,28 @@ bool GarminDevice::igcFile(uint flightNr, QByteArray &arr)
 // waypoints
 bool GarminDevice::add(WayPoint &wp)
 {
-	return false;
+	GPS_PWay *wayList;
+	int ret;
+	int nWps = 1;
+
+	wayList = (GPS_PWay*)malloc(sizeof(GPS_PWay*));
+	
+	wayList[0] = GPS_Way_New();
+	wayList[0]->prot = gps_waypt_transfer;
+	memcpy(wayList[0]->ident, wp.name().ascii(), wp.name().length());
+	memcpy(wayList[0]->cmnt, wp.description().ascii(), wp.description().length());
+	wayList[0]->lat = wp.latitude();
+	wayList[0]->lon = wp.longitude();
+	wayList[0]->alt = wp.altitude();
+	
+	// send wp
+	ret = GPS_Command_Send_Waypoint(IFlyHighRC::pInstance()->deviceLine().ascii(), wayList, nWps);
+
+	// release allocated memory
+	GPS_Way_Del(&wayList[0]);
+	free(wayList);
+	
+	return !(ret < 0);
 }
 
 bool GarminDevice::delWayPoint(const QString &name)
