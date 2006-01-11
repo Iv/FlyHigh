@@ -17,12 +17,66 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
+#include <qcombobox.h>
 #include "FlyHighRCFrameImpl.h"
+#include "Glider.h"
+#include "IGliderForm.h"
+#include "ISql.h"
 
 FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	:FlyHighRCFrame(parent, name)
 {
+}
+
+void FlyHighRCFrameImpl::newGlider()
+{
+	Glider glider;
+	IGliderForm newGlider(this, "New Glider", &glider);
+	
+	if(newGlider.exec())
+	{
+		ISql::pInstance()->add(glider);
+		updateGlider();
+	}
+}
+
+void FlyHighRCFrameImpl::selectGlider(const QString &name)
+{
+	QString str;
+	int index;
+	int maxIndex;
+	bool found = false;
+	
+	maxIndex = comboBoxModel->count();
+	
+	for(index=0; index<maxIndex; index++)
+	{
+		found = (comboBoxModel->text(index) == name);
+		
+		if(found)
+		{
+			comboBoxModel->setCurrentItem(index);
+			break;
+		}
+	}
+}
+
+void FlyHighRCFrameImpl::updateGlider()
+{
+	QStringList list;
+	QString gliderModel;
+	Glider::GliderListType gliderList;
+	Glider::GliderListType::iterator it;
+	
+	ISql::pInstance()->gliderList(gliderList);
+	comboBoxModel->clear();
+	
+	for(it=gliderList.begin(); it!=gliderList.end(); it++)
+	{
+		(*it).modelOfGlider(gliderModel);
+		comboBoxModel->insertItem(gliderModel);
+	}
 }
 
 #include "FlyHighRCFrameImpl.moc"
