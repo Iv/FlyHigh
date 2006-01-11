@@ -30999,6 +30999,8 @@ done
 
           ac_config_files="$ac_config_files src/configuration/Makefile"
 
+          ac_config_files="$ac_config_files src/configuration/database/Makefile"
+
           ac_config_files="$ac_config_files src/configuration/flytec/Makefile"
 
           ac_config_files="$ac_config_files src/configuration/interface/Makefile"
@@ -31006,6 +31008,8 @@ done
           ac_config_files="$ac_config_files src/database/Makefile"
 
           ac_config_files="$ac_config_files src/database/flytec/Makefile"
+
+          ac_config_files="$ac_config_files src/database/garmin/Makefile"
 
           ac_config_files="$ac_config_files src/database/sql/Makefile"
 
@@ -31573,10 +31577,12 @@ do
   "src/common/form/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/common/form/Makefile" ;;
   "src/common/utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/common/utils/Makefile" ;;
   "src/configuration/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/configuration/Makefile" ;;
+  "src/configuration/database/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/configuration/database/Makefile" ;;
   "src/configuration/flytec/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/configuration/flytec/Makefile" ;;
   "src/configuration/interface/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/configuration/interface/Makefile" ;;
   "src/database/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/database/Makefile" ;;
   "src/database/flytec/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/database/flytec/Makefile" ;;
+  "src/database/garmin/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/database/garmin/Makefile" ;;
   "src/database/sql/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/database/sql/Makefile" ;;
   "src/images/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/images/Makefile" ;;
   "src/preparation/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/preparation/Makefile" ;;
