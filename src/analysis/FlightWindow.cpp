@@ -578,6 +578,14 @@ void FlightWindow::file_new()
 	nr = ISql::pInstance()->newFlightNr();
 	flight.setNumber(nr);
 	
+	// current date and time
+	flight.setDate(QDate::currentDate());
+	flight.setTime(QTime::currentTime());
+	flight.setDuration(QTime(0, 0, 0));
+
+	// current glider
+	flight.setGlider(IFlyHighRC::pInstance()->glider());
+	
 	// a new flight
 	newFlightForm.setFlight(&flight);
 	
