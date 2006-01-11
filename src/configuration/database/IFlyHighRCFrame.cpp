@@ -32,6 +32,9 @@ IFlyHighRCFrame::IFlyHighRCFrame(QWidget* parent)
 	m_pFrame->lineEdit_PilotName->setText(IFlyHighRC::pInstance()->pilotName());
 	m_pFrame->dateEditDateOfBirth->setDate(IFlyHighRC::pInstance()->pilotBirth());
 	m_pFrame->lineEdit_GliderID->setText(IFlyHighRC::pInstance()->callsign());
+
+	m_pFrame->updateGlider();
+	m_pFrame->selectGlider(IFlyHighRC::pInstance()->glider());
 }
 
 IFlyHighRCFrame::~IFlyHighRCFrame()
@@ -50,6 +53,7 @@ bool IFlyHighRCFrame::show()
 		IFlyHighRC::pInstance()->setPilotName(m_pFrame->lineEdit_PilotName->text());
 		IFlyHighRC::pInstance()->setPilotBirth(m_pFrame->dateEditDateOfBirth->date());
 		IFlyHighRC::pInstance()->setCallsign(m_pFrame->lineEdit_GliderID->text());
+		IFlyHighRC::pInstance()->setGlider(m_pFrame->comboBoxModel->currentText());
 	}
 	
 	return ok;
