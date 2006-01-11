@@ -37,6 +37,7 @@ const QString PilotTag = "[pilot]\n";
 const QString PilotName = "name=";
 const QString PilotBirthDate = "birthdate=";
 const QString PilotCallsign = "callsign=";
+const QString PilotGlider = "glider=";
 const QString DirectoryLastVar = "last=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
@@ -66,11 +67,12 @@ IFlyHighRC::IFlyHighRC()
 	m_utcOffset = 0;
 	m_lastDir = QDir::homeDirPath();
 
-	QString m_pilotName = "";
-	QDate m_pilotBirth = QDate(1970, 1, 1);
-	QString m_callsign = "";
+	m_pilotName = "";
+	m_pilotBirth = QDate(1970, 1, 1);
+	m_callsign = "";
+	m_glider = "";
 	
-	m_versionInfo = "FlyHigh Version 0.3.2";
+	m_versionInfo = "FlyHigh Version 0.3.3";
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
@@ -176,6 +178,16 @@ const QDate& IFlyHighRC::pilotBirth()
 void IFlyHighRC::setPilotBirth(const QDate &date)
 {
 	m_pilotBirth = date;
+}
+
+const QString& IFlyHighRC::glider()
+{
+	return m_glider;
+}
+
+void IFlyHighRC::setGlider(const QString &glider)
+{
+	m_glider = glider;
 }
 
 void IFlyHighRC::loadRC()
@@ -356,6 +368,10 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 		{
 			setCallsign(val);
 		}
+		else if(PilotGlider.find(var) == 0)
+		{
+			setGlider(val);
+		}
 		else
 		{
 			break;
@@ -369,6 +385,7 @@ void IFlyHighRC::savePilot(QTextStream &stream)
 	stream << PilotName << m_pilotName << "\n";
 	stream << PilotBirthDate << m_pilotBirth.toString("dd.MM.yyyy") << "\n";
 	stream << PilotCallsign << m_callsign << "\n";
+	stream << PilotGlider << m_glider << "\n";
 	stream << "\n";
 }
 

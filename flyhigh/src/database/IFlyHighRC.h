@@ -58,6 +58,8 @@ class IFlyHighRC
 		void setPilotBirth(const QDate &date);
 		const QString& callsign();
 		void setCallsign(const QString &id);
+		const QString& glider();
+		void setGlider(const QString &glider);
 		
 	private:
 		QFile m_rcFile;
@@ -71,6 +73,7 @@ class IFlyHighRC
 		QString m_callsign;
 		QString m_pilotName;
 		QDate m_pilotBirth;
+		QString m_glider;
 		
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
