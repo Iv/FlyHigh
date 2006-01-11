@@ -28,6 +28,12 @@ class FlyHighRCFrameImpl: public FlyHighRCFrame
 	
 	public:
 		FlyHighRCFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		
+		void updateGlider();
+		void selectGlider(const QString &name);
+
+	protected slots:
+		void newGlider();
 };
 
 #endif
