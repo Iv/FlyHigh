@@ -380,8 +380,10 @@ void MainWindow::settings_device(int id)
 			break;
 		}
 	}
-
+	
+	IGPSDevice::pInstance()->close();
 	IFlyHighRC::pInstance()->setDeviceName(itemNr);
+	IGPSDevice::pInstance()->open();
 	setCurrentDevice(id);
 }
 
