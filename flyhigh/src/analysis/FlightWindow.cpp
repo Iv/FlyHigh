@@ -314,8 +314,12 @@ void FlightWindow::file_AddToSqlDB()
 				ISql::pInstance()->add(glider);
 			}
 		}
-		flight.setGlider(glider.model());
 
+		str = glider.manufacturer();
+		str += " ";
+		str += glider.model();
+		flight.setGlider(str);
+		
 		// a new flight
 		newFlightForm.setFlight(&flight);
 		
