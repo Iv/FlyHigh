@@ -84,7 +84,7 @@ MainWindow::MainWindow()
 	pMenu->insertItem("&Routes (DB)", this, SLOT(routes_fromSQL()));
 	pMenu->insertItem("&Routes (GPS)", this, SLOT(routes_fromGPS()));
 	pMenu->insertSeparator();
-	pMenu->insertItem("&Airspaces (DB)", this, SLOT(airspaces_fromSQL()));
+//	pMenu->insertItem("&Airspaces (DB)", this, SLOT(airspaces_fromSQL()));
 	pMenu->insertItem("&Airspaces (GPS)", this, SLOT(airspaces_fromGPS()));
 	pMenu->insertItem("&Airspaces (File)", this, SLOT(airspaces_fromFile()));
 
@@ -207,7 +207,7 @@ void MainWindow::routes_fromGPS()
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
-
+/*
 void MainWindow::airspaces_fromSQL()
 {
 	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from DB", WDestructiveClose, IDataBase::SqlDB);
@@ -215,7 +215,7 @@ void MainWindow::airspaces_fromSQL()
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
-
+*/
 void MainWindow::airspaces_fromGPS()
 {
 	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from GPS", WDestructiveClose, IDataBase::GPSdevice);
