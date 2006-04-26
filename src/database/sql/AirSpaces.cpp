@@ -28,9 +28,23 @@ AirSpaces::AirSpaces(QSqlDatabase *pDB)
 {
 }
 
+bool AirSpaces::createTable()
+{
+	QSqlQuery query(db());
+	QString sqls;
+	bool created = false;
+	
+	if(!db()->tables().contains(DataBaseSub::tableName()))
+	{
+	}
+	
+	return created;
+}
+
 bool AirSpaces::add(AirSpace &airspace)
 {
-	QSqlCursor cur("AirSpaces");
+	(void)airspace;
+/*	QSqlCursor cur("AirSpaces");
 	QSqlRecord *pRec;
 	QString edgePtField;
 	QString edgePt;
@@ -56,7 +70,7 @@ bool AirSpaces::add(AirSpace &airspace)
 
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("AirSpaces");
-	
+	*/
 	return true;
 }
 
@@ -76,7 +90,9 @@ bool AirSpaces::delAirSpace(const QString &name)
 
 bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 {
-	QSqlQuery query(db());
+	(void)name;
+	(void)airspace;
+/*	QSqlQuery query(db());
 	QString sqls;
 	QString strEdgePt;
 	double lat;
@@ -122,11 +138,14 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 	}
 	
 	return success;
+*/
+	return true;
 }
 
 bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 {
-	AirSpace airspace;
+	(void)airspaceList;
+/*	AirSpace airspace;
 	QSqlQuery query(db());
 	QString sqls = "SELECT * FROM AirSpaces ORDER BY Name ASC";
 	QString strEdgePt;
@@ -173,4 +192,6 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
+*/
+	return true;
 }
