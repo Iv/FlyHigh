@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <qcstring.h>
+#include "AirSpace.h"
 #include "IGPSDevice.h"
 #include "Flight.h"
 #include "Route.h"
@@ -51,6 +52,10 @@ class FlytecDevice: public IGPSDevice
 		bool add(Route &route);
 		bool routeList(Route::RouteListType &routeList);
 		bool delRoute(const QString &name);
+		
+		bool add(AirSpace &airspace);
+		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		bool delAirSpace(const QString &name);
 		
 	private:
 		bool m_cancel;
