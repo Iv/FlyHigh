@@ -92,11 +92,13 @@ void IGPSDevice::close()
 // memory
 bool IGPSDevice::memoryRead(QByteArray &arr)
 {
+	(void)arr;
 	return -1;
 }
 
 bool IGPSDevice::memoryWrite(QByteArray &arr)
 {
+	(void)arr;
 	return -1;
 }
 
