@@ -17,49 +17,69 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AirSpace_h
-#define AirSpace_h
+#ifndef AirSpaceItem_h
+#define AirSpaceItem_h
 
-#include <qstring.h>
-#include <qptrlist.h>
-#include <qsortedlist.h>
-#include "AirSpaceItem.h"
+#include <qvaluevector.h>
 
-class AirSpace
+class AirSpaceItem
 {
 	public:
-		enum {MaxNameSize=17};
-		typedef QSortedList<AirSpace> AirSpaceListType;
+		typedef QValueVector<AirSpaceItem*> AirSpaceItemListType;
+		typedef enum ItemType{Point, Circle, Center, StartSegment, StopSegment};
 
-		AirSpace();
-		virtual ~AirSpace();
+		AirSpaceItem();
+		virtual ~AirSpaceItem();
 
-		const QString& name();
-		void setName(const QString &name);
-		const QString& high();
-		void setHigh(const QString &high);
-		const QString& low();
-		void setLow(const QString &low);
-		const QString& airspaceClass();
-		void setAirspaceClass(const QString &airspaceClass);
-		AirSpaceItem::AirSpaceItemListType& airSpaceItemList();
-		void setWarnDist(uint meters);
-		uint warnDist();
-		void setRemark(const QString &remark);
-		const QString& remark();
+		void setPoint(double lat, double lon);
+		double lat();
+		double lon();
+		ItemType type();
+	
+	protected:
+		void setType(ItemType type);
+
+	private:
+		ItemType m_type;
+		double m_lat;
+		double m_lon;
+};
+
+class AirSpaceItemPoint: public AirSpaceItem
+{
+	public:
+		AirSpaceItemPoint(AirSpaceItem::ItemType type);
+		~AirSpaceItemPoint();
+
+//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
+};
+
+class AirSpaceItemSeg: public AirSpaceItem
+{
+	public:
+		AirSpaceItemSeg(AirSpaceItem::ItemType type);
+		~AirSpaceItemSeg();
 		
-		AirSpace& operator=(const AirSpace &airspace);
-		bool operator<(const AirSpace &airspace);
-		bool operator==(const AirSpace &airspace);
+		void setDir(bool dir);
+		bool dir();
+//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
+		
+	private:
+		bool m_dir; // + = true = clockwise
+};
+
+class AirSpaceItemCircle: public AirSpaceItem
+{
+	public:
+		AirSpaceItemCircle();
+		~AirSpaceItemCircle();
+
+		void setRadius(uint radius);
+		uint radius();
+//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
 	
 	private:
-		QString m_name;
-		QString m_airspaceClass;
-		QString m_high;
-		QString m_low;
-		AirSpaceItem::AirSpaceItemListType m_airSpaceItemList;
-		uint m_warnDist;
-		QString m_remark;
+		uint m_radius;
 };
 
 #endif

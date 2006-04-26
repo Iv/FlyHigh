@@ -22,6 +22,16 @@
 
 AirSpace::AirSpace()
 {
+	m_name = "";
+	m_airspaceClass = "";
+	m_high = "";
+	m_low = "";
+	m_warnDist = 0;
+	m_remark = "";
+}
+
+AirSpace::~AirSpace()
+{
 }
 
 const QString& AirSpace::name()
@@ -67,9 +77,29 @@ void AirSpace::setAirspaceClass(const QString &airspaceClass)
 	m_airspaceClass = airspaceClass;
 }
 
-WayPoint::WayPointListType& AirSpace::edgePointList()
+AirSpaceItem::AirSpaceItemListType& AirSpace::airSpaceItemList()
 {
-	return m_wpList;
+	return m_airSpaceItemList;
+}
+
+void AirSpace::setWarnDist(uint meters)
+{
+	m_warnDist = meters;
+}
+
+uint AirSpace::warnDist()
+{
+	return m_warnDist;
+}
+
+void AirSpace::setRemark(const QString &remark)
+{
+	m_remark = remark;
+}
+
+const QString& AirSpace::remark()
+{
+	return m_remark;
 }
 
 AirSpace& AirSpace::operator=(const AirSpace &airspace)
@@ -78,7 +108,19 @@ AirSpace& AirSpace::operator=(const AirSpace &airspace)
 	m_airspaceClass = airspace.m_airspaceClass;
 	m_high = airspace.m_high;
 	m_low = airspace.m_low;
-	m_wpList = airspace.m_wpList;
+	m_warnDist = airspace.m_warnDist;
+	m_remark = airspace.m_remark;
+	m_airSpaceItemList = airspace.m_airSpaceItemList;
 	
 	return *this;
+}
+
+bool AirSpace::operator<(const AirSpace &airspace)
+{
+	return (m_name < airspace.m_name);
+}
+
+bool AirSpace::operator==(const AirSpace &airspace)
+{
+	return (m_name == airspace.m_name);
 }
