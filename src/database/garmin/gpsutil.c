@@ -488,7 +488,7 @@ void GPS_Warning(const char *s)
 
 void GPS_Fatal(const char *s)
 {
-
+	(void)s;
 /*    fprintf(stderr,"[FATAL] %s\n",s);
     exit(0);
   */ 

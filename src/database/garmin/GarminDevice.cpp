@@ -114,6 +114,7 @@ bool GarminDevice::add(WayPoint &wp)
 
 bool GarminDevice::delWayPoint(const QString &name)
 {
+	(void)name;
 	return false;
 }
 
@@ -145,6 +146,7 @@ bool GarminDevice::wayPointList(WayPoint::WayPointListType &wpList)
 // routes
 bool GarminDevice::add(Route &route)
 {
+	(void)route;
 	return false;
 }
 
@@ -175,6 +177,8 @@ bool GarminDevice::routeList(Route::RouteListType &routeList)
 
 bool GarminDevice::delRoute(const QString &name)
 {
+	(void)name;
+
 	return false;
 }
 
