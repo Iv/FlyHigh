@@ -158,6 +158,7 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 			
 			flight.setNumber(track.trackNum);
 			flight.setDate(QDate(track.date.year, track.date.month, track.date.day));
+			flight.setTime(QTime(track.start.hour, track.start.min, track.start.sec));
 			flight.setDuration(track.duration.hour*3600 + track.duration.min*60 + track.duration.sec);
 			flightList.push_back(flight);
 		}
@@ -378,6 +379,212 @@ bool FlytecDevice::delRoute(const QString &name)
 	
 	success = (ft_routeDel(name.ascii()) == 0);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+	
+	return success;
+}
+
+// AirSpace
+bool FlytecDevice::add(AirSpace &airspace)
+{
+	AirSpaceItem *pItem;
+	AirSpaceItemSeg *pSegment;
+	AirSpaceItemCircle *pCircle;
+	QString name;
+	ft_CTRType ftCTR;
+	uint nofMember;
+	uint memberNr;
+	bool success;
+
+	nofMember = airspace.airSpaceItemList().size();
+	
+	// first sentence
+	ftCTR.totalSent = nofMember + 2; // inclusive first and second sentence
+	ftCTR.actSent = 0;
+	ft_string2ftstring(airspace.name().ascii(), ftCTR.sent.first.name);
+	ftCTR.sent.first.warnDist = airspace.warnDist();
+	success = (ft_ctrSnd(&ftCTR) == 0);
+
+	// second sentence
+	ftCTR.actSent = 1;
+	ft_string2ftstring(airspace.remark().ascii(), ftCTR.sent.second.remark);
+	success &= (ft_ctrSnd(&ftCTR) == 0);
+
+	if(success)
+	{
+		m_cancel = false;
+		
+		// members
+		for(memberNr=0; memberNr<nofMember; memberNr++)
+		{
+			emit progress(memberNr*100/nofMember);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
+			
+			ftCTR.actSent = memberNr + 2;
+			pItem = airspace.airSpaceItemList().at(memberNr);
+
+			ftCTR.sent.member.latitude = pItem->lat();
+			ftCTR.sent.member.longitude = pItem->lon();
+
+			switch(pItem->type())
+			{
+				case AirSpaceItem::Point:
+				case AirSpaceItem::Center:
+					if(pItem->type() == AirSpaceItem::Point)
+					{
+						ftCTR.sent.member.type = 'P';
+					}
+					else
+					{
+						ftCTR.sent.member.type = 'X';
+					}
+				break;
+				case AirSpaceItem::StartSegment:
+				case AirSpaceItem::StopSegment:
+					if(pItem->type() == AirSpaceItem::StartSegment)
+					{
+						ftCTR.sent.member.type = 'T';
+					}
+					else
+					{
+						ftCTR.sent.member.type = 'Z';
+					}
+
+					pSegment = (AirSpaceItemSeg*)pItem;
+
+					if(pSegment->dir())
+					{
+						ftCTR.sent.member.direction = '+';
+					}
+					else
+					{
+						ftCTR.sent.member.direction = '-';
+					}
+				break;
+				case AirSpaceItem::Circle:
+					ftCTR.sent.member.type = 'C';
+					pCircle = (AirSpaceItemCircle*)pItem;
+					ftCTR.sent.member.radius = pCircle->radius();
+				break;
+			}
+			
+			success = (ft_ctrSnd(&ftCTR) == 0);
+			
+			if(!success)
+			{
+				break;
+			}
+		}
+	}
+	
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+	
+	return success;
+}
+
+bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+{
+	AirSpaceItem *pItem;
+	AirSpaceItemSeg *pSegment;
+	AirSpaceItemCircle *pCircle;
+	AirSpace *pAirspace;
+	AirSpace airSpace;
+	ft_CTRType ftCTR;
+	bool success;
+	char string[20];
+	int prog = 0;
+
+	success = (ft_ctrListReq() == 0);
+	
+	if(success)
+	{
+		m_cancel = false;
+		
+		while(ft_ctrListRec(&ftCTR) == 0)
+		{
+			prog = (prog + 10) % 100;
+			emit progress(prog);
+
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			// first sentence
+			ft_ftstring2string(string, ftCTR.sent.first.name);
+			airSpace.setName(string);
+			airSpace.setWarnDist(ftCTR.sent.first.warnDist);
+			
+			// second sentence
+			success &= (ft_ctrListRec(&ftCTR) == 0);
+			ft_ftstring2string(string, ftCTR.sent.second.remark);
+			airSpace.setRemark(string);
+
+			// members
+			airSpace.airSpaceItemList().clear();
+
+			while(ftCTR.actSent < (ftCTR.totalSent - 1))
+			{
+				if(ft_ctrListRec(&ftCTR) == 0)
+				{
+					if(ftCTR.sent.member.type == 'P')
+					{
+						pItem = new AirSpaceItemPoint(AirSpaceItem::Point);
+					}
+					else if(ftCTR.sent.member.type == 'X')
+					{
+						pItem = new AirSpaceItemPoint(AirSpaceItem::Center);
+					}
+					else if(ftCTR.sent.member.type == 'T')
+					{
+						pSegment = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
+						pSegment->setDir(ftCTR.sent.member.direction == '+');
+						pItem = pSegment;
+					}
+					else if(ftCTR.sent.member.type == 'Z')
+					{
+						pSegment = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
+						pSegment->setDir(ftCTR.sent.member.direction == '+');
+						pItem = pSegment;
+					}
+					else if(ftCTR.sent.member.type == 'C')
+					{
+						pCircle = new AirSpaceItemCircle;
+						pCircle->setRadius(ftCTR.sent.member.radius);
+						pItem = pCircle;
+					}
+					
+					pItem->setPoint(ftCTR.sent.member.latitude, ftCTR.sent.member.longitude);
+					airSpace.airSpaceItemList().push_back(pItem);
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			pAirspace = new AirSpace;
+			*pAirspace = airSpace;
+			airspaceList.append(pAirspace);
+		}
+	}
+
+	Error::verify((airspaceList.count() > 0), Error::FLYTEC_CMD);
+	
+	return success;
+}
+
+bool FlytecDevice::delAirSpace(const QString &name)
+{
+	bool success;
+	
+	success = (ft_ctrDel(name.ascii()) == 0);
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
 	
 	return success;
 }
