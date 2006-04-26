@@ -97,7 +97,6 @@ class ISql: public IDataBase
 		
 	private:
 		static ISql* m_pInst;
-		static const QString m_curTableVersion;
 		AirSpaces *m_pAirSpaces;
 		WayPoints *m_pWayPoints;
 		Gliders *m_pGliders;

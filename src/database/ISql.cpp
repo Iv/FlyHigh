@@ -27,9 +27,9 @@
 #include "Flights.h"
 #include "Routes.h"
 #include "Servicings.h"
+#include "Upgrade.h"
 
 ISql* ISql::m_pInst = NULL;
-const QString ISql::m_curTableVersion = "2005.06.12 20:00:00"; // equal version_0_3_2
 
 ISql::ISql()
 {
@@ -264,50 +264,35 @@ int ISql::servicingsLastModified()
 
 void ISql::setupTables()
 {
+/*	Upgrade upgrade(m_pDefaultDB);
 	QString sqls;
-	int tabVers = QDateTime::fromString(m_curTableVersion, Qt::ISODate).toTime_t();
+	int tabVers_0_3_2 = QDateTime::fromString(m_TableVersion_0_3_2, Qt::ISODate).toTime_t();
+	int tabVers_0_3_3 = QDateTime::fromString(m_TableVersion_0_3_3, Qt::ISODate).toTime_t();
+	bool created;
 	
-	if(tableVersion() < tabVers)
+	if(m_pFlights->setupTable())
+	
+	if(upgrade.tableVersion() < tabVers_0_3_2)
 	{
-		m_pFlights->fromV_0_3_1toV_0_3_2();
-		setTableVersion();
+		upgrade.upgradeFrom_0_3_1_to_0_3_2();
 	}
 	
-	m_pFlights->setupTable();
+	created = m_pFlights->createTable();
+	created &= m_pAirSpaces->createTable();
+	created &= m_pWayPoints->createTable();
+	created &= m_pGliders->createTable();
+	created &= m_pFlights->createTable();
+	created &= m_pRoutes->createTable();
+	created &= m_pServicings->createTable();
+	
+	if(created)
+	{
+		upgrade.setTableVersion(m_TableVersion_0_3_3);
+	}
+	else if(upgrade.tableVersion() == tabVers_0_3_2)
+	{
+		upgrade.upgradeFrom_0_3_2_to_0_3_3();
+	}*/
 }
 
-int ISql::tableVersion()
-{
-	QString sqls;
-	QString date;
-	QSqlQuery query(m_pDefaultDB);
-	int time = 1;
-	
-	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = 'TableVersion'");
-	
-	if(query.exec(sqls) && query.first())
-	{
-		time = query.value(1).toDateTime().toTime_t();
-	}
-	
-	return time;
-}
 
-void ISql::setTableVersion()
-{
-	QString sqls;
-	QSqlQuery query(m_pDefaultDB);
-	
-	if(tableVersion() > 1)
-	{
-		sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'TableVersion'", 
-				m_curTableVersion.ascii());
-		query.exec(sqls);
-	}
-	else
-	{
-		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('TableVersion', '%s')",
-				m_curTableVersion.ascii());
-		query.exec(sqls);
-	}
-}
