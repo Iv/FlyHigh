@@ -48,6 +48,7 @@ PolareFrameImpl::~PolareFrameImpl()
 
 void PolareFrameImpl::update(QByteArray &arr)
 {
+/*
 	// Polare 0
 	spinBox_Sink1_0->setValue(arr[POLARE_SINK_1_0_POS]);
 	spinBox_Speed1_0->setValue(arr[POLARE_SPEED_1_0_POS]);
@@ -55,10 +56,12 @@ void PolareFrameImpl::update(QByteArray &arr)
 	// Polare 1
 	spinBox_Sink1_1->setValue(arr[POLARE_SINK_1_1_POS]);
 	spinBox_Speed1_1->setValue(arr[POLARE_SPEED_1_1_POS]);
+*/
 }
 
 void PolareFrameImpl::store(QByteArray &arr)
 {
+/*
 	// Polare 0
 	arr[POLARE_SINK_1_0_POS] = spinBox_Sink1_0->value();
 	arr[POLARE_SPEED_1_0_POS] = spinBox_Speed1_0->value();
@@ -66,6 +69,7 @@ void PolareFrameImpl::store(QByteArray &arr)
 	// Polare 1
 	arr[POLARE_SINK_1_1_POS] = spinBox_Sink1_1->value();
 	arr[POLARE_SPEED_1_1_POS] = spinBox_Speed1_1->value();
+*/
 }
 
 #include "PolareFrameImpl.moc"
