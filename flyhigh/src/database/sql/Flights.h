@@ -30,8 +30,7 @@ class Flights: public DataBaseSub
 {
 	public:
 		Flights(QSqlDatabase *pDB);
-		bool setupTable();
-		void fromV_0_3_1toV_0_3_2();
+		bool createTable();
 		int lastModified();
 
 		bool add(Flight &flight);
@@ -48,8 +47,6 @@ class Flights: public DataBaseSub
 			Number, Date, Time, Glider, StartPt, LandPt, 
 			Duration, Distance, Comment, IGCFile
 		};
-		
-		QString m_tableName;
 };
 
 #endif
