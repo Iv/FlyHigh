@@ -38,8 +38,7 @@
 #include "OpenAirFileParser.h"
 
 AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
-	:TableWindow(parent, name, wflags),
-	m_curAirSpace(NULL, "Current Airspace", NULL)
+	:TableWindow(parent, name, wflags)
 {
 	QString caption;
 	QStringList nameList;
@@ -52,29 +51,23 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	switch(src)
 	{
 		case IDataBase::SqlDB:
-			m_pDb = ISql::pInstance();
-			caption = "AirSpaces from DB";
-			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGPS()));
-			pMenu->insertItem("&Delete", this, SLOT(file_delete()));
-			pMenu->insertItem("&Update", this, SLOT(file_update()));
 		break;
 		case IDataBase::GPSdevice:
 			m_pDb = IGPSDevice::pInstance();
 			caption = "AirSpaces from GPS";
-			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
+
 			pMenu->insertItem("&Delete", this, SLOT(file_delete()));
 			pMenu->insertItem("&Update", this, SLOT(file_update()));
 		break;
 		case IDataBase::File:
 			m_pDb = NULL;
 			caption = "AirSpaces from File";
-			pMenu->insertItem("&Import...", this, SLOT(file_import()));
-			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
+			pMenu->insertItem("&Import...", this, SLOT(file_open()));
+			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGPS()));
 		break;
 	}
 	
-	pMenu->insertItem("&Print...", this, SLOT(print()));
-	TableWindow::printer().setOrientation(QPrinter::Landscape);
+	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
@@ -95,32 +88,30 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 60);
 	
-	connect(pTable, SIGNAL(currentChanged(int, int)),
-			this, SLOT(currentChanged(int, int)));
-	m_curAirSpace.setModal(false);
-	
 	m_lastModified = 0;
-}
 
+	if(src == IDataBase::File)
+	{
+		file_open();
+	}
+}
+/*
 bool AirSpaceWindow::periodicalUpdate()
 {
 	int lastModified;
 	
-	if(m_pDb != NULL)
+	lastModified = m_pDb->airspacesLastModified();
+	
+	if(m_lastModified < lastModified)
 	{
-		lastModified = m_pDb->airspacesLastModified();
-		
-		if(m_lastModified < lastModified)
-		{
-			file_update();
-			m_lastModified = lastModified;
-		}
+		file_update();
+		m_lastModified = lastModified;
 	}
 	
 	return true;
-}
+}*/
 
-void AirSpaceWindow::file_import()
+void AirSpaceWindow::file_open()
 {
 	QTable *pTable = TableWindow::getTable();
 	const QDir *pDir;
@@ -150,16 +141,16 @@ void AirSpaceWindow::file_import()
 		
 			parser.parse(openAirData);
 			m_airSpaceList = parser.airspaceList();
-			maxAirspaceNr = m_airSpaceList.size();
+			m_airSpaceList.sort();
+			maxAirspaceNr = m_airSpaceList.count();
 			pTable->setNumRows(maxAirspaceNr);
 			
 			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 			{
-				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+				setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
 			}
 		
 			pTable->selectRow(0);
-			m_curAirSpace.show();
 		}
 		
 		TableWindow::unsetCursor();
@@ -190,12 +181,12 @@ void AirSpaceWindow::file_update()
 	
 	m_airSpaceList.clear();
 	m_pDb->airspaceList(m_airSpaceList);
-	maxAirspaceNr = m_airSpaceList.size();
+	maxAirspaceNr = m_airSpaceList.count();
 	pTable->setNumRows(maxAirspaceNr);
 	
 	for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 	{
-		setAirSpaceToRow(airspaceNr, m_airSpaceList[airspaceNr]);
+		setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
 	}
 	
 	TableWindow::unsetCursor();
@@ -210,40 +201,7 @@ void AirSpaceWindow::file_AddToGPS()
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		IGPSDevice::pInstance()->add(m_airSpaceList.at(row));
-		TableWindow::unsetCursor();
-	}
-}
-
-void AirSpaceWindow::file_AddToSqlDB()
-{
-	QTable *pTable = TableWindow::getTable();
-	QString airSpaceName;
-	QString command;
-	int row;
-	bool ok;
-	
-	row = pTable->currentRow();
-	
-	if(row >= 0)
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		
-		airSpaceName = pTable->text(row, Name);
-		command.sprintf("AirSpace Name must be < %i characters.", AirSpace::MaxNameSize);
-		
-		while(airSpaceName.length() > AirSpace::MaxNameSize)
-		{
-			airSpaceName = QInputDialog::getText("AirSpace Name", command, QLineEdit::Normal, airSpaceName, &ok, this);
-			
-			if(!ok)
-			{
-				return;
-			}
-		}
-		
-		m_airSpaceList.at(row).setName(airSpaceName);
-		ISql::pInstance()->add(m_airSpaceList.at(row));
+		IGPSDevice::pInstance()->add(*m_airSpaceList.at(row));
 		TableWindow::unsetCursor();
 	}
 }
@@ -256,12 +214,4 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
 	pTable->setText(row, High, airspace.high());
 	pTable->setText(row, Low, airspace.low());
 	pTable->setText(row, Class, airspace.airspaceClass());
-}
-
-void AirSpaceWindow::currentChanged(int row, int col)
-{
-	if(row < m_airSpaceList.size())
-	{
-		m_curAirSpace.setAirSpace(&(m_airSpaceList.at(row)));
-	}
 }

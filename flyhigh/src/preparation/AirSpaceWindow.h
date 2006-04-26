@@ -22,7 +22,7 @@
 
 #include "AirSpace.h"
 #include "IDataBase.h"
-#include "IAirSpaceForm.h"
+//#include "IAirSpaceForm.h"
 #include "TableWindow.h"
 
 class AirSpaceWindow: public TableWindow
@@ -32,25 +32,20 @@ class AirSpaceWindow: public TableWindow
 	public:
 		AirSpaceWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
 	
-	protected:
-		bool periodicalUpdate();
-		
-	protected slots:
-		void currentChanged(int row, int col);
-	
 	private slots:
-		void file_import();
+		void file_open();
 		void file_delete();
 		void file_update();
 		void file_AddToGPS();
-		void file_AddToSqlDB();
-		
+
+/*	protected:
+		bool periodicalUpdate();
+		*/
 	private:
 		enum Fields{Name, Low, High, Class};
 		
 		IDataBase *m_pDb;
 		int m_lastModified;
-		IAirSpaceForm m_curAirSpace;
 		AirSpace::AirSpaceListType m_airSpaceList;
 		
 		void setAirSpaceToRow(uint row, AirSpace &airspace);

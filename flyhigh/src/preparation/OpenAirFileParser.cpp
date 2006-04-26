@@ -21,12 +21,11 @@
 #include <qbuffer.h>
 #include <qstring.h>
 #include <math.h>
+#include "AirSpaceItem.h"
 #include "OpenAirFileParser.h"
-#include "Vector.h"
+#include "WayPoint.h"
 
 #define MAX_REC_SIZE 100
-
-const uint OpenAirFileParser::m_maxSeg = 16;
 
 OpenAirFileParser::OpenAirFileParser()
 {
@@ -39,6 +38,7 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 	QBuffer buff;
 	char record[MAX_REC_SIZE];
 	AirSpace airspace;
+	AirSpace *pAirspace;
 	RecordType recordType = Unspecified;
 	
 	m_airspaceList.clear();
@@ -96,8 +96,10 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			{
 				if(recordType != Unspecified)
 				{
-					m_airspaceList.push_back(airspace);
-					airspace.edgePointList().clear();
+					pAirspace = new AirSpace;
+					*pAirspace = airspace;
+					m_airspaceList.append(pAirspace);
+					airspace.airSpaceItemList().clear();
 					recordType = Unspecified;
 				}
 			}
@@ -136,104 +138,72 @@ void OpenAirFileParser::parseVarAssign(char *record)
 	}
 	else if(strncmp(record, "X=", 2) == 0)
 	{
-		parseCoordinate(record+2, m_arcCenter);
+		parseCoordinate(record+2, m_arcCenterLat, m_arcCenterLon);
 	}
 }
 
 void OpenAirFileParser::parsePoint(char *record, AirSpace &airspace)
 {
 // DP 46:57:47 N 007:16:59 E
-	WayPoint pt;
+	AirSpaceItemPoint *pPoint;
+	double lat;
+	double lon;
 	
-	parseCoordinate(record, pt);
-	airspace.edgePointList().push_back(pt);
+	pPoint = new AirSpaceItemPoint(AirSpaceItem::Point);
+	parseCoordinate(record, lat, lon);
+	pPoint->setPoint(lat, lon);
+	airspace.airSpaceItemList().push_back(pPoint);
 }
 
 void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
 {
-	WayPoint pt;
-	WayPoint startPt;
-	WayPoint endPt;
-	Vector2 a;
-	Vector2 b;
-	Vector2 origVec;
-	Vector2 rotVec;
-	Vector2 center(m_arcCenter.latitude(), m_arcCenter.longitude());
 	QString str = record;
-	double arcA;
-	double arcB;
-	double arcAB;
-	double segArc;
-	double midR;
-	uint segNr;
-	uint maxSeg;
+	AirSpaceItemPoint *pCenter;
+	AirSpaceItemSeg *pSeg;
+	double beginLat;
+	double beginLon;
+	double endLat;
+	double endLon;
 
-	// vector a
-	parseCoordinate(record, startPt);
-	a.set(startPt.latitude(), startPt.longitude());
-	a -= center;
-	
-	// vector b
-	parseCoordinate(record+str.find(',')+1, endPt);
-	b.set(endPt.latitude(), endPt.longitude());
-	b -= center;
+	parseCoordinate(record, beginLat, beginLon);
+	parseCoordinate(record+str.find(',')+1, endLat, endLon);
 
-	// delta arc
-	arcA = a.arc();
-	arcB = b.arc();
-	arcAB = deltaArc(arcA, arcB);
-	maxSeg = maxSegments(arcAB);
+	// center
+	pCenter = new AirSpaceItemPoint(AirSpaceItem::Center);
+	pCenter->setPoint(m_arcCenterLat, m_arcCenterLon);
+	airspace.airSpaceItemList().push_back(pCenter);
 
-	// mid radius
-	midR = (a.length() + b.length()) / 2.0;
-	segArc = arcAB / maxSeg;
-	origVec.setCircle(midR, a.arc());
-	
-	// points
-	for(segNr=1; segNr<maxSeg; segNr++)
-	{
-		rotVec = origVec;
-		rotVec.rot(segNr * segArc);
-		rotVec += center;
-		pt.setCoordinates(rotVec.x(), rotVec.y());
-		airspace.edgePointList().push_back(pt);
-	}
+	// start
+	pSeg = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
+	pSeg->setPoint(beginLat, beginLon);
+	pSeg->setDir(m_arcDir);
+	airspace.airSpaceItemList().push_back(pSeg);
+
+	//stop
+	pSeg = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
+	pSeg->setPoint(endLat, endLon);
+	pSeg->setDir(m_arcDir);
+	airspace.airSpaceItemList().push_back(pSeg);
 }
 
 void OpenAirFileParser::parseCircle(char *record, AirSpace &airspace)
 {
-	Vector2 origVec;
-	Vector2 rotVec;
-	Vector2 center(m_arcCenter.latitude(), m_arcCenter.longitude());
-	WayPoint pt;
-	QString str = record;
-	double segArc;
-	double radiusArc;
-	uint segNr;
-	
-	segArc = 2 * M_PI / m_maxSeg;
-	radiusArc = WayPoint::arc(WayPoint::meters(atof(record)));
-	origVec.set(radiusArc, 0);
+	AirSpaceItemCircle *pCircle;
+	uint radius;
 
-	// points
-	for(segNr=0; segNr<=m_maxSeg; segNr++)
-	{
-		rotVec = origVec;
-		rotVec.rot(segNr*segArc);
-		rotVec += center;
-		pt.setCoordinates(rotVec.x(), rotVec.y());
-		airspace.edgePointList().push_back(pt);
-	}
+	pCircle = new AirSpaceItemCircle();
+	pCircle->setPoint(m_arcCenterLat, m_arcCenterLon);
+	radius = WayPoint::meters(atof(record));
+	pCircle->setRadius(radius);
+	airspace.airSpaceItemList().push_back(pCircle);
 }
 
-bool OpenAirFileParser::parseCoordinate(char *record, WayPoint &pt)
+bool OpenAirFileParser::parseCoordinate(char *record, double &latitude, double &longitude)
 {
 	char lat[15];
 	char NS[5];
 	char lon[15];
 	char EW[5];
-	double latitude = 0.0;
-	double longitude = 0.0;
 	int deg;
 	int min;
 	int sec;
@@ -268,58 +238,5 @@ bool OpenAirFileParser::parseCoordinate(char *record, WayPoint &pt)
 		}
 	}
 	
-	pt.setCoordinates(latitude, longitude);
-	
 	return success;
-}
-
-double OpenAirFileParser::deltaArc(double arcA, double arcB)
-{
-	double arc;
-	
-	if(arcA > arcB)
-	{
-		if(m_arcDir)
-		{
-			arc = 2 * M_PI - (arcA - arcB);
-		}
-		else
-		{
-			arc = arcB - arcA;
-		}
-	}
-	else
-	{
-		if(m_arcDir)
-		{
-			arc = arcB - arcA;
-		}
-		else
-		{
-			arc = (arcB - arcA) - 2 * M_PI;
-		}
-	}
-	
-	return arc;
-}
-
-uint OpenAirFileParser::maxSegments(double arc)
-{
-	double absArc = fabs(arc);
-	uint maxSeg = m_maxSeg / 4;
-	
-	if(absArc >= 3 * M_PI / 2)
-	{
-		maxSeg = m_maxSeg;
-	}
-	else if(absArc >= M_PI)
-	{
-		maxSeg = 3 * m_maxSeg / 2;
-	}
-	else if(absArc >= M_PI / 2)
-	{
-		maxSeg = m_maxSeg / 2;
-	}
-
-	return maxSeg;
 }
