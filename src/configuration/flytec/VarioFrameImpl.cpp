@@ -48,7 +48,7 @@ void VarioFrameImpl::update(QByteArray &arr)
 	spinBox_ITime->setValue(arr[I_TIME_POS]);
 	
 	// Total Enery Compensation
-	spinBox_TEC->setValue(arr[TEC_POS]);
+//	spinBox_TEC->setValue(arr[TEC_POS]);
 }
 
 void VarioFrameImpl::store(QByteArray &arr)
@@ -63,7 +63,7 @@ void VarioFrameImpl::store(QByteArray &arr)
 	arr[I_TIME_POS] = spinBox_ITime->value();
 	
 	// Total Enery Compensation
-	arr[TEC_POS] = spinBox_TEC->value();
+//	arr[TEC_POS] = spinBox_TEC->value();
 }
 
 
