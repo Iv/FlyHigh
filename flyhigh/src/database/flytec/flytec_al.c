@@ -18,8 +18,9 @@
 static const u_char PageSize = 8;
 static u_char buff[BUFF_SIZE];
 
-static void degToString(double value, u_char *pbuff, u_char size);
-static double stringToDeg(u_char *pstr);
+static void latlonToString(double lat, double lon, u_char *pBuff);
+static void degToString(double value, u_char* pbuff, u_char size);
+static double stringToDeg(u_char *pstr, u_char size);
 
 int ft_init(const char *pDevName)
 {
@@ -102,12 +103,12 @@ int ft_ctrListReq()
 	len = strlen(&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
-	usleep(500*1000);
+	usleep(1000*1000);
 	
 	return res;
 }
 
-int ft_ctrRec(CTRType *pCTR)
+int ft_ctrListRec(ft_CTRType *pCTR)
 {
 	u_char len;
 	int res;
@@ -121,43 +122,44 @@ int ft_ctrRec(CTRType *pCTR)
 	
 	if(res == 0)
 	{
-		/* ctr number */
-		buff[9] = '\0';
-		pCTR->ctrNum = atoi(&buff[7]);
-		
 		/* toal sentences */
-		buff[12] = '\0';
-		pCTR->totalSent = atoi(&buff[10]);
+		buff[10] = '\0';
+		pCTR->totalSent = atoi(&buff[7]);
 		
 		/* actual sentence */
-		buff[15] = '\0';
-		pCTR->actSent = atoi(&buff[13]);
+		buff[14] = '\0';
+		pCTR->actSent = atoi(&buff[11]);
 		
 		if(pCTR->actSent == 0)
 		{ 
-			/* this is the ctr name */
-			ft_ftstring2string(pCTR->sent.ctrHead.name, &buff[16]);
+			/* ctr name */
+			ft_ftstring2string(pCTR->sent.first.name, &buff[15]);
 			
 			/* warning distance */
-			buff[38] = '\0';
-			pCTR->sent.ctrHead.warnDist = atoi(&buff[34]);
+			buff[37] = '\0';
+			pCTR->sent.first.warnDist = atoi(&buff[33]);
+		}
+		else if(pCTR->actSent == 1)
+		{
+			/* remark */
+			ft_ftstring2string(pCTR->sent.second.remark, &buff[15]);
 		}
 		else
-		{ /* this is a member */
-			/* latitude */
-			buff[24] = '\0';
-			pCTR->sent.ctrMember.latitude = stringToDeg(&buff[16]);
-			if(buff[25] == 'S')
+		{ /* a member */
+			pCTR->sent.member.type = buff[15];
+			pCTR->sent.member.latitude = stringToDeg(&buff[17], 10);
+			pCTR->sent.member.longitude = stringToDeg(&buff[28], 11);
+			
+			if(pCTR->sent.member.type == 'C') /* circle */
 			{
-				pCTR->sent.ctrMember.latitude *= (-1); /* negate values below equator */
+				/* radius */
+				buff[45] = '\0';
+				pCTR->sent.member.radius = (uint)atoi(&buff[40]);
 			}
-		
-			/* longitude */
-			buff[36] = '\0';
-			pCTR->sent.ctrMember.longitude = stringToDeg(&buff[27]);
-			if(buff[37] == 'W')
+			else if((pCTR->sent.member.type == 'T') /* start segment */ ||
+					(pCTR->sent.member.type == 'Z')) /* end segment */
 			{
-				pCTR->sent.ctrMember.longitude *= (-1); /* all west is negativ ;-) */
+				pCTR->sent.member.direction = buff[40];
 			}
 		}
 	}
@@ -165,60 +167,62 @@ int ft_ctrRec(CTRType *pCTR)
 	return res;
 }
 
-int ft_ctrSnd(CTRType *pCTR)
+int ft_ctrSnd(ft_CTRType *pCTR)
 {
-	double value;
+	u_char len;
 	
-	sprintf(&buff[0],  "PBRCTRW,%02d,%02d,%02d,", pCTR->ctrNum, pCTR->totalSent,
-				pCTR->actSent);
+	sprintf(&buff[0],  "PBRCTRW,%03d,%03d,", pCTR->totalSent, pCTR->actSent);
 
 	if(pCTR->actSent == 0)
 	{
 		/* name */
-		ft_string2ftstring(pCTR->sent.ctrHead.name, &buff[17]);
-		buff[34] = ',';
+		ft_string2ftstring(pCTR->sent.first.name, &buff[16]);
+		buff[33] = ',';
 		
 		/* warning distance */
-		sprintf(&buff[35], "%04d", pCTR->sent.ctrHead.warnDist);
+		sprintf(&buff[34], "%04d", pCTR->sent.first.warnDist);
+		len = 38;
+	}
+	else if(pCTR->actSent == 1)
+	{
+		/* remark */
+		ft_string2ftstring(pCTR->sent.first.name, &buff[16]);
+		len = 33;
 	}
 	else
 	{
-		/* latitude */
-		if(pCTR->sent.ctrMember.latitude >= 0)
+		buff[16] = pCTR->sent.member.type;
+		buff[17] = ',';
+		latlonToString(pCTR->sent.member.latitude, pCTR->sent.member.longitude, &buff[18]);
+			
+		if((pCTR->sent.member.type == 'P') /* point */ ||
+			(pCTR->sent.member.type == 'X') /* center */)
 		{
-			buff[26] = 'N';
-			value = pCTR->sent.ctrMember.latitude;
+			len = 40;
 		}
-		else
+		else if(pCTR->sent.member.type == 'C') /* circle */
 		{
-			buff[26] = 'S';
-			value = -pCTR->sent.ctrMember.latitude;
+			buff[40] = ',';
+
+			/* radius */
+			sprintf(&buff[41], "%05d", pCTR->sent.member.radius);
+			len = 46;
 		}
-		buff[27] = ',';
-		
-		degToString(value, &buff[17], 8);
-		buff[25] = ',';
-		
-		/* longitude */
-		if(pCTR->sent.ctrMember.longitude >= 0)
+		else if((pCTR->sent.member.type == 'T') /* start segment */ ||
+				(pCTR->sent.member.type == 'Z')) /* end segment */
 		{
-			buff[38] = 'E';
-			value = pCTR->sent.ctrMember.longitude;
+			buff[40] = ',';
+			
+			/* direction */
+			buff[41] = pCTR->sent.member.direction;
+			len = 42;
 		}
-		else
-		{
-			buff[38] = 'W';
-			value = -pCTR->sent.ctrMember.longitude;
-		}
-		
-		degToString(value, &buff[28], 9);
-		buff[37] = ',';
 	}
 	
-	return flytec_ll_send(&buff[0], 39);
+	return flytec_ll_send(&buff[0], len);
 }
 
-int ft_ctrDel(u_char *pName)
+int ft_ctrDel(const char *pName)
 {
 	u_char len;
 	
@@ -270,20 +274,10 @@ int ft_wayPointListRec(ft_WayPointType *pft_WayPoint)
 	if(res == 0)
 	{
 		/* latitude */
-		buff[15] = '\0';
-		pft_WayPoint->latitude = stringToDeg(&buff[7]);
-		if(buff[16] == 'S')
-		{
-			pft_WayPoint->latitude *= (-1); /* negate values below equator */
-		}
+		pft_WayPoint->latitude = stringToDeg(&buff[7], 10);
 	
 		/* longitude */
-		buff[27] = '\0';
-		pft_WayPoint->longitude = stringToDeg(&buff[18]);
-		if(buff[28] == 'W')
-		{
-			pft_WayPoint->longitude *= (-1); /* all west is negativ ;-) */
-		}
+		pft_WayPoint->longitude = stringToDeg(&buff[18], 11);
 		
 		/* name */
 		ft_ftstring2string(&pft_WayPoint->name[0], &buff[37]);
@@ -298,41 +292,11 @@ int ft_wayPointListRec(ft_WayPointType *pft_WayPoint)
 
 int ft_wayPointSnd(ft_WayPointType *pft_WayPoint)
 {
-	double value;
-	
 	sprintf(&buff[0],  "PBRWPR,");
-	
-	/* latitude */
-	if(pft_WayPoint->latitude >= 0)
-	{
-		buff[16] = 'N';
-		value = pft_WayPoint->latitude;
-	}
-	else
-	{
-		buff[16] = 'S';
-		value = -pft_WayPoint->latitude;
-	}
-	
-	buff[17] = ',';
-	degToString(value, &buff[7], 8);
-	buff[15] = ',';
-	
-	/* longitude */
-	if(pft_WayPoint->longitude >= 0)
-	{
-		buff[28] = 'E';
-		value = pft_WayPoint->longitude;
-	}
-	else
-	{
-		buff[28] = 'W';
-		value = -pft_WayPoint->longitude;
-	}
-	
+
+	/* lat, lon */
+	latlonToString(pft_WayPoint->latitude, pft_WayPoint->longitude, &buff[7]);
 	buff[29] = ',';
-	degToString(value, &buff[18], 9);
-	buff[27] = ',';
 
 	/* ? */
 	buff[30] = ',';
@@ -352,7 +316,7 @@ int ft_wayPointDel(const char *pName) /* NULL = delete all */
 	u_char len;
 	
 	sprintf(&buff[0],  "PBRWPX,");
-
+	
 	if(pName == NULL)
 	{ /* delete all */
 		buff[7] = ',';
@@ -513,23 +477,22 @@ int ft_trackListRec(TrackType *pTrack)
 		pTrack->date.month= atoi(&buff[15]);
 		buff[20] = '\0';
 		pTrack->date.year= 2000 + atoi(&buff[18]);
-				
-				/* start is stolen by someone */
-/*				buff[23] = '\0';
-				pTrack->start.hour = atoi(&buff[21]);
-				buff[26] = '\0';
-				pTrack->start.min = atoi(&buff[24]);
-				buff[29] = '\0';
-				pTrack->start.sec = atoi(&buff[27]);
-	*/
-	
-		/* duration */
+		
+		/* start */
 		buff[23] = '\0';
-		pTrack->duration.hour = atoi(&buff[21]);
+		pTrack->start.hour = atoi(&buff[21]);
 		buff[26] = '\0';
-		pTrack->duration.min = atoi(&buff[24]);
+		pTrack->start.min = atoi(&buff[24]);
 		buff[29] = '\0';
-		pTrack->duration.sec = atoi(&buff[27]);
+		pTrack->start.sec = atoi(&buff[27]);
+		
+		/* duration */
+		buff[32] = '\0';
+		pTrack->duration.hour = atoi(&buff[30]);
+		buff[35] = '\0';
+		pTrack->duration.min = atoi(&buff[33]);
+		buff[38] = '\0';
+		pTrack->duration.sec = atoi(&buff[36]);
 	}
 	
 	return res;
@@ -639,33 +602,85 @@ int ft_memoryWrite(u_int addr, u_char *pPage)
 /*******************************************************************************************
 HELPERS
 *******************************************************************************************/
-void degToString(double value, u_char *pBuff, u_char size)
+/* Format: "dddd.mmm,[N|S],ddddd.mmm,[E|W]" */
+void latlonToString(double lat, double lon, u_char *pBuff)
 {
-	u_char strValue[size+1];
+	double value;
+
+	/* latitude */
+	if(lat >= 0)
+	{
+		pBuff[9] = 'N';
+		value = lat;
+	}
+	else
+	{
+		pBuff[9] = 'S';
+		value = -lat;
+	}
+	
+	pBuff[8] = ',';
+	degToString(value, &pBuff[0], 8);
+	pBuff[10] = ',';
+	
+	/* longitude */
+	if(lon >= 0)
+	{
+		pBuff[21] = 'E';
+		value = lon;
+	}
+	else
+	{
+		pBuff[21] = 'W';
+		value = -lon;
+	}
+	
+	pBuff[20] = ',';
+	degToString(value, &pBuff[11], 9);
+}
+
+void degToString(double value, u_char* pbuff, u_char size)
+{
+	#define STR_SIZE 12
+	u_char strValue[STR_SIZE];
 	u_char strLen;
 	double intValue;
-	
+
 	/* dec to min */
 	intValue = floor(value);
 	value = intValue * 100 + (value - intValue) * 60;
 	
-	sprintf(&strValue[0], "%4.3f", value);
+	if(size == 8)
+	{
+		snprintf(&strValue[0], STR_SIZE, "%4.3f", value);
+	}
+	else
+	{
+		snprintf(&strValue[0], STR_SIZE ,"%5.3f", value);
+	}
 	strLen = strlen(&strValue[0]);
 	
-	memset(&pBuff[0], '0', size);
-	memcpy(&pBuff[size-strLen], &strValue[0], strLen);
+	memset(&pbuff[0], '0', size);
+	memcpy(&pbuff[size-strLen], &strValue[0], strLen);
 }
 
-double stringToDeg(u_char *pstr)
+/* format: "dddd[d].mmm,[N|S|E|W]" */
+double stringToDeg(u_char *pstr, u_char size)
 {
 	double value;
 	double intValue;
-	
+
+	pstr[size-2] = '\0';
 	value = atof(pstr) / 100;
 	
 		/* dec to min */
 	intValue = floor(value);
 	value = intValue + (value - intValue) * 100 / 60;
+	
+	if((pstr[size] == 'W') || (pstr[size] == 'S'))
+	{
+		value *= (-1); /* negate values below equator and west*/
+	}
 	
 	return value;
 }
