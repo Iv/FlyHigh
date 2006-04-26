@@ -29,13 +29,15 @@
 Flights::Flights(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
 {
-	m_tableName = "Flights_";
-	m_tableName += getenv("USER");
+	QString tableName = "Flights_";
+
+	tableName += getenv("USER");
+	DataBaseSub::setTableName(tableName);
 }
 
 bool Flights::add(Flight &flight)
 {
-	QSqlCursor cur(m_tableName);
+	QSqlCursor cur(DataBaseSub::tableName());
 	QSqlRecord *pRec;
 	
 	QSqlQuery query(db());
@@ -54,7 +56,7 @@ bool Flights::add(Flight &flight)
 	pRec->setValue("IGCFile", flight.igcData());
 	
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
-	DataBaseSub::setLastModified(m_tableName);
+	DataBaseSub::setLastModified(DataBaseSub::tableName());
 
 	return true;
 }
@@ -65,9 +67,9 @@ bool Flights::delFlight(int nr)
 	QString sqls;
 	bool success;
 	 
-	sqls.sprintf("DELETE FROM `%s` WHERE `Number` = '%i'", m_tableName.ascii(), nr);
+	sqls.sprintf("DELETE FROM `%s` WHERE `Number` = '%i'", DataBaseSub::tableName().ascii(), nr);
 	success = query.exec(sqls);
-	DataBaseSub::setLastModified(m_tableName);
+	DataBaseSub::setLastModified(DataBaseSub::tableName());
 	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
@@ -79,7 +81,7 @@ int Flights::newFlightNr()
 	QSqlQuery query(db());
 	int newFlightNr = -1;
 	
-	sqls.sprintf("SELECT MAX(Number) FROM %s", m_tableName.ascii());
+	sqls.sprintf("SELECT MAX(Number) FROM %s", DataBaseSub::tableName().ascii());
 	
 	if(query.exec(sqls) &&
 		query.first())
@@ -97,7 +99,7 @@ bool Flights::flightList(Flight::FlightListType &flightList)
 	QString sqls;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `%s` ORDER BY `Number` DESC", m_tableName.ascii());
+	sqls.sprintf("SELECT * FROM `%s` ORDER BY `Number` DESC", DataBaseSub::tableName().ascii());
 	
 	success = query.exec(sqls);
 	
@@ -137,7 +139,7 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 	for(year=2000; year<=now.year(); year++)
 	{
 		sqls.sprintf("SELECT * FROM `%s` WHERE `Date` >= '%i-01-01' AND `Date` <= '%i-12-31'",
-				m_tableName.ascii(), year, year);
+				DataBaseSub::tableName().ascii(), year, year);
 		success = query.exec(sqls);
 	
 		if(success)
@@ -175,7 +177,7 @@ bool Flights::igcFile(uint flightNr, QByteArray &arr)
 	QString sqls;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `%s` WHERE `Number` = '%i'", m_tableName.ascii(), flightNr);
+	sqls.sprintf("SELECT * FROM `%s` WHERE `Number` = '%i'", DataBaseSub::tableName().ascii(), flightNr);
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
@@ -188,42 +190,34 @@ bool Flights::igcFile(uint flightNr, QByteArray &arr)
 	return success;
 }
 
-bool Flights::setupTable()
+bool Flights::createTable()
 {
 	QSqlQuery query(db());
 	QString sqls;
-	bool success = true;
+	bool created = false;
 	
-	if(!db()->tables().contains(m_tableName))
+	if(!db()->tables().contains(DataBaseSub::tableName()))
 	{
-		sqls.sprintf("CREATE TABLE `%s`("
-					"`Number` int(11) NOT NULL default '0',"
-					"`Date` date NOT NULL default '0000-00-00',"
-					"`Time` time NOT NULL default '00:00:00',"
-					"`Glider` varchar(16) NOT NULL default '0'  REFERENCES Gliders(Model),"
-					"`StartPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),"
-					"`LandPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),"
-					"`Duration` int(11) NOT NULL default '0',"
-					"`Distance` int(11) default '0',"
-					"`Comment` varchar(200) default NULL,"
-					"`IGCFile` mediumblob,"
-					"PRIMARY KEY  (`Number`)"
-					") TYPE=InnoDB;", m_tableName.ascii());
-					
-		success = query.exec(sqls);
-		Error::verify(success, Error::SQL_CMD);
+		sqls.sprintf(
+			"CREATE TABLE `%s`.`%s` ("
+			"`Number` INT( 11 ) NOT NULL DEFAULT '0',"
+			"`Date` DATE NOT NULL DEFAULT '0000-00-00',"
+			"`Time` TIME NOT NULL DEFAULT '00:00:00',"
+			"`GliderId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
+			"`StartPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
+			"`LandPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
+			"`Duration` INT( 11 ) NOT NULL DEFAULT '0',"
+			"`Distance` INT( 11 ) DEFAULT '0',"
+			"`Comment` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL ,"
+			"`IGCFile` MEDIUMBLOB,"
+			"PRIMARY KEY ( `Number` )"
+			") DEFAULT CHARSET = utf8;", db()->databaseName().ascii(), DataBaseSub::tableName().ascii());
+		
+		created = query.exec(sqls);
+		Error::verify(created, Error::SQL_CMD);
 	}
 	
-	return success;
-}
-
-void Flights::fromV_0_3_1toV_0_3_2()
-{
-	QString sqls;
-	QSqlQuery query(db());
-	
-	sqls.sprintf("RENAME TABLE `Flights` TO `%s`", m_tableName.ascii());
-	query.exec(sqls);
+	return created;
 }
 
 int Flights::lastModified()
@@ -233,7 +227,7 @@ int Flights::lastModified()
 	QSqlQuery query(db());
 	int time = 1;
 	
-	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = '%s'", m_tableName.ascii());
+	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = '%s'", DataBaseSub::tableName().ascii());
 	
 	if(query.exec(sqls) &&
 		query.first())
