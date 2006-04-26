@@ -25,16 +25,14 @@ class TableWindow: public MDIWindow
 		void tableAsHTML(QDomDocument &doc);
 
 	protected slots:
-		void print();
+		void exportTable();
 		
 	protected:
-		QPrinter& printer();
 		QTable* getTable();
 		void setupHeader(const QStringList &colNameList);
 
 private:
 	QTable* m_pTable;
-	QPrinter m_printer;
 };
 
 #endif

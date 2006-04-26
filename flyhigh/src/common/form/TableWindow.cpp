@@ -5,7 +5,9 @@
 */
 
 #include <qmessagebox.h>
-
+#include <qdir.h>
+#include <qfile.h>
+#include <qfiledialog.h>
 #include <qtable.h>
 #include <qheader.h>
 #include <qpainter.h>
@@ -13,9 +15,8 @@
 #include <qrect.h>
 #include <qsimplerichtext.h>
 #include <qstringlist.h>
+#include "IFlyHighRC.h"
 #include "TableWindow.h"
-
-#include <qfile.h>
 
 TableWindow::TableWindow(QWidget* parent, const char* name, int wflags)
     :MDIWindow(parent, name, wflags)
@@ -129,61 +130,32 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	}
 }
 
-void TableWindow::print()
+void TableWindow::exportTable()
 {
-#ifndef QT_NO_PRINTER
-	QFont font("Arial", 8);
+	const QDir *pDir;
+	QFile file;
+	QString fileName;
 	QString string;
-	m_printer.setFullPage(true);
-	QPaintDeviceMetrics screen(this);
 	QDomDocument doc;
-	int page = 1;
-	
-	m_printer.setResolution(screen.logicalDpiY());
-	m_printer.setPrintProgram("kprinter"); // this is a workaround, because qt won't print with cups
-	
-	if(m_printer.setup(this))
+	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "HTML Files (html.*)", this,
+					"HTML file export", true);
+
+	fileDlg.setMode(QFileDialog::AnyFile);
+
+	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		QPainter p(&m_printer);
-		QPaintDeviceMetrics metrics(p.device());
-		int dpix = metrics.logicalDpiX();
-		int dpiy = metrics.logicalDpiY();
-		const int margin = 15;
+		pDir =  fileDlg.dir();
+		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+		delete pDir;
+		fileName = fileDlg.selectedFile();
+		file.setName(fileName + ".html");
 		
-		p.setFont(font);
-		
-		QRect body(margin * dpix / 72, margin * dpiy / 72,
-						metrics.width() - margin * dpix / 72 * 2,
-						metrics.height() - margin * dpiy / 72 * 2);
-
-		tableAsHTML(doc);
-		string = doc.toString();
-
-		QSimpleRichText richText(string, font);
-		richText.setWidth(&p, body.width());
-		QRect view(body);
-		
-		while(true)
+		if(file.open(IO_WriteOnly))
 		{
-			richText.draw(&p, body.left(), body.top(), view, colorGroup());
-			view.moveBy(0, body.height());
-			p.translate(0 , -body.height());
-			p.setFont(font);
-			p.drawText(view.right() - p.fontMetrics().width(QString::number(page)),
-			view.bottom() + p.fontMetrics().ascent() + 5, QString::number(page));
-			
-			if (view.top() >= richText.height())
-			{
-				break;
-			}
-			m_printer.newPage();
-			page++;
+			tableAsHTML(doc);
+			string = doc.toString();
+			file.writeBlock(string,  string.length());
+			file.close();
 		}
 	}
-#endif
-}
-
-QPrinter& TableWindow::printer()
-{
-	return m_printer;
 }
