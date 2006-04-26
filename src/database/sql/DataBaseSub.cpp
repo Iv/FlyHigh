@@ -26,6 +26,7 @@
 DataBaseSub::DataBaseSub(QSqlDatabase *pDB)
 {
 	m_pDB = pDB;
+	m_tableName = "";
 }
 
 DataBaseSub::~DataBaseSub()
@@ -90,4 +91,14 @@ int DataBaseSub::lastModified(const QString &field)
 	}
 	
 	return time;
+}
+
+QString& DataBaseSub::tableName()
+{
+	return m_tableName;
+}
+
+void DataBaseSub::setTableName(const QString& tableName)
+{
+	m_tableName = tableName;
 }
