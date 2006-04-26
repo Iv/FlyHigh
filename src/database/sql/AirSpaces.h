@@ -31,6 +31,7 @@ class AirSpaces: public DataBaseSub
 	public:
 		AirSpaces(QSqlDatabase *pDB);
 		
+		bool createTable();
 		bool add(AirSpace &airspace);
 		bool delAirSpace(const QString &name);
 		bool airspace(const QString &name, AirSpace &airspace);
