@@ -81,8 +81,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	}
 	
 	pMenu->insertItem("&Export...", this, SLOT(file_export()));
-	pMenu->insertItem("&Print...", this, SLOT(print()));
-	TableWindow::printer().setOrientation(QPrinter::Landscape);
+	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
 	
 /*	- ground speed / time
 - vario / time

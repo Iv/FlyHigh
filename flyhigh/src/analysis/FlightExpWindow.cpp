@@ -39,7 +39,7 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, int wflags)
 
 	pMenu = new QPopupMenu(this);
 	menuBar()->insertItem("&File", pMenu);
-	pMenu->insertItem("&Print...", this, SLOT(print()));
+	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
 	TableWindow::setCaption("Flight experience");
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
 	
