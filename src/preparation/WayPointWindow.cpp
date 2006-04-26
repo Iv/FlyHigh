@@ -64,7 +64,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 	}
 	
 	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
-	pMenu->insertItem("&Print...", this, SLOT(print()));
+	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
