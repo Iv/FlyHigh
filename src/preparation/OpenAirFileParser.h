@@ -23,8 +23,6 @@
 
 #include <qcstring.h>
 #include "AirSpace.h"
-#include "Vector.h"
-#include "WayPoint.h"
 
 class OpenAirFileParser
 {
@@ -36,19 +34,16 @@ class OpenAirFileParser
 		
 	private:
 		AirSpace::AirSpaceListType m_airspaceList;
-		WayPoint m_arcCenter;
+		double m_arcCenterLat;
+		double m_arcCenterLon;
 		bool m_arcDir;
-		static const uint m_maxSeg;
 		
 		void parseAirspaceClass(char *record, AirSpace &airspace);
 		void parseVarAssign(char *record);
 		void parsePoint(char *record, AirSpace &airspace);
 		void parseArc(char *record, AirSpace &airspace);
 		void parseCircle(char *record, AirSpace &airspace);
-		bool parseCoordinate(char *record, WayPoint &pt);
-		
-		double deltaArc(double arcA, double arcB);
-		uint maxSegments(double arc);
+		bool parseCoordinate(char *record, double &latitude, double &longitude);
 };
 
 #endif
