@@ -478,6 +478,11 @@ bool FlytecDevice::add(AirSpace &airspace)
 				break;
 			}
 		}
+		
+		if(success)
+		{
+			success = (ft_ctrRecAck() == 0);
+		}
 	}
 	
 	Error::verify(success, Error::FLYTEC_CMD);
@@ -583,6 +588,12 @@ bool FlytecDevice::delAirSpace(const QString &name)
 	bool success;
 	
 	success = (ft_ctrDel(name.ascii()) == 0);
+
+	if(success)
+	{
+		success = (ft_ctrRecAck() == 0);
+	}
+
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
 	
