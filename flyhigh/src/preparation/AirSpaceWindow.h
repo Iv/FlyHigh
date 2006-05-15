@@ -38,9 +38,9 @@ class AirSpaceWindow: public TableWindow
 		void file_update();
 		void file_AddToGPS();
 
-/*	protected:
+	protected:
 		bool periodicalUpdate();
-		*/
+		
 	private:
 		enum Fields{Name, Low, High, Class};
 		
