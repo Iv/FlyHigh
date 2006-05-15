@@ -48,6 +48,7 @@ PolareFrameImpl::~PolareFrameImpl()
 
 void PolareFrameImpl::update(QByteArray &arr)
 {
+	(void)arr;
 /*
 	// Polare 0
 	spinBox_Sink1_0->setValue(arr[POLARE_SINK_1_0_POS]);
@@ -61,6 +62,7 @@ void PolareFrameImpl::update(QByteArray &arr)
 
 void PolareFrameImpl::store(QByteArray &arr)
 {
+	(void)arr;
 /*
 	// Polare 0
 	arr[POLARE_SINK_1_0_POS] = spinBox_Sink1_0->value();

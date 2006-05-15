@@ -30,8 +30,10 @@ Frame::~Frame()
  
 void Frame::update(QByteArray &arr)
 {
+	(void)arr;
 }
 
 void Frame::store(QByteArray &arr)
 {
+	(void)arr;
 }
