@@ -222,7 +222,7 @@ int ft_ctrSnd(ft_CTRType *pCTR)
 	return flytec_ll_send(&buff[0], len);
 }
 
-int ft_ctrDel(const char *pName)
+extern int ft_ctrDel(const char *pName)
 {
 	u_char len;
 	
@@ -240,6 +240,29 @@ int ft_ctrDel(const char *pName)
 	}
 	
 	return flytec_ll_send(&buff[0], len);
+}
+
+int ft_ctrRecAck()
+{
+	u_char len;
+	int res;
+	
+	res = flytec_ll_recieve(ProductResp, &buff[0], &len);
+	
+	if(res == 0)
+	{
+		res = memcmp(&buff[0], "PBRANS,", 7);
+	}
+
+	if(res == 0)
+	{
+		if(buff[7] != '1') /* Acknowledge */
+		{
+			res = -1;
+		}
+	}
+	
+	return res;
 }
 
 /*******************************************************************************************
@@ -325,7 +348,7 @@ int ft_wayPointDel(const char *pName) /* NULL = delete all */
 	else
 	{ /* delete one */
 		ft_string2ftstring(pName, &buff[7]);
-		len = 34;
+		len = 24;
 	}
 	
 	return flytec_ll_send(&buff[0], len);
