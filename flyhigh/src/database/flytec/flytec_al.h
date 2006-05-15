@@ -163,6 +163,7 @@ extern int ft_ctrListReq();
 extern int ft_ctrListRec(ft_CTRType *pCTR);
 extern int ft_ctrSnd(ft_CTRType *pCTR);
 extern int ft_ctrDel(const char *pName);
+extern int ft_ctrRecAck();
 
 extern int ft_trackListReq();
 extern int ft_trackListRec(TrackType *pTrack);
