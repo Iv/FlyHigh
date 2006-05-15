@@ -36,6 +36,7 @@
 #include "IFlyHighRC.h"
 #include "ISql.h"
 #include "OpenAirFileParser.h"
+#include "ProgressDlg.h"
 
 AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -89,27 +90,25 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setColumnWidth(Class, 60);
 	
 	m_lastModified = 0;
-
-	if(src == IDataBase::File)
-	{
-		file_open();
-	}
 }
-/*
+
 bool AirSpaceWindow::periodicalUpdate()
 {
 	int lastModified;
-	
-	lastModified = m_pDb->airspacesLastModified();
-	
-	if(m_lastModified < lastModified)
+
+	if(m_pDb != NULL)
 	{
-		file_update();
-		m_lastModified = lastModified;
+		lastModified = m_pDb->airspacesLastModified();
+	
+		if(m_lastModified < lastModified)
+		{
+			file_update();
+			m_lastModified = lastModified;
+		}
 	}
 	
 	return true;
-}*/
+}
 
 void AirSpaceWindow::file_open()
 {
@@ -194,6 +193,7 @@ void AirSpaceWindow::file_update()
 
 void AirSpaceWindow::file_AddToGPS()
 {
+	ProgressDlg progDlg(this);
 	int row;
 	
 	row = getTable()->currentRow();
@@ -201,7 +201,9 @@ void AirSpaceWindow::file_AddToGPS()
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(*m_airSpaceList.at(row));
+		progDlg.endProgress();
 		TableWindow::unsetCursor();
 	}
 }
