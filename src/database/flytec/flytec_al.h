@@ -55,7 +55,7 @@
 #define SW_VERSION_POS 159
 #define LAST_THERM_THERS_POS 185
 #define COMPANY_POS 186
-#define SPEED_SCALING_POS 188
+/*#define SPEED_SCALING_POS 188*/
 #define GLYDER_TYPE_POS 192
 #define GLYDER_ID_POS 224
 #define GEO_ID_POS 316
@@ -63,14 +63,15 @@
 #define USERFIELD_1_POS 330
 #define USERFIELD_2_POS 340
 #define BEST_LD_POS 350
-#define BATT_TYPE_POS 351
+#define SPEED_BEST_LD_POS 351
+#define BATT_TYPE_POS 352
 #define SMS_REC_NR_POS 353
 #define SMS_COMP_MODE_POS 378
 #define SMS_CYCL_RATE_POS 379
 #define SMS_EMERGENCY_POS 380
 
 static const u_char ft_PageSize = 8;
-static const u_int ft_MemSize = 347;
+static const u_int ft_MemSize = 384;
 
 /* Primitive Datatypes */
 typedef char FlytecStringType[FT_STRING_SIZE]; /* '\0' always terminated */
