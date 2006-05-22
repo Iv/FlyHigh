@@ -49,22 +49,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_SwVersion</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>280</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Software Version</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_GliderID</cstring>
         </property>
         <property name="geometry">
@@ -233,6 +217,64 @@
         </property>
         <property name="text">
             <string>Pilot (First Surname)</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_BattType</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>326</y>
+                <width>94</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Battery type</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_SwVersion</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>280</y>
+                <width>150</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Software Version</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>Alcaline</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>NiMH</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_BattType</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>320</y>
+                <width>160</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="maxCount">
+            <number>2</number>
         </property>
     </widget>
 </widget>

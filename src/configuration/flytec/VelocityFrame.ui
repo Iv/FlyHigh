@@ -9,75 +9,55 @@
             <x>0</x>
             <y>0</y>
             <width>421</width>
-            <height>400</height>
+            <height>308</height>
         </rect>
     </property>
     <property name="caption">
         <string>Velocity</string>
     </property>
-    <widget class="QLabel">
+    <widget class="QSpinBox">
         <property name="name">
-            <cstring>textLabel_Scaling</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>34</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Speed Scaling</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>20 - 70</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>30 - 80</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Scaling</cstring>
+            <cstring>spinBox_Windweel</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>30</y>
-                <width>98</width>
-                <height>28</height>
+                <y>110</y>
+                <width>100</width>
+                <height>20</height>
             </rect>
+        </property>
+        <property name="maxValue">
+            <number>150</number>
+        </property>
+        <property name="minValue">
+            <number>70</number>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_DisplayMode</cstring>
+            <cstring>textLabel_Stallaltitude</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>74</y>
-                <width>134</width>
+                <y>190</y>
+                <width>144</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>Speed Displaymode</string>
+            <string>Stallaltitude</string>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_ScalingUnit</cstring>
+            <cstring>textLabel_StallspeedUnit</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>340</x>
-                <y>34</y>
+                <y>150</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
@@ -86,92 +66,116 @@
             <string>[km/h]</string>
         </property>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>Indicated</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>True</string>
-            </property>
-        </item>
+    <widget class="QSpinBox">
         <property name="name">
-            <cstring>comboBox_DisplayMode</cstring>
+            <cstring>spinBox_Stallaltitude</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>70</y>
-                <width>98</width>
-                <height>28</height>
+                <y>190</y>
+                <width>100</width>
+                <height>20</height>
             </rect>
         </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>Yes</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>No</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_PressSpeed</cstring>
+        <property name="maxValue">
+            <number>8000</number>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>110</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
+        <property name="minValue">
+            <number>0</number>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_QNHCorr_PressSpeed</cstring>
+            <cstring>textLabel_StallaltitudeUnit</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>40</x>
-                <y>114</y>
-                <width>160</width>
+                <x>340</x>
+                <y>190</y>
+                <width>67</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>Pressure Speed usage</string>
+            <string>[m]</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_Stallspeed</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>150</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>99</number>
+        </property>
+        <property name="minValue">
+            <number>0</number>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_SpeedGain</cstring>
+            <cstring>textLabel_Stallspeed</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>154</y>
+                <y>150</y>
                 <width>144</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>Speedgain Pressure</string>
+            <string>Stallspeed</string>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_SpeedGainUnit</cstring>
+            <cstring>textLabel_BestLD</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>30</y>
+                <width>144</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Best L/D</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_SpeedBestLD</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>70</y>
+                <width>144</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Speed at best L/D</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_WindweelUnit</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>340</x>
-                <y>154</y>
+                <y>110</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
@@ -187,7 +191,7 @@
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>194</y>
+                <y>110</y>
                 <width>144</width>
                 <height>20</height>
             </rect>
@@ -198,44 +202,12 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_WindweelUnit</cstring>
+            <cstring>textLabel_SpeedBestLDUnit</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>340</x>
-                <y>194</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[%]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Stallspeed</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>234</y>
-                <width>144</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Stallspeed</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_StallspeedUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>234</y>
+                <y>70</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
@@ -246,110 +218,59 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_Stallaltitude</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>274</y>
-                <width>144</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Stallaltitude</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_StallaltitudeUnit</cstring>
+            <cstring>textLabel_SpeedBestLDUnit_2</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>340</x>
-                <y>274</y>
+                <y>30</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>[m]</string>
+            <string>[x 10]</string>
         </property>
     </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_SpeedGain</cstring>
+            <cstring>spinBox_BestLD</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>154</y>
+                <y>30</y>
                 <width>100</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="maxValue">
-            <number>100</number>
+            <number>80</number>
         </property>
         <property name="minValue">
-            <number>90</number>
+            <number>20</number>
+        </property>
+        <property name="lineStep">
+            <number>10</number>
         </property>
     </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_Windweel</cstring>
+            <cstring>spinBox_SpeedBestLD</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>194</y>
+                <y>70</y>
                 <width>100</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="maxValue">
-            <number>150</number>
+            <number>80</number>
         </property>
         <property name="minValue">
-            <number>70</number>
-        </property>
-    </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_Stallspeed</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>234</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>99</number>
-        </property>
-        <property name="minValue">
-            <number>0</number>
-        </property>
-    </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_Stallaltitude</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>274</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>8000</number>
-        </property>
-        <property name="minValue">
-            <number>0</number>
+            <number>20</number>
         </property>
     </widget>
 </widget>

@@ -32,7 +32,8 @@ class CorrFrameImpl: public CorrFrame, public Frame
 		CorrFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
 		~CorrFrameImpl();
 
-	/*	void update(QByteArray &arr);*/
+		void update(QByteArray &arr);
+		void store(QByteArray &arr);
 };
 
 #endif

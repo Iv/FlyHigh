@@ -146,7 +146,11 @@ void DeviceFrameImpl::update(QByteArray &arr)
 		}
 	}
 	
+	// glider id
 	lineEdit_GliderID->setText(callsign);
+
+	// battery type
+	comboBox_BattType->setCurrentItem(arr[BATT_TYPE_POS]);
 }
 
 void DeviceFrameImpl::store(QByteArray &arr)
@@ -232,7 +236,11 @@ void DeviceFrameImpl::store(QByteArray &arr)
 		}
 	}
 	
+	// glider id
 	ft_string2ftstring(callsign.ascii(), (char*)&arr[GLYDER_ID_POS]);
+
+	// battery type
+	arr[BATT_TYPE_POS] = comboBox_BattType->currentItem();
 }
 
 void DeviceFrameImpl::updateGlider()
