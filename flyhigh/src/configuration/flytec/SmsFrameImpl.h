@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2005 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,67 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qspinbox.h>
+#ifndef SMSFRAMEIMPL_H
+#define SMSFRAMEIMPL_H
 
-#include "VelocityFrameImpl.h"
-extern "C"
+#include "Frame.h"
+#include "SmsFrame.h"
+
+class SmsFrameImpl: public SmsFrame, public Frame
 {
-	#include "flytec_al.h"
-}
+	Q_OBJECT
 
-VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: VelocityFrame(parent,name,fl)
-{
-}
+	public:
+		SmsFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+		~SmsFrameImpl();
 
-VelocityFrameImpl::~VelocityFrameImpl()
-{
-}
+		void update(QByteArray &arr);
+		void store(QByteArray &arr);
+};
 
-void VelocityFrameImpl::update(QByteArray &arr)
-{
-	u_int16_t c16value;
-
-	// best L/D
-	spinBox_BestLD->setValue(arr[BEST_LD_POS]);
-
-	// speed best L/D
-	spinBox_SpeedBestLD->setValue(arr[SPEED_BEST_LD_POS]);
-
-	// Windweel Gain
-	spinBox_Windweel->setValue(arr[SPEED_GAIN_WHEEL_POS]);
-
-	// Stall Speed
-	spinBox_Stallspeed->setValue(arr[STALL_SPEED_POS]);
-
-	// Stall Altitude
-	c16value = arr[STALL_ALT_POS] << 8;
-	c16value += arr[STALL_ALT_POS+1];
-	spinBox_Stallaltitude->setValue(c16value);
-}
-
-void VelocityFrameImpl::store(QByteArray &arr)
-{
-	u_int16_t c16value;
-
-	// best L/D
-	arr[BEST_LD_POS] = spinBox_BestLD->value();
-
-	// speed best L/D
-	arr[SPEED_BEST_LD_POS] = spinBox_SpeedBestLD->value();
-
-	// Windweel Gain
-	arr[SPEED_GAIN_WHEEL_POS] = spinBox_Windweel->value();
-
-	// Stall Speed
-	arr[STALL_SPEED_POS] = spinBox_Stallspeed->value();
-
-	// Stall Altitude
-	c16value = spinBox_Stallaltitude->value();
-	arr[STALL_ALT_POS] = (u_char)(c16value >> 8);
-	arr[STALL_ALT_POS+1] = (u_char)(c16value & 0xFF);
-}
-
-#include "VelocityFrameImpl.moc"
+#endif
 

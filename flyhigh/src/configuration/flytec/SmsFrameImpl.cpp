@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2005 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,68 +17,55 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+#include <qlineedit.h>
 #include <qcombobox.h>
 #include <qspinbox.h>
 
-#include "VelocityFrameImpl.h"
+#include "SmsFrameImpl.h"
+
 extern "C"
 {
 	#include "flytec_al.h"
 }
 
-VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: VelocityFrame(parent,name,fl)
+SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, WFlags fl)
+	:SmsFrame(parent, name, fl)
 {
 }
 
-VelocityFrameImpl::~VelocityFrameImpl()
+SmsFrameImpl::~SmsFrameImpl()
 {
 }
 
-void VelocityFrameImpl::update(QByteArray &arr)
+void SmsFrameImpl::update(QByteArray &arr)
 {
-	u_int16_t c16value;
+	// Recieiver number
+	arr[SMS_REC_NR_POS] = 0;
+	lineEdit_RecNum->setText(QString(&arr[SMS_REC_NR_POS]));
 
-	// best L/D
-	spinBox_BestLD->setValue(arr[BEST_LD_POS]);
+	// Competition mode
+	comboBox_Mode->setCurrentItem(arr[SMS_COMP_MODE_POS]);
 
-	// speed best L/D
-	spinBox_SpeedBestLD->setValue(arr[SPEED_BEST_LD_POS]);
+	// Cyclic Rate
+	spinBox_Intervall->setValue(arr[SMS_CYCL_RATE_POS]);
 
-	// Windweel Gain
-	spinBox_Windweel->setValue(arr[SPEED_GAIN_WHEEL_POS]);
-
-	// Stall Speed
-	spinBox_Stallspeed->setValue(arr[STALL_SPEED_POS]);
-
-	// Stall Altitude
-	c16value = arr[STALL_ALT_POS] << 8;
-	c16value += arr[STALL_ALT_POS+1];
-	spinBox_Stallaltitude->setValue(c16value);
+	// Emergency
+	comboBox_Emerg->setCurrentItem(arr[SMS_EMERGENCY_POS]);
 }
 
-void VelocityFrameImpl::store(QByteArray &arr)
+void SmsFrameImpl::store(QByteArray &arr)
 {
-	u_int16_t c16value;
+	// Receiver number
+	memcpy((char*)&arr[SMS_REC_NR_POS], lineEdit_RecNum->text().ascii(), lineEdit_RecNum->text().length());
 
-	// best L/D
-	arr[BEST_LD_POS] = spinBox_BestLD->value();
+	// Competition mode
+	arr[SMS_COMP_MODE_POS] = comboBox_Mode->currentItem();
 
-	// speed best L/D
-	arr[SPEED_BEST_LD_POS] = spinBox_SpeedBestLD->value();
+	// Cyclic Rate
+	arr[SMS_CYCL_RATE_POS] = spinBox_Intervall->value();
 
-	// Windweel Gain
-	arr[SPEED_GAIN_WHEEL_POS] = spinBox_Windweel->value();
-
-	// Stall Speed
-	arr[STALL_SPEED_POS] = spinBox_Stallspeed->value();
-
-	// Stall Altitude
-	c16value = spinBox_Stallaltitude->value();
-	arr[STALL_ALT_POS] = (u_char)(c16value >> 8);
-	arr[STALL_ALT_POS+1] = (u_char)(c16value & 0xFF);
+	// Emergency
+	arr[SMS_EMERGENCY_POS] = comboBox_Emerg->currentItem();
 }
 
-#include "VelocityFrameImpl.moc"
-
+#include "SmsFrameImpl.moc"
