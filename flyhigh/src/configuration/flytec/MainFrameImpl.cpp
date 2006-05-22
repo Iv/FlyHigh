@@ -44,6 +44,7 @@
 #include "Frame.h"
 #include "MainFrameImpl.h"
 #include "IGPSDevice.h"
+#include "SmsFrameImpl.h"
 
 MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	:MainFrame(parent,name,fl)
@@ -60,6 +61,7 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	MemoryFrameImpl *pMemoryFrame;
 	PolareFrameImpl *pPolareFrame;
 	UnitFrameImpl *pUnitFrame;
+	SmsFrameImpl *pSmsFrame;
 	int pos = 0;
 	
 	m_fileName = "";
@@ -120,12 +122,19 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	// Polare
 	pPolareFrame = new PolareFrameImpl(widgetStack);
 	addPage(pPolareFrame, &pos);
+	pPolareFrame->setEnabled(false);
 	m_FrameList.push_back(pPolareFrame);
 	
 	// Unit
 	pUnitFrame = new UnitFrameImpl(widgetStack);
 	addPage(pUnitFrame, &pos);
 	m_FrameList.push_back(pUnitFrame);
+
+	// SMS
+	pSmsFrame = new SmsFrameImpl(widgetStack);
+	addPage(pSmsFrame, &pos);
+//	pSmsFrame->setEnabled(false);
+	m_FrameList.push_back(pSmsFrame);
 	
 /*	m_pProgressBar = new QProgressBar(statusBar());
 	m_pProgressBar->setProgress(0, ft_MemSize/ft_PageSize);
@@ -243,4 +252,3 @@ void MainFrameImpl::updateFrames()
 }
 
 #include "MainFrameImpl.moc"
-

@@ -132,6 +132,8 @@ void DisplayFrameImpl::insertItems( QComboBox * pItem )
 	pItem->insertItem( tr( "FL (ft)" ) );
 	pItem->insertItem( tr( "Dist to CTR" ) );
 	pItem->insertItem( tr( "Airspeed" ) );
+	pItem->insertItem( tr( "Alt a.Gl" ) );
+	pItem->insertItem( tr( "Dist Gl" ) );
 }
 
 
