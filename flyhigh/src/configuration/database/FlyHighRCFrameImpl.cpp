@@ -27,6 +27,7 @@
 FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	:FlyHighRCFrame(parent, name)
 {
+	(void)fl;
 }
 
 void FlyHighRCFrameImpl::newGlider()
