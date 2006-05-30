@@ -133,7 +133,7 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	// SMS
 	pSmsFrame = new SmsFrameImpl(widgetStack);
 	addPage(pSmsFrame, &pos);
-//	pSmsFrame->setEnabled(false);
+	pSmsFrame->setEnabled(false);
 	m_FrameList.push_back(pSmsFrame);
 	
 /*	m_pProgressBar = new QProgressBar(statusBar());
