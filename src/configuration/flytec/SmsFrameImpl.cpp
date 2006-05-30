@@ -39,6 +39,8 @@ SmsFrameImpl::~SmsFrameImpl()
 
 void SmsFrameImpl::update(QByteArray &arr)
 {
+	(void)arr;
+/*
 	// Recieiver number
 	arr[SMS_REC_NR_POS] = 0;
 	lineEdit_RecNum->setText(QString(&arr[SMS_REC_NR_POS]));
@@ -51,10 +53,13 @@ void SmsFrameImpl::update(QByteArray &arr)
 
 	// Emergency
 	comboBox_Emerg->setCurrentItem(arr[SMS_EMERGENCY_POS]);
+*/
 }
 
 void SmsFrameImpl::store(QByteArray &arr)
 {
+	(void)arr;
+/*
 	// Receiver number
 	memcpy((char*)&arr[SMS_REC_NR_POS], lineEdit_RecNum->text().ascii(), lineEdit_RecNum->text().length());
 
@@ -66,6 +71,7 @@ void SmsFrameImpl::store(QByteArray &arr)
 
 	// Emergency
 	arr[SMS_EMERGENCY_POS] = comboBox_Emerg->currentItem();
+*/
 }
 
 #include "SmsFrameImpl.moc"
