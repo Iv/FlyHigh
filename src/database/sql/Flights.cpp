@@ -133,7 +133,7 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 	QString sqls;
 	QDate now = QDate::currentDate();
 	FlightsPerYearType fpy;
-	bool success;
+	bool success = false;
 	int year;
 	
 	for(year=2000; year<=now.year(); year++)
