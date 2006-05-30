@@ -371,6 +371,8 @@ void MainWindow::settings_device(int id)
 	uint nofItems;
 	int itemId;
 	
+	nofItems = m_pDevicesMenu->count();
+	
 	for(itemNr=0; itemNr<nofItems; itemNr++)
 	{
 		itemId = m_pDevicesMenu->idAt(itemNr);
