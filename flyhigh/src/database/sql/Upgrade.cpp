@@ -25,50 +25,62 @@
 #include "Error.h"
 #include "Upgrade.h"
 
-const QString Upgrade::m_TableVersion_0_3_2 = "2005.06.12 20:00:00"; // equal version_0_3_2
-const QString Upgrade::m_TableVersion_0_3_3 = "2006.03.31 20:50:00"; // equal version_0_3_3
+const QDateTime Upgrade::m_TableVersion_0_3_0 = QDateTime(QDate(2004, 3, 20), QTime(20, 0)); // equal version_0_3_0
+const QDateTime Upgrade::m_TableVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0)); // equal version_0_3_1
+const QDateTime Upgrade::m_TableVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50)); // equal version_0_3_2
 
 Upgrade::Upgrade(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
 {
 }
 
-int Upgrade::tableVersion()
+void Upgrade::upgrade()
+{
+	if(tableVersion() < m_TableVersion_0_3_2)
+	{
+		upgradeTo_0_3_2();
+	}
+}
+
+QDateTime Upgrade::tableVersion()
 {
 	QString sqls;
 	QString date;
 	QSqlQuery query(db());
-	int time = 1;
+	QDateTime time = m_TableVersion_0_3_0;
 	
 	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = 'TableVersion'");
 	
 	if(query.exec(sqls) && query.first())
 	{
-		time = query.value(1).toDateTime().toTime_t();
+		time = query.value(1).toDateTime();
 	}
 	
 	return time;
 }
 
-void Upgrade::setTableVersion(const QString &tabVers)
+void Upgrade::setTableVersion(const QDateTime &tabVers)
 {
 	QString sqls;
+	QString version;
 	QSqlQuery query(db());
 	
-	if(tableVersion() > 1)
+	version = tabVers.toString("yyyy-MM-dd hh:mm:ss").ascii();
+	
+	if(tableVersion() > m_TableVersion_0_3_0)
 	{
 		sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'TableVersion'", 
-				tabVers.ascii());
-		query.exec(sqls);
+				version.ascii());
 	}
 	else
 	{
 		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('TableVersion', '%s')",
-				tabVers.ascii());
-		query.exec(sqls);
+				version.ascii());
 	}
+	
+	query.exec(sqls);
 }
-
+/*
 void Upgrade::testTables()
 {
 	QString sqls;
@@ -95,8 +107,9 @@ void Upgrade::testTables()
 		Error::verify(success, Error::SQL_CMD);
 	}
 }
+*/
 
-void Upgrade::upgradeFrom_0_3_1_to_0_3_2()
+void Upgrade::upgradeTo_0_3_2()
 {
 	QString sqls;
 	QSqlQuery query(db());
@@ -108,8 +121,4 @@ void Upgrade::upgradeFrom_0_3_1_to_0_3_2()
 	query.exec(sqls);
 	
 	setTableVersion(m_TableVersion_0_3_2);
-}
-
-void Upgrade::upgradeFrom_0_3_2_to_0_3_3()
-{
 }

@@ -27,16 +27,18 @@ class Upgrade: public DataBaseSub
 	public:
 		Upgrade(QSqlDatabase *pDB);
 
-		void upgradeFrom_0_3_1_to_0_3_2();
-		void upgradeFrom_0_3_2_to_0_3_3();
+		void upgrade();
 
 	private:
-		static const QString m_TableVersion_0_3_2;
-		static const QString m_TableVersion_0_3_3;
-
-		int tableVersion();
-		void setTableVersion(const QString &tabVers);
-		void testTables();
+		static const QDateTime m_TableVersion_0_3_0;
+		static const QDateTime m_TableVersion_0_3_1;
+		static const QDateTime m_TableVersion_0_3_2;
+		
+		void upgradeTo_0_3_2();
+		
+		QDateTime tableVersion();
+		void setTableVersion(const QDateTime &tabVers);
+//		void testTables();
 };
 
 #endif
