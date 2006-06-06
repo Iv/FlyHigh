@@ -264,35 +264,20 @@ int ISql::servicingsLastModified()
 
 void ISql::setupTables()
 {
-/*	Upgrade upgrade(m_pDefaultDB);
-	QString sqls;
-	int tabVers_0_3_2 = QDateTime::fromString(m_TableVersion_0_3_2, Qt::ISODate).toTime_t();
-	int tabVers_0_3_3 = QDateTime::fromString(m_TableVersion_0_3_3, Qt::ISODate).toTime_t();
-	bool created;
+	Upgrade upgrade(m_pDefaultDB);
+
+	//bool created;
 	
-	if(m_pFlights->setupTable())
+	upgrade.upgrade();
 	
-	if(upgrade.tableVersion() < tabVers_0_3_2)
-	{
-		upgrade.upgradeFrom_0_3_1_to_0_3_2();
-	}
-	
-	created = m_pFlights->createTable();
+/*	created = m_pFlights->createTable();
 	created &= m_pAirSpaces->createTable();
 	created &= m_pWayPoints->createTable();
 	created &= m_pGliders->createTable();
 	created &= m_pFlights->createTable();
 	created &= m_pRoutes->createTable();
 	created &= m_pServicings->createTable();
-	
-	if(created)
-	{
-		upgrade.setTableVersion(m_TableVersion_0_3_3);
-	}
-	else if(upgrade.tableVersion() == tabVers_0_3_2)
-	{
-		upgrade.upgradeFrom_0_3_2_to_0_3_3();
-	}*/
+*/
 }
 
 
