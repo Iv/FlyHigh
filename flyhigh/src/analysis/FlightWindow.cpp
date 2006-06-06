@@ -162,16 +162,19 @@ void FlightWindow::file_update()
 	uint maxFlightNr;
 	
 	progDlg.beginProgress("reading flights...", m_pDb);
-	m_pDb->flightList(flightList);
-	progDlg.endProgress();
-		
-	maxFlightNr = flightList.size();
-	pTable->setNumRows(maxFlightNr);
 	
-	for(flightNr=0; flightNr<maxFlightNr; flightNr++)
+	if(m_pDb->flightList(flightList))
 	{
-		setFlightToRow(flightNr, flightList[flightNr]);
+		maxFlightNr = flightList.size();
+		pTable->setNumRows(maxFlightNr);
+		
+		for(flightNr=0; flightNr<maxFlightNr; flightNr++)
+		{
+			setFlightToRow(flightNr, flightList[flightNr]);
+		}
 	}
+	
+	progDlg.endProgress();
 }
 
 void FlightWindow::setFlightToRow(uint row, Flight &flight)
