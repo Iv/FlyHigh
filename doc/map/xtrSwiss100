@@ -1,0 +1,150 @@
+#!/usr/bin/perl
+$mountPoint = "/mnt/tmpSwissMap";
+$mapOrderFile = "$mountPoint/DATA/A-cn100.axf";
+$mapDataFile = "$mountPoint/DATA/D-cn100.axf";
+$mapTileFolder = "/var/opt/flyhigh/swissmap100";
+$maxIndex = 12942; # only these tiles are interesting
+
+system("eject /dev/cdrom");
+print "insert Swiss Map 100 CD-ROM and hit return!\n";
+system("read; mkdir -p $mapTileFolder");
+system("mkdir $mountPoint; mount -tiso9660 -oro /dev/cdrom $mountPoint");
+
+# the work
+$mapContent = readMapContent($mapDataFile);
+$mapOrder = readMapTileOrder($mapOrderFile);
+
+# extract map tiles
+$bziperror = 0;
+$count = 0;
+
+print "\nextract tiles...\n";
+
+for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
+{
+	$addr = $mapOrder[$index];
+	$len = $mapContent{$addr};
+	
+	if($len)
+	{
+		$mapTile = sprintf("$mapTileFolder/%05d", $count);
+		print sprintf("\n### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
+
+		if(($index + $bziperror) <  $maxIndex)
+		{
+			$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr count=$len";
+		}
+		else
+		{
+			# last tile
+			$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr";
+		}
+
+		system($exec);
+		$exec = "bunzip2 $mapTile.raw.bz2;";
+
+		if(system($exec) == 0)
+		{
+			$exec = "rawtoppm -bgr 256 256 $mapTile.raw  > $mapTile.ppm";
+
+			if(system($exec) == 0)
+			{
+				# success
+				$count++;
+				$exec = "rm -f $mapTile.raw";
+			}
+			else
+			{
+				$exec = "rm -f $outFile.*";
+			}
+		}
+		else
+		{
+			# the bz2 was corrupted so skip it and reset the image counter
+			$exec = "rm -f $outFile.*";
+			$bziperror++;
+			$index--;
+		}
+
+		system($exec);
+	}
+	else
+	{
+		print sprintf("WARNING: no length for tile at %08x\n", $addr);
+	}
+}
+
+system("umount $mountPoint; rmdir $mountPoint;");
+print "success!\n";
+system("eject /dev/cdrom");
+
+sub paramMiss
+{
+	$name = shift;
+
+	print "missing $name\n";
+	print "usage: swiss100toPNM map order outDir\n";
+	exit;
+}
+
+sub readMapContent
+{
+	$mapDataFile = shift;
+	$oldAddr = 0;
+
+	print "\nread map content...\n";
+
+	open(IN, "xxd $mapDataFile | grep BZh91AY |") || die("can't open axf file: $!");
+	
+	while(<IN>)
+	{
+		s/(([[:xdigit:]]))(:.*)/$1/;
+		chomp;
+		$addr = hex($_); # convert string
+	
+		if($oldAddr > 0)
+		{
+			$len = $addr - $oldAddr;
+			$mapContent{$oldAddr} = $len; # save address and length in hash
+			
+			print sprintf("found tile @ %08x with len %d\n", $oldAddr, $len);
+		}
+		
+		$oldAddr = $addr;
+	}
+
+	return $mapContent;
+}
+
+sub readMapTileOrder
+{
+	$mapOrderFile = shift;
+	$count = 0;
+	$tiles = 0;
+
+	print "\nread tile order...\n";
+
+	open(IN, "xxd $mapOrderFile | ") || die("can't open axf file: $!");
+	
+	while(<IN>)
+	{
+		if($_ =~ /.+:\s(....)\s(....).+/)
+		{
+			# read big endian address and make little endian from
+			$addr = sprintf("%i", hex(sprintf("%s%s", $1, $2)));
+			$addr = unpack("N", pack("V", $addr));
+			
+			# skip header ...
+			if($addr > 0 and $count > 5)
+			{
+				print sprintf("tile %010d @ %08x\n", $tiles, $addr);
+				push(@mapOrder, $addr);
+				$tiles++;
+			}
+			
+			$count++;
+		}
+	}
+
+	return $mapOrder;
+}
