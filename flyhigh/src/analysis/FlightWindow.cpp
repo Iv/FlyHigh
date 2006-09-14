@@ -48,6 +48,7 @@
 #include "OLCOptimizer.h"
 #include "OLCWebForm.h"
 #include "ProgressDlg.h"
+#include "MapView.h"
 
 FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -95,6 +96,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	pMenu->insertItem("&Vario vs Time", this, SLOT(plot_varioVsTime()));
 	pMenu->insertItem("&OLC", this, SLOT(plot_OLC()));
 	pMenu->insertItem("&3D View", this, SLOT(plot_3d()));
+	pMenu->insertItem("&Map View", this, SLOT(showOnMap()));
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
@@ -885,6 +887,47 @@ void FlightWindow::plot_3d()
 				m_gpligc.addArgument("openGLIGCexplorer");
 				m_gpligc.addArgument(fileName);
 				Error::verify(m_gpligc.start(), Error::GPLIGC_OPEN);
+			}
+		}
+	}
+}
+
+void FlightWindow::showOnMap()
+{
+	QByteArray igcData;
+	QString title;
+	IGCFileParser igcParser;
+	ProgressDlg progDlg(this);
+	int row;
+	bool success;
+	MapView *pView;
+	WayPoint::WayPointListType wpList;
+	uint fpListSize;
+	uint fpNr;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		progDlg.beginProgress("read igc file...", m_pDb);
+		success = m_pDb->igcFile(getTable()->text(row, Nr).toInt(), igcData);
+		progDlg.endProgress();
+		
+		if(success)
+		{
+			igcParser.parse(igcData);
+			fpListSize = igcParser.flightPointList().size();
+
+			if(fpListSize > 0)
+			{
+				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				{
+					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
+				}
+
+				pView = new MapView();
+				pView->shwoWayPointList(wpList);
+				pView->showMaximized();
 			}
 		}
 	}

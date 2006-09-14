@@ -52,6 +52,7 @@ class FlightWindow : public TableWindow
 		void plot_varioVsTime();
 		void plot_OLC();
 		void plot_3d();
+		void showOnMap();
 		
 	private:
 		enum Fields{Nr, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
