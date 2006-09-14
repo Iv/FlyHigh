@@ -96,10 +96,10 @@ bool SwissMap100::loadSwissMap(uint swiss_n, uint swiss_e, uint swiss_s, uint sw
 {
 	QRect tilesRect;
 
-	tilesRect.setTop((max_swiss_n - swiss_n) / (TILE_PIX_Y * PIX_Y_M));
-	tilesRect.setRight((swiss_e - max_swiss_w) / (TILE_PIX_X * PIX_X_M));
-	tilesRect.setBottom((max_swiss_n - swiss_s) / (TILE_PIX_Y * PIX_Y_M));
-	tilesRect.setLeft((swiss_w - max_swiss_w) / (TILE_PIX_Y * PIX_Y_M));
+	tilesRect.setTop((max_swiss_n - swiss_n) / (TILE_PIX_Y * PIX_Y_M) - 1);
+	tilesRect.setRight((swiss_e - max_swiss_w) / (TILE_PIX_X * PIX_X_M) + 1);
+	tilesRect.setBottom((max_swiss_n - swiss_s) / (TILE_PIX_Y * PIX_Y_M) + 1);
+	tilesRect.setLeft((swiss_w - max_swiss_w) / (TILE_PIX_Y * PIX_Y_M) - 1);
 
 	return loadTiles(tilesRect);
 }
@@ -112,49 +112,46 @@ bool SwissMap100::loadTiles(QRect &tilesRect)
 	int rowNr;
 	int colNr;
 	int tilesLoaded = 0;
-	bool inRange;
 
-	inRange = (tilesRect.top() < TILES_MAX_Y) && (tilesRect.top() <= tilesRect.bottom()) &&
-			(tilesRect.bottom() < TILES_MAX_Y) && (tilesRect.left() < TILES_MAX_X) &&
-			(tilesRect.left() <= tilesRect.right()) && (tilesRect.right() < TILES_MAX_X);
+	if(tilesRect.top() < 0) tilesRect.setTop(0);
+	if(tilesRect.bottom() > TILES_MAX_Y) tilesRect.setBottom(TILES_MAX_Y);
+	if(tilesRect.left() < 0) tilesRect.setLeft(0);
+	if(tilesRect.right() > TILES_MAX_X) tilesRect.setRight(TILES_MAX_X);
 
-	if(inRange)
+	clean();
+	m_cancel = false;
+
+	for(rowNr=tilesRect.top(); rowNr<=tilesRect.bottom(); rowNr++)
 	{
-		clean();
-		m_cancel = false;
-
-		for(rowNr=tilesRect.top(); rowNr<=tilesRect.bottom(); rowNr++)
+		for(colNr=tilesRect.left(); colNr<=tilesRect.right(); colNr++)
 		{
-			for(colNr=tilesRect.left(); colNr<=tilesRect.right(); colNr++)
+			if(m_cancel)
 			{
-				if(m_cancel)
-				{
-					clean();
-					return false;
-				}
+				clean();
+				return false;
+			}
 
-				if(tileName(colNr, rowNr, name))
-				{
-					pTile = new MapTile(Map::tilePath() + name, TILE_PIX_X, TILE_PIX_Y);
-				}
-				else
-				{
-					pTile = NULL;
-				}
-				
-				emit progress(tilesLoaded * 100 / (tilesRect.width() * tilesRect.height()));
-				tileRow.push_back(pTile);
-				tilesLoaded++;
+			if(tileName(colNr, rowNr, name))
+			{
+				pTile = new MapTile(Map::tilePath() + name, TILE_PIX_X, TILE_PIX_Y);
+			}
+			else
+			{
+				pTile = NULL;
 			}
 			
-			tileMatrix().push_back(tileRow);
-			tileRow.clear();
+			emit progress(tilesLoaded * 100 / (tilesRect.width() * tilesRect.height()));
+			tileRow.push_back(pTile);
+			tilesLoaded++;
 		}
-
-		m_tilesRect = tilesRect;
+		
+		tileMatrix().push_back(tileRow);
+		tileRow.clear();
 	}
+
+	m_tilesRect = tilesRect;
 	
-	return inRange;
+	return true;
 }
 
 bool SwissMap100::tileName(uint x, uint y, QString &name)
