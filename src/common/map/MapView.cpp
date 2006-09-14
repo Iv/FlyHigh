@@ -30,6 +30,8 @@ MapView::MapView(QWidget *parent, const char *name, int wFlags)
 	:QScrollView(parent, name, wFlags)
 {
 	m_pMap = NULL;
+	m_maxAlt = 0;
+	m_minAlt = 0;
 }
 
 MapView::~MapView()
@@ -60,9 +62,12 @@ void MapView::shwoWayPointList(WayPoint::WayPointListType &wpList)
 		e = wpList[0].longitude();
 		s = wpList[0].latitude();
 		w = wpList[0].longitude();
+		m_maxAlt = wpList[0].altitude();
+		m_minAlt = wpList[0].altitude();
 	
 		for(wpNr=0; wpNr<listSize; wpNr++)
 		{
+			// latitude
 			if(wpList[wpNr].latitude() > n)
 			{
 				n = wpList[wpNr].latitude();
@@ -71,7 +76,8 @@ void MapView::shwoWayPointList(WayPoint::WayPointListType &wpList)
 			{
 				s = wpList[wpNr].latitude();
 			}
-
+			
+			// longitude
 			if(wpList[wpNr].longitude() > e)
 			{
 				e = wpList[wpNr].longitude();
@@ -79,6 +85,16 @@ void MapView::shwoWayPointList(WayPoint::WayPointListType &wpList)
 			else if(wpList[wpNr].longitude() < w)
 			{
 				w = wpList[wpNr].longitude();
+			}
+
+			// altitude
+			if(wpList[wpNr].altitude() > m_maxAlt)
+			{
+				m_maxAlt = wpList[wpNr].altitude();
+			}
+			else if(wpList[wpNr].altitude() < m_minAlt)
+			{
+				m_minAlt = wpList[wpNr].altitude();
 			}
 		}
 
@@ -133,6 +149,8 @@ void MapView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 	int yOffset = 0;
 	int pixX;
 	int pixY;
+	QColor color;
+	uint hue;
 
 	// map
 	rows = m_pMap->tileMatrix().size();
@@ -167,27 +185,21 @@ void MapView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 
 	if(pts > 2)
 	{
+
  
 		// start and end point
 		p->setPen(QPen(Qt::green, 10));
 		p->drawEllipse(m_wayPoints[0].x(), m_wayPoints[0].y(), 5, 5);
 		p->setPen(QPen(Qt::red, 10));
 		p->drawEllipse(m_wayPoints[pts-1].x(), m_wayPoints[pts-1].y(), 5, 5);
-/*
-  QColor c;
-        c.setHsv( i*10, 255, 255 );             // rainbow effect
-        p->setBrush( c );                       // solid fill with color c
-        p->drawRect( 70, -10, 80, 10 ); 
-*/
-	
-		for(wpNr=0; wpNr<(pts-1); wpNr++)
+
+		// other points
+		for(wpNr=1; wpNr<(pts-2); wpNr++)
 		{
 			alt = m_wpList[wpNr].altitude();
-		
-			if(alt < 0) alt = 0;
-			else if(alt > 4000) alt = 4000;
-			
-			p->setPen(QPen(Qt::red, 2));
+			hue = (alt - m_minAlt) * (100 - 0) / (m_maxAlt - m_minAlt);
+			color.setHsv(hue, 255, 255 );
+			p->setPen(QPen(color, 4));
 			p->drawLine(m_wayPoints[wpNr], m_wayPoints[wpNr+1]);
 		}
 	}
