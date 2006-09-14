@@ -45,6 +45,8 @@ class MapView: public QScrollView
 		Map *m_pMap;
 		WayPoint::WayPointListType m_wpList;
 		QPointArray m_wayPoints;
+		int m_maxAlt;
+		int m_minAlt;
 
 		void recalcWayPoints();
 };
