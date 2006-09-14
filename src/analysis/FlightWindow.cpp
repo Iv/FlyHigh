@@ -226,14 +226,17 @@ void FlightWindow::file_AddToSqlDB()
 	int YY;
 	QString str ;
 	int row;
+	uint gpsFlightNr;
+	uint newFlightNr;
 	int id;
 
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
+		gpsFlightNr = getTable()->text(row, Nr).toUInt();
 		progDlg.beginProgress("read igc file...", m_pDb);
-		m_pDb->igcFile(row, flight.igcData());
+		m_pDb->igcFile(gpsFlightNr, flight.igcData());
 		progDlg.endProgress();
 	
 		// parse and optimize
@@ -250,8 +253,8 @@ void FlightWindow::file_AddToSqlDB()
 		progDlg.endProgress();
 		
 		// nr
-		id = ISql::pInstance()->newFlightNr();
-		flight.setNumber(id);
+		newFlightNr = ISql::pInstance()->newFlightNr();
+		flight.setNumber(newFlightNr);
 		
 		// date
 		str = getTable()->text(row, Date);
@@ -330,7 +333,7 @@ void FlightWindow::file_AddToSqlDB()
 		if(newFlightForm.exec())
 		{
 			ISql::pInstance()->add(flight);
-			flight.setNumber(row); // restore original track nr or gps will be confused
+			flight.setNumber(gpsFlightNr); // restore original track nr or gps will be confused
 			setFlightToRow(row, flight);
 		}
 	}
