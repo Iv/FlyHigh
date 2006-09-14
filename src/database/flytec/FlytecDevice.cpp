@@ -141,6 +141,7 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 	bool success;
 	TrackType track;
 	Flight flight;
+	uint trackNr = 0;
 	
 	success = (ft_trackListReq() == 0);
 	m_cancel = false;
@@ -149,18 +150,19 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 	{
 		while(ft_trackListRec(&track) == 0)
 		{
-			emit progress(track.trackNum*100/track.totalNum);
+			emit progress(trackNr*100/track.totalNum);
 			
 			if(m_cancel)
 			{
 				return false;
 			}
 			
-			flight.setNumber(track.trackNum);
+			flight.setNumber(trackNr);
 			flight.setDate(QDate(track.date.year, track.date.month, track.date.day));
 			flight.setTime(QTime(track.start.hour, track.start.min, track.start.sec));
 			flight.setDuration(track.duration.hour*3600 + track.duration.min*60 + track.duration.sec);
 			flightList.push_back(flight);
+			trackNr++;
 		}
 	}
 	
