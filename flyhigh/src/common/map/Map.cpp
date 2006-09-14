@@ -67,13 +67,17 @@ void Map::LLrect(double &n, double &e, double &s, double &w)
 void Map::pixRect(QRect &rect)
 {
 	int rows;
-	int cols;
+	int cols = 0;
 	int pixX;
 	int pixY;
 
 	rows = m_tileMatrix.size();
-	cols = m_tileMatrix[0].size();
-	pixTileSize(pixX, pixY);
+	
+	if(rows > 0)
+	{
+		cols = m_tileMatrix[0].size();
+		pixTileSize(pixX, pixY);
+	}
 
 	rect.setTop(0);
 	rect.setLeft(0);
