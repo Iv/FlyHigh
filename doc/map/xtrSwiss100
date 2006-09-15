@@ -1,24 +1,40 @@
 #!/usr/bin/perl
 $mountPoint = "/mnt/tmpSwissMap";
+$targetDir = "/var/opt/flyhigh";
 $mapOrderFile = "$mountPoint/DATA/A-cn100.axf";
 $mapDataFile = "$mountPoint/DATA/D-cn100.axf";
-$mapTileFolder = "/var/opt/flyhigh/swissmap100";
+$mapTileFolder = "$targetDir/swissmap100";
 $maxIndex = 12942; # only these tiles are interesting
+$neededSpace = 2588860; # kB
 
+# check available memory
+system("mkdir -p $targetDir");
+$exec = "df $targetDir | grep /dev/ | awk '{print \$4}'";
+$memFree = readpipe($exec);
+
+if($memFree < $neededSpace)
+{
+	system("rmdir $targetDir");
+	print "Not enough space on disk! $neededSpace kB needed. Try this and start again.\n";
+	print "# mkdir /disk/dir/with/space/flyhigh\n";
+	print "# ln -s /disk/dir/with/space/flyhigh $targetDir\n";
+	exit;
+}
+
+# source and target directory setup
 system("eject /dev/cdrom");
-print "insert Swiss Map 100 CD-ROM and hit return!\n";
+print "Insert Swiss Map 100 CD-ROM. $neededSpace kB disk space is required.\n";
+print "Press Return for start!";
 system("read; mkdir -p $mapTileFolder");
 system("mkdir $mountPoint; mount -tiso9660 -oro /dev/cdrom $mountPoint");
 
-# the work
+# map content and tile order
 $mapContent = readMapContent($mapDataFile);
 $mapOrder = readMapTileOrder($mapOrderFile);
 
 # extract map tiles
 $bziperror = 0;
 $count = 0;
-
-print "\nextract tiles...\n";
 
 for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 {
@@ -28,20 +44,19 @@ for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 	if($len)
 	{
 		$mapTile = sprintf("$mapTileFolder/%05d", $count);
-		print sprintf("\n### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
 
-		if(($index + $bziperror) <  $maxIndex)
+		if($debug)
 		{
-			$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr count=$len";
+			printf("\n### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
 		}
 		else
 		{
-			# last tile
-			$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr";
+			printf("Extract $mapTile.ppm\n");
 		}
 
+		$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr count=$len &> /dev/null";
 		system($exec);
-		$exec = "bunzip2 $mapTile.raw.bz2;";
+		$exec = "bunzip2 $mapTile.raw.bz2 &> /dev/null";
 
 		if(system($exec) == 0)
 		{
@@ -70,48 +85,51 @@ for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 	}
 	else
 	{
-		print sprintf("WARNING: no length for tile at %08x\n", $addr);
+		printf("WARNING: no length for tile at %08x\n", $addr);
 	}
 }
 
 system("umount $mountPoint; rmdir $mountPoint;");
-print "success!\n";
 system("eject /dev/cdrom");
+print "success!\n";
 
-sub paramMiss
-{
-	$name = shift;
-
-	print "missing $name\n";
-	print "usage: swiss100toPNM map order outDir\n";
-	exit;
-}
+#############################################################
 
 sub readMapContent
 {
 	$mapDataFile = shift;
 	$oldAddr = 0;
+	$tileNr = 0;
 
-	print "\nread map content...\n";
+	print "Read map content...\n";
+	open(IN, "xxd $mapDataFile | grep BZh91AY |") || die("can't open axf file: $!"); # look for bzip2 header
 
-	open(IN, "xxd $mapDataFile | grep BZh91AY |") || die("can't open axf file: $!");
-	
 	while(<IN>)
 	{
 		s/(([[:xdigit:]]))(:.*)/$1/;
 		chomp;
 		$addr = hex($_); # convert string
-	
+
 		if($oldAddr > 0)
 		{
 			$len = $addr - $oldAddr;
 			$mapContent{$oldAddr} = $len; # save address and length in hash
+			$tileNr++;
 			
-			print sprintf("found tile @ %08x with len %d\n", $oldAddr, $len);
+			if($debug)
+			{
+				printf("found tile @ %08x with len %d\n", $oldAddr, $len);
+			}
+			else
+			{
+				printf("Tiles found: %d\r", $tileNr);
+			}
 		}
-		
+
 		$oldAddr = $addr;
 	}
+
+	print "\n\n";
 
 	return $mapContent;
 }
@@ -122,8 +140,7 @@ sub readMapTileOrder
 	$count = 0;
 	$tiles = 0;
 
-	print "\nread tile order...\n";
-
+	print "Read tile order.\n\n";
 	open(IN, "xxd $mapOrderFile | ") || die("can't open axf file: $!");
 	
 	while(<IN>)
@@ -133,15 +150,19 @@ sub readMapTileOrder
 			# read big endian address and make little endian from
 			$addr = sprintf("%i", hex(sprintf("%s%s", $1, $2)));
 			$addr = unpack("N", pack("V", $addr));
-			
+
 			# skip header ...
 			if($addr > 0 and $count > 5)
 			{
-				print sprintf("tile %010d @ %08x\n", $tiles, $addr);
+				if($debug)
+				{
+					printf("tile %010d @ %08x\n", $tiles, $addr);
+				}
+
 				push(@mapOrder, $addr);
 				$tiles++;
 			}
-			
+
 			$count++;
 		}
 	}
