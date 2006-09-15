@@ -3,6 +3,8 @@
 	Thanks to Dr.Dietrich Münchmeyer und Andreas Rieck for valuable inputs!
 	adapted, aranged for better understanding and comments in english
 	by Alex Graf 2005
+
+	faster optimization with distance filtering by Alex Graf 2006
  
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -144,7 +146,7 @@ void OLCOptimizer::initdmval()
 		}
 	}
 }
-    
+
 /*
 calc smallest distance between all points x and y with x<=i and y>=j
 for all x<=i, y>=j: dmin(i,j) <= dmin(x,y) and
@@ -231,7 +233,7 @@ void OLCOptimizer::initdmin()
 		}
 	}
 }
-    
+
 void OLCOptimizer::initmaxend()
 {
 	uint nFlightPts = m_flightPointList.size();
@@ -239,7 +241,7 @@ void OLCOptimizer::initmaxend()
 	
 	maxenddist = new int[nFlightPts];
 	maxendpunkt = new int[nFlightPts];
-           
+
 	for(w3=nFlightPts-1; w3>1; w3--)
 	{
 		maxf = 0;
@@ -259,21 +261,35 @@ void OLCOptimizer::initmaxend()
 	}
 }
 
-void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, double minDeltaSpeed)
+void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist, uint filterDist)
 {
 	uint index;
 	uint lastIndex = (flightPoints.size() - 2);
-	double speed;
+	uint distance;
+	WayPoint lastValidWp;
 	
 	m_flightPointList.clear();
-		
-	for(index=0; index<lastIndex; index++)
-	{
-		speed = flightPoints.speedH(index, index+1);
 
-		if(speed > minDeltaSpeed)
+	if(lastIndex > 0)
+	{
+		lastValidWp = flightPoints[0].wp;
+		
+		for(index=0; index<lastIndex; index++)
 		{
-			m_flightPointList.add(flightPoints[index]);
+			// skip to big jumps between waypoints
+			distance = flightPoints[index].wp.distance(flightPoints[index+1].wp);
+
+			if(distance < filterDist)
+			{
+				// skip waypoints between minor distances
+				distance = lastValidWp.distance(flightPoints[index].wp);
+	
+				if(distance > deltaDist)
+				{
+					m_flightPointList.add(flightPoints[index]);
+					lastValidWp = flightPoints[index].wp;
+				}
+			}
 		}
 	}
 }
