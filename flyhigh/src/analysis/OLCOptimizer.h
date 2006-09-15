@@ -39,8 +39,8 @@ class OLCOptimizer: public QObject
 		OLCOptimizer();
 		virtual ~OLCOptimizer();
 		
-		// sets the flight data for optimizing. minor speed (distances) in m/s
-		void setFlightPoints(FlightPointList &flightPoints, double minDeltaSpeed);
+		// sets the flight data for optimizing. minor and filter distances in m
+		void setFlightPoints(FlightPointList &flightPoints, uint minDeltaDist, uint filterDist);
 		bool optimize();
 		
 		// returns the distance in meters and the used indexes of WayPoints from data
