@@ -55,10 +55,11 @@ IFlyHighRC* IFlyHighRC::pInstance()
 IFlyHighRC::IFlyHighRC()
 {
 	m_deviceNameList = "Flytec5020";
-	m_deviceNameList += "Garmin";
-	m_deviceSpeedList = "9600";
+//	m_deviceNameList += "Garmin";
+
+/*	m_deviceSpeedList = "9600";
 	m_deviceSpeedList += "19200";
-	m_deviceSpeedList += "38400";
+	m_deviceSpeedList += "38400";*/
 	m_deviceSpeedList += "57600";
 	
 	m_deviceName = 0;
@@ -72,7 +73,7 @@ IFlyHighRC::IFlyHighRC()
 	m_callsign = "";
 	m_glider = "";
 	
-	m_versionInfo = "FlyHigh Version 0.3.2";
+	m_versionInfo = "FlyHigh Version 0.4.0";
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
