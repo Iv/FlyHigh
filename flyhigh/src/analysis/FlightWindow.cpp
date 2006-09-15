@@ -241,7 +241,7 @@ void FlightWindow::file_AddToSqlDB()
 	
 		// parse and optimize
 		igcParser.parse(flight.igcData());
-		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
 		progDlg.beginProgress("optimize flight...", &olcOptimizer);
 		
 		if(olcOptimizer.optimize())
@@ -377,7 +377,7 @@ void FlightWindow::file_import()
 		
 			// parse and optimize
 			igcParser.parse(flight.igcData());
-			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
 			progDlg.beginProgress("optimize flight...", &olcOptimizer);
 			
 			if(olcOptimizer.optimize())
@@ -525,7 +525,7 @@ void FlightWindow::file_export()
 				}
 				
 				// OLC file
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
 				
 				olcWebForm.setTakeOffLoc(getTable()->text(row, StartPt));
 				olcWebForm.setCallSign(igcParser.gliderId());
@@ -793,7 +793,7 @@ void FlightWindow::plot_OLC()
 				m_plotter.setLabelZ("altitude [m]");
 				plotFlighPointList(igcParser.flightPointList(), "track");
 				
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 5); // ignore deltaSpeeds under 5 m/s
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
 				progDlg.beginProgress("optimize flight...", &olcOptimizer);
 				
 				if(olcOptimizer.optimize())
