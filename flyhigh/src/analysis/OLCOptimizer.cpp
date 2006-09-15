@@ -31,6 +31,10 @@ OLCOptimizer::OLCOptimizer()
 	m_pDistanceMatrix = NULL;
 	maxenddist = NULL;
 	maxendpunkt = NULL;
+
+	memset(m_indexFree, 0, sizeof(m_indexFree));
+	memset(m_indexFAI, 0, sizeof(m_indexFree));
+	memset(m_indexFlat, 0, sizeof(m_indexFree));
 }
 
 OLCOptimizer::~OLCOptimizer()
@@ -47,14 +51,14 @@ uint OLCOptimizer::freeDistance(FlightPointIndexListType &turnpointList)
 
 uint OLCOptimizer::FAITriangle(FlightPointIndexListType &turnpointList)
 {
-	memcpy(turnpointList, m_indexFAI, sizeof(m_indexFree));
+	memcpy(turnpointList, m_indexFAI, sizeof(m_indexFAI));
 
 	return m_bestFAI;
 }
 
 uint OLCOptimizer::flatTriangle(FlightPointIndexListType &turnpointList)
 {
-	memcpy(turnpointList, m_indexFlat, sizeof(m_indexFree));
+	memcpy(turnpointList, m_indexFlat, sizeof(m_indexFlat));
 
 	return m_bestFlat;
 }
@@ -265,7 +269,7 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 {
 	uint index;
 	uint lastIndex = (flightPoints.size() - 2);
-	uint distance;
+	uint distance = deltaDist;
 	WayPoint lastValidWp;
 	
 	m_flightPointList.clear();
@@ -273,6 +277,7 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 	if(lastIndex > 0)
 	{
 		lastValidWp = flightPoints[0].wp;
+		m_flightPointList.add(flightPoints[0]);
 		
 		for(index=0; index<lastIndex; index++)
 		{
@@ -300,6 +305,10 @@ bool OLCOptimizer::optimize()
 	uint i4cmp, i2cmp;
 	uint i1, i2, i3, i4;
 	uint i, a, b, c, d, e, u, w, tmp, aplusb, c25, d5;
+
+	memset(m_indexFree, 0, sizeof(m_indexFree));
+	memset(m_indexFAI, 0, sizeof(m_indexFree));
+	memset(m_indexFlat, 0, sizeof(m_indexFree));
 	
 	m_cancel = false;
 	nFlightPts = m_flightPointList.size();
