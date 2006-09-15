@@ -197,8 +197,18 @@ void MapView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 		for(wpNr=1; wpNr<(pts-2); wpNr++)
 		{
 			alt = m_wpList[wpNr].altitude();
-			hue = (alt - m_minAlt) * (100 - 0) / (m_maxAlt - m_minAlt);
-			color.setHsv(hue, 255, 255 );
+
+			if(alt < 0) color = QColor(0, 0, 0); // black
+			else if(alt < 500) color = QColor(125, 0, 0); // brown
+			else if(alt < 1000) color = QColor(255, 0, 0); // red
+			else if(alt < 1500) color = QColor(255, 125, 0); // orange
+			else if(alt < 2000) color = QColor(255, 200, 0); // dark orange
+			else if(alt < 2500) color = QColor(255, 255, 0); // yellow
+			else if(alt < 3000) color = QColor(230, 255, 0); // yellow-green
+			else if(alt < 3500) color = QColor(160, 255, 0); // light green
+			else if(alt < 4000) color = QColor(50, 255, 0); // green
+			else color = QColor(255, 255, 255); // white
+
 			p->setPen(QPen(color, 4));
 			p->drawLine(m_wayPoints[wpNr], m_wayPoints[wpNr+1]);
 		}
