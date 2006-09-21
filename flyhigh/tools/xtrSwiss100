@@ -1,0 +1,171 @@
+#!/usr/bin/perl
+$mountPoint = "/mnt/tmpSwissMap";
+$targetDir = "/var/opt/flyhigh";
+$mapOrderFile = "$mountPoint/DATA/A-cn100.axf";
+$mapDataFile = "$mountPoint/DATA/D-cn100.axf";
+$mapTileFolder = "$targetDir/swissmap100";
+$maxIndex = 12942; # only these tiles are interesting
+$neededSpace = 2588860; # kB
+
+# check available memory
+system("mkdir -p $targetDir");
+$exec = "df $targetDir | grep /dev/ | awk '{print \$4}'";
+$memFree = readpipe($exec);
+
+if($memFree < $neededSpace)
+{
+	system("rmdir $targetDir");
+	print "Not enough space on disk! $neededSpace kB needed. Try this and start again.\n";
+	print "# mkdir /disk/dir/with/space/flyhigh\n";
+	print "# ln -s /disk/dir/with/space/flyhigh $targetDir\n";
+	exit;
+}
+
+# source and target directory setup
+system("eject /dev/cdrom");
+print "Insert Swiss Map 100 CD-ROM. $neededSpace kB disk space is required.\n";
+print "Press Return for start!";
+system("read; mkdir -p $mapTileFolder");
+system("mkdir $mountPoint; mount -tiso9660 -oro /dev/cdrom $mountPoint");
+
+# map content and tile order
+$mapContent = readMapContent($mapDataFile);
+$mapOrder = readMapTileOrder($mapOrderFile);
+
+# extract map tiles
+$bziperror = 0;
+$count = 0;
+
+for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
+{
+	$addr = $mapOrder[$index];
+	$len = $mapContent{$addr};
+	
+	if($len)
+	{
+		$mapTile = sprintf("$mapTileFolder/%05d", $count);
+
+		if($debug)
+		{
+			printf("\n### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
+		}
+		else
+		{
+			printf("Extract $mapTile.ppm\n");
+		}
+
+		$exec = "dd if=$mapDataFile of=$mapTile.raw.bz2 bs=1 skip=$addr count=$len &> /dev/null";
+		system($exec);
+		$exec = "bunzip2 $mapTile.raw.bz2 &> /dev/null";
+
+		if(system($exec) == 0)
+		{
+			$exec = "rawtoppm -bgr 256 256 $mapTile.raw  > $mapTile.ppm";
+
+			if(system($exec) == 0)
+			{
+				# success
+				$count++;
+				$exec = "rm -f $mapTile.raw";
+			}
+			else
+			{
+				$exec = "rm -f $outFile.*";
+			}
+		}
+		else
+		{
+			# the bz2 was corrupted so skip it and reset the image counter
+			$exec = "rm -f $outFile.*";
+			$bziperror++;
+			$index--;
+		}
+
+		system($exec);
+	}
+	else
+	{
+		printf("WARNING: no length for tile at %08x\n", $addr);
+	}
+}
+
+system("umount $mountPoint; rmdir $mountPoint;");
+system("eject /dev/cdrom");
+print "success!\n";
+
+#############################################################
+
+sub readMapContent
+{
+	$mapDataFile = shift;
+	$oldAddr = 0;
+	$tileNr = 0;
+
+	print "Read map content...\n";
+	open(IN, "xxd $mapDataFile | grep BZh91AY |") || die("can't open axf file: $!"); # look for bzip2 header
+
+	while(<IN>)
+	{
+		s/(([[:xdigit:]]))(:.*)/$1/;
+		chomp;
+		$addr = hex($_); # convert string
+
+		if($oldAddr > 0)
+		{
+			$len = $addr - $oldAddr;
+			$mapContent{$oldAddr} = $len; # save address and length in hash
+			$tileNr++;
+			
+			if($debug)
+			{
+				printf("found tile @ %08x with len %d\n", $oldAddr, $len);
+			}
+			else
+			{
+				printf("Tiles found: %d\r", $tileNr);
+			}
+		}
+
+		$oldAddr = $addr;
+	}
+
+	print "\n\n";
+
+	return $mapContent;
+}
+
+sub readMapTileOrder
+{
+	$mapOrderFile = shift;
+	$count = 0;
+	$tiles = 0;
+
+	print "Read tile order.\n\n";
+	open(IN, "xxd $mapOrderFile | ") || die("can't open axf file: $!");
+	
+	while(<IN>)
+	{
+		if($_ =~ /.+:\s(....)\s(....).+/)
+		{
+			# read big endian address and make little endian from
+			$addr = sprintf("%i", hex(sprintf("%s%s", $1, $2)));
+			$addr = unpack("N", pack("V", $addr));
+
+			# skip header ...
+			if($addr > 0 and $count > 5)
+			{
+				if($debug)
+				{
+					printf("tile %010d @ %08x\n", $tiles, $addr);
+				}
+
+				push(@mapOrder, $addr);
+				$tiles++;
+			}
+
+			$count++;
+		}
+	}
+
+	return $mapOrder;
+}
