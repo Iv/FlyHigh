@@ -13,8 +13,8 @@ workDir=`pwd`/$project.$revision
 cvstag="version_`echo $revision | sed s/"\."/_/`"
 echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project"
 cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project
-echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $workDir -r $cvstag $project"
-cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $workDir -r $cvstag $project
+echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project.$revision -r $cvstag $project"
+cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project.$revision -r $cvstag $project
 
 # create configure
 echo "make --directory=$workDir -f Makefile.cvs"
@@ -48,7 +48,7 @@ mkdir -p $workDir/debian/usr/share/applications/
 cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
 
 # fill control file
-projectsize="`ls -la flyhigh.0_4/release/src/flyhigh | awk '{print $5}'`"
+projectsize="`ls -la $workDir/release/src/flyhigh | awk '{print $5}'`"
 cat $workDir/debian/DEBIAN/control.template  | sed s/Version:/"Version: $revision"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > $workDir/debian/DEBIAN/control
 
 # create debian archive
