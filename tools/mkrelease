@@ -1,0 +1,53 @@
+#!/bin/sh
+
+if [ -z $1 ]
+then
+	echo "usage: mkrelease revision\nFor example ./mkrelease 0_4_1"; exit
+fi
+
+project=flyhigh
+revision=$1
+workDir=`pwd`/$project.$revision
+
+# tag source on CVS
+echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag version_$revision $project"
+#cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag version_$revision $project
+
+# get source from CVS
+echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $workDir -r version_$revision $project"
+#cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $workDir -r version_$revision $project
+
+# create configure
+echo "make --directory=$workDir -f Makefile.cvs"
+#make --directory=$workDir -f Makefile.cvs
+
+# create source tar
+echo "tar -czf $project.$revision.tar.gz $workDir"
+#tar -czf $project.$revision.tar.gz $workDir
+
+# configure and build
+#mkdir $workDir/release
+#cd $workDir/release
+#$workDir/configure
+#make
+echo "strip $workDir/release/src/$project"
+#strip $workDir/release/src/$project
+
+# create debian archive
+#mkdir -p $workDir/debian/usr/bin/
+#cp $workDir/release/src/$project $workDir/debian/usr/bin/
+
+#mkdir -p $workDir/debian/usr/share/flyhigh/
+#cp $workDir/doc/sql/flyhigh.sql $workDir/debian/usr/share/flyhigh/
+#cp $workDir/tools/xtrSwiss100 $workDir/debian/usr/share/flyhigh/
+#cp $workDir/src/images/flyhigh.png $workDir/debian/usr/share/flyhigh/
+
+#mkdir -p $workDir/debian/usr/share/doc/flyhigh/
+#cp $workDir/doc/flyhigh $workDir/debian/usr/share/doc/flyhigh/
+
+#mkdir -p $workDir/debian/usr/share/applications/
+#cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
+
+# fill control file
+cat $workDir/debian/DEBIAN/control.template  | sed s/Version:/Version_neu/ | sed s/Installed-Size:/Installed-Size:ddd/
+dpkg --build $workDir/debian/ $project.$revision.deb
