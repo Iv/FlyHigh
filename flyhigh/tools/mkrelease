@@ -49,6 +49,9 @@ cp $workDir/doc/flyhigh $workDir/debian/usr/share/doc/flyhigh/
 mkdir -p $workDir/debian/usr/share/applications/
 cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
 
+# remove disturbing dirs
+rm -r $workDir/debian/DEBIAN/CVS/
+
 # fill control file
 projectsize="`du -sb $workDir/debian/usr/ | awk '{print $1}'`"
 cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > $workDir/debian/DEBIAN/control
