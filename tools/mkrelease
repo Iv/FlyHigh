@@ -51,6 +51,7 @@ cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
 
 # remove disturbing dirs
 rm -r $workDir/debian/DEBIAN/CVS/
+rm -r $workDir/debian/CVS
 
 # fill control file
 projectsize="`du -sb $workDir/debian/usr/ | awk '{print $1}'`"
