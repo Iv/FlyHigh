@@ -8,6 +8,11 @@ $maxIndex = 12942; # only these tiles are interesting
 $neededSpace = 2588860; # kB
 
 #$debug="yes";
+if(system("") != 0)
+{
+
+	exit;
+}
 
 # check available memory
 system("mkdir -p $targetDir");
@@ -26,6 +31,7 @@ if($memFree < $neededSpace)
 # source and target directory setup
 system("eject $mountPoint");
 print "Insert Swiss Map 100 CD-ROM. $neededSpace kB disk space is required.\n";
+print "Please be sure that bunzip2, rawtoppm and xxd are available!\nn";
 print "Press Return for start!";
 system("read; rm -rf $mapTileFolder; mkdir -p $mapTileFolder");
 system("mount $mountPoint");
