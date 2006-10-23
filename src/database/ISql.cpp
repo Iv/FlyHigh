@@ -270,8 +270,8 @@ void ISql::setupTables()
 	
 	upgrade.upgrade();
 	
-/*	created = m_pFlights->createTable();
-	created &= m_pAirSpaces->createTable();
+	m_pFlights->createTable();
+/*	created &= m_pAirSpaces->createTable();
 	created &= m_pWayPoints->createTable();
 	created &= m_pGliders->createTable();
 	created &= m_pFlights->createTable();
