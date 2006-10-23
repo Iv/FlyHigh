@@ -1,11 +1,13 @@
 #!/usr/bin/perl
-$mountPoint = "/mnt/tmpSwissMap";
+$mountPoint = "/media/cdrom0";
 $targetDir = "/var/opt/flyhigh";
 $mapOrderFile = "$mountPoint/DATA/A-cn100.axf";
 $mapDataFile = "$mountPoint/DATA/D-cn100.axf";
 $mapTileFolder = "$targetDir/swissmap100";
 $maxIndex = 12942; # only these tiles are interesting
 $neededSpace = 2588860; # kB
+
+#$debug="yes";
 
 # check available memory
 system("mkdir -p $targetDir");
@@ -22,11 +24,11 @@ if($memFree < $neededSpace)
 }
 
 # source and target directory setup
-system("eject /dev/cdrom");
+system("eject $mountPoint");
 print "Insert Swiss Map 100 CD-ROM. $neededSpace kB disk space is required.\n";
 print "Press Return for start!";
-system("read; mkdir -p $mapTileFolder");
-system("mkdir $mountPoint; mount -tiso9660 -oro /dev/cdrom $mountPoint");
+system("read; rm -rf $mapTileFolder; mkdir -p $mapTileFolder");
+system("mount $mountPoint");
 
 # map content and tile order
 $mapContent = readMapContent($mapDataFile);
@@ -47,7 +49,7 @@ for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 
 		if($debug)
 		{
-			printf("\n### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
+			printf("### extract $mapTile.ppm @ %08x with len %d\n", $addr, $len);
 		}
 		else
 		{
@@ -70,13 +72,13 @@ for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 			}
 			else
 			{
-				$exec = "rm -f $outFile.*";
+				$exec = "rm -f $outFile.raw $outFile.ppm";
 			}
 		}
 		else
 		{
 			# the bz2 was corrupted so skip it and reset the image counter
-			$exec = "rm -f $outFile.*";
+			$exec = "rm -f $outFile.raw.bz2 $outFile.raw";
 			$bziperror++;
 			$index--;
 		}
@@ -89,8 +91,7 @@ for($index=0; ($index+$bziperror)<=$maxIndex; $index++)
 	}
 }
 
-system("umount $mountPoint; rmdir $mountPoint;");
-system("eject /dev/cdrom");
+system("eject $mountPoint");
 print "success!\n";
 
 #############################################################
