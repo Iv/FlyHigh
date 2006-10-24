@@ -70,36 +70,3 @@ CREATE TABLE IF NOT EXISTS `LastModified` (
   `Time` datetime default NULL,
   PRIMARY KEY  (`Name`)
 ) TYPE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS `AirSpaces` (
-  `Name` varchar(16) NOT NULL default '',
-  `Low` varchar(16) NOT NULL default '',
-  `High` varchar(16) NOT NULL default '',
-  `Class` varchar(16) NOT NULL default '',
-  `EdgePoint0` varchar(20) default NULL,
-	`EdgePoint1` varchar(20) default NULL,
-	`EdgePoint2` varchar(20) default NULL,
-	`EdgePoint3` varchar(20) default NULL,
-	`EdgePoint4` varchar(20) default NULL,
-	`EdgePoint5` varchar(20) default NULL,
-	`EdgePoint6` varchar(20) default NULL,
-	`EdgePoint7` varchar(20) default NULL,
-	`EdgePoint8` varchar(20) default NULL,
-	`EdgePoint9` varchar(20) default NULL,
-	`EdgePoint10` varchar(20) default NULL,
-	`EdgePoint11` varchar(20) default NULL,
-	`EdgePoint12` varchar(20) default NULL,
-	`EdgePoint13` varchar(20) default NULL,
-	`EdgePoint14` varchar(20) default NULL,
-	`EdgePoint15` varchar(20) default NULL,
-	`EdgePoint16` varchar(20) default NULL,
-	`EdgePoint17` varchar(20) default NULL,
-	`EdgePoint18` varchar(20) default NULL,
-	`EdgePoint19` varchar(20) default NULL,
-	`EdgePoint20` varchar(20) default NULL,
-	`EdgePoint21` varchar(20) default NULL,
-	`EdgePoint22` varchar(20) default NULL,
-	`EdgePoint23` varchar(20) default NULL,
-	`EdgePoint24` varchar(20) default NULL,
-  PRIMARY KEY  (`Name`)
- ) TYPE=InnoDB;
