@@ -203,6 +203,22 @@ bool Flights::createTable()
 			"`Number` INT( 11 ) NOT NULL DEFAULT '0',"
 			"`Date` DATE NOT NULL DEFAULT '0000-00-00',"
 			"`Time` TIME NOT NULL DEFAULT '00:00:00',"
+			"`Glider` varchar(16) NOT NULL default '0',"
+			"`StartPt` varchar(16) NOT NULL default '0',"
+			"`LandPt` varchar(16) NOT NULL default '0',"
+			"`Duration` INT( 11 ) NOT NULL DEFAULT '0',"
+			"`Distance` INT( 11 ) DEFAULT '0',"
+			"`Comment` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL ,"
+			"`IGCFile` MEDIUMBLOB,"
+			"PRIMARY KEY ( `Number` )"
+			") DEFAULT CHARSET = utf8;", db()->databaseName().ascii(), DataBaseSub::tableName().ascii());
+
+/* maybe later...
+		sqls.sprintf(
+			"CREATE TABLE `%s`.`%s` ("
+			"`Number` INT( 11 ) NOT NULL DEFAULT '0',"
+			"`Date` DATE NOT NULL DEFAULT '0000-00-00',"
+			"`Time` TIME NOT NULL DEFAULT '00:00:00',"
 			"`GliderId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
 			"`StartPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
 			"`LandPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
@@ -212,7 +228,8 @@ bool Flights::createTable()
 			"`IGCFile` MEDIUMBLOB,"
 			"PRIMARY KEY ( `Number` )"
 			") DEFAULT CHARSET = utf8;", db()->databaseName().ascii(), DataBaseSub::tableName().ascii());
-		
+	*/
+
 		created = query.exec(sqls);
 		Error::verify(created, Error::SQL_CMD);
 	}
