@@ -8,11 +8,6 @@ $maxIndex = 12942; # only these tiles are interesting
 $neededSpace = 2588860; # kB
 
 #$debug="yes";
-if(system("") != 0)
-{
-
-	exit;
-}
 
 # check available memory
 system("mkdir -p $targetDir");
