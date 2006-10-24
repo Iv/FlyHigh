@@ -4,6 +4,7 @@ Section: kde
 Priority: optional
 Architecture: i386
 Depends: libqt3-mt (>= 3.3.3-4.1), libqt3-mt-mysql (>= 3.3.3-8), gnuplot (>= 4.0.0-2), mysql-server-5.0 (>= 5.0), mysql-common (>= 5.0)
+Suggests: netpbm vim-common
 Provides: flyhigh
 Installed-Size:
 Maintainer: Alex Graf <grafal@sourceforge.net>
