@@ -73,7 +73,7 @@ IFlyHighRC::IFlyHighRC()
 	m_callsign = "";
 	m_glider = "";
 	
-	m_versionInfo = "FlyHigh Version 0.4";
+	m_versionInfo = "FlyHigh Version 0.4-1";
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
