@@ -4,10 +4,10 @@ INCLUDES = -I$(top_srcdir)/src/common/container -I$(top_srcdir)/src/common/form 
 METASOURCES = AUTO
 lib_LIBRARIES =  libanalysis.a
 libanalysis_a_SOURCES = FlightWindow.cpp OLCOptimizer.cpp FlightPointList.cpp \
-		FlightExpWindow.cpp ServicingWindow.cpp IGCFileParser.cpp OLCWebForm.cpp
+			FlightExpWindow.cpp ServicingWindow.cpp IGCFileParser.cpp OLCWebForm.cpp GliderWindow.cpp
 
 
 
 
 noinst_HEADERS = FlightWindow.h OLCOptimizer.h FlightPointList.h \
-		FlightExpWindow.h ServicingWindow.h IGCFileParser.h OLCWebForm.h
+			FlightExpWindow.h ServicingWindow.h IGCFileParser.h OLCWebForm.h GliderWindow.h
