@@ -20,6 +20,7 @@
 #ifndef ServicingWindow_h
 #define ServicingWindow_h
 
+#include "Servicing.h"
 #include "TableWindow.h"
 
 class ISql;
@@ -40,8 +41,9 @@ class ServicingWindow: public TableWindow
 		void file_delete();
 	
 	private:
-		enum Fields{Nr, Glider, Date, Responsibility, Comment};
+		enum Fields{Glider, Date, Responsibility, Comment};
 		
+		Servicing::ServicingListType m_servicingsList;
 		int m_lastModified;
 		ISql *m_pDb;
 };

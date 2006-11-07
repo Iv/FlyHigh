@@ -30,23 +30,23 @@ class Flights: public DataBaseSub
 {
 	public:
 		Flights(QSqlDatabase *pDB);
-		bool createTable();
-		int lastModified();
 
 		bool add(Flight &flight);
-		bool delFlight(int nr);
-		bool flight(int nr, Flight &flight);
+		bool delFlight(Flight &flight);
+//		bool flight(int nr, Flight &flight);
 		int newFlightNr();
-		bool flightList(Flight::FlightListType &flightList);
+		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 		bool flightsPerYear(FlightsPerYearListType &fpyList);
-		bool igcFile(uint flightNr, QByteArray &arr);
+		bool loadIGCFile(Flight &flight);
 		
 	private:
 		enum Elements
 		{
-			Number, Date, Time, Glider, StartPt, LandPt, 
+			Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId,
 			Duration, Distance, Comment, IGCFile
 		};
+
+		bool setId(Flight &flight);
 };
 
 #endif

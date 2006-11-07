@@ -1,72 +1,101 @@
-GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , FILE , INDEX , ALTER ,
-CREATE TEMPORARY TABLES ON * . * TO 'flyhigh'@'localhost' IDENTIFIED BY 'flyhigh'
-WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 ;
+CREATE DATABASE IF NOT EXISTS `flyhigh_v2` DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+USE `flyhigh_v2`;
 
-CREATE DATABASE IF NOT EXISTS `flyhigh`;
-USE `flyhigh`;
+CREATE TABLE IF NOT EXISTS `Gliders`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Manufacturer` VARCHAR(16) CHARACTER SET utf8 NOT NULL DEFAULT '',
+	`Model` VARCHAR(16) CHARACTER SET utf8 NOT NULL DEFAULT '',
+	`Serial` VARCHAR(16) CHARACTER SET utf8 NOT NULL DEFAULT '',
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY(`Manufacturer`, `Model`, `Serial`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `Gliders` (
-  `Manufacturer` varchar(16) NOT NULL default '',
-  `Model` varchar(16) NOT NULL default '',
-  PRIMARY KEY  (`Model`),
-  UNIQUE KEY `byGlider` (`Manufacturer`,`Model`)
-) TYPE=InnoDB;
+CREATE TABLE IF NOT EXISTS `Pilots`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`FirstName` VARCHAR(16) CHARACTER SET utf8 NOT NULL,
+	`LastName` VARCHAR(16) CHARACTER SET utf8 NOT NULL,
+	`BirthDate` DATE NOT NULL DEFAULT '0000-00-00',
+	`CallSign` VARCHAR(16) CHARACTER SET utf8 NOT NULL,
+	`GliderId` INT NOT NULL DEFAULT '0',
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY byPilot(`FirstName`, `LastName`, `BirthDate`),
+	FOREIGN KEY(`GliderId`) REFERENCES Gliders(`Id`) ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `Servicings` (
-  `Id` int(11) NOT NULL default '0',
-  `Glider` varchar(16) NOT NULL default '' REFERENCES Gliders(Model),
-  `Date` date NOT NULL default '0000-00-00',
-  `Responsibility` varchar(16) NOT NULL default '',
-  `Comment` varchar(200) NOT NULL default '',
-  PRIMARY KEY  (`Id`)
-) TYPE=InnoDB;
+CREATE TABLE IF NOT EXISTS `WayPoints`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(16) NOT NULL DEFAULT '',
+	`Spot` VARCHAR(16) NOT NULL DEFAULT '',
+	`Country` VARCHAR(2) NOT NULL DEFAULT '',
+	`Longitude` FLOAT NOT NULL DEFAULT '0',
+	`Latitude` FLOAT NOT NULL DEFAULT '0',
+	`Altitude` INT NOT NULL DEFAULT '0',
+	`Description` VARCHAR(200) NOT NULL DEFAULT '',
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY byWayPoints(`Name`, `Spot`, `Country`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `WayPoints` (
-  `Name` varchar(16) NOT NULL default '',
-  `Longitude` float default NULL,
-  `Latitude` float default NULL,
-  `Altitude` int(11) NOT NULL default '0',
-  `Description` varchar(200) NOT NULL default '',
-  PRIMARY KEY  (`Name`)
-) TYPE=InnoDB;
+CREATE TABLE IF NOT EXISTS `Flights`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Number` INT NOT NULL DEFAULT '0',
+	`PilotId` INT NOT NULL DEFAULT '0',
+	`Date` DATE NOT NULL DEFAULT '0000-00-00',
+	`Time` TIME NOT NULL DEFAULT '00:00:00',
+	`GliderId` INT NOT NULL DEFAULT '0',
+	`StartPtId` INT NOT NULL DEFAULT '0',
+	`LandPtId` INT NOT NULL DEFAULT '0',
+	`Duration` INT NOT NULL DEFAULT '0',
+	`Distance` INT DEFAULT '0',
+	`Comment` VARCHAR(500) DEFAULT NULL,
+	`IGCFile` MEDIUMBLOB,
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY byFlight(`PilotId`, `Number`),
+	FOREIGN KEY(`PilotId`) REFERENCES Pilots(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(`GliderId`) REFERENCES Gliders(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(`StartPtId`) REFERENCES WayPoints(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(`LandPtId`) REFERENCES WayPoints(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `Routes` (
-  `Name` varchar(16) NOT NULL default '',
-  `WayPoint0` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint1` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint2` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint3` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint4` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint5` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint6` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint7` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint8` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint9` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint10` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint11` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint12` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint13` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint14` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint15` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint16` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint17` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint18` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint19` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint20` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint21` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint22` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint23` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint24` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint25` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint26` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint27` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint28` varchar(16) default NULL REFERENCES WayPoints(Name),
-  `WayPoint29` varchar(16) default NULL REFERENCES WayPoints(Name),
-  PRIMARY KEY  (`Name`)
-) TYPE=InnoDB;
+CREATE TABLE IF NOT EXISTS `Routes`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(16) NOT NULL DEFAULT '',
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY byRoutes(`Name`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `LastModified` (
-  `Name` varchar(16) NOT NULL default '',
-  `Time` datetime default NULL,
-  PRIMARY KEY  (`Name`)
-) TYPE=InnoDB;
+CREATE TABLE IF NOT EXISTS `RouteItems`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`RouteId` INT NOT NULL DEFAULT '0',
+	`WayPointId` INT NOT NULL DEFAULT '0',
+	PRIMARY KEY(`Id`),
+	FOREIGN KEY(`RouteId`) REFERENCES Routes(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(`WayPointId`) REFERENCES WayPoints(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS `Servicings`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`GliderId` INT NOT NULL DEFAULT '0',
+	`Date` DATE NOT NULL DEFAULT '0000-00-00',
+	`Responsibility` VARCHAR(16) NOT NULL DEFAULT '',
+	`Comment` VARCHAR(200) NOT NULL DEFAULT '',
+	PRIMARY KEY(`Id`),
+	FOREIGN KEY(`GliderId`) REFERENCES Gliders(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS `LastModified`
+(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(16) NOT NULL DEFAULT '',
+	`Time` datetime DEFAULT NULL,
+	PRIMARY KEY(`Id`),
+	UNIQUE KEY (`Name`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `LastModified`(`Id` , `Name` , `Time`) VALUES(NULL, 'DataBaseVersion', '2006-11-14 00:00:00');

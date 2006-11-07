@@ -1,5 +1,5 @@
 use for configuration http://localhost/phpmyadmin/
-# apt-get install phpmyadmin
+# apt-get install apache2 phpmyadmin libapache2-mod-php5 php5-mysql
 
 enable InnoDB.
 # vi /etc/mysql/my.cnf
@@ -15,7 +15,7 @@ SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, CREATE
 TEMPORARY TABLES
 
 create initial database
-$ mysql -u flyhigh -p < flyhigh.sql
+$ mysql -u root -p < flyhigh.sql
 Enter password:
 
 

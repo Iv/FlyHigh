@@ -23,10 +23,10 @@
 
 #include <qthread.h>
 #include "FlightForm.h"
+#include "Glider.h"
+#include "WayPoint.h"
 
 class Flight;
-class Glider;
-class WayPoint;
 
 class FlightFormImpl : public FlightForm
 {
@@ -46,6 +46,8 @@ class FlightFormImpl : public FlightForm
 		
 	private:
 		Flight *m_pFlight;
+		Glider::GliderListType m_gliderList;
+		WayPoint::WayPointListType m_wpList;
 		
 		void updateWayPoints();
 		void updateGlider();

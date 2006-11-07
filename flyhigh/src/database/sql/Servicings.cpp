@@ -23,6 +23,9 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include "Error.h"
+#include "Glider.h"
+#include "Gliders.h"
+#include "ISql.h"
 #include "Servicings.h"
 
 Servicings::Servicings(QSqlDatabase *pDB)
@@ -38,7 +41,7 @@ bool Servicings::add(Servicing &servicing)
 	// insert record
 	pRec = cur.primeInsert();
 	pRec->setValue("Id", newId("Servicings"));
-	pRec->setValue("Glider", servicing.glider());
+	pRec->setValue("GliderId", servicing.glider().id());
 	pRec->setValue("Date", servicing.date());
 	pRec->setValue("Responsibility", servicing.responsibility());
 	pRec->setValue("Comment", servicing.comment());
@@ -48,13 +51,13 @@ bool Servicings::add(Servicing &servicing)
 	return true;
 }
 
-bool Servicings::delServicing(int nr)
+bool Servicings::delServicing(Servicing &servicing)
 {
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
 	 
-	sqls.sprintf("DELETE FROM `Servicings` WHERE `Id` = '%i'", nr);
+	sqls.sprintf("DELETE FROM `Servicings` WHERE `Id` = '%i'", servicing.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
@@ -64,7 +67,8 @@ bool Servicings::delServicing(int nr)
 
 bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 {
-	Servicing serv;
+	Servicing servicing;
+	Glider glider;
 	QSqlQuery query(db());
 	QString sqls = "SELECT * FROM `Servicings` ORDER BY `Id` DESC";
 	bool success;
@@ -75,13 +79,14 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	{
 		while(query.next())
 		{
-			serv.setNr(query.value(Id).toInt());
-			serv.setGlider(query.value(Glider).toString());
-			serv.setDate(query.value(Date).toDate());
-			serv.setResponsibility(query.value(Responsibility).toString());
-			serv.setComment(query.value(Comment).toString());
+			servicing.setId(query.value(Id).toInt());
+			ISql::pInstance()->pGliderTable()->glider(query.value(GliderId).toInt(), glider);
+			servicing.setGlider(glider);
+			servicing.setDate(query.value(Date).toDate());
+			servicing.setResponsibility(query.value(Responsibility).toString());
+			servicing.setComment(query.value(Comment).toString());
 			
-			servicingList.push_back(serv);
+			servicingList.push_back(servicing);
 		}
 	}
 	

@@ -32,12 +32,14 @@ class Routes: public DataBaseSub
 		Routes(QSqlDatabase *pDB);
 		
 		bool add(Route &route);
-		bool delRoute(const QString &name);
-		bool route(const QString &name, Route &route);
+		bool delRoute(Route &route);
 		bool routeList(Route::RouteListType &routeList);
 		
 	private:
-		enum Elements{Name, WayPoint0, MaxWayPoints=30};
+		enum RouteElements{Id, Name};
+		enum RouteItemElements{RouteItemId, RouteId, WayPointId};
+
+		bool setId(Route &route);
 };
 
 #endif

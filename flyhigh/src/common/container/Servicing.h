@@ -24,6 +24,7 @@
 #include <qdatetime.h>
 #include <qstring.h>
 #include <qvaluelist.h>
+#include "Glider.h"
 
 class Servicing
 {
@@ -31,11 +32,11 @@ class Servicing
 		typedef QValueList<Servicing> ServicingListType;
 	
 		Servicing();
-		
-		uint nr();
-		void setNr(uint nr);
-		const QString& glider();
-		void setGlider(const QString& glider);
+
+		int id();
+		void setId(int id);
+		Glider& glider();
+		void setGlider(Glider& glider);
 		const QDate& date();
 		void setDate(const QDate &date);
 		const QString& responsibility();
@@ -44,8 +45,9 @@ class Servicing
 		void setComment(const QString &comm);
 	
 	private:
+		int m_id;
 		uint m_nr;
-		QString m_glider;
+		Glider m_glider;
 		QDate m_date;
 		QString m_resp;
 		QString m_comment;

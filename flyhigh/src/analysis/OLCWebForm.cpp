@@ -27,38 +27,9 @@ OLCWebForm::OLCWebForm()
 {
 }
 
-void OLCWebForm::setPilot(const QString &name)
+void OLCWebForm::setFlight(Flight &flight)
 {
-	int pos;
-	
-	pos = name.find(' ');
-	m_firstName = name.left(pos);
-	m_surName = name.right(name.length() - pos - 1);
-}
-
-void OLCWebForm::setTakeOffLoc(const QString &takeoff)
-{
-	m_takeoffLoc = takeoff;
-}
-
-void OLCWebForm::setPilotBirth(const QDate &birth)
-{
-	m_birth = birth;
-}
-
-void OLCWebForm::setCallSign(const QString &callsign)
-{
-	m_callsign = callsign;
-}
-
-void OLCWebForm::setDate(const QDate &date)
-{
-	m_date = date;
-}
-
-void OLCWebForm::setGlider(const QString &name)
-{
-	m_glider = name;
+	m_flight = flight;
 }
 
 void OLCWebForm::setDeparture(const FlightPointList::FlightPointType &dep)
@@ -84,11 +55,6 @@ void OLCWebForm::set3rdWayPoint(const WayPoint &wp)
 void OLCWebForm::setFinish(const FlightPointList::FlightPointType &fin)
 {
 	m_finish = fin;
-}
-
-void OLCWebForm::setComment(const QString &comment)
-{
-	m_comment = comment;
 }
 
 bool OLCWebForm::save(const QString & name)
@@ -146,10 +112,10 @@ bool OLCWebForm::save(const QString & name)
 
 void OLCWebForm::olcFileName(QString &fileName)
 {
-	fileName = getOLCchar(m_date.year() % 100);
-	fileName += getOLCchar(m_date.month());
-	fileName += getOLCchar(m_date.day());
-	fileName += m_surName.left(4).lower();
+	fileName = getOLCchar(m_flight.date().year() % 100);
+	fileName += getOLCchar(m_flight.date().month());
+	fileName += getOLCchar(m_flight.date().day());
+	fileName += m_flight.pilot().lastName().left(4).lower();
 	fileName += "1";
 }
 
@@ -166,13 +132,13 @@ void OLCWebForm::streamName(QTextStream& s)
 	s << "				<tr>\n";
 	s << "					<td>First/Given name</td>\n";
 	s << "					<td>\n";
-	s << "						<input type=\"text\" maxlength=\"60\" size=\"60\" name=\"OLCvnolc\" value=\"" << m_firstName << "\"/>\n";
+	s << "						<input type=\"text\" maxlength=\"60\" size=\"60\" name=\"OLCvnolc\" value=\"" << m_flight.pilot().firstName() << "\"/>\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 	s << "				<tr>\n";
 	s << "					<td>Surname</td>\n";
 	s << "					<td>\n";
-	s << "						<input type=\"text\" maxlength=\"60\" size=\"60\" name=\"na\" value=\"" << m_surName << "\"/>\n";
+	s << "						<input type=\"text\" maxlength=\"60\" size=\"60\" name=\"na\" value=\"" << m_flight.pilot().lastName() << "\"/>\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -183,7 +149,7 @@ void OLCWebForm::streamBirth(QTextStream& s)
 	s << "					<td>Date of birth</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"8\" size=\"8\" name=\"geb\" value=\"";
-	s << m_birth.toString("dd.MM.yy") << "\"/>&nbsp;&nbsp;(dd.mm.yy)\n";
+	s << m_flight.pilot().birthDate().toString("dd.MM.yy") << "\"/>&nbsp;&nbsp;(dd.mm.yy)\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -194,7 +160,7 @@ void OLCWebForm::streamTakeoffLoc(QTextStream& s)
 	s << "					<td>Take-off location</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"20\" size=\"20\" name=\"sta\" value=\"";
-	s << m_takeoffLoc << "\"/>&nbsp;&nbsp;no ICAO-identifiers please!\n";
+	s << m_flight.startPt().name() << "\"/>&nbsp;&nbsp;no ICAO-identifiers please!\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -204,7 +170,7 @@ void OLCWebForm::streamCallsign(QTextStream& s)
 	s << "				<tr>\n";
 	s << "					<td>Callsign</td>\n";
 	s << "					<td>\n";
-	s << "						<input type=\"text\" maxlength=\"20\" size=\"20\" name=\"gid\" value=\"" << m_callsign <<"\"/>\n";
+	s << "						<input type=\"text\" maxlength=\"20\" size=\"20\" name=\"gid\" value=\"" << m_flight.pilot().callSign() <<"\"/>\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -231,14 +197,14 @@ void OLCWebForm::streamFlightDate(QTextStream& s)
 	QString str;
 	int daysTo;
 	
-	daysTo = refDate.daysTo(m_date);
+	daysTo = refDate.daysTo(m_flight.date());
 	str.sprintf("%i", refDays + daysTo);
 
 	s << "				<tr>\n";
 	s << "					<td>Date of flight</td>\n";
 	s << "					<td>\n";
 	s << "						<select name=\"ft\" >\n";
-	s << "							<option value=\"" << str << "\" selected=\"selected\">" << m_date.toString("d MMM yyyy") << "OLC</option>\n";
+	s << "							<option value=\"" << str << "\" selected=\"selected\">" << m_flight.date().toString("d MMM yyyy") << " OLC</option>\n";
 	s << "						</select>\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
@@ -246,11 +212,15 @@ void OLCWebForm::streamFlightDate(QTextStream& s)
 
 void OLCWebForm::streamModel(QTextStream& s)
 {
+	QString model;
+
+	m_flight.glider().olcName(model);
+
 	s << "				<tr>\n";
 	s << "					<td>Model of glider</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"50\" size=\"50\" name=\"gty\" value=\"";
-	s << m_glider << "\"/>&nbsp;&nbsp;enter [manufacturer glidertype]\n";
+	s << model << "\"/>&nbsp;&nbsp;enter [manufacturer glidertype]\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -401,7 +371,9 @@ void OLCWebForm::streamComment(QTextStream& s)
 	s << "				<tr>\n";
 	s << "					<td>Comment Pilot</td>\n";
 	s << "					<td>\n";
-	s << "						<textarea rows=\"5\" cols=\"60\" name=\"cpilo\">\n" << m_comment << "						</textarea>\n";
+	s << "						<textarea rows=\"5\" cols=\"60\" name=\"cpilo\">\n";
+	s <<							 "optimized and claimed with http://flyhigh.sf.net\n" << m_flight.comment();
+	s << "						</textarea>\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }

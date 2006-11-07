@@ -23,6 +23,7 @@
 
 #include <qstringlist.h> 
 #include <qvaluevector.h>
+#include "WayPoint.h"
 
 class Route
 {
@@ -30,16 +31,19 @@ class Route
 		typedef QValueVector<Route> RouteListType;
 		
 		Route();
-		
+
+		int id();
+		void setId(int id);
 		const QString& name();
 		void setName(const QString &name);
-		QStringList& wayPointList();
+		WayPoint::WayPointListType& wayPointList();
 		
 		Route& operator=(const Route &route);
 		
 	private:
+		int m_id;
 		QString m_name;
-		QStringList m_wpList;
+		WayPoint::WayPointListType m_wpList;
 };
 
 #endif

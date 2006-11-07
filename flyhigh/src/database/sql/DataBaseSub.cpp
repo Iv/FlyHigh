@@ -26,7 +26,6 @@
 DataBaseSub::DataBaseSub(QSqlDatabase *pDB)
 {
 	m_pDB = pDB;
-	m_tableName = "";
 }
 
 DataBaseSub::~DataBaseSub()
@@ -82,23 +81,12 @@ int DataBaseSub::lastModified(const QString &field)
 	QSqlQuery query(db());
 	int time = 1;
 	
-	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = '%s'", field.ascii());
+	sqls.sprintf("SELECT `Time` FROM `LastModified` WHERE `Name` = '%s'", field.ascii());
 	
-	if(query.exec(sqls) &&
-		query.first())
+	if(query.exec(sqls) && query.first())
 	{
-		time = query.value(1).toDateTime().toTime_t();
+		time = query.value(0).toDateTime().toTime_t();
 	}
 	
 	return time;
-}
-
-QString& DataBaseSub::tableName()
-{
-	return m_tableName;
-}
-
-void DataBaseSub::setTableName(const QString& tableName)
-{
-	m_tableName = tableName;
 }

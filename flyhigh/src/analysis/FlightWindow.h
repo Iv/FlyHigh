@@ -63,6 +63,7 @@ class FlightWindow : public TableWindow
 		GnuPlot m_plotter;
 		QProcess m_gpligc;
 		QTimer *m_pUpdateTimer;
+		Flight::FlightListType m_flightList;
 
 		void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);

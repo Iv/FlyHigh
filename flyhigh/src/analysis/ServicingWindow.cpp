@@ -40,7 +40,7 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 	pMenu->insertItem("&New...", this, SLOT(file_new()));
 	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
 	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
-	TableWindow::setCaption("Flight experience");
+	TableWindow::setCaption("Servicings");
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
 	
 	// configure the table
@@ -49,7 +49,6 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 	m_pDb = ISql::pInstance();
 	
 	// header
-	nameList += "Nr";
 	nameList += "Glider";
 	nameList += "Date";
 	nameList += "Responsibility";
@@ -57,7 +56,6 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, int wflags)
 
 	setupHeader(nameList);
 
-	pTable->setColumnWidth(Nr, 40);
 	pTable->setColumnWidth(Glider, 140);
 	pTable->setColumnWidth(Date, 80);
 	pTable->setColumnWidth(Responsibility, 100);
@@ -83,27 +81,26 @@ bool ServicingWindow::periodicalUpdate()
 
 void ServicingWindow::file_update()
 {
-	Servicing::ServicingListType servList;
 	QTable *pTable = TableWindow::getTable();
-	QString str;
+	QString gliderName;
 	uint servNr;
 	uint maxServNr;
 	
+	m_servicingsList.clear();
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
-	if(m_pDb->servicingList(servList))
+	if(m_pDb->servicingList(m_servicingsList))
 	{
-		maxServNr = servList.size();
+		maxServNr = m_servicingsList.size();
 		pTable->setNumRows(maxServNr);
 		
 		for(servNr=0; servNr<maxServNr; servNr++)
 		{
-			str.sprintf("%i", servList[servNr].nr());
-			pTable->setText(servNr, Nr, str);
-			pTable->setText(servNr, Glider, servList[servNr].glider());
-			pTable->setText(servNr, Date, servList[servNr].date().toString("dd.MM.yyyy"));
-			pTable->setText(servNr, Responsibility, servList[servNr].responsibility());
-			pTable->setText(servNr, Comment, servList[servNr].comment());
+			m_servicingsList[servNr].glider().fullName(gliderName);
+			pTable->setText(servNr, Glider, gliderName);
+			pTable->setText(servNr, Date, m_servicingsList[servNr].date().toString("dd.MM.yyyy"));
+			pTable->setText(servNr, Responsibility, m_servicingsList[servNr].responsibility());
+			pTable->setText(servNr, Comment, m_servicingsList[servNr].comment());
 		}
 	}
 	
@@ -126,15 +123,13 @@ void ServicingWindow::file_new()
 void ServicingWindow::file_delete()
 {
 	int row;
-	uint nr;
 	
 	row = getTable()->currentRow();;
 	
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		nr = getTable()->text(row, Nr).toInt();
-		m_pDb->delServicing(nr);
+		m_pDb->delServicing(m_servicingsList[row]);
 		TableWindow::unsetCursor();
 	}
 }

@@ -22,26 +22,34 @@
 #define Glider_h
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <qvaluevector.h>
 
 class Glider
 {
 	public:
-		typedef QValueList<Glider> GliderListType;
+		typedef QValueVector<Glider> GliderListType;
 		
 		Glider();
 		
+		int id();
+		void setId(int id);
 		const QString& manufacturer();
 		void setManufacturer(const QString &manu);
 		const QString& model();
 		void setModel(const QString &model);
-		void modelOfGlider(QString &name);
+		void fullName(QString &name);
+		void olcName(QString &name);
+		void setSerial(const QString &serial);
+		const QString& serial();
 		
 		Glider& operator=(const Glider &glider);
+		bool operator==(const Glider &glider);
 		
 	private:
-		QString m_manu;
+		int m_id;
+		QString m_manufacturer;
 		QString m_model;
+		QString m_serial;
 };
 
 #endif
