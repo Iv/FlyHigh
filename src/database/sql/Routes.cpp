@@ -20,8 +20,11 @@
  
 #include <qsqlcursor.h>
 #include <qsqldatabase.h>
+#include "ISql.h"
 #include "Error.h"
 #include "Routes.h"
+#include "WayPoint.h"
+#include "WayPoints.h"
 
 Routes::Routes(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
@@ -30,83 +33,63 @@ Routes::Routes(QSqlDatabase *pDB)
 
 bool Routes::add(Route &route)
 {
-	QSqlCursor cur("Routes");
-	QSqlRecord *pRec;
-	QString wpField;
-	QString wpName;
-	uint nWps;
-	uint wpNr;
-	
-	// insert record
-	pRec = cur.primeInsert();
-	pRec->setValue("Name", route.name());
-
-	nWps = route.wayPointList().size();
-
-	for(wpNr=0; wpNr<nWps; wpNr++)
-	{
-		wpField.sprintf("WayPoint%i", wpNr);
-		wpName = *(route.wayPointList().at(wpNr));
-		pRec->setValue(wpField, wpName);
-	}
-
-	Error::verify(cur.insert() == 1, Error::SQL_CMD);
-	DataBaseSub::setLastModified("Routes");
-	
-	return true;
-}
-
-bool Routes::delRoute(const QString &name)
-{
 	QSqlQuery query(db());
 	QString sqls;
+	QString value;
+	uint nWps;
+	uint wpNr;
 	bool success;
-	 
-	sqls.sprintf("DELETE FROM `Routes` WHERE `Name` = '%s'", name.ascii());
-	success = query.exec(sqls);
-	DataBaseSub::setLastModified("Routes");
-	Error::verify(success, Error::SQL_CMD);
 	
+	// insert route name
+	sqls.sprintf("INSERT INTO `Routes`(`Id`, `Name`) VALUES(NULL, '%s');", route.name().ascii());
+	success = query.exec(sqls);
+	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
+
+	if(success)
+	{
+		setId(route);
+		sqls = "INSERT INTO `RouteItems`(`Id`, `RouteId`, `WayPointId`) VALUES";
+	
+		// insert route items
+		nWps = route.wayPointList().size();
+	
+		for(wpNr=0; wpNr<nWps; wpNr++)
+		{
+			if(wpNr != 0)
+			{
+				sqls += ", ";
+			}
+	
+			value.sprintf("(NULL, %i, %i)", route.id(), route.wayPointList().at(wpNr).id());
+			sqls += value;
+		}
+	
+		sqls += ";";
+		success = query.exec(sqls);
+		Error::verify(success, Error::SQL_CMD);
+		DataBaseSub::setLastModified("Routes");
+	}
+		
 	return success;
 }
 
-bool Routes::route(const QString &name, Route &route)
+bool Routes::delRoute(Route &route)
 {
 	QSqlQuery query(db());
 	QString sqls;
-	QString wpName;
-	uint wpNr;
 	bool success;
-	
-	sqls.sprintf("SELECT * FROM `Routes` WHERE `Name` = '%s'", name.ascii());
+
+	// first delete route items
+	sqls.sprintf("DELETE FROM `RouteItems` WHERE `RouteId` = %i;", route.id());
 	success = query.exec(sqls);
+	Error::verify(success, Error::SQL_CMD);
 	
-	if(success)
-	{
-		success = query.first();
-		
-		if(success)
-		{
-			route.wayPointList().clear();
-			route.setName(query.value(Name).toString());
-			
-			for(wpNr=0; wpNr<MaxWayPoints; wpNr++)
-			{
-				wpName = query.value(WayPoint0+wpNr).toString();
-				
-				if(wpName == "")
-				{
-					break;
-				}
-				
-				route.wayPointList().push_back(wpName);
-			}
-		}
-	}
-	else
-	{
-		Error::verify(success, Error::SQL_CMD);
-	}
+	// route
+	sqls.sprintf("DELETE FROM `Routes` WHERE `Id` = %i;", route.id());
+	success = query.exec(sqls);
+	Error::verify(success, Error::SQL_CMD);
+
+	DataBaseSub::setLastModified("Routes");
 	
 	return success;
 }
@@ -114,31 +97,37 @@ bool Routes::route(const QString &name, Route &route)
 bool Routes::routeList(Route::RouteListType &routeList)
 {
 	Route route;
-	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM Routes ORDER BY Name ASC";
+	WayPoint wp;
+	QSqlQuery routeQuery(db());
+	QSqlQuery routeItemsQuery(db());
+	QString sqls = "SELECT * FROM `Routes` ORDER BY `Name` ASC;";
 	QString wpName;
-	uint wpNr;
+	int wpId;
 	bool success;
 	
-	success = query.exec(sqls);
+	success = routeQuery.exec(sqls);
 	
 	if(success)
 	{
-		while(query.next())
+		while(routeQuery.next())
 		{
+			// route name
+			route.setId(routeQuery.value(Id).toInt());
+			route.setName(routeQuery.value(Name).toString());
 			route.wayPointList().clear();
-			route.setName(query.value(Name).toString());
+
+			// route items
+			sqls.sprintf("SELECT * FROM `RouteItems` WHERE `RouteId`=%i;", route.id());
+			success = routeItemsQuery.exec(sqls);
 			
-			for(wpNr=0; wpNr<MaxWayPoints; wpNr++)
+			if(success)
 			{
-				wpName = query.value(WayPoint0+wpNr).toString();
-				
-				if(wpName == "")
+				while(routeItemsQuery.next())
 				{
-					break;
+					wpId = routeItemsQuery.value(WayPointId).toInt();
+					ISql::pInstance()->pWayPointTable()->wayPoint(wpId, wp);
+					route.wayPointList().push_back(wp);
 				}
-				
-				route.wayPointList().push_back(wpName);
 			}
 
 			routeList.push_back(route);
@@ -146,6 +135,31 @@ bool Routes::routeList(Route::RouteListType &routeList)
 	}
 	
 	Error::verify(success, Error::SQL_CMD);
+	
+	return success;
+}
+
+bool Routes::setId(Route &route)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	QString dbModel;
+	bool success;
+	int id = -1;
+
+	sqls.sprintf("SELECT * FROM `Routes` WHERE `Name` = '%s';", route.name().ascii());
+	success = (query.exec(sqls) && query.first());
+
+	if(success)
+	{
+		id = query.value(Id).toInt();
+	}
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
+
+	route.setId(id);
 	
 	return success;
 }

@@ -39,8 +39,15 @@ class WayPoint
 		
 		WayPoint();
 
+		int id();
+		void setId(int id);
 		const QString& name();
 		void setName(const QString &name);
+		void setSpot(const QString &spot);
+		const QString& spot();
+		void setCountry(const QString &country);
+		const QString& country();
+		void fullName(QString& name);
 		const QString& description();
 		void setDescription(const QString &desc);
 		void setWayPoint(const WayPoint &wp);
@@ -56,13 +63,17 @@ class WayPoint
 		static uint meters(double nautmil);
 		
 		WayPoint& operator=(const WayPoint &wp);
+		bool operator==(const WayPoint &wp);
 		
 	private:
+		int m_id;
 		QString m_name;
 		QString m_desc;
 		double m_lat;
 		double m_lon;
 		int m_alt;
+		QString m_country;
+		QString m_spot;
 };
 
 #endif

@@ -38,3 +38,9 @@ bool IRouteForm::exec()
 	return (m_pRouteForm->exec() == QDialog::Accepted);
 }
 
+bool IRouteForm::execReadOnly()
+{
+	m_pRouteForm->setReadOnly();
+
+	return exec();
+}

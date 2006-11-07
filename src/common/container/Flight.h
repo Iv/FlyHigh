@@ -24,6 +24,9 @@
 #include <qdatetime.h>
 #include <qstring.h>
 #include <qvaluelist.h>
+#include "WayPoint.h"
+#include "Glider.h"
+#include "Pilot.h"
 
 class Flight
 {
@@ -32,21 +35,25 @@ class Flight
 		
 		Flight();
 		
+		int id();
+		void setId(int id);
+		Pilot& pilot();
+		void setPilot(Pilot &pilot);
 		int number();
 		void setNumber(int nr);
 		const QDate& date();
 		void setDate(const QDate &date);
 		const QTime& time();
 		void setTime(const QTime &time);
-		const QString& startPt();
-		void setStartPt(const QString &name);
-		const QString& landPt();
-		void setLandPt(const QString &name);
+		WayPoint& startPt();
+		void setStartPt(WayPoint &wp);
+		WayPoint& landPt();
+		void setLandPt(WayPoint &wp);
 		int duration();
 		void setDuration(int sec);
 		void setDuration(const QTime &time);
-		const QString& glider();
-		void setGlider(const QString &name);
+		Glider& glider();
+		void setGlider(Glider &glider);
 		QByteArray& igcData();
 		/* setIgcData() makes only a shallow copy!!!
 		A shared class consists of a pointer to a shared data block
@@ -62,13 +69,15 @@ class Flight
 		Flight& operator=(const Flight &flight);
 
 	private:
+		int m_id;
+		Pilot m_pilot;
 		int m_number;
 		QDate m_date;
 		QTime m_time;
-		QString m_startPt;
-		QString m_landPt;
+		WayPoint m_startPt;
+		WayPoint m_landPt;
 		int m_duration;
-		QString m_glider;
+		Glider m_glider;
 		QByteArray m_igcData;
 		QString m_comment;
 		uint m_distance;

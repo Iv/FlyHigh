@@ -37,7 +37,13 @@ WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayP
 		
 	// name
 	lineEditName->setText(pWayPoint->name());
-	
+
+	// spot
+	lineEditSpot->setText(pWayPoint->spot());
+
+	// country
+	lineEditCountry->setText(pWayPoint->country());
+
 	// latitude
 	lat = pWayPoint->latitude();
 	
@@ -80,6 +86,12 @@ void WayPointFormImpl::accept()
 	
 	// name
 	m_pWayPoint->setName(lineEditName->text());
+
+	// spot
+	m_pWayPoint->setSpot(lineEditSpot->text());
+
+	// country
+	m_pWayPoint->setCountry(lineEditCountry->text());
 	
 	// latitude
 	lat = lineEditLat->text().toDouble();

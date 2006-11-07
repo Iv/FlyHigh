@@ -22,6 +22,8 @@
 
 Route::Route()
 {
+	m_id = -1;
+	m_name = "";
 }
 
 const QString& Route::name()
@@ -29,18 +31,29 @@ const QString& Route::name()
 	return m_name;
 }
 
+int Route::id()
+{
+	return m_id;
+}
+
+void Route::setId(int id)
+{
+	m_id = id;
+}
+
 void Route::setName(const QString &name)
 {
 	m_name = name;
 }
 
-QStringList& Route::wayPointList()
+WayPoint::WayPointListType& Route::wayPointList()
 {
 	return m_wpList;
 }
 
 Route& Route::operator=(const Route &route)
 {
+	m_id = route.m_id;
 	m_name = route.m_name;
 	m_wpList = route.m_wpList;
 	

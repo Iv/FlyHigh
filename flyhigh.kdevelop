@@ -15,21 +15,13 @@
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description/>
-    <ignoreparts>
-      <part>KDevBookmarks</part>
-      <part>KDevClearCase</part>
-      <part>KDevcopyto</part>
-      <part>KDevFileGroups</part>
-      <part>KDevPerforce</part>
-      <part>KDevQuickOpen</part>
-      <part>KDevsubversion</part>
-      <part>KDevVisualBoyAdvance</part>
-    </ignoreparts>
+    <ignoreparts/>
     <secondaryLanguages/>
+    <versioncontrol>kdevcvsservice</versioncontrol>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/database/garmin/libgarmin.a</activetarget>
+      <activetarget>src/common/container/libcontainer.a</activetarget>
       <useconfiguration>debug</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
@@ -61,6 +53,7 @@
         <f77compilerbinary/>
         <cflags/>
         <f77flags/>
+        <envvars/>
       </debug>
       <release>
         <envvars/>
@@ -89,6 +82,8 @@
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
+      <runmultiplejobs>false</runmultiplejobs>
+      <prio>0</prio>
     </make>
     <subclassing>
       <subclass uifile="/src/configuration/flytec/VelocityFrame.ui" sourcefile="/src/configuration/flytec/VelocityFrame.h" />
@@ -234,6 +229,19 @@
         <implementation class="FlyHighRCFrameImpl" path="/home/grafal/projects/flyhigh/src/configuration/database/FlyHighRCFrame.ui" implementationpath="/home/grafal/projects/flyhigh/src/configuration/database/FlyHighRCFrameImpl.h" />
       </qtdesigner>
     </designerintegration>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <root/>
+    </qt>
+    <creategettersetter>
+      <prefixGet/>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
   </kdevcppsupport>
   <kdevcvsservice>
     <recursivewhenupdate>true</recursivewhenupdate>
@@ -242,4 +250,15 @@
     <recursivewhencommitremove>true</recursivewhencommitremove>
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
+    </projectdoc>
+  </kdevdocumentation>
+  <ctagspart>
+    <customArguments/>
+    <customTagfilePath/>
+  </ctagspart>
 </kdevelop>

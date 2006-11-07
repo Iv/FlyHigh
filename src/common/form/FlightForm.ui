@@ -499,6 +499,22 @@
         <slot>limitDistance()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>spinBoxFlightNr</tabstop>
+    <tabstop>comboBoxStart</tabstop>
+    <tabstop>pushButtonStart</tabstop>
+    <tabstop>comboBoxLand</tabstop>
+    <tabstop>pushButtonLand</tabstop>
+    <tabstop>comboBoxModel</tabstop>
+    <tabstop>pushButtonGlider</tabstop>
+    <tabstop>dateEditStart</tabstop>
+    <tabstop>timeEditStart</tabstop>
+    <tabstop>timeEditDuration</tabstop>
+    <tabstop>lineEditDistance</tabstop>
+    <tabstop>textEditComment</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+</tabstops>
 <slots>
     <slot>newWayPoint()</slot>
     <slot>newGlider()</slot>

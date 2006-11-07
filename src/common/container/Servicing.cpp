@@ -21,28 +21,28 @@
 
 Servicing::Servicing()
 {
-	m_glider = "";
+	m_id = -1;
 	m_date = QDate::currentDate();
 	m_resp = "";
 	m_comment = "";
 }
 
-uint Servicing::nr()
+int Servicing::id()
 {
-	return m_nr;
+	return m_id;
 }
 
-void Servicing::setNr(uint nr)
+void Servicing::setId(int id)
 {
-	m_nr = nr;
+	m_id = id;
 }
 
-const QString& Servicing::glider()
+Glider& Servicing::glider()
 {
 	return m_glider;
 }
 
-void Servicing::setGlider(const QString &glider)
+void Servicing::setGlider(Glider &glider)
 {
 	m_glider = glider;
 }

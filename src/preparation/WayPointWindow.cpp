@@ -13,7 +13,7 @@
  *   GNU General Public License for more details.                          *
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
+ *   along with this program; if not,  write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
@@ -105,23 +105,23 @@ bool WayPointWindow::periodicalUpdate()
 
 void WayPointWindow::file_update()
 {
-	WayPoint::WayPointListType wpList;
 	WayPoint wp;
 	QTable *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint wpNr;
 	uint maxWpNr;
 	
+	m_wpList.clear();
 	pTable->setNumRows(0); // clear table, because of different nr of waypoints
 	progDlg.beginProgress("reading waypoints...", m_pDb);
-	m_pDb->wayPointList(wpList);
+	m_pDb->wayPointList(m_wpList);
 	progDlg.endProgress();
-	maxWpNr = wpList.size();
+	maxWpNr = m_wpList.size();
 	pTable->setNumRows(maxWpNr);
 	
 	for(wpNr=0; wpNr<maxWpNr; wpNr++)
 	{
-		setWpToRow(wpNr, wpList[wpNr]);
+		setWpToRow(wpNr, m_wpList[wpNr]);
 	}
 }
 
@@ -146,7 +146,7 @@ void WayPointWindow::file_delete()
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delWayPoint(getTable()->text(row, Name));
+		m_pDb->delWayPoint(m_wpList[row]);
 		TableWindow::unsetCursor();
 	}
 }
@@ -173,7 +173,8 @@ void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
 	QString str;
 	QTable *pTable = TableWindow::getTable();
 	
-	pTable->setText(row, Name, wp.name());
+	wp.fullName(str);
+	pTable->setText(row, Name, str);
 	
 	str.sprintf("%.5f", wp.longitude());
 	pTable->setText(row, Longitude, str);

@@ -34,10 +34,7 @@ const QString DateTimeTag = "[datetime]\n";
 const QString DateTimeUtcVar = "utc=";
 const QString DirectoryTag = "[directory]\n";
 const QString PilotTag = "[pilot]\n";
-const QString PilotName = "name=";
-const QString PilotBirthDate = "birthdate=";
-const QString PilotCallsign = "callsign=";
-const QString PilotGlider = "glider=";
+const QString PilotId = "pilotId="; 
 const QString DirectoryLastVar = "last=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
@@ -68,13 +65,11 @@ IFlyHighRC::IFlyHighRC()
 	m_utcOffset = 0;
 	m_lastDir = QDir::homeDirPath();
 
-	m_pilotName = "";
-	m_pilotBirth = QDate(1970, 1, 1);
-	m_callsign = "";
-	m_glider = "";
-	
+	m_pilotId = -1;
 	m_versionInfo = "FlyHigh Version 0.4-1";
-	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
+
+//@TODO correct flyhighrc_v2 to flyhighrc
+	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc_v2");
 }
 
 uint IFlyHighRC::deviceName()
@@ -151,44 +146,14 @@ const QStringList& IFlyHighRC::deviceSpeedList()
 	return m_deviceSpeedList;
 }
 
-const QString& IFlyHighRC::callsign()
+void IFlyHighRC::setPilotId(int id)
 {
-	return m_callsign;
+	m_pilotId = id;
 }
 
-void IFlyHighRC::setCallsign(const QString &id)
+int IFlyHighRC::pilotId()
 {
-	m_callsign = id;
-}
-
-const QString& IFlyHighRC::pilotName()
-{
-	return m_pilotName;
-}
-
-void IFlyHighRC::setPilotName(const QString &name)
-{
-	m_pilotName = name;
-}
-
-const QDate& IFlyHighRC::pilotBirth()
-{
-	return m_pilotBirth;
-}
-
-void IFlyHighRC::setPilotBirth(const QDate &date)
-{
-	m_pilotBirth = date;
-}
-
-const QString& IFlyHighRC::glider()
-{
-	return m_glider;
-}
-
-void IFlyHighRC::setGlider(const QString &glider)
-{
-	m_glider = glider;
+	return m_pilotId;
 }
 
 void IFlyHighRC::loadRC()
@@ -348,30 +313,14 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	char line[MAX_LINE_SIZE];
 	QString var;
 	QString val;
-	int DD;
-	int MM;
-	int YY;
 	
 	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 	{
 		parseValue(line, var, val);
 		
-		if(PilotName.find(var) == 0)
+		if(PilotId.find(var) == 0)
 		{
-			setPilotName(val);
-		}
-		else if(PilotBirthDate.find(var) == 0)
-		{
-			sscanf(val.ascii(), "%2d%*c%2d%*c%4d", &DD, &MM, &YY);
-			setPilotBirth(QDate(YY, MM, DD));
-		}
-		else if(PilotCallsign.find(var) == 0)
-		{
-			setCallsign(val);
-		}
-		else if(PilotGlider.find(var) == 0)
-		{
-			setGlider(val);
+			setPilotId(atoi(val));
 		}
 		else
 		{
@@ -383,10 +332,7 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 void IFlyHighRC::savePilot(QTextStream &stream)
 {
 	stream << PilotTag;
-	stream << PilotName << m_pilotName << "\n";
-	stream << PilotBirthDate << m_pilotBirth.toString("dd.MM.yyyy") << "\n";
-	stream << PilotCallsign << m_callsign << "\n";
-	stream << PilotGlider << m_glider << "\n";
+	stream << PilotId << m_pilotId << "\n";
 	stream << "\n";
 }
 

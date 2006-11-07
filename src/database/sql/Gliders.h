@@ -36,10 +36,13 @@ class Gliders: public DataBaseSub
 		bool glider(const QString &modelOfGlider, Glider &glider);
 		bool gliderList(Glider::GliderListType &gliderList);
 
+		bool glider(int id, Glider &glider);
+		bool setGliderId(Glider &glider);
+
 	private:
 		enum Elements
 		{
-			Manufacturer, Model
+			Id, Manufacturer, Model, Serial
 		};
 };
 

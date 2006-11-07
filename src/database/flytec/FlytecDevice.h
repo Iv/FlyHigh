@@ -42,20 +42,20 @@ class FlytecDevice: public IGPSDevice
 		bool memoryRead(QByteArray &arr);
 		bool memoryWrite(QByteArray &arr);
 		
-		bool flightList(Flight::FlightListType &flightList);
-		bool igcFile(uint flightNr, QByteArray &arr);
+		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
+		bool loadIGCFile(Flight &flight);
 
 		bool add(WayPoint &wp);
-		bool delWayPoint(const QString &name);
+		bool delWayPoint(WayPoint &wp);
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 		
 		bool add(Route &route);
 		bool routeList(Route::RouteListType &routeList);
-		bool delRoute(const QString &name);
+		bool delRoute(Route &route);
 		
 		bool add(AirSpace &airspace);
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
-		bool delAirSpace(const QString &name);
+		bool delAirSpace(AirSpace &airspace);
 		
 	private:
 		bool m_cancel;

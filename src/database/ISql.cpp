@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2006 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,17 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <qsqldatabase.h> 
+#include <qsqldatabase.h>
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h" 
 #include "WayPoints.h"
 #include "Gliders.h"
 #include "Flights.h"
+#include "Pilots.h"
 #include "Routes.h"
 #include "Servicings.h"
 #include "Upgrade.h"
+#include "ISql.h"
 
 ISql* ISql::m_pInst = NULL;
 
@@ -35,30 +36,32 @@ ISql::ISql()
 {
 	m_pDefaultDB = QSqlDatabase::addDatabase("QMYSQL3");
 	
-	setName("flyhigh");
+	setName("flyhigh_v2");
 	setUserName("flyhigh");
 	setPassword("flyhigh");
 	setHostName("localhost");
 	setPort(3306);
 	
-	m_pAirSpaces = new AirSpaces(m_pDefaultDB);
+//	m_pAirSpaces = new AirSpaces(m_pDefaultDB);
 	m_pWayPoints = new WayPoints(m_pDefaultDB);
 	m_pGliders = new Gliders(m_pDefaultDB);
 	m_pFlights = new Flights(m_pDefaultDB);
 	m_pRoutes = new Routes(m_pDefaultDB);
 	m_pServicings = new Servicings(m_pDefaultDB);
+	m_pPilots = new Pilots(m_pDefaultDB);
 }
 
 ISql::~ISql()
 {
 	m_pDefaultDB->close();
 	
-	delete m_pAirSpaces;
+//	delete m_pAirSpaces;
 	delete m_pWayPoints;
 	delete m_pGliders;
 	delete m_pFlights;
 	delete m_pRoutes;
 	delete m_pServicings;
+	delete m_pPilots;
 }
 
 void ISql::setName(const QString &name)
@@ -112,14 +115,9 @@ bool ISql::add(WayPoint &wp)
 	return m_pWayPoints->add(wp);
 }
 
-bool ISql::delWayPoint(const QString &name)
+bool ISql::delWayPoint(WayPoint &wp)
 {
-	return m_pWayPoints->delWayPoint(name);
-}
-
-bool ISql::wayPoint(const QString &name, WayPoint &wp)
-{
-	return m_pWayPoints->wayPoint(name, wp);
+	return m_pWayPoints->delWayPoint(wp);
 }
 
 bool ISql::findWayPoint(WayPoint &wp, uint radius)
@@ -162,9 +160,9 @@ bool ISql::add(Flight &flight)
 	return m_pFlights->add(flight);
 }
 
-bool ISql::delFlight(int nr)
+bool ISql::delFlight(Flight &flight)
 {
-	return m_pFlights->delFlight(nr);
+	return m_pFlights->delFlight(flight);
 }
 
 int ISql::newFlightNr()
@@ -172,9 +170,9 @@ int ISql::newFlightNr()
 	return m_pFlights->newFlightNr();
 }
 
-bool ISql::flightList(Flight::FlightListType &flightList)
+bool ISql::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
-	return m_pFlights->flightList(flightList);
+	return m_pFlights->flightList(pilot, flightList);
 }
 
 bool ISql::flightsPerYear(FlightsPerYearListType &fpyList)
@@ -182,14 +180,14 @@ bool ISql::flightsPerYear(FlightsPerYearListType &fpyList)
 	return m_pFlights->flightsPerYear(fpyList);
 }
 
-bool ISql::igcFile(uint flightNr, QByteArray &arr)
+bool ISql::loadIGCFile(Flight &flight)
 {
-	return m_pFlights->igcFile(flightNr, arr);
+	return m_pFlights->loadIGCFile(flight);
 }
 
 int ISql::flightsLastModified()
 {
-	return m_pFlights->lastModified();
+	return m_pFlights->lastModified("Flights");
 }
 
 bool ISql::add(Route &route)
@@ -197,14 +195,9 @@ bool ISql::add(Route &route)
 	return m_pRoutes->add(route);
 }
 
-bool ISql::delRoute(const QString &name)
+bool ISql::delRoute(Route &route)
 {
-	return m_pRoutes->delRoute(name);
-}
-
-bool ISql::route(const QString &name, Route &route)
-{
-	return m_pRoutes->route(name, route);
+	return m_pRoutes->delRoute(route);
 }
 
 int ISql::routesLastModified()
@@ -216,15 +209,15 @@ bool ISql::routeList(Route::RouteListType &routeList)
 {
 	return m_pRoutes->routeList(routeList);
 }
-
+/*
 bool ISql::add(AirSpace &airspace)
 {
 	return m_pAirSpaces->add(airspace);
 }
 
-bool ISql::delAirSpace(const QString &name)
+bool ISql::delAirSpace(AirSpace &airspace)
 {
-	return m_pAirSpaces->delAirSpace(name);
+	return m_pAirSpaces->delAirSpace(airspace);
 }
 
 bool ISql::airspace(const QString &name, AirSpace &airspace)
@@ -241,15 +234,15 @@ bool ISql::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 {
 	return m_pAirSpaces->airspaceList(airspaceList);
 }
-
+*/
 bool ISql::add(Servicing &serv)
 {
 	return m_pServicings->add(serv);
 }
 
-bool ISql::delServicing(int nr)
+bool ISql::delServicing(Servicing &servicing)
 {
-	return m_pServicings->delServicing(nr);
+	return m_pServicings->delServicing(servicing);
 }
 
 bool ISql::servicingList(Servicing::ServicingListType &servicingList)
@@ -262,22 +255,65 @@ int ISql::servicingsLastModified()
 	return m_pServicings->lastModified("Servicings");
 }
 
+bool ISql::add(Pilot &pilot)
+{
+	return m_pPilots->add(pilot);
+}
+
+bool ISql::setId(Pilot &pilot)
+{
+	return m_pPilots->setId(pilot);
+}
+
+bool ISql::update(Pilot &pilot)
+{
+	return m_pPilots->update(pilot);
+}
+
+bool ISql::pilot(int id, Pilot &pilot)
+{
+	return m_pPilots->pilot(id, pilot);
+}
+
+int ISql::pilotsLastModified()
+{
+	return m_pPilots->lastModified("Pilots");
+}
+
+/*
+AirSpaces* ISql::pAirSpaceTable()
+{
+	return m_pAirSpaces;
+}*/
+
+WayPoints* ISql::pWayPointTable()
+{
+	return m_pWayPoints;
+}
+
+Gliders* ISql::pGliderTable()
+{
+	return m_pGliders;
+}
+
+Flights* ISql::pFlightTable()
+{
+	return m_pFlights;
+}
+
+Servicings* ISql::pServicingTable()
+{
+	return m_pServicings;
+}
+
+Pilots* ISql::pPilotTable()
+{
+	return m_pPilots;
+}
+
 void ISql::setupTables()
 {
 	Upgrade upgrade(m_pDefaultDB);
-
-	//bool created;
 	
 	upgrade.upgrade();
-	
-	m_pFlights->createTable();
-/*	created &= m_pAirSpaces->createTable();
-	created &= m_pWayPoints->createTable();
-	created &= m_pGliders->createTable();
-	created &= m_pFlights->createTable();
-	created &= m_pRoutes->createTable();
-	created &= m_pServicings->createTable();
-*/
 }
-
-
