@@ -22,6 +22,7 @@
 #define ServicingFormImpl_h
 
 #include "ServicingForm.h"
+#include "Glider.h"
 
 class Servicing;
 
@@ -38,9 +39,9 @@ class ServicingFormImpl: public ServicingForm
 		
 	private:
 		Servicing *m_pServicing;
+		Glider::GliderListType m_gliderList;
 	
 		void updateGlider();
-		void selectGlider();
 		void setServicing(Servicing *pServicing);
 };
 

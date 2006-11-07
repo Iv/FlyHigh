@@ -150,7 +150,6 @@ void MapView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 	int pixX;
 	int pixY;
 	QColor color;
-	uint hue;
 
 	// map
 	rows = m_pMap->tileMatrix().size();

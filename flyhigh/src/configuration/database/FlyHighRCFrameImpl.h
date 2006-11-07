@@ -21,6 +21,8 @@
 #define FlyHighRCFrameImpl_h
 
 #include "FlyHighRCFrame.h"
+#include "Glider.h"
+#include "Pilot.h"
 
 class FlyHighRCFrameImpl: public FlyHighRCFrame
 {
@@ -30,10 +32,16 @@ class FlyHighRCFrameImpl: public FlyHighRCFrame
 		FlyHighRCFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
 		
 		void updateGlider();
-		void selectGlider(const QString &name);
+		void selectGlider(Glider &glider);
+		Glider& currentGlider();
+		void ok();
 
 	protected slots:
 		void newGlider();
+
+	private:
+		Pilot m_curPilot;
+		Glider::GliderListType m_gliderList;
 };
 
 #endif

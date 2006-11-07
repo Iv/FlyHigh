@@ -22,13 +22,31 @@
  
 Flight::Flight()
 {
+	m_id = -1;
 	m_number = -1;
-	m_startPt = "";
-	m_landPt = "";
 	m_duration = -1;
-	m_glider = "";
 	m_comment = "";
 	m_distance = 0;
+}
+
+int Flight::id()
+{
+	return m_id;
+}
+
+void Flight::setId(int id)
+{
+	m_id = id;
+}
+
+Pilot& Flight::pilot()
+{
+	return m_pilot;
+}
+
+void Flight::setPilot(Pilot &pilot)
+{
+	m_pilot = pilot;
 }
 
 int Flight::number()
@@ -61,24 +79,24 @@ void Flight::setTime(const QTime &time)
 	m_time = time;
 }
 
-const QString& Flight::startPt()
+WayPoint& Flight::startPt()
 {
 	return m_startPt;
 }
 
-void Flight::setStartPt(const QString& name)
+void Flight::setStartPt(WayPoint &wp)
 {
-	m_startPt = name;
+	m_startPt = wp;
 }
 
-const QString& Flight::landPt()
+WayPoint& Flight::landPt()
 {
 	return m_landPt;
 }
 
-void Flight::setLandPt(const QString& name)
+void Flight::setLandPt(WayPoint &wp)
 {
-	m_landPt = name;
+	m_landPt = wp;
 }
 
 int Flight::duration()
@@ -96,14 +114,14 @@ void Flight::setDuration(const QTime &time)
 	m_duration = time.hour() * 3600 + time.minute() * 60 + time.second();
 }
 
-const QString& Flight::glider()
+Glider& Flight::glider()
 {
 	return m_glider;
 }
 
-void Flight::setGlider(const QString& name)
+void Flight::setGlider(Glider &glider)
 {
-	m_glider = name;
+	m_glider = glider;
 }
 
 QByteArray& Flight::igcData()
@@ -138,7 +156,9 @@ void Flight::setDistance(uint dist)
 
 Flight& Flight::operator=(const Flight &flight)
 {
+	m_id = flight.m_id;
 	m_number = flight.m_number;
+	m_pilot = flight.m_pilot;
 	m_date = flight.m_date;
 	m_time = flight.m_time;
 	m_startPt = flight.m_startPt;

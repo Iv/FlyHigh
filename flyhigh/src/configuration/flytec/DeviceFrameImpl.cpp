@@ -56,12 +56,12 @@ void DeviceFrameImpl::newGlider()
 
 void DeviceFrameImpl::update(QByteArray &arr)
 {
-	QString pilot;
-	QString rcPilot;
+	Pilot dbPilot;
+	QString dbPilotName;
+	QString dbGlider;
+	QString pilotName;
 	QString callsign;
-	QString rcCallsign;
 	QString glider;
-	QString rcGlider;
 	DeviceInfoType devInfo;
 	char str[FT_STRING_SIZE];
 	int syncRes;
@@ -75,46 +75,41 @@ void DeviceFrameImpl::update(QByteArray &arr)
 
 	// pilot name
 	ft_ftstring2string(str, (char*)&arr[PILOT_NAME_POS]);
-	pilot = str;
-	rcPilot = IFlyHighRC::pInstance()->pilotName();
-	
-	if(pilot != rcPilot)
+	pilotName = str;;
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
+	dbPilot.fullName(dbPilotName);
+
+	if(pilotName != dbPilotName.left(pilotName.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different pilots", "Pilot on GPS differ from pilot in database. Sync pilots?",
-			 	"GPS to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different pilots", "Pilot on GPS differ from pilot in database. Set pilot?",
+			 	"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From GPS
-				IFlyHighRC::pInstance()->setPilotName(pilot);
-			break;
-			case 1: // From database
-				pilot = rcPilot;
+			case 0: // From database
+				pilotName = dbPilotName;
 			break;
 			default:
 			break;
 		}
 	}
 	
-	lineEdit_PilotName->setText(pilot);
+	lineEdit_PilotName->setText(pilotName);
 	
 	// glider
 	ft_ftstring2string(str, (char*)&arr[GLYDER_TYPE_POS]);
 	glider = str;
-	rcGlider = IFlyHighRC::pInstance()->glider();
+	dbPilot.glider().olcName(dbGlider);
 	
-	if(glider != rcGlider)
+	if(glider != dbGlider.left(glider.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different gliders", "Glider on GPS differ from glider in database. Sync gliders?",
-			 	"GPS to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different gliders", "Glider on GPS differ from glider in database. Set glider?",
+			 	"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From GPS
-				IFlyHighRC::pInstance()->setGlider(glider);
-			break;
-			case 1: // From database
-				glider = rcGlider;
+			case 0: // From database
+				glider = dbGlider;
 			break;
 			default:
 			break;
@@ -126,20 +121,16 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	// callsign
 	ft_ftstring2string(str, (char*)&arr[GLYDER_ID_POS]);
 	callsign = str;
-	rcCallsign = IFlyHighRC::pInstance()->callsign();
 	
-	if(callsign != rcCallsign)
+	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign on GPS differ from callsign in database. Sync callsigns?",
-			 	"GPS to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign on GPS differ from callsign in database. Set callsign?",
+			 	"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From GPS
-				IFlyHighRC::pInstance()->setCallsign(callsign);
-			break;
-			case 1: // From database
-				callsign = rcCallsign;
+			case 0: // From database
+				callsign = dbPilot.callSign();
 			break;
 			default:
 			break;
@@ -155,8 +146,10 @@ void DeviceFrameImpl::update(QByteArray &arr)
 
 void DeviceFrameImpl::store(QByteArray &arr)
 {
-	QString pilot;
-	QString rcPilot;
+	QString pilotName;
+	Pilot dbPilot;
+	QString dbPilotName;
+	QString dbGlider;
 	QString callsign;
 	QString rcCallsign;
 	QString glider;
@@ -164,46 +157,41 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	int syncRes;
 	
 	// pilot
-	pilot = lineEdit_PilotName->text();
-	rcPilot = IFlyHighRC::pInstance()->pilotName();
+	pilotName = lineEdit_PilotName->text();
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
+	dbPilot.fullName(dbPilotName);
 	
-	if(pilot != rcPilot)
+	if(pilotName != dbPilotName.left(pilotName.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different pilots", "Pilot in database differ from pilot in dialog. Sync pilots?",
-				"Dialog to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different pilots", "Pilot in database differ from pilot in dialog. Set pilot?",
+				"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From lineEdit
-				IFlyHighRC::pInstance()->setPilotName(pilot);
-			break;
-			case 1: // From database
-				pilot = rcPilot;
-				lineEdit_PilotName->setText(rcPilot);
+			case 0: // From database
+				pilotName = dbPilotName;
+				lineEdit_PilotName->setText(dbPilotName);
 			break;
 			default:
 			break;
 		}
 	}
 	
-	ft_string2ftstring(pilot.ascii(), (char*)&arr[PILOT_NAME_POS]);
+	ft_string2ftstring(pilotName.ascii(), (char*)&arr[PILOT_NAME_POS]);
 	
 	// glider
 	glider = comboBoxModel->currentText();
-	rcGlider = IFlyHighRC::pInstance()->glider();
+	dbPilot.glider().olcName(dbGlider);
 	
-	if(glider != rcGlider)
+	if(glider != dbGlider.left(glider.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different gliders", "Glider in database differ from glider in dialog. Sync gliders?",
-				"Dialog to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different gliders", "Glider in database differ from glider in dialog. Set glider?",
+				"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From lineEdit
-				IFlyHighRC::pInstance()->setGlider(glider);
-			break;
-			case 1: // From database
-				glider = rcGlider;
+			case 0: // From database
+				glider = dbGlider;
 				selectGlider(glider);
 			break;
 			default:
@@ -215,21 +203,17 @@ void DeviceFrameImpl::store(QByteArray &arr)
 
 	// callsign
 	callsign = lineEdit_GliderID->text();
-	rcCallsign= IFlyHighRC::pInstance()->callsign();
 	
-	if(callsign != rcCallsign)
+	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
-		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign in database differ from callsign in dialog. Sync callsigns?",
-				"Dialog to DB", "DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign in database differ from callsign in dialog. Set callsign?",
+				"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From lineEdit
-				IFlyHighRC::pInstance()->setCallsign(callsign);
-			break;
-			case 1: // From database
-				callsign = rcCallsign;
-				lineEdit_PilotName->setText(rcCallsign);
+			case 0: // From database
+				callsign = dbPilot.callSign();
+				lineEdit_PilotName->setText(callsign);
 			break;
 			default:
 			break;
@@ -255,7 +239,7 @@ void DeviceFrameImpl::updateGlider()
 	
 	for(it=gliderList.begin(); it!=gliderList.end(); it++)
 	{
-		(*it).modelOfGlider(gliderModel);
+		(*it).fullName(gliderModel);
 		comboBoxModel->insertItem(gliderModel);
 	}
 }

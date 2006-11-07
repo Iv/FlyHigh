@@ -24,43 +24,31 @@
 #include <qdatetime.h>
 #include <qstring.h>
 #include "FlightPointList.h"
+#include "Flight.h"
 #include "WayPoint.h"
 
 class OLCWebForm
 {
 	public:
 		OLCWebForm();
-		
-		void setPilot(const QString &name);
-		void setPilotBirth(const QDate &birth);
-		void setTakeOffLoc(const QString &takeoff);
-		void setCallSign(const QString &callsign);
-		void setDate(const QDate &date);
-		void setGlider(const QString &name);
-		void setDeparture(const FlightPointList::FlightPointType &dep);
+
+		void setFlight(Flight &flight);
+	void setDeparture(const FlightPointList::FlightPointType &dep);
 		void set1stWayPoint(const WayPoint &wp);
 		void set2ndWayPoint(const WayPoint &wp);
 		void set3rdWayPoint(const WayPoint &wp);
 		void setFinish(const FlightPointList::FlightPointType &fin);
-		void setComment(const QString &comment);
 		
 		bool save(const QString & name);
 		void olcFileName(QString &fileName); // without file ending (setPilot() and setDate() must be called before!)
 		
 	private:
-		QString m_firstName;
-		QString m_surName;
-		QDate m_birth;
-		QString m_takeoffLoc;
-		QString m_callsign;
-		QDate m_date;
-		QString m_glider;
+		Flight m_flight;
 		FlightPointList::FlightPointType m_departure;
 		WayPoint m_1stWayPoint;
 		WayPoint m_2ndWayPoint;
 		WayPoint m_3rdWayPoint;
 		FlightPointList::FlightPointType m_finish;
-		QString m_comment;
 		
 		void streamHead(QTextStream& s);
 		void streamName(QTextStream& s);

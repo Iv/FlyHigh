@@ -35,7 +35,10 @@ FlytecDevice::FlytecDevice()
 
 void FlytecDevice::open()
 {
-	ft_init(IFlyHighRC::pInstance()->deviceLine().ascii());
+	bool success;
+
+	success = (ft_init(IFlyHighRC::pInstance()->deviceLine().ascii()) == 0);
+	Error::verify(success, Error::FLYTEC_OPEN);
 }
 
 void FlytecDevice::close()
@@ -136,12 +139,14 @@ bool FlytecDevice::memoryWrite(QByteArray &arr)
 }
 
 // flights
-bool FlytecDevice::flightList(Flight::FlightListType &flightList)
+bool FlytecDevice::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	bool success;
 	TrackType track;
 	Flight flight;
 	uint trackNr = 0;
+
+	(void)pilot;
 	
 	success = (ft_trackListReq() == 0);
 	m_cancel = false;
@@ -171,7 +176,7 @@ bool FlytecDevice::flightList(Flight::FlightListType &flightList)
 	return success;
 }
 
-bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
+bool FlytecDevice::loadIGCFile(Flight &flight)
 {
 	QBuffer buff;
 	uchar line[255];
@@ -179,8 +184,8 @@ bool FlytecDevice::igcFile(uint flightNr, QByteArray &arr)
 	bool success;
 	int prog = 0;
 	
-	buff.setBuffer(arr);
-	success = (ft_trackReq(flightNr) == 0);
+	buff.setBuffer(flight.igcData());
+	success = (ft_trackReq(flight.number()) == 0);
 	m_cancel = false;
 	
 	if(success)
@@ -225,11 +230,11 @@ bool FlytecDevice::add(WayPoint &wp)
 	return success;
 }
 
-bool FlytecDevice::delWayPoint(const QString &name)
+bool FlytecDevice::delWayPoint(WayPoint &wp)
 {
 	bool success;
 	
-	success = (ft_wayPointDel(name.ascii()) == 0);
+	success = (ft_wayPointDel(wp.name().ascii()) == 0);
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
 	
@@ -303,7 +308,7 @@ bool FlytecDevice::add(Route &route)
 				return false;
 			}
 			
-			name = *route.wayPointList().at(wpNr);
+			name = route.wayPointList().at(wpNr).name();
 			ft_string2ftstring(name.ascii(), ftRoute.name);
 			ftRoute.actSent = wpNr + 1;
 			success = (ft_routeSnd(&ftRoute) == 0);
@@ -358,7 +363,8 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 				if(ft_routeListRec(&ftRoute) == 0)
 				{
 					ft_ftstring2string(name, ftRoute.name);
-					route.wayPointList().push_back(name);
+					wp.setName(name);
+					route.wayPointList().push_back(wp);
 				}
 				else
 				{
@@ -375,11 +381,11 @@ bool FlytecDevice::routeList(Route::RouteListType &routeList)
 	return success;
 }
 
-bool FlytecDevice::delRoute(const QString &name)
+bool FlytecDevice::delRoute(Route &route)
 {
 	bool success;
 	
-	success = (ft_routeDel(name.ascii()) == 0);
+	success = (ft_routeDel(route.name().ascii()) == 0);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	
 	return success;
@@ -585,11 +591,11 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 	return success;
 }
 
-bool FlytecDevice::delAirSpace(const QString &name)
+bool FlytecDevice::delAirSpace(AirSpace &airspace)
 {
 	bool success;
 	
-	success = (ft_ctrDel(name.ascii()) == 0);
+	success = (ft_ctrDel(airspace.name().ascii()) == 0);
 
 	if(success)
 	{

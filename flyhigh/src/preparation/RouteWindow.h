@@ -38,13 +38,15 @@ class RouteWindow : public TableWindow
 		
 	private slots:
 		void file_new();
+		void file_view();
 		void file_delete();
 		void file_update();
 		void file_AddToGPS();
 		void file_AddToSqlDB();
 		
 	private:
-		enum Fields{Name, WayPoint1};
+		enum Fields{Name};
+		Route::RouteListType m_routeList;
 		
 		IDataBase *m_pDb;
 		int m_lastModified;

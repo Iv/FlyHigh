@@ -32,13 +32,13 @@ class Servicings: public DataBaseSub
 		Servicings(QSqlDatabase *pDB);
 		
 		bool add(Servicing &servicing);
-		bool delServicing(int nr);
+		bool delServicing(Servicing &servicing);
 		bool servicingList(Servicing::ServicingListType &servicingList);
 
 	private:
 		enum Elements
 		{
-			Id, Glider, Date, Responsibility, Comment
+			Id, GliderId, Date, Responsibility, Comment
 		};
 };
 

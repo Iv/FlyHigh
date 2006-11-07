@@ -28,19 +28,6 @@ AirSpaces::AirSpaces(QSqlDatabase *pDB)
 {
 }
 
-bool AirSpaces::createTable()
-{
-	QSqlQuery query(db());
-	QString sqls;
-	bool created = false;
-	
-	if(!db()->tables().contains(DataBaseSub::tableName()))
-	{
-	}
-	
-	return created;
-}
-
 bool AirSpaces::add(AirSpace &airspace)
 {
 	(void)airspace;
@@ -76,7 +63,8 @@ bool AirSpaces::add(AirSpace &airspace)
 
 bool AirSpaces::delAirSpace(const QString &name)
 {
-	QSqlQuery query(db());
+	(void)name;
+/*	QSqlQuery query(db());
 	QString sqls;
 	bool success;
 	 
@@ -85,7 +73,8 @@ bool AirSpaces::delAirSpace(const QString &name)
 	DataBaseSub::setLastModified("AirSpaces");
 	Error::verify(success, Error::SQL_CMD);
 	
-	return success;
+	return success;*/
+	return false;
 }
 
 bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
@@ -139,7 +128,7 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 	
 	return success;
 */
-	return true;
+	return false;
 }
 
 bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
@@ -193,5 +182,5 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 	
 	return success;
 */
-	return true;
+	return false;
 }

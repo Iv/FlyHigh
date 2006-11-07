@@ -31,6 +31,9 @@ class Error
 		{
 			SQL_OPEN,
 			SQL_CMD,
+			SQL_DEL,
+			SQL_NO_PILOT_INFO,
+			SQL_ADD_ROUTE_NAME,
 			FLYTEC_OPEN,
 			FLYTEC_CMD,
 			GNUPLOT_OPEN,

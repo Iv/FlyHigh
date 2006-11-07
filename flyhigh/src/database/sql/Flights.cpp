@@ -24,53 +24,58 @@
 #include <qsqlquery.h>
 #include <stdlib.h>
 #include "Error.h"
-#include "Flights.h" 
+#include "Flights.h"
+#include "Glider.h"
+#include "Gliders.h"
+#include "Pilots.h"
+#include "WayPoint.h"
+#include "WayPoints.h"
+#include "ISql.h"
 
 Flights::Flights(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
 {
-	QString tableName = "Flights_";
-
-	tableName += getenv("USER");
-	DataBaseSub::setTableName(tableName);
 }
 
 bool Flights::add(Flight &flight)
 {
-	QSqlCursor cur(DataBaseSub::tableName());
+	QSqlCursor cur("Flights");
 	QSqlRecord *pRec;
-	
 	QSqlQuery query(db());
-	
+	bool success;
+
 	// insert record
 	pRec = cur.primeInsert();
 	pRec->setValue("Number", flight.number());
+	pRec->setValue("PilotId", flight.pilot().id());
 	pRec->setValue("Date", flight.date());
 	pRec->setValue("Time", flight.time());
-	pRec->setValue("Glider", flight.glider());
-	pRec->setValue("StartPt", flight.startPt());
-	pRec->setValue("LandPt", flight.landPt());
+	pRec->setValue("GliderId", flight.glider().id());
+	pRec->setValue("StartPtId", flight.startPt().id());
+	pRec->setValue("LandPtId", flight.landPt().id());
 	pRec->setValue("Duration", flight.duration());
 	pRec->setValue("Distance", flight.distance());
 	pRec->setValue("Comment", flight.comment());
 	pRec->setValue("IGCFile", flight.igcData());
 	
-	Error::verify(cur.insert() == 1, Error::SQL_CMD);
-	DataBaseSub::setLastModified(DataBaseSub::tableName());
+	success = (cur.insert() == 1);
+	Error::verify(success, Error::SQL_CMD);
+	DataBaseSub::setLastModified("Flights");
+	setId(flight);
 
-	return true;
+	return success;
 }
 
-bool Flights::delFlight(int nr)
+bool Flights::delFlight(Flight &flight)
 {
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	 
-	sqls.sprintf("DELETE FROM `%s` WHERE `Number` = '%i'", DataBaseSub::tableName().ascii(), nr);
+
+	sqls.sprintf("DELETE FROM `Flights` WHERE `PilotId` = %i AND `Number` = %i", flight.pilot().id(), flight.number());
 	success = query.exec(sqls);
-	DataBaseSub::setLastModified(DataBaseSub::tableName());
 	Error::verify(success, Error::SQL_CMD);
+	DataBaseSub::setLastModified("Flights");
 	
 	return success;
 }
@@ -80,11 +85,13 @@ int Flights::newFlightNr()
 	QString sqls;
 	QSqlQuery query(db());
 	int newFlightNr = -1;
+
+//@TODO serve pilotId
+int pilotId = 1;
 	
-	sqls.sprintf("SELECT MAX(Number) FROM %s", DataBaseSub::tableName().ascii());
+	sqls.sprintf("SELECT MAX(Number) FROM `Flights` WHERE `PilotId` = %i", pilotId);
 	
-	if(query.exec(sqls) &&
-		query.first())
+	if(query.exec(sqls) && query.first())
 	{
 		newFlightNr = query.value(0).toInt() + 1;
 	}
@@ -92,27 +99,35 @@ int Flights::newFlightNr()
 	return newFlightNr;
 }
 
-bool Flights::flightList(Flight::FlightListType &flightList)
+bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
+	Pilot flightPilot;
 	Flight flight;
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	
-	sqls.sprintf("SELECT * FROM `%s` ORDER BY `Number` DESC", DataBaseSub::tableName().ascii());
-	
+	Glider glider;
+	WayPoint wayPoint;
+
+	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = %i ORDER BY `Number` DESC", pilot.id());
 	success = query.exec(sqls);
 	
 	if(success)
 	{
 		while(query.next())
 		{
+			flight.setId(query.value(Id).toInt());
 			flight.setNumber(query.value(Number).toInt());
+			ISql::pInstance()->pPilotTable()->pilot(query.value(PilotId).toInt(), flightPilot);
+			flight.setPilot(flightPilot);
 			flight.setDate(query.value(Date).toDate());
 			flight.setTime(query.value(Time).toTime());
-			flight.setGlider(query.value(Glider).toString());
-			flight.setStartPt(query.value(StartPt).toString());
-			flight.setLandPt(query.value(LandPt).toString());
+			ISql::pInstance()->pGliderTable()->glider(query.value(GliderId).toInt(), glider);
+			flight.setGlider(glider);
+			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(StartPtId).toInt(), wayPoint);
+			flight.setStartPt(wayPoint);
+			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(LandPtId).toInt(), wayPoint);
+			flight.setLandPt(wayPoint);
 			flight.setDuration(query.value(Duration).toInt());
 			flight.setDistance(query.value(Distance).toInt());
 			flight.setComment(query.value(Comment).toString());
@@ -135,11 +150,17 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 	FlightsPerYearType fpy;
 	bool success = false;
 	int year;
+
+//@TODO serve pilotId
+int pilotId = 1;
 	
 	for(year=2000; year<=now.year(); year++)
 	{
-		sqls.sprintf("SELECT * FROM `%s` WHERE `Date` >= '%i-01-01' AND `Date` <= '%i-12-31'",
-				DataBaseSub::tableName().ascii(), year, year);
+		sqls.sprintf("SELECT * FROM `Flights` WHERE "
+			"`PilotId` = %i AND "
+			"`Date` >= '%i-01-01' AND "
+			"`Date` <= '%i-12-31'",
+				pilotId, year, year);
 		success = query.exec(sqls);
 	
 		if(success)
@@ -170,19 +191,18 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 }
 
 
-bool Flights::igcFile(uint flightNr, QByteArray &arr)
+bool Flights::loadIGCFile(Flight &flight)
 {
-	Flight flight;
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	
-	sqls.sprintf("SELECT * FROM `%s` WHERE `Number` = '%i'", DataBaseSub::tableName().ascii(), flightNr);
+
+	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = %i AND `Number` = %i", flight.pilot().id(), flight.number());
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
 	{
-		arr = query.value(IGCFile).toByteArray();
+		flight.igcData() = query.value(IGCFile).toByteArray();
 	}
 	
 	Error::verify(success, Error::SQL_CMD);
@@ -190,67 +210,31 @@ bool Flights::igcFile(uint flightNr, QByteArray &arr)
 	return success;
 }
 
-bool Flights::createTable()
+bool Flights::setId(Flight &flight)
 {
 	QSqlQuery query(db());
 	QString sqls;
-	bool created = false;
-	
-	if(!db()->tables().contains(DataBaseSub::tableName()))
+	QString dbModel;
+	bool success;
+	int id = -1;
+
+	sqls.sprintf("SELECT * FROM `Flights` WHERE "
+		"`Number` = '%i' AND "
+		"`PilotId` = '%i'",
+		flight.number(), flight.pilot().id());
+
+	success = (query.exec(sqls) && query.first());
+
+	if(success)
 	{
-		sqls.sprintf(
-			"CREATE TABLE `%s`.`%s` ("
-			"`Number` INT( 11 ) NOT NULL DEFAULT '0',"
-			"`Date` DATE NOT NULL DEFAULT '0000-00-00',"
-			"`Time` TIME NOT NULL DEFAULT '00:00:00',"
-			"`Glider` varchar(16) NOT NULL default '0',"
-			"`StartPt` varchar(16) NOT NULL default '0',"
-			"`LandPt` varchar(16) NOT NULL default '0',"
-			"`Duration` INT( 11 ) NOT NULL DEFAULT '0',"
-			"`Distance` INT( 11 ) DEFAULT '0',"
-			"`Comment` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL ,"
-			"`IGCFile` MEDIUMBLOB,"
-			"PRIMARY KEY ( `Number` )"
-			") DEFAULT CHARSET = utf8;", db()->databaseName().ascii(), DataBaseSub::tableName().ascii());
-
-/* maybe later...
-		sqls.sprintf(
-			"CREATE TABLE `%s`.`%s` ("
-			"`Number` INT( 11 ) NOT NULL DEFAULT '0',"
-			"`Date` DATE NOT NULL DEFAULT '0000-00-00',"
-			"`Time` TIME NOT NULL DEFAULT '00:00:00',"
-			"`GliderId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
-			"`StartPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
-			"`LandPtId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',"
-			"`Duration` INT( 11 ) NOT NULL DEFAULT '0',"
-			"`Distance` INT( 11 ) DEFAULT '0',"
-			"`Comment` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL ,"
-			"`IGCFile` MEDIUMBLOB,"
-			"PRIMARY KEY ( `Number` )"
-			") DEFAULT CHARSET = utf8;", db()->databaseName().ascii(), DataBaseSub::tableName().ascii());
-	*/
-
-		created = query.exec(sqls);
-		Error::verify(created, Error::SQL_CMD);
+		id = query.value(Id).toInt();
 	}
-	
-	return created;
-}
-
-int Flights::lastModified()
-{
-	QString sqls;
-	QString date;
-	QSqlQuery query(db());
-	int time = 1;
-	
-	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = '%s'", DataBaseSub::tableName().ascii());
-	
-	if(query.exec(sqls) &&
-		query.first())
+	else
 	{
-		time = query.value(1).toDateTime().toTime_t();
+		Error::verify(success, Error::SQL_CMD);
 	}
+
+	flight.setId(id);
 	
-	return time;
+	return success;
 }

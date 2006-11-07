@@ -25,9 +25,11 @@
 #include "Error.h"
 #include "Upgrade.h"
 
-const QDateTime Upgrade::m_TableVersion_0_3_0 = QDateTime(QDate(2004, 3, 20), QTime(20, 0)); // equal version_0_3_0
-const QDateTime Upgrade::m_TableVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0)); // equal version_0_3_1
-const QDateTime Upgrade::m_TableVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50)); // equal version_0_3_2
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_0 = QDateTime(QDate(2004, 3, 20), QTime(20, 0)); // equal version_0_3_0
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0)); // equal version_0_3_1
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50)); // equal version_0_3_2
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime(0, 0)); // equal version_0_5_0
+
 
 Upgrade::Upgrade(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
@@ -36,89 +38,36 @@ Upgrade::Upgrade(QSqlDatabase *pDB)
 
 void Upgrade::upgrade()
 {
-	if(tableVersion() < m_TableVersion_0_3_2)
+	if(dataBaseVersion() < DataBaseVersion_0_5_0)
 	{
-		upgradeTo_0_3_2();
+		ASSERT(false);
 	}
 }
 
-QDateTime Upgrade::tableVersion()
+Upgrade::DataBaseVersion Upgrade::dataBaseVersion()
 {
 	QString sqls;
-	QString date;
 	QSqlQuery query(db());
-	QDateTime time = m_TableVersion_0_3_0;
+	DataBaseVersion dbVers = DataBaseVersion_0_5_0;
 	
-	sqls.sprintf("SELECT * FROM `LastModified` WHERE `Name` = 'TableVersion'");
+	sqls.sprintf("SELECT `Time` FROM `LastModified` WHERE `Name` = 'DataBaseVersion'");
 	
 	if(query.exec(sqls) && query.first())
 	{
-		time = query.value(1).toDateTime();
+		dbVers = query.value(0).toDateTime();
 	}
 	
-	return time;
+	return dbVers;
 }
 
-void Upgrade::setTableVersion(const QDateTime &tabVers)
+void Upgrade::setDataBaseVersion(const DataBaseVersion &tabVers)
 {
 	QString sqls;
 	QString version;
 	QSqlQuery query(db());
 	
 	version = tabVers.toString("yyyy-MM-dd hh:mm:ss").ascii();
-	
-	if(tableVersion() > m_TableVersion_0_3_0)
-	{
-		sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'TableVersion'", 
+	sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'DataBaseVersion'",
 				version.ascii());
-	}
-	else
-	{
-		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('TableVersion', '%s')",
-				version.ascii());
-	}
-	
 	query.exec(sqls);
-}
-/*
-void Upgrade::testTables()
-{
-	QString sqls;
-	QSqlQuery query(db());
-	bool success;
-
-	if(!db()->tables().contains(""))
-	{
-		sqls.sprintf("CREATE TABLE `%s`("
-					"`Number` int(11) NOT NULL default '0',"
-					"`Date` date NOT NULL default '0000-00-00',"
-					"`Time` time NOT NULL default '00:00:00',"
-					"`Glider` varchar(16) NOT NULL default '0'  REFERENCES Gliders(Model),"
-					"`StartPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),"
-					"`LandPt` varchar(16) NOT NULL default '0' REFERENCES WayPoints(Name),"
-					"`Duration` int(11) NOT NULL default '0',"
-					"`Distance` int(11) default '0',"
-					"`Comment` varchar(200) default NULL,"
-					"`IGCFile` mediumblob,"
-					"PRIMARY KEY  (`Number`)"
-					") TYPE=InnoDB;", tableName().ascii());
-					
-		success = query.exec(sqls);
-		Error::verify(success, Error::SQL_CMD);
-	}
-}
-*/
-
-void Upgrade::upgradeTo_0_3_2()
-{
-	QString sqls;
-	QSqlQuery query(db());
-	
-	QString tableName = "Flights_";
-	tableName += getenv("USER");
-	
-	sqls.sprintf("RENAME TABLE `Flights` TO `%s`", tableName.ascii());
-	query.exec(sqls);
-	
-	setTableVersion(m_TableVersion_0_3_2);
 }

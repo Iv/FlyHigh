@@ -30,15 +30,14 @@ class Upgrade: public DataBaseSub
 		void upgrade();
 
 	private:
-		static const QDateTime m_TableVersion_0_3_0;
-		static const QDateTime m_TableVersion_0_3_1;
-		static const QDateTime m_TableVersion_0_3_2;
-		
-		void upgradeTo_0_3_2();
-		
-		QDateTime tableVersion();
-		void setTableVersion(const QDateTime &tabVers);
-//		void testTables();
+		typedef QDateTime DataBaseVersion;
+		static const DataBaseVersion DataBaseVersion_0_3_0;
+		static const DataBaseVersion DataBaseVersion_0_3_1;
+		static const DataBaseVersion DataBaseVersion_0_3_2;
+		static const DataBaseVersion DataBaseVersion_0_5_0;
+
+		DataBaseVersion dataBaseVersion();
+		void setDataBaseVersion(const DataBaseVersion &vers);
 };
 
 #endif

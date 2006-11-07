@@ -33,8 +33,8 @@ class WayPoints: public DataBaseSub
 		WayPoints(QSqlDatabase *pDB);
 
 		bool add(WayPoint &wp);
-		bool delWayPoint(const QString &name);
-		bool wayPoint(const QString &name, WayPoint &wp);
+		bool delWayPoint(WayPoint &wp);
+		bool wayPoint(int id, WayPoint &wp);
 		// searches a WayPoint around radius from lat and lon of wp
 		// fills values of wp and returns database ID
 		// radius in meters
@@ -44,8 +44,10 @@ class WayPoints: public DataBaseSub
 	private:
 		enum Elements
 		{
-			Name, Longitude, Latitude, Altitude, Description
+			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description
 		};
+
+		bool setId(WayPoint &wp);
 };
 
 #endif

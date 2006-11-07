@@ -36,13 +36,12 @@ ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Se
 	ServicingForm::setCaption(caption);
 	setServicing(pServicing);
 	updateGlider();
-	selectGlider();
 }
 
 void ServicingFormImpl::accept()
 {
 	m_pServicing->setDate(dateEditDate->date());
-	m_pServicing->setGlider(comboBoxModel->currentText());
+	m_pServicing->setGlider(m_gliderList.at(comboBoxModel->currentItem()));
 	m_pServicing->setResponsibility(lineEditRespons->text());
 	m_pServicing->setComment(textEditComment->text());
 
@@ -65,38 +64,16 @@ void ServicingFormImpl::updateGlider()
 {
 	QStringList list;
 	QString gliderModel;
-	Glider::GliderListType gliderList;
 	Glider::GliderListType::iterator it;
-	
-	ISql::pInstance()->gliderList(gliderList);
+
+	m_gliderList.clear();	
+	ISql::pInstance()->gliderList(m_gliderList);
 	comboBoxModel->clear();
 	
-	for(it=gliderList.begin(); it!=gliderList.end(); it++)
+	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
-		(*it).modelOfGlider(gliderModel);
+		(*it).fullName(gliderModel);
 		comboBoxModel->insertItem(gliderModel);
-	}
-}
-
-void ServicingFormImpl::selectGlider()
-{
-	QString str;
-	int index;
-	int maxIndex;
-	bool found = false;
-	
-	str = m_pServicing->glider();
-	maxIndex = comboBoxModel->count();
-	
-	for(index=0; index<maxIndex; index++)
-	{
-		found = (comboBoxModel->text(index) == str);
-		
-		if(found)
-		{
-			comboBoxModel->setCurrentItem(index);
-			break;
-		}
 	}
 }
 

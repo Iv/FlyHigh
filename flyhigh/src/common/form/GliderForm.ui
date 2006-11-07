@@ -90,22 +90,6 @@
             </widget>
         </hbox>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelManu</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>20</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Manufacturer</string>
-        </property>
-    </widget>
     <widget class="QLineEdit">
         <property name="name">
             <cstring>lineEditManu</cstring>
@@ -130,12 +114,44 @@
             <rect>
                 <x>30</x>
                 <y>70</y>
-                <width>90</width>
+                <width>32</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
             <string>Model</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelManu</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>20</y>
+                <width>68</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Manufacturer</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelModel_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>120</y>
+                <width>30</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Serial</string>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -146,6 +162,22 @@
             <rect>
                 <x>190</x>
                 <y>70</y>
+                <width>180</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxLength">
+            <number>20</number>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEditSerial</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>120</y>
                 <width>180</width>
                 <height>20</height>
             </rect>
@@ -169,5 +201,12 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>lineEditManu</tabstop>
+    <tabstop>lineEditModel</tabstop>
+    <tabstop>lineEditSerial</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

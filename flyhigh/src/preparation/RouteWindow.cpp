@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -62,6 +62,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBas
 		break;
 	}
 	
+	pMenu->insertItem("&View...", this, SLOT(file_view()));
 	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
 	pMenu->insertItem("&Update", this, SLOT(file_update()));
 	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
@@ -73,7 +74,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBas
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(QTable::SingleRow);
 
-	// header	
+	// header
 	nameList += "Name";
 	setupHeader(nameList);
 	
@@ -106,7 +107,7 @@ void RouteWindow::file_delete()
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delRoute(getTable()->text(row, Name));
+		m_pDb->delRoute(m_routeList[row]);
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	}
 }
@@ -114,22 +115,21 @@ void RouteWindow::file_delete()
 void RouteWindow::file_update()
 {
 	ProgressDlg progDlg(this);
-	Route::RouteListType routeList;
-	Route route;
 	QTable *pTable = TableWindow::getTable();
 	uint routeNr;
 	uint maxRouteNr;
 
-	pTable->setNumRows(0); // clear table, because of different nr of waypoints
+	m_routeList.clear();
+	pTable->setNumRows(0);
 	progDlg.beginProgress("read routes...", m_pDb);
-	m_pDb->routeList(routeList);
+	m_pDb->routeList(m_routeList);
 	progDlg.endProgress();
-	maxRouteNr = routeList.size();
+	maxRouteNr = m_routeList.size();
 	pTable->setNumRows(maxRouteNr);
 	
 	for(routeNr=0; routeNr<maxRouteNr; routeNr++)
 	{
-		setRouteToRow(routeNr, routeList[routeNr]);
+		setRouteToRow(routeNr, m_routeList[routeNr]);
 	}
 	
 	TableWindow::unsetCursor();
@@ -148,12 +148,25 @@ void RouteWindow::file_new()
 	}
 }
 
+void RouteWindow::file_view()
+{
+	int row;
+	Route route;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		route = m_routeList[row];
+		IRouteForm routeForm(this, tr("View Route"), &route);
+		routeForm.execReadOnly();
+	}
+}
+
 void RouteWindow::file_AddToGPS()
 {
 	ProgressDlg progDlg(this);
 	QString name;
-	Route route;
-	WayPoint wp;
 	int row;
 	uint wpNr;
 	uint nofWp;
@@ -162,28 +175,21 @@ void RouteWindow::file_AddToGPS()
 	
 	if(row >= 0)
 	{
-		name = getTable()->text(row, Name);
+		// make sure all WayPoints exist on GPS
+		nofWp = m_routeList[row].wayPointList().size();
+		progDlg.beginProgress("writing waypoints...", IGPSDevice::pInstance());
 		
-		if(ISql::pInstance()->route(name, route))
+		for(wpNr=0; wpNr<nofWp; wpNr++)
 		{
-			// make sure all WayPoints exist on GPS
-			nofWp = route.wayPointList().size();
-			progDlg.beginProgress("writing waypoints...", IGPSDevice::pInstance());
-			
-			for(wpNr=0; wpNr<nofWp; wpNr++)
-			{
-				name = *route.wayPointList().at(wpNr);
-				ISql::pInstance()->wayPoint(name, wp);
-				IGPSDevice::pInstance()->add(wp);
-			}
-			
-			progDlg.endProgress();
-			
-			// Route
-			progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
-			IGPSDevice::pInstance()->add(route);
-			progDlg.endProgress();
+			IGPSDevice::pInstance()->add(m_routeList[row].wayPointList().at(wpNr));
 		}
+		
+		progDlg.endProgress();
+		
+		// Route
+		progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
+		IGPSDevice::pInstance()->add(m_routeList[row]);
+		progDlg.endProgress();
 	}
 }
 
@@ -232,31 +238,7 @@ void RouteWindow::file_AddToSqlDB()
 
 void RouteWindow::setRouteToRow(uint row, Route &route)
 {
-	QString str;
 	QTable *pTable = TableWindow::getTable();
-	QHeader *pHeader;
-	uint maxWpNr;
-	uint nCols;
-	uint wpNr;
 	
 	pTable->setText(row, Name, route.name());
-	maxWpNr = route.wayPointList().size();
-	nCols = pTable->numCols();
-	
-	for(wpNr=0; wpNr<maxWpNr; wpNr++)
-	{
-		if(WayPoint1+wpNr >= nCols)
-		{
-			pTable->insertColumns(WayPoint1+wpNr);
-			nCols++;
-			pTable->setColumnWidth(WayPoint1+wpNr, 140);
-			
-			pHeader = pTable->horizontalHeader();
-			str.sprintf("WayPoint %i", wpNr);
-			pHeader->setLabel(WayPoint1+wpNr, str);
-		}
-	
-		str = *(route.wayPointList().at(wpNr));
-		pTable->setText(row, WayPoint1+wpNr, str);
-	}
 }
