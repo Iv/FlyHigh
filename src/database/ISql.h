@@ -63,6 +63,7 @@ class ISql: public IDataBase
 		int wayPointsLastModified();
 
 		bool add(Glider &glider);
+		bool delGlider(Glider &glider);
 		bool glider(const QString &model, Glider &glider);
 		bool gliderList(Glider::GliderListType &gliderList);
 		int glidersLastModified();
