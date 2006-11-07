@@ -109,7 +109,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Glider glider;
 	WayPoint wayPoint;
 
-	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = %i ORDER BY `Number` DESC", pilot.id());
+	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = '%i' ORDER BY `Number` DESC;", pilot.id());
 	success = query.exec(sqls);
 	
 	if(success)
@@ -159,7 +159,7 @@ int pilotId = 1;
 		sqls.sprintf("SELECT * FROM `Flights` WHERE "
 			"`PilotId` = %i AND "
 			"`Date` >= '%i-01-01' AND "
-			"`Date` <= '%i-12-31'",
+			"`Date` <= '%i-12-31';",
 				pilotId, year, year);
 		success = query.exec(sqls);
 	
@@ -197,12 +197,40 @@ bool Flights::loadIGCFile(Flight &flight)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = %i AND `Number` = %i", flight.pilot().id(), flight.number());
+	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = '%i' AND `Number` = '%i';", flight.pilot().id(), flight.number());
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
 	{
 		flight.igcData() = query.value(IGCFile).toByteArray();
+	}
+	
+	Error::verify(success, Error::SQL_CMD);
+	
+	return success;
+}
+
+bool Flights::setFlightStatistic(Glider &glider)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	uint airtime = 0;
+	uint flights = 0;
+	bool success;
+	
+	sqls.sprintf("SELECT * FROM `Flights` WHERE `GliderId` = '%i';", glider.id());
+	success = query.exec(sqls);
+	
+	if(success)
+	{
+		while(query.next())
+		{
+			flights++;
+			airtime += query.value(Duration).toInt();
+		}
+
+		glider.setAirtime(airtime);
+		glider.setFlights(flights);
 	}
 	
 	Error::verify(success, Error::SQL_CMD);
@@ -220,7 +248,7 @@ bool Flights::setId(Flight &flight)
 
 	sqls.sprintf("SELECT * FROM `Flights` WHERE "
 		"`Number` = '%i' AND "
-		"`PilotId` = '%i'",
+		"`PilotId` = '%i';",
 		flight.number(), flight.pilot().id());
 
 	success = (query.exec(sqls) && query.first());

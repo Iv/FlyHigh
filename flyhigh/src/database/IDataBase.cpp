@@ -103,6 +103,13 @@ bool IDataBase::add(Glider &glider)
 	return false;
 }
 
+bool IDataBase::delGlider(Glider &glider)
+{
+	(void)glider;
+
+	return false;
+}
+
 bool IDataBase::gliderList(Glider::GliderListType &gliderList)
 {
 	(void)gliderList;
