@@ -33,6 +33,7 @@ class Gliders: public DataBaseSub
 		Gliders(QSqlDatabase *pDB);
 
 		bool add(Glider &glider);
+		bool delGlider(Glider &glider);
 		bool glider(const QString &modelOfGlider, Glider &glider);
 		bool gliderList(Glider::GliderListType &gliderList);
 

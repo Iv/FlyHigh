@@ -38,6 +38,8 @@ class Flights: public DataBaseSub
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 		bool flightsPerYear(FlightsPerYearListType &fpyList);
 		bool loadIGCFile(Flight &flight);
+
+		bool setFlightStatistic(Glider &glider);
 		
 	private:
 		enum Elements
