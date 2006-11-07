@@ -18,23 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qdatetimeedit.h>
-#include <qlineedit.h>
-#include "IFlyHighRC.h"
 #include "IFlyHighRCFrame.h"
 #include "FlyHighRCFrameImpl.h"
 
 IFlyHighRCFrame::IFlyHighRCFrame(QWidget* parent)
 {
 	m_pFrame = new FlyHighRCFrameImpl(parent, "", Qt::WType_Modal);
-	
-	m_pFrame->lineEdit_PilotName->setText(IFlyHighRC::pInstance()->pilotName());
-	m_pFrame->dateEditDateOfBirth->setDate(IFlyHighRC::pInstance()->pilotBirth());
-	m_pFrame->lineEdit_GliderID->setText(IFlyHighRC::pInstance()->callsign());
-
-	m_pFrame->updateGlider();
-	m_pFrame->selectGlider(IFlyHighRC::pInstance()->glider());
 }
 
 IFlyHighRCFrame::~IFlyHighRCFrame()
@@ -50,10 +39,7 @@ bool IFlyHighRCFrame::show()
 	
 	if(ok)
 	{
-		IFlyHighRC::pInstance()->setPilotName(m_pFrame->lineEdit_PilotName->text());
-		IFlyHighRC::pInstance()->setPilotBirth(m_pFrame->dateEditDateOfBirth->date());
-		IFlyHighRC::pInstance()->setCallsign(m_pFrame->lineEdit_GliderID->text());
-		IFlyHighRC::pInstance()->setGlider(m_pFrame->comboBoxModel->currentText());
+		m_pFrame->ok();
 	}
 	
 	return ok;

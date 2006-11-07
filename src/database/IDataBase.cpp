@@ -29,9 +29,16 @@ IDataBase::~IDataBase()
 }
 
 // flights
-bool IDataBase::delFlight(int nr)
+bool IDataBase::add(Flight &flight)
 {
-	(void)nr;
+	(void)flight;
+
+	return false;
+}
+
+bool IDataBase::delFlight(Flight &flight)
+{
+	(void)flight;
 
 	return false;
 }
@@ -41,8 +48,9 @@ int IDataBase::flightsLastModified()
 	return 0;
 }
 
-bool IDataBase::flightList(Flight::FlightListType &flightList)
+bool IDataBase::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
+	(void)pilot;
 	(void)flightList;
 
 	return false;
@@ -55,10 +63,9 @@ bool IDataBase::flightsPerYear(FlightsPerYearListType &fpyList)
 	return false;
 }
 
-bool IDataBase::igcFile(uint flightNr, QByteArray &arr)
+bool IDataBase::loadIGCFile(Flight &flight)
 {
-	(void)flightNr;
-	(void)arr;
+	(void)flight;
 
 	return false;
 }
@@ -70,9 +77,9 @@ bool IDataBase::add(WayPoint &wp)
 	return false;
 }
 
-bool IDataBase::delWayPoint(const QString &name)
+bool IDataBase::delWayPoint(WayPoint &wp)
 {
-	(void)name;
+	(void)wp;
 
 	return false;
 }
@@ -89,6 +96,25 @@ bool IDataBase::wayPointList(WayPoint::WayPointListType &wpList)
 	return false;
 }
 
+bool IDataBase::add(Glider &glider)
+{
+	(void)glider;
+
+	return false;
+}
+
+bool IDataBase::gliderList(Glider::GliderListType &gliderList)
+{
+	(void)gliderList;
+
+	return false;
+}
+
+int IDataBase::glidersLastModified()
+{
+	return 0;
+}
+
 bool IDataBase::add(Route &route)
 {
 	(void)route;
@@ -96,16 +122,8 @@ bool IDataBase::add(Route &route)
 	return false;
 }
 
-bool IDataBase::delRoute(const QString &name)
+bool IDataBase::delRoute(Route &route)
 {
-	(void)name;
-
-	return false;
-}
-
-bool IDataBase::route(const QString &name, Route &route)
-{
-	(void)name;
 	(void)route;
 
 	return false;
@@ -121,6 +139,40 @@ bool IDataBase::routeList(Route::RouteListType &routeList)
 	(void)routeList;
 
 	return false;
+}
+
+bool IDataBase::add(Pilot &pilot)
+{
+	(void)pilot;
+
+	return false;
+}
+
+bool IDataBase::setId(Pilot &pilot)
+{
+	(void)pilot;
+
+	return false;
+}
+
+bool IDataBase::update(Pilot &pilot)
+{
+	(void)pilot;
+
+	return false;
+}
+
+bool IDataBase::pilot(int id, Pilot &pilot)
+{
+	(void)id;
+	(void)pilot;
+
+	return false;
+}
+
+int IDataBase::pilotsLastModified()
+{
+	return 0;
 }
 
 bool IDataBase::add(AirSpace &airspace)

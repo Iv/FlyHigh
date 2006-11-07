@@ -52,15 +52,9 @@ class IFlyHighRC
 		const QStringList& deviceSpeedList();
 		
 		// pilot info
-		const QString& pilotName();
-		void setPilotName(const QString &name);
-		const QDate& pilotBirth();
-		void setPilotBirth(const QDate &date);
-		const QString& callsign();
-		void setCallsign(const QString &id);
-		const QString& glider();
-		void setGlider(const QString &glider);
-		
+		void setPilotId(int id);
+		int pilotId();
+
 	private:
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
@@ -70,10 +64,7 @@ class IFlyHighRC
 		char m_utcOffset;
 		QString m_lastDir;
 		QString m_versionInfo;
-		QString m_callsign;
-		QString m_pilotName;
-		QDate m_pilotBirth;
-		QString m_glider;
+		int m_pilotId;
 		
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;

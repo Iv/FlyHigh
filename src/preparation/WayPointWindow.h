@@ -44,6 +44,7 @@ class WayPointWindow: public TableWindow
 		
 	private:
 		enum Fields{Name, Longitude, Latitude, Altitude};
+		WayPoint::WayPointListType m_wpList;
 		
 		IDataBase *m_pDb;
 		int m_lastModified;

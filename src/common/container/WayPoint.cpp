@@ -26,11 +26,24 @@ const double WayPoint::earthRadius = 6371000.0;
  
 WayPoint::WayPoint()
 {
+	m_id = -1;
 	m_name = "";
 	m_desc = "";
 	m_lat = 0;
 	m_lon = 0;
 	m_alt = 0;
+	m_country = "";
+	m_spot = "";
+}
+
+int WayPoint::id()
+{
+	return m_id;
+}
+
+void WayPoint::setId(int id)
+{
+	m_id = id;
 }
 
 const QString& WayPoint::name()
@@ -40,7 +53,17 @@ const QString& WayPoint::name()
 
 void WayPoint::setName(const QString &name)
 {
-		m_name = name;
+	m_name = name;
+}
+
+void WayPoint::fullName(QString& name)
+{
+	name = m_name;
+
+	if(m_country != "")
+	{
+	 name += " (" + m_country + ")";
+	}
 }
 
 const QString& WayPoint::description()
@@ -80,6 +103,26 @@ int WayPoint::altitude()
 	return m_alt;
 }
 
+void WayPoint::setCountry(const QString &country)
+{
+	m_country = country;
+}
+
+const QString& WayPoint::country()
+{
+	return m_country;
+}
+
+void WayPoint::setSpot(const QString &spot)
+{
+	m_spot = spot;
+}
+
+const QString& WayPoint::spot()
+{
+	return m_spot;
+}
+
 uint WayPoint::distance(WayPoint &wp)
 {
 	return distance(wp, *this);
@@ -87,13 +130,21 @@ uint WayPoint::distance(WayPoint &wp)
 
 WayPoint& WayPoint::operator=(const WayPoint &wp)
 {
+	m_id = wp.m_id;
 	m_name = wp.m_name;
+	m_spot = wp.m_spot;
+	m_country = wp.m_country;
 	m_desc = wp.m_desc;
 	m_lat = wp.m_lat;
 	m_lon = wp.m_lon;
 	m_alt = wp.m_alt;
 	
 	return *this;
+}
+
+bool WayPoint::operator==(const WayPoint &wp)
+{
+	return (m_name == wp.m_name) && (m_spot == wp.m_spot) && (m_country == wp.m_country);
 }
 
 uint WayPoint::distance(WayPoint &wp1, WayPoint &wp2)

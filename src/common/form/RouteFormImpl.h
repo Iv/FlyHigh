@@ -21,7 +21,9 @@
 #ifndef RouteFormImpl_h
 #define RouteFormImpl_h
 
+#include <qptrlist.h>
 #include "RouteForm.h"
+#include "WayPoint.h"
 
 class QWidget;
 class QString;
@@ -33,6 +35,8 @@ class RouteFormImpl: public RouteForm
 
 	public:
 		RouteFormImpl(QWidget* parent, const QString &caption, Route *pRoute);
+
+		void setReadOnly();
 	
 	public slots:
 		void accept();
@@ -42,7 +46,12 @@ class RouteFormImpl: public RouteForm
 		void remove();
 		
 	private:
+		bool m_readOnly;
 		Route *m_pRoute;
+		WayPoint::WayPointListType m_wpDbList;
+		QPtrList<WayPoint> m_wpRouteList;
+
+		void showWpRoute();
 };
 
 #endif

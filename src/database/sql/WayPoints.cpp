@@ -37,6 +37,8 @@ bool WayPoints::add(WayPoint &wp)
 	// insert record
 	pRec = cur.primeInsert();
 	pRec->setValue("Name", wp.name());
+	pRec->setValue("Spot", wp.spot());
+	pRec->setValue("Country", wp.country());
 	pRec->setValue("Description", wp.description());
 	pRec->setValue("Longitude", wp.longitude());
 	pRec->setValue("Latitude", wp.latitude());
@@ -44,25 +46,26 @@ bool WayPoints::add(WayPoint &wp)
 	
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
+	setId(wp);
 	
 	return true;
 }
 
-bool WayPoints::delWayPoint(const QString &name)
+bool WayPoints::delWayPoint(WayPoint &wp)
 {
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	 
-	sqls.sprintf("DELETE FROM `WayPoints` WHERE `Name` = '%s'", name.ascii());
+	
+	sqls.sprintf("DELETE FROM `WayPoints` WHERE `Id` = %i", wp.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
-	Error::verify(success, Error::SQL_CMD);
+	Error::verify(success, Error::SQL_DEL);
 	
 	return success;
 }
 
-bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
+bool WayPoints::wayPoint(int id, WayPoint &wp)
 {
 	QSqlQuery query(db());
 	QString sqls;
@@ -71,23 +74,20 @@ bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
 	int alt;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `WayPoints` WHERE `Name` = '%s'", name.ascii());
-	success = query.exec(sqls);
+	sqls.sprintf("SELECT * FROM `WayPoints` WHERE `Id` = %i", id);
+	success = (query.exec(sqls) && query.first());
 	
 	if(success)
 	{
-		success = query.first();
-		
-		if(success)
-		{
-			wp.setName(query.value(Name).toString());
-			wp.setDescription(query.value(Description).toString());
-			
-			lon = query.value(Longitude).toDouble();
-			lat = query.value(Latitude).toDouble();
-			alt = query.value(Altitude).toInt();
-			wp.setCoordinates(lat, lon, alt);
-		}
+		wp.setId(query.value(Id).toInt());
+		wp.setName(query.value(Name).toString());
+		wp.setSpot(query.value(Spot).toString());
+		wp.setCountry(query.value(Country).toString());
+		wp.setDescription(query.value(Description).toString());
+		lon = query.value(Longitude).toDouble();
+		lat = query.value(Latitude).toDouble();
+		alt = query.value(Altitude).toInt();
+		wp.setCoordinates(lat, lon, alt);
 	}
 	else
 	{
@@ -99,33 +99,42 @@ bool WayPoints::wayPoint(const QString &name, WayPoint &wp)
 
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 {
-	QSqlCursor cur("WayPoints");
-	WayPoint recWp;
-	double recLon;
-	double recLat;
+	QSqlQuery query(db());
+	QString sqls = "SELECT * FROM `WayPoints`";
+	WayPoint locWp;
+	double lat;
+	double lon;
 	uint dist;
+	bool success;
 	bool found = false;
- 
-	// select all
-	Error::verify(cur.select(), Error::SQL_CMD);
-
-	while(cur.next())
+	
+	success = query.exec(sqls);
+	
+	if(success)
 	{
-		recLat = cur.value("Latitude").toDouble();
-		recLon = cur.value("Longitude").toDouble();
-		recWp.setCoordinates(recLat, recLon, 0);
-		dist = wp.distance(recWp);
-		found = (dist <= radius);
-		
-		if(found)
+		while(query.next())
 		{
-			wp.setCoordinates(recLat, recLon, cur.value("Altitude").toInt());
-			wp.setName(cur.value("Name").toString());
-			wp.setDescription(cur.value("Description").toString());
-			break;
+			lat = query.value(Latitude).toDouble();
+			lon = query.value(Longitude).toDouble();
+			locWp.setCoordinates(lat, lon, 0);
+			dist = wp.distance(locWp);
+			found = (dist <= radius);
+
+			if(found)
+			{
+				wp.setId(query.value(Id).toInt());
+				wp.setName(query.value(Name).toString());
+				wp.setSpot(query.value(Spot).toString());
+				wp.setCountry(query.value(Country).toString());
+				wp.setDescription(query.value(Description).toString());
+				wp.setCoordinates(lat, lon, query.value(Altitude).toInt());
+				break;
+			}
 		}
 	}
-
+	
+	Error::verify(success, Error::SQL_CMD);
+	
 	return found;
 }
 
@@ -145,7 +154,11 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 	{
 		while(query.next())
 		{
+			wp.setId(query.value(Id).toInt());
 			wp.setName(query.value(Name).toString());
+			wp.setSpot(query.value(Spot).toString());
+			wp.setCountry(query.value(Country).toString());
+			wp.setDescription(query.value(Description).toString());
 			lon = query.value(Longitude).toDouble();
 			lat = query.value(Latitude).toDouble();
 			alt = query.value(Altitude).toInt();
@@ -158,4 +171,28 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 	Error::verify(success, Error::SQL_CMD);
 	
 	return success;
+}
+
+bool WayPoints::setId(WayPoint &wp)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	bool success;
+	int id = -1;
+
+	sqls.sprintf("SELECT * FROM `WayPoints` WHERE "
+		"`Name` = '%s' AND "
+		"`Spot` = '%s' AND "
+		"`Country` = '%s'", wp.name().ascii(), wp.spot().ascii(), wp.country().ascii());
+
+	success = (query.exec(sqls) && query.first());
+
+	if(success)
+	{
+		id = query.value(Id).toInt();
+	}
+
+	wp.setId(id);
+	
+	return id;
 }

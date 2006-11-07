@@ -33,6 +33,7 @@ void GliderFormImpl::accept()
 {
 	m_pGlider->setManufacturer(lineEditManu->text());
 	m_pGlider->setModel(lineEditModel->text());
+	m_pGlider->setSerial(lineEditSerial->text());
 
   QDialog::accept();
 }

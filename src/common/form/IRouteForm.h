@@ -33,6 +33,7 @@ class IRouteForm
 		~IRouteForm();
 		
 		bool exec();
+		bool execReadOnly();
 
 	private:
 		RouteFormImpl *m_pRouteForm;

@@ -145,7 +145,8 @@ void GarminFmt::GPS_Fmt_Print_Route(GPS_PWay *way, int32 n, Route::RouteListType
 				}
 				else
 				{
-					route.wayPointList().push_back(way[i]->ident);
+					wp.setName(way[i]->ident);
+					route.wayPointList().push_back(wp);
 				}
 			}
 			

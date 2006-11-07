@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2006 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,7 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 #ifndef ISql_h
 #define ISql_h
 
@@ -30,25 +29,27 @@
 #include "Flight.h"
 #include "Glider.h"
 #include "Route.h"
+#include "Pilot.h"
 #include "Servicing.h"
 
-// this is the interface class of database
 class QSqlDatabase;
-class AirSpaces;
+//class AirSpaces;
 class WayPoints;
 class Gliders;
 class Flights;
 class Routes;
 class Servicings;
+class Pilots;
 
+/**
+@author Alex Graf
+*/
 class ISql: public IDataBase
 {
 	public:
-		typedef QValueList<int> FlightNrListType;
-		
-		~ISql();
 		static ISql* pInstance();
-		
+		~ISql();
+
 		void setName(const QString &name);
 		void setUserName(const QString &userName);
 		void setPassword(const QString &passwd);
@@ -56,8 +57,7 @@ class ISql: public IDataBase
 		void setPort(int port);
 		
 		bool add(WayPoint &wp);
-		bool delWayPoint(const QString &name);
-		bool wayPoint(const QString &name, WayPoint &wp);
+		bool delWayPoint(WayPoint &wp);
 		bool findWayPoint(WayPoint &wp, uint radius);
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 		int wayPointsLastModified();
@@ -68,47 +68,70 @@ class ISql: public IDataBase
 		int glidersLastModified();
 
 		bool add(Flight &flight);
-		bool delFlight(int nr);
-		bool flight(int nr, Flight &flight);
+		bool delFlight(Flight &flight);
 		int newFlightNr();
-		bool flightList(Flight::FlightListType &flightList);
+		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 		bool flightsPerYear(FlightsPerYearListType &fpyList);
-		bool igcFile(uint flightNr, QByteArray &arr);
+		bool loadIGCFile(Flight &flight);
 		int flightsLastModified();
 		
 		bool add(Route &route);
-		bool delRoute(const QString &name);
-		bool route(const QString &name, Route &route);
+		bool delRoute(Route &route);
 		int routesLastModified();
 		bool routeList(Route::RouteListType &routeList);
 		
+/* not longer supported
 		bool add(AirSpace &airspace);
-		bool delAirSpace(const QString &name);
+		bool delAirSpace(AirSpace &airspace);
 		bool airspace(const QString &name, AirSpace &airspace);
 		int airspacesLastModified();
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
-		
+*/
 		bool add(Servicing &serv);
-		bool delServicing(int nr);
+		bool delServicing(Servicing &servicing);
 		bool servicingList(Servicing::ServicingListType &servicingList);
 		int servicingsLastModified();
+
+		bool add(Pilot &pilot);
+		bool update(Pilot &pilot);
+		bool pilot(int id, Pilot &pilot);
+		bool setId(Pilot &pilot);
+		int pilotsLastModified();
 		
 		bool open();
-		
+
+	protected:
+//		AirSpaces* pAirSpaceTable();
+		WayPoints* pWayPointTable();
+		Gliders* pGliderTable();
+		Flights* pFlightTable();
+		Servicings* pServicingTable();
+		Pilots* pPilotTable();
+
 	private:
 		static ISql* m_pInst;
-		AirSpaces *m_pAirSpaces;
-		WayPoints *m_pWayPoints;
-		Gliders *m_pGliders;
-		Flights *m_pFlights;
-		Routes *m_pRoutes;
-		Servicings *m_pServicings;
-		QSqlDatabase *m_pDefaultDB;
-		
+//		AirSpaces* m_pAirSpaces;
+		WayPoints* m_pWayPoints;
+		Gliders* m_pGliders;
+		Flights* m_pFlights;
+		Routes* m_pRoutes;
+		Servicings* m_pServicings;
+		Pilots* m_pPilots;
+		QSqlDatabase* m_pDefaultDB;
+
 		ISql();
+
 		void setupTables();
 		int tableVersion();
 		void setTableVersion();
+
+//		friend class AirSpaces;
+		friend class WayPoints;
+		friend class Gliders;
+		friend class Flights;
+		friend class Servicings;
+		friend class Pilots;
+		friend class Routes;
 };
 
 #endif

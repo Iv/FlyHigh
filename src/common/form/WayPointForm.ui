@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>511</width>
-            <height>282</height>
+            <height>391</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,6 +18,125 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>20</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelName_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>70</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Spot</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelName_3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>120</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Country</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBoxAlt</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>160</x>
+                <y>270</y>
+                <width>140</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>8000</number>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelUnitLon</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>320</x>
+                <y>220</y>
+                <width>50</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[°.min]</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>N</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>S</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBoxNS</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>260</x>
+                <y>166</y>
+                <width>40</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelUnitAlt</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>320</x>
+                <y>270</y>
+                <width>23</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[m]</string>
+        </property>
+    </widget>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>Layout1</cstring>
@@ -25,7 +144,7 @@
         <property name="geometry">
             <rect>
                 <x>20</x>
-                <y>240</y>
+                <y>340</y>
                 <width>476</width>
                 <height>33</height>
             </rect>
@@ -90,20 +209,91 @@
             </widget>
         </hbox>
     </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>E</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>W</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBoxEW</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>260</x>
+                <y>216</y>
+                <width>40</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabelName</cstring>
+            <cstring>textLabelLon</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>30</x>
-                <y>20</y>
+                <y>220</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>Name</string>
+            <string>Longitude</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelLat</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>170</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Latitude</string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEditLon</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>160</x>
+                <y>220</y>
+                <width>90</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxLength">
+            <number>9</number>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelUnitLat</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>320</x>
+                <y>170</y>
+                <width>44</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[°.min]</string>
         </property>
     </widget>
     <widget class="QLabel">
@@ -113,7 +303,7 @@
         <property name="geometry">
             <rect>
                 <x>30</x>
-                <y>170</y>
+                <y>270</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
@@ -122,20 +312,36 @@
             <string>Altitude</string>
         </property>
     </widget>
-    <widget class="QSpinBox">
+    <widget class="QLineEdit">
         <property name="name">
-            <cstring>spinBoxAlt</cstring>
+            <cstring>lineEditLat</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>160</x>
                 <y>170</y>
+                <width>90</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxLength">
+            <number>8</number>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEditSpot</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>160</x>
+                <y>70</y>
                 <width>140</width>
                 <height>20</height>
             </rect>
         </property>
-        <property name="maxValue">
-            <number>8000</number>
+        <property name="maxLength">
+            <number>16</number>
         </property>
     </widget>
     <widget class="QLineEdit">
@@ -154,162 +360,20 @@
             <number>16</number>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelUnitAlt</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>320</x>
-                <y>170</y>
-                <width>23</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[m]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelUnitLat</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>320</x>
-                <y>70</y>
-                <width>44</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[°.min]</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>N</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>S</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBoxNS</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>260</x>
-                <y>66</y>
-                <width>40</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelLat</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>70</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Latitude</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelUnitLon</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>320</x>
-                <y>120</y>
-                <width>50</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[°.min]</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>E</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>W</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBoxEW</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>260</x>
-                <y>116</y>
-                <width>40</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelLon</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>120</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Longitude</string>
-        </property>
-    </widget>
     <widget class="QLineEdit">
         <property name="name">
-            <cstring>lineEditLat</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>160</x>
-                <y>70</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxLength">
-            <number>8</number>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEditLon</cstring>
+            <cstring>lineEditCountry</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>160</x>
                 <y>120</y>
-                <width>90</width>
+                <width>140</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="maxLength">
-            <number>9</number>
+            <number>2</number>
         </property>
     </widget>
 </widget>
@@ -339,6 +403,18 @@
         <slot>limitLongitude()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>lineEditName</tabstop>
+    <tabstop>lineEditSpot</tabstop>
+    <tabstop>lineEditCountry</tabstop>
+    <tabstop>lineEditLat</tabstop>
+    <tabstop>comboBoxNS</tabstop>
+    <tabstop>lineEditLon</tabstop>
+    <tabstop>comboBoxEW</tabstop>
+    <tabstop>spinBoxAlt</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+</tabstops>
 <slots>
     <slot>limitLatitude()</slot>
     <slot>limitLongitude()</slot>

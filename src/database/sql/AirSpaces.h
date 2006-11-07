@@ -30,15 +30,14 @@ class AirSpaces: public DataBaseSub
 {
 	public:
 		AirSpaces(QSqlDatabase *pDB);
-		
-		bool createTable();
+
 		bool add(AirSpace &airspace);
 		bool delAirSpace(const QString &name);
 		bool airspace(const QString &name, AirSpace &airspace);
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 		
 	private:
-		enum Elements{Name, Low, High, Class, EdgePoint0, MaxEdgePoints=25};
+		enum Elements{Id, Name, Low, High, Class};
 };
 
 #endif

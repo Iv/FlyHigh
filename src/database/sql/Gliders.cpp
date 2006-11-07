@@ -38,9 +38,10 @@ bool Gliders::add(Glider &glider)
 	pRec = cur.primeInsert();
 	pRec->setValue("Manufacturer", glider.manufacturer());
 	pRec->setValue("Model", glider.model());
+	pRec->setValue("Serial", glider.serial());
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
-	
 	DataBaseSub::setLastModified("'Gliders'");
+	setGliderId(glider);
 
 	return true;
 }
@@ -63,8 +64,10 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 			
 			if(dbModel == modelOfGlider)
 			{
+				glider.setId(query.value(Id).toInt());
 				glider.setManufacturer(query.value(Manufacturer).toString());
 				glider.setModel(query.value(Model).toString());
+				glider.setSerial(query.value(Serial).toString());
 			}
 		}
 	}
@@ -80,7 +83,7 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 {
 	Glider glider;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM Gliders ORDER BY Model ASC";
+	QString sqls = "SELECT * FROM `Gliders` ORDER BY `Manufacturer`, `Model` ASC";
 	bool success;
 	
 	success = query.exec(sqls);
@@ -89,14 +92,69 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 	{
 		while(query.next())
 		{
+			glider.setId(query.value(Id).toInt());
 			glider.setManufacturer(query.value(Manufacturer).toString());
 			glider.setModel(query.value(Model).toString());
-
+			glider.setSerial(query.value(Serial).toString());
 			gliderList.push_back(glider);
 		}
 	}
 	
 	Error::verify(success, Error::SQL_CMD);
+	
+	return success;
+}
+
+bool Gliders::glider(int id, Glider &glider)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	bool success;
+	
+	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Id` = %i", id);
+	success = (query.exec(sqls) && query.first());
+	
+	if(success)
+	{
+		glider.setId(query.value(Id).toInt());
+		glider.setManufacturer(query.value(Manufacturer).toString());
+		glider.setModel(query.value(Model).toString());
+		glider.setSerial(query.value(Serial).toString());
+	}
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
+	
+	return success;
+}
+
+bool Gliders::setGliderId(Glider &glider)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	QString dbModel;
+	bool success;
+	int id = -1;
+
+	sqls.sprintf("SELECT * FROM `Gliders` WHERE "
+		"`Manufacturer` = '%s' AND "
+		"`Model` = '%s' AND "
+		"`Serial` = '%s'",
+		glider.manufacturer().ascii(), glider.model().ascii(), glider.serial().ascii());
+
+	success = (query.exec(sqls) && query.first());
+
+	if(success)
+	{
+		id = query.value(Id).toInt();
+	}
+	else
+	{
+		Error::verify(success, Error::SQL_CMD);
+	}
+
+	glider.setId(id);
 	
 	return success;
 }

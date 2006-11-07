@@ -19,8 +19,10 @@
  ***************************************************************************/
 
 #include <qcombobox.h>
+#include <qdatetimeedit.h>
+#include <qlineedit.h>
 #include "FlyHighRCFrameImpl.h"
-#include "Glider.h"
+#include "IFlyHighRC.h"
 #include "IGliderForm.h"
 #include "ISql.h"
 
@@ -28,6 +30,14 @@ FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, WFlags
 	:FlyHighRCFrame(parent, name)
 {
 	(void)fl;
+
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), m_curPilot);
+	lineEdit_FirstName->setText(m_curPilot.firstName());
+	lineEdit_LastName->setText(m_curPilot.lastName());
+	dateEditDateOfBirth->setDate(m_curPilot.birthDate());
+	lineEdit_GliderID->setText(m_curPilot.callSign());
+	updateGlider();
+	selectGlider(m_curPilot.glider());
 }
 
 void FlyHighRCFrameImpl::newGlider()
@@ -42,7 +52,7 @@ void FlyHighRCFrameImpl::newGlider()
 	}
 }
 
-void FlyHighRCFrameImpl::selectGlider(const QString &name)
+void FlyHighRCFrameImpl::selectGlider(Glider &glider)
 {
 	QString str;
 	int index;
@@ -53,7 +63,7 @@ void FlyHighRCFrameImpl::selectGlider(const QString &name)
 	
 	for(index=0; index<maxIndex; index++)
 	{
-		found = (comboBoxModel->text(index) == name);
+		found = (m_gliderList.at(index) == glider);
 		
 		if(found)
 		{
@@ -67,16 +77,41 @@ void FlyHighRCFrameImpl::updateGlider()
 {
 	QStringList list;
 	QString gliderModel;
-	Glider::GliderListType gliderList;
 	Glider::GliderListType::iterator it;
 	
-	ISql::pInstance()->gliderList(gliderList);
+	m_gliderList.clear();
+	ISql::pInstance()->gliderList(m_gliderList);
 	comboBoxModel->clear();
 	
-	for(it=gliderList.begin(); it!=gliderList.end(); it++)
+	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
-		(*it).modelOfGlider(gliderModel);
+		(*it).fullName(gliderModel);
 		comboBoxModel->insertItem(gliderModel);
+	}
+}
+
+void FlyHighRCFrameImpl::ok()
+{
+	m_curPilot.setFirstName(lineEdit_FirstName->text());
+	m_curPilot.setLastName(lineEdit_LastName->text());
+	m_curPilot.setBirthDate(dateEditDateOfBirth->date());
+	m_curPilot.setCallSign(lineEdit_GliderID->text());
+	m_curPilot.setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+
+	if(m_curPilot.id() < 0)
+	{
+		if(ISql::pInstance()->setId(m_curPilot))
+		{
+			ISql::pInstance()->update(m_curPilot);
+		}
+		else
+		{
+			ISql::pInstance()->add(m_curPilot);
+		}
+	}
+	else
+	{
+		ISql::pInstance()->update(m_curPilot);
 	}
 }
 

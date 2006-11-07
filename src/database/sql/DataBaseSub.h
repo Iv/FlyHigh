@@ -37,12 +37,9 @@ class DataBaseSub
 		QSqlDatabase* db();
 		int newId(const QString &table);
 		void setLastModified(const QString &field);
-		QString& tableName();
-		void setTableName(const QString& tableName);
 			
 	private:
 		QSqlDatabase *m_pDB;
-		QString m_tableName;
 };
 
 #endif
