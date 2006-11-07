@@ -140,6 +140,11 @@ bool ISql::add(Glider &glider)
 	return m_pGliders->add(glider);
 }
 
+bool ISql::delGlider(Glider &glider)
+{
+	return m_pGliders->delGlider(glider);
+}
+
 bool ISql::glider(const QString &model, Glider &glider)
 {
 	return m_pGliders->glider(model, glider);

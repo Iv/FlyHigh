@@ -22,7 +22,9 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include "Error.h"
-#include "Gliders.h" 
+#include "Flights.h"
+#include "Gliders.h"
+#include "ISql.h"
 
 Gliders::Gliders(QSqlDatabase *pDB)
 	:DataBaseSub(pDB)
@@ -40,10 +42,24 @@ bool Gliders::add(Glider &glider)
 	pRec->setValue("Model", glider.model());
 	pRec->setValue("Serial", glider.serial());
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
-	DataBaseSub::setLastModified("'Gliders'");
 	setGliderId(glider);
+	DataBaseSub::setLastModified("Gliders");
 
 	return true;
+}
+
+bool Gliders::delGlider(Glider &glider)
+{
+	QSqlQuery query(db());
+	QString sqls;
+	bool success;
+	 
+	sqls.sprintf("DELETE FROM `Gliders` WHERE `Id` = '%i'", glider.id());
+	success = query.exec(sqls);
+	DataBaseSub::setLastModified("Gliders");
+	Error::verify(success, Error::SQL_CMD);
+	
+	return success;
 }
 
 bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
@@ -96,6 +112,7 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 			glider.setManufacturer(query.value(Manufacturer).toString());
 			glider.setModel(query.value(Model).toString());
 			glider.setSerial(query.value(Serial).toString());
+			ISql::pInstance()->pFlightTable()->setFlightStatistic(glider);
 			gliderList.push_back(glider);
 		}
 	}
