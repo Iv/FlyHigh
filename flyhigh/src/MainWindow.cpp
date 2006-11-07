@@ -28,6 +28,7 @@
 #include <qvbox.h>
 
 #include "AirSpaceWindow.h"
+#include "GliderWindow.h"
 #include "IFlyHighRC.h"
 #include "IFlytecConfig.h"
 #include "MainWindow.h"
@@ -73,7 +74,8 @@ MainWindow::MainWindow()
 	pMenu->insertSeparator();
 	pMenu->insertItem("&Flight Exp", this, SLOT(flights_experience()));
 	pMenu->insertSeparator();
-	pMenu->insertItem("&Servicing", this, SLOT(servicing()));
+	pMenu->insertItem("&Gliders", this, SLOT(analysis_gliders()));
+	pMenu->insertItem("&Servicing", this, SLOT(analysis_servicing()));
 
 	// Preparation
 	pMenu = new QPopupMenu(this);
@@ -168,7 +170,15 @@ void MainWindow::flights_experience()
 	showWindow(pWin);
 }
 
-void MainWindow::servicing()
+void MainWindow::analysis_gliders()
+{
+	MDIWindow* pWin = new GliderWindow(m_pWorkSpace, "Glider", WDestructiveClose);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::analysis_servicing()
 {
 	MDIWindow* pWin = new ServicingWindow(m_pWorkSpace, "Servicing", WDestructiveClose);
 
