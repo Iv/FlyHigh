@@ -140,6 +140,12 @@ MainWindow::MainWindow()
 	m_pWorkSpace->setPaletteBackgroundColor(Qt::lightGray);
 	
 	statusBar()->message("Ready", 2000);
+
+	// if pilot info is not set
+	if(IFlyHighRC::pInstance()->pilotId() < 0)
+	{
+		settings_pilotInfo();
+	}
 }
 
 MainWindow::~MainWindow()
