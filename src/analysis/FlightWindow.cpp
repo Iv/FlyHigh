@@ -156,7 +156,6 @@ bool FlightWindow::periodicalUpdate()
 
 void FlightWindow::file_update()
 {
-	Flight flight;
 	Pilot pilot;
 	QTable *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
