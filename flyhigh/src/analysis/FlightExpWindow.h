@@ -23,7 +23,7 @@
 #include "TableWindow.h"
 
 class QWidget;
-class IDataBase;
+class ISql;
 
 class FlightExpWindow: public TableWindow
 {
@@ -41,7 +41,7 @@ class FlightExpWindow: public TableWindow
 		enum Fields{Year, NrFlights, Airtime};
 		
 		int m_lastModified;
-		IDataBase *m_pDb;
+		ISql *m_pDb;
 };
 
 #endif
