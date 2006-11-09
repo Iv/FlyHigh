@@ -25,6 +25,8 @@ Glider::Glider()
 	m_id = -1;
 	m_manufacturer = "";
 	m_model = "";
+	m_airtime = 0;
+	m_flights = 0;
 }
 
 int Glider::id()
@@ -82,12 +84,34 @@ const QString& Glider::serial()
 	return m_serial;
 }
 
+void Glider::setAirtime(uint time)
+{
+	m_airtime = time;
+}
+
+uint Glider::airtime()
+{
+	return m_airtime;
+}
+
+void Glider::setFlights(uint n)
+{
+	m_flights = n;
+}
+
+uint Glider::fligths()
+{
+	return m_flights;
+}
+
 Glider& Glider::operator=(const Glider &glider)
 {
 	m_id = glider.m_id;
 	m_manufacturer = glider.m_manufacturer;
 	m_model = glider.m_model;
 	m_serial = glider.m_serial;
+	m_airtime = glider.m_airtime;
+	m_flights = glider.m_flights;
 	
 	return *this;
 }

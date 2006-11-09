@@ -41,7 +41,11 @@ class Glider
 		void olcName(QString &name);
 		void setSerial(const QString &serial);
 		const QString& serial();
-		
+		void setAirtime(uint time); // in seconds
+		uint airtime();
+		void setFlights(uint n);
+		uint fligths();
+
 		Glider& operator=(const Glider &glider);
 		bool operator==(const Glider &glider);
 		
@@ -50,6 +54,8 @@ class Glider
 		QString m_manufacturer;
 		QString m_model;
 		QString m_serial;
+		uint m_airtime;
+		uint m_flights;
 };
 
 #endif
