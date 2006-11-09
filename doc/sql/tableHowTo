@@ -21,13 +21,13 @@ Enter password:
 
 OTHERS
 backup the database
-$ mysqldump flyhigh -h localhost -u flyhigh -p > flyhigh.backup
+$ mysqldump flyhigh -h localhost -u root -p > flyhigh.backup
 
 restore the database
-$ mysql -u flyhigh -p < flyhigh.backup
+$ mysql -u root -p < flyhigh.backup
 Enter password:
 
 remove the database
-$ mysqladmin -u flyhigh -p drop flyhigh
+$ mysqladmin -u root -p drop flyhigh
 Enter password:
 
