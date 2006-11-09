@@ -27,6 +27,7 @@
 #include "ContainerDef.h"
 #include "FlightExpWindow.h"
 #include "IDataBase.h"
+#include "IFlyHighRC.h"
 #include "Images.h"
 #include "ISql.h"
 
@@ -79,7 +80,8 @@ bool FlightExpWindow::periodicalUpdate()
 
 void FlightExpWindow::file_update()
 {
-	FlightsPerYearListType fpyList; 
+	FlightsPerYearListType fpyList;
+	Pilot pilot;
 	QTable *pTable = TableWindow::getTable();
 	QString str;
 	uint yearNr;
@@ -89,7 +91,10 @@ void FlightExpWindow::file_update()
 	
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-	if(m_pDb->flightsPerYear(fpyList))
+	// pilot info
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
+
+	if(m_pDb->flightsPerYear(pilot, fpyList))
 	{
 		maxYearNr = fpyList.size();
 		pTable->setNumRows(maxYearNr);
