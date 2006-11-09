@@ -44,7 +44,6 @@ class IDataBase: public QObject
 		virtual bool delFlight(Flight &flight);
 		virtual int flightsLastModified();
 		virtual bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
-		virtual bool flightsPerYear(FlightsPerYearListType &fpyList);
 		virtual bool loadIGCFile(Flight &flight);
 		
 		// waypoints

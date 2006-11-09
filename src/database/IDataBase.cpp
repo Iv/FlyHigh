@@ -56,13 +56,6 @@ bool IDataBase::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	return false;
 }
 
-bool IDataBase::flightsPerYear(FlightsPerYearListType &fpyList)
-{
-	(void)fpyList;
-
-	return false;
-}
-
 bool IDataBase::loadIGCFile(Flight &flight)
 {
 	(void)flight;
