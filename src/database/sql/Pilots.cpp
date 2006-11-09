@@ -63,9 +63,12 @@ bool Pilots::update(Pilot &pilot)
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
+	QString birthDate;
 
-	sqls.sprintf("UPDATE `Pilots` SET `CallSign` = '%s', `GliderId` = %i WHERE `Id` = %i",
-		pilot.callSign().ascii(), pilot.glider().id(), pilot.id());
+	birthDate = pilot.birthDate().toString("yyyy-MM-dd");
+
+	sqls.sprintf("UPDATE `Pilots` SET `FirstName`= '%s', `LastName` = '%s', `BirthDate` = '%s', `CallSign` = '%s', `GliderId` = %i WHERE `Id` = %i",
+		pilot.firstName().ascii(), pilot.lastName().ascii(), birthDate.ascii(), pilot.callSign().ascii(), pilot.glider().id(), pilot.id());
 	success = query.exec(sqls);
 	
 	Error::verify(success, Error::SQL_CMD);
