@@ -80,16 +80,13 @@ bool Flights::delFlight(Flight &flight)
 	return success;
 }
 
-int Flights::newFlightNr()
+int Flights::newFlightNr(Pilot &pilot)
 {
 	QString sqls;
 	QSqlQuery query(db());
 	int newFlightNr = -1;
-
-//@TODO serve pilotId
-int pilotId = 1;
 	
-	sqls.sprintf("SELECT MAX(Number) FROM `Flights` WHERE `PilotId` = %i", pilotId);
+	sqls.sprintf("SELECT MAX(Number) FROM `Flights` WHERE `PilotId` = %i", pilot.id());
 	
 	if(query.exec(sqls) && query.first())
 	{
@@ -142,7 +139,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	return success;
 }
 
-bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
+bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 {
 	QSqlQuery query(db());
 	QString sqls;
@@ -150,9 +147,6 @@ bool Flights::flightsPerYear(FlightsPerYearListType &fpyList)
 	FlightsPerYearType fpy;
 	bool success = false;
 	int year;
-
-//@TODO serve pilotId
-int pilotId = 1;
 	
 	for(year=2000; year<=now.year(); year++)
 	{
@@ -160,7 +154,7 @@ int pilotId = 1;
 			"`PilotId` = %i AND "
 			"`Date` >= '%i-01-01' AND "
 			"`Date` <= '%i-12-31';",
-				pilotId, year, year);
+				pilot.id(), year, year);
 		success = query.exec(sqls);
 	
 		if(success)
