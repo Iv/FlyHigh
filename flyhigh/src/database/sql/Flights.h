@@ -33,10 +33,9 @@ class Flights: public DataBaseSub
 
 		bool add(Flight &flight);
 		bool delFlight(Flight &flight);
-//		bool flight(int nr, Flight &flight);
-		int newFlightNr();
+		int newFlightNr(Pilot &pilot);
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
-		bool flightsPerYear(FlightsPerYearListType &fpyList);
+		bool flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList);
 		bool loadIGCFile(Flight &flight);
 
 		bool setFlightStatistic(Glider &glider);

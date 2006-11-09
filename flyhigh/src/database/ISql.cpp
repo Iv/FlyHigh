@@ -170,9 +170,9 @@ bool ISql::delFlight(Flight &flight)
 	return m_pFlights->delFlight(flight);
 }
 
-int ISql::newFlightNr()
+int ISql::newFlightNr(Pilot &pilot)
 {
-	return m_pFlights->newFlightNr();
+	return m_pFlights->newFlightNr(pilot);
 }
 
 bool ISql::flightList(Pilot &pilot, Flight::FlightListType &flightList)
@@ -180,9 +180,9 @@ bool ISql::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	return m_pFlights->flightList(pilot, flightList);
 }
 
-bool ISql::flightsPerYear(FlightsPerYearListType &fpyList)
+bool ISql::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 {
-	return m_pFlights->flightsPerYear(fpyList);
+	return m_pFlights->flightsPerYear(pilot, fpyList);
 }
 
 bool ISql::loadIGCFile(Flight &flight)
