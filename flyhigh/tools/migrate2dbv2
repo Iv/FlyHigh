@@ -1,0 +1,262 @@
+#!/usr/bin/perl
+
+use strict;
+use DBI;
+
+# global variables
+my $user="flyhigh";
+my $pwd="flyhigh";
+my $sourceDB;
+my $targetDB;
+
+# main functions
+sub migrateWayPointsTable;
+sub migrateGlidersTable;
+sub migrateServicings;
+sub migrateFlightsTables;
+
+# helpers
+sub migrateFlightsTable;
+sub getPilotId;
+sub getWayPointId;
+sub getGliderId;
+
+# create target db
+print "create db flyhigh_v2\n";
+#system("mysql -u root -p < flyhigh.sql");
+
+# connect to dbs
+$sourceDB = DBI->connect( "DBI:mysql:flyhigh","$user","$pwd") || die
+			"Could not connect to flyhigh source database: $sourceDB::errstr";
+$targetDB = DBI->connect( "DBI:mysql:flyhigh_v2","$user","$pwd") || die
+			"Could not connect to flyhigh target database: $targetDB::errstr\n" .
+			"Be sure, that you have created the new database (mysql -u root -p < flyhigh.sql)!\n";
+
+migrateWayPointsTable($sourceDB, $targetDB);
+migrateGlidersTable($sourceDB, $targetDB);
+migrateServicings($sourceDB, $targetDB);
+migrateFlightsTables($sourceDB, $targetDB);
+
+# disconnect dbs
+$sourceDB->disconnect();
+$targetDB->disconnect();
+
+print "Routes are not migrated.\nPlease check your new database! If there were errors, please fix them!\n";
+print "On first startup of FlyHigh, each user has to set `whoami` as pilot name!\n";
+
+sub migrateWayPointsTable
+{
+	my $sourceDB = shift;
+	my $targetDB = shift;
+	my $sthSource;
+	my $sthTarget;
+	my @row;
+
+	# read waypoints from source
+	$sthSource = $sourceDB->prepare("SELECT * FROM `WayPoints`");
+	$sthSource->execute();
+	
+	# prepare statement for write waypoints to target
+	$sthTarget = $targetDB->prepare("INSERT INTO `WayPoints` (`Id`, `Name`,`Spot`, `Country`, `Longitude` , `Latitude` ,
+			`Altitude` , `Description`) VALUES(NULL, ?, '', '', ?, ?, ?, ?);");
+
+	# migrate waypoints
+	while(@row = $sthSource->fetchrow_array)
+	{
+		print "migrate WayPoints.Name $row[0]\n";
+		$sthTarget->execute($row[0], $row[1], $row[2], $row[3], $row[4]); # Name, Longitude, Latitude, Altitude, Description
+		$sthTarget->finish();
+	}
+	
+	$sthSource->finish();
+}
+
+sub migrateGlidersTable
+{
+	my $sourceDB = shift;
+	my $targetDB = shift;
+	my $sthSource;
+	my $sthTarget;
+	my @row;
+
+	# read gliders from source
+	$sthSource = $sourceDB->prepare("SELECT * FROM `Gliders`");
+	$sthSource->execute();
+	
+	# prepare statement for write gliders to target
+	$sthTarget = $targetDB->prepare("INSERT INTO `Gliders` (`Id`, `Manufacturer`,`Model`, `Serial`)
+		VALUES(NULL, ?, ?, '');");
+
+	# migrate gliders
+	while(@row = $sthSource->fetchrow_array)
+	{
+		print "migrate Gliders.Manufacturer $row[0] Gliders.Model $row[1]\n";
+		$sthTarget->execute($row[0], $row[1]); # Manufacturer, Model
+		$sthTarget->finish();
+	}
+	
+	$sthSource->finish();
+}
+
+sub migrateServicings
+{
+	my $sourceDB = shift;
+	my $targetDB = shift;
+	my $sthSource;
+	my $sthTarget;
+	my $gliderId;
+	my @row;
+
+	# read Servicings from source
+	$sthSource = $sourceDB->prepare("SELECT * FROM `Servicings`");
+	$sthSource->execute();
+	
+	# prepare statement for write Servicings to target
+	$sthTarget = $targetDB->prepare("INSERT INTO `Servicings` (`Id`, `GliderId`,`Date`, `Responsibility`, `Comment`)
+		VALUES(NULL, ?, ?, ?, ?);");
+
+	# migrate Servicings
+	while(@row = $sthSource->fetchrow_array)
+	{
+		print "migrate Servicings.Id $row[0]\n";
+		$gliderId = getGliderId($targetDB, $row[1]); # from Glider
+		$sthTarget->execute($gliderId, $row[2], $row[3], $row[4]); # GliderId, Date, Responsibility, Comment
+		$sthTarget->finish();
+	}
+	
+	$sthSource->finish();
+}
+
+sub migrateFlightsTables
+{
+	my $sourceDB = shift;
+	my $targetDB = shift;
+	my $sth;
+	my @flightsTables;
+	my $flightsTable;
+	my @row;
+
+	# find all Flights_ tables
+	$sth = $sourceDB->prepare("SHOW TABLES LIKE 'Flights_%';");
+	$sth->execute();
+	
+	while(@row = $sth->fetchrow_array)
+	{
+		push(@flightsTables, $row[0]);
+	}
+	
+	$sth->finish();
+
+	# migrate each Flights_ table
+	foreach $flightsTable (@flightsTables)
+	{
+		migrateFlightsTable($sourceDB, $targetDB, $flightsTable);
+	}
+}
+
+sub migrateFlightsTable
+{
+	my $sourceDB = shift;
+	my $targetDB = shift;
+	my $flightsTable = shift;
+	my $pilot;
+	my $sth;
+	my $sthTarget;
+	my $gliderId;
+	my $startPtId;
+	my $landPtId;
+	my $pilotId;
+	my @row;
+
+	# insert pilot
+	$pilot = $flightsTable;
+	$pilot  =~ s/Flights_//;
+
+ 	$sth = $targetDB->prepare("INSERT INTO `Pilots` (`Id` , `FirstName` , `LastName` , `BirthDate`, `CallSign`,
+ 		`GliderId`) VALUES(NULL, \"$pilot\", '', '000-00-00', '', NULL);");
+ 	$sth->execute();
+ 	$sth->finish();
+ 
+	# read flights from source
+ 	$sth = $sourceDB->prepare("SELECT * FROM `$flightsTable` ORDER BY `Number`");
+ 	$sth->execute();
+ 
+	# prepare statement for write waypoints to target
+	$sthTarget = $targetDB->prepare("INSERT INTO `Flights` (`Id` , `Number`, `PilotId`, `Date`, `Time`, `GliderId`,
+		`StartPtId`, `LandPtId`, `Duration`, `Distance`, `Comment`, `IGCFile`)
+		VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+
+	$pilotId = getPilotId($targetDB, $pilot);
+
+	while(@row = $sth->fetchrow_array)
+	{
+		print "migrate $flightsTable.Number $row[0]\n";
+		$gliderId = getGliderId($targetDB, $row[3]);
+		$startPtId = getWayPointId($targetDB, $row[4]);
+		$landPtId = getWayPointId($targetDB, $row[5]);
+		$sthTarget->execute($row[0], $pilotId, $row[1], $row[2], $gliderId, $startPtId, $landPtId, $row[6],
+			$row[7], $row[8], $row[9]);
+		$sthTarget->finish();
+	}
+
+ 	$sth->finish();
+}
+
+sub getPilotId
+{
+	my $db = shift;
+	my $pilot = shift;
+	my $sth;
+	my @row;
+
+	$sth = $db->prepare("SELECT * FROM `Pilots` WHERE `FirstName` = \"$pilot\"");
+	$sth->execute();
+	@row = $sth->fetchrow_array;
+	$sth->finish();
+
+	return $row[0];
+}
+
+sub getGliderId
+{
+	my $db = shift;
+	my $glider = shift;
+	my $targetGlider;
+	my $sth;
+	my @row;
+	my $id = 0;
+
+	$sth = $db->prepare("SELECT * FROM `Gliders`");
+	$sth->execute();
+
+	while(@row = $sth->fetchrow_array)
+	{
+		$targetGlider = "$row[1] $row[2]";
+
+		if($targetGlider =~ m/^$glider/)
+		{
+			$id = $row[0];
+			last;
+		}
+	}
+
+	$sth->finish();
+
+	return $id;
+}
+
+sub getWayPointId
+{
+	my $db = shift;
+	my $wpName = shift;
+	my $sth;
+	my @row;
+
+# SELECT * FROM `WayPoints` WHERE `Name` LIKE 'Fanas%'
+	$sth = $db->prepare("SELECT Id FROM `WayPoints` WHERE `Name` = \"$wpName\"");
+	$sth->execute();
+	@row = $sth->fetchrow_array;
+	$sth->finish();
+
+	return $row[0];
+}
