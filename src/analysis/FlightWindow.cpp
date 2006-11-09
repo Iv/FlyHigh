@@ -219,15 +219,10 @@ void FlightWindow::file_AddToSqlDB()
 	QDate date;
 	Flight flight;
 	Glider glider;
+	Pilot pilot;
 	WayPoint wp;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
-	int hh;
-	int mm;
-	int ss;
-	int DD;
-	int MM;
-	int YY;
-	QString str ;
+	QString str;
 	int row;
 	uint gpsFlightNr;
 	uint newFlightNr;
@@ -237,35 +232,32 @@ void FlightWindow::file_AddToSqlDB()
 	
 	if(row >= 0)
 	{
-		gpsFlightNr = getTable()->text(row, Nr).toUInt();
-		flight.setNumber(gpsFlightNr);
+		// pilot info
+		ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
+	
+		// load igc data
 		progDlg.beginProgress("read igc file...", m_pDb);
-		m_pDb->loadIGCFile(flight);
+		m_pDb->loadIGCFile(m_flightList[row]);
 		progDlg.endProgress();
 	
 		// parse and optimize
-		igcParser.parse(flight.igcData());
+		igcParser.parse(m_flightList[row].igcData());
 		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
 		progDlg.beginProgress("optimize flight...", &olcOptimizer);
 		
 		if(olcOptimizer.optimize())
 		{
 			// distance
-			flight.setDistance(olcOptimizer.freeDistance(fpIndexList));
+			m_flightList[row].setDistance(olcOptimizer.freeDistance(fpIndexList));
 		}
 		
 		progDlg.endProgress();
 		
 		// nr
-		newFlightNr = ISql::pInstance()->newFlightNr();
-		flight.setNumber(newFlightNr);
+		gpsFlightNr = getTable()->text(row, Nr).toUInt(); // store this for restore
+		newFlightNr = ISql::pInstance()->newFlightNr(pilot);
+		m_flightList[row].setNumber(newFlightNr);
 		
-		// date
-		str = getTable()->text(row, Date);
-		sscanf(str.ascii(), "%2d%*c%2d%*c%4d", &DD, &MM, &YY);
-		date.setYMD(YY, MM, DD);
-		flight.setDate(date);
-
 		// start
 		id = igcParser.flightPointList().firstValidFlightData();
 		
@@ -273,7 +265,7 @@ void FlightWindow::file_AddToSqlDB()
 		{
 			// start time
 			time = igcParser.flightPointList().at(id).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
-			flight.setTime(time);
+			m_flightList[row].setTime(time);
 		
 			// start place
 			wp = igcParser.flightPointList().at(id).wp;
@@ -287,7 +279,7 @@ void FlightWindow::file_AddToSqlDB()
 					ISql::pInstance()->add(wp);
 				}
 			}
-			flight.setStartPt(wp);
+			m_flightList[row].setStartPt(wp);
 		}
 		
 		// landing strip
@@ -306,14 +298,8 @@ void FlightWindow::file_AddToSqlDB()
 					ISql::pInstance()->add(wp);
 				}
 			}
-			flight.setLandPt(wp);
+			m_flightList[row].setLandPt(wp);
 		}
-		
-		// duration
-		str = getTable()->text(row, Duration);
-		sscanf(str.ascii(), "%2d%*c%2d%*c%2d", &hh, &mm, &ss);
-		time.setHMS(hh, mm, ss);
-		flight.setDuration(time);
 
 		// glider
 		if(!ISql::pInstance()->glider(igcParser.model(), glider))
@@ -326,16 +312,16 @@ void FlightWindow::file_AddToSqlDB()
 			}
 		}
 
-		flight.setGlider(glider);
+		m_flightList[row].setGlider(glider);
 		
 		// a new flight
-		newFlightForm.setFlight(&flight);
+		newFlightForm.setFlight(&m_flightList[row]);
 		
 		if(newFlightForm.exec())
 		{
-			ISql::pInstance()->add(flight);
-			flight.setNumber(gpsFlightNr); // restore original track nr or gps will be confused
-			setFlightToRow(row, flight);
+			ISql::pInstance()->add(m_flightList[row]);
+			m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
+			setFlightToRow(row, m_flightList[row]);
 		}
 	}
 }
@@ -351,6 +337,7 @@ void FlightWindow::file_import()
 	QDate date;
 	Flight flight;
 	Glider glider;
+	Pilot pilot;
 	WayPoint wp;
 	FlightPointList fpList;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
@@ -366,6 +353,9 @@ void FlightWindow::file_import()
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
+		// pilot info
+		ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
+
 		pDir = fileDlg.dir();
 		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
 		delete pDir;
@@ -390,7 +380,7 @@ void FlightWindow::file_import()
 			progDlg.endProgress();
 	
 			// nr
-			nr = ISql::pInstance()->newFlightNr();
+			nr = ISql::pInstance()->newFlightNr(pilot);
 			flight.setNumber(nr);
 			
 			// date
@@ -575,9 +565,12 @@ void FlightWindow::file_new()
 	Pilot pilot;
 	Flight flight;
 	int nr;
+
+	// pilot info
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	
 	// nr
-	nr = ISql::pInstance()->newFlightNr();
+	nr = ISql::pInstance()->newFlightNr(pilot);
 	flight.setNumber(nr);
 	
 	// current date and time
@@ -586,7 +579,6 @@ void FlightWindow::file_new()
 	flight.setDuration(QTime(0, 0, 0));
 
 	// current glider
-	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	flight.setGlider(pilot.glider());
 	
 	// a new flight
