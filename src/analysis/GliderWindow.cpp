@@ -148,6 +148,6 @@ void GliderWindow::setGliderToRow(uint row, Glider &glider)
 	pTable->setText(row, Serial, glider.serial());
 	str.sprintf("%i", glider.fligths());
 	pTable->setText(row, Flights, str);
-	str.sprintf("%i", glider.airtime() / 3600);
+	str.sprintf("%.2f",  glider.airtime()/3600.0);
 	pTable->setText(row, Airtime, str);
 }
