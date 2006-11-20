@@ -66,10 +66,9 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homeDirPath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.4-1";
+	m_versionInfo = "FlyHigh Version 0.5";
 
-//@TODO correct flyhighrc_v2 to flyhighrc
-	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc_v2");
+	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
 
 uint IFlyHighRC::deviceName()
