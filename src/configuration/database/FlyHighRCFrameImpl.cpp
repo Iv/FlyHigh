@@ -108,6 +108,8 @@ void FlyHighRCFrameImpl::ok()
 		{
 			ISql::pInstance()->add(m_curPilot);
 		}
+	
+		IFlyHighRC::pInstance()->setPilotId(m_curPilot.id());
 	}
 	else
 	{
