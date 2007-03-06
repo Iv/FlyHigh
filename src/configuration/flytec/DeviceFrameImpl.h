@@ -21,8 +21,9 @@
 #ifndef DeviceFrameImpl_h
 #define DeviceFrameImpl_h
 
-#include "Frame.h"
 #include "DeviceFrame.h"
+#include "Frame.h"
+#include "Glider.h"
 
 class DeviceFrameImpl: public DeviceFrame, public Frame
 {
@@ -39,6 +40,8 @@ class DeviceFrameImpl: public DeviceFrame, public Frame
 		void newGlider();
 		
 	private:
+		Glider::GliderListType m_gliderList;
+
 		void updateGlider();
 		void selectGlider(const QString &name);
 };
