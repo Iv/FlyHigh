@@ -37,8 +37,8 @@ bool WayPoints::add(WayPoint &wp)
 	// insert record
 	pRec = cur.primeInsert();
 	pRec->setValue("Name", wp.name());
-	pRec->setValue("Spot", wp.spot());
 	pRec->setValue("Country", wp.country());
+	pRec->setValue("Spot", wp.spot());
 	pRec->setValue("Description", wp.description());
 	pRec->setValue("Longitude", wp.longitude());
 	pRec->setValue("Latitude", wp.latitude());
@@ -142,7 +142,7 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM `WayPoints` ORDER BY `Name` ASC";
+	QString sqls = "SELECT * FROM `WayPoints` ORDER BY `Country`, `Name`, `Spot` ASC";
 	double lon;
 	double lat;
 	int alt;

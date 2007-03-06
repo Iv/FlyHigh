@@ -43,14 +43,12 @@ class WayPointWindow: public TableWindow
 		void file_delete();
 		
 	private:
-		enum Fields{Name, Longitude, Latitude, Altitude};
+		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 		WayPoint::WayPointListType m_wpList;
-		
 		IDataBase *m_pDb;
 		int m_lastModified;
 		
 		void setWpToRow(uint row, WayPoint &wp);
-		bool setCurRowToWp(WayPoint &wp);
 };
 
 #endif
