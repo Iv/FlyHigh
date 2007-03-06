@@ -75,7 +75,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
 
 	// pilot name
 	ft_ftstring2string(str, (char*)&arr[PILOT_NAME_POS]);
-	pilotName = str;;
+	pilotName = str;
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
 	dbPilot.fullName(dbPilotName);
 
@@ -99,25 +99,26 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	// glider
 	ft_ftstring2string(str, (char*)&arr[GLYDER_TYPE_POS]);
 	glider = str;
-	dbPilot.glider().olcName(dbGlider);
+	dbGlider = m_gliderList.at(comboBoxModel->currentItem()).model();
+//	dbGlider = dbPilot.glider().model();
 	
-	if(glider != dbGlider.left(glider.length()))
+	if(glider != dbGlider)
 	{
-		syncRes = QMessageBox::question(this, "Different gliders", "Glider on GPS differ from glider in database. Set glider?",
-			 	"DB to GPS", "Ignore");
+		syncRes = QMessageBox::question(this, "Different gliders",
+				"Glider on GPS differ from glider in database. Set glider?",
+				"DB to Dialog", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From database
-				glider = dbGlider;
+			case 0: // From Pilot
+				dbPilot.glider().fullName(dbGlider);
+				selectGlider(dbGlider);
 			break;
 			default:
 			break;
 		}
 	}
 	
-	selectGlider(glider);
-
 	// callsign
 	ft_ftstring2string(str, (char*)&arr[GLYDER_ID_POS]);
 	callsign = str;
@@ -180,23 +181,29 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	ft_string2ftstring(pilotName.ascii(), (char*)&arr[PILOT_NAME_POS]);
 	
 	// glider
-	glider = comboBoxModel->currentText();
-	dbPilot.glider().olcName(dbGlider);
+	m_gliderList.at(comboBoxModel->currentItem()).fullName(glider);
+	dbPilot.glider().fullName(dbGlider);
 	
-	if(glider != dbGlider.left(glider.length()))
+	if(glider != dbGlider)
 	{
-		syncRes = QMessageBox::question(this, "Different gliders", "Glider in database differ from glider in dialog. Set glider?",
+		syncRes = QMessageBox::question(this, "Different gliders",
+				"Glider in database differ from glider in dialog. Set glider?",
 				"DB to GPS", "Ignore");
 		
 		switch(syncRes)
 		{
-			case 0: // From database
-				glider = dbGlider;
+			case 0: // From Pilot
 				selectGlider(glider);
+				glider = dbPilot.glider().model();
 			break;
 			default:
+				glider = m_gliderList.at(comboBoxModel->currentItem()).model();
 			break;
 		}
+	}
+	else
+	{
+		glider = m_gliderList.at(comboBoxModel->currentItem()).model();
 	}
 
 	ft_string2ftstring(glider.ascii(), (char*)&arr[GLYDER_TYPE_POS]);
@@ -230,18 +237,23 @@ void DeviceFrameImpl::store(QByteArray &arr)
 void DeviceFrameImpl::updateGlider()
 {
 	QStringList list;
-	QString gliderModel;
-	Glider::GliderListType gliderList;
+	QString gliderName;
 	Glider::GliderListType::iterator it;
+	Pilot dbPilot;
 	
-	ISql::pInstance()->gliderList(gliderList);
 	comboBoxModel->clear();
+	m_gliderList.clear();
+	ISql::pInstance()->gliderList(m_gliderList);
 	
-	for(it=gliderList.begin(); it!=gliderList.end(); it++)
+	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
-		(*it).fullName(gliderModel);
-		comboBoxModel->insertItem(gliderModel);
+		(*it).fullName(gliderName);
+		comboBoxModel->insertItem(gliderName);
 	}
+
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
+	dbPilot.glider().fullName(gliderName);
+	selectGlider(gliderName);
 }
 
 void DeviceFrameImpl::selectGlider(const QString &name)
