@@ -67,23 +67,24 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	QSqlQuery query(db());
 	QString sqls;
 	QString dbModel;
-	bool success;
+	bool success = false;
 	
 	sqls.sprintf("SELECT * FROM `Gliders`");
-	success = query.exec(sqls);
 	
-	if(success)
+	if(query.exec(sqls))
 	{
 		while(query.next())
 		{
-			dbModel = query.value(Manufacturer).toString() + " " + query.value(Model).toString();
+			dbModel = query.value(Model).toString();
+			success = (dbModel == modelOfGlider);
 			
-			if(dbModel == modelOfGlider)
+			if(success)
 			{
 				glider.setId(query.value(Id).toInt());
 				glider.setManufacturer(query.value(Manufacturer).toString());
 				glider.setModel(query.value(Model).toString());
 				glider.setSerial(query.value(Serial).toString());
+				break;
 			}
 		}
 	}
