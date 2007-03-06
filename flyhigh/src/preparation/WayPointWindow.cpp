@@ -73,17 +73,23 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(QTable::SingleRow);
 
-	// header	
+	// header
 	nameList += "Name";
+	nameList += "Country";
+	nameList += "Spot";
 	nameList += "Longitude\n[°,min]";
 	nameList += "Latitude\n[°,min]";
 	nameList += "Altitude\n[m]";
+	nameList += "Description";
 	setupHeader(nameList);
 	
-	pTable->setColumnWidth(Name, 120);
-	pTable->setColumnWidth(Longitude, 80);
-	pTable->setColumnWidth(Latitude, 80);
+	pTable->setColumnWidth(Country, 50);
+	pTable->setColumnWidth(Spot, 100);
+	pTable->setColumnWidth(Name, 100);
+	pTable->setColumnWidth(Longitude, 70);
+	pTable->setColumnWidth(Latitude, 70);
 	pTable->setColumnWidth(Altitude, 70);
+	pTable->setColumnWidth(Description, 500);
 	
 	m_lastModified = 0;
 }
@@ -127,12 +133,14 @@ void WayPointWindow::file_update()
 
 void WayPointWindow::file_AddToGps()
 {
-	WayPoint wp;
+	int row;
 	
-	if(setCurRowToWp(wp))
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		IGPSDevice::pInstance()->add(wp);
+		IGPSDevice::pInstance()->add(m_wpList[row]);
 		TableWindow::unsetCursor();
 	}
 }
@@ -153,16 +161,18 @@ void WayPointWindow::file_delete()
 
 void WayPointWindow::file_AddToSqlDB()
 {
-	WayPoint wp;
+	int row;
 	
-	if(setCurRowToWp(wp))
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
 	{
-		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &wp);
+		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &m_wpList[row]);
 		
 		if(wayPointForm.exec())
 		{
 			TableWindow::setCursor(QCursor(Qt::WaitCursor));
-			ISql::pInstance()->add(wp);
+			ISql::pInstance()->add(m_wpList[row]);
 			TableWindow::unsetCursor();
 		}
 	}
@@ -172,10 +182,11 @@ void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
 {
 	QString str;
 	QTable *pTable = TableWindow::getTable();
-	
-	wp.fullName(str);
-	pTable->setText(row, Name, str);
-	
+
+	pTable->setText(row, Country, wp.country());
+	pTable->setText(row, Spot, wp.spot());
+	pTable->setText(row, Name, wp.name());
+		
 	str.sprintf("%.5f", wp.longitude());
 	pTable->setText(row, Longitude, str);
 	
@@ -184,35 +195,6 @@ void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
 	
 	str.sprintf("%i", wp.altitude());
 	pTable->setText(row, Altitude, str);
-}
-
-bool WayPointWindow::setCurRowToWp(WayPoint &wp)
-{
-	QString str;
-	double lon;
-	double lat;
-	int alt;
-	int row;
-	bool success;
 	
-	row = getTable()->currentRow();
-	success = (row >= 0);
-	
-	if(success)
-	{
-		// Coordinates
-		str = getTable()->text(row, Longitude);
-		lon = str.toDouble();
-		str = getTable()->text(row, Latitude);
-		lat = str.toDouble();
-		str = getTable()->text(row, Altitude);
-		alt = str.toInt();
-		wp.setCoordinates(lat, lon, alt);
-		
-		// Name
-		str = getTable()->text(row, Name);
-		wp.setName(str);
-	}
-	
-	return success;
+	pTable->setText(row, Description, wp.description());
 }
