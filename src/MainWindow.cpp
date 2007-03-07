@@ -251,7 +251,7 @@ void MainWindow::airspaces_fromFile()
 void MainWindow::help_about()
 {
 	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
-			"Copyright (c): 2004-2006 by Alex Graf, <grafal@sf.net>\n"
+			"Copyright (c): 2004-2007 by Alex Graf, <grafal@sf.net>\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL). Visit www.gnu.org for more information.");
 }
