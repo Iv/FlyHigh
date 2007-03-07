@@ -1,1 +1,10 @@
+Version 0.5
+WARNING: Database model is totally redesigned. There is a script to migrate to database
+version 2. It's absolutely recommended to backup your flights!!! Dataloss can apear!
+The new model has the advantage of more and complexer waypoint and flight information.
 
+For migration execute as root
+# ./migrate2dbv2
+
+The German OLC is no longer supported. The new score point factors have been implemented
+equal like http://www.xcontest.org/
