@@ -21,7 +21,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/common/container/libcontainer.a</activetarget>
+      <activetarget>src/analysis/libanalysis.a</activetarget>
       <useconfiguration>debug</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
