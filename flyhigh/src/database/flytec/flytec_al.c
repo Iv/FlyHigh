@@ -37,8 +37,8 @@ int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 	int res;
 	u_char len;
 
-	sprintf(&buff[0],  "PBRSNP,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRSNP,");
+	len = strlen((char*)&buff[0]);
 	
 	/* send the request */
 	res = flytec_ll_send(&buff[0], len);
@@ -49,7 +49,7 @@ int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 		
 		if(res == 0)
 		{
-			res = memcmp(&buff[0], "PBRSNP", 6);
+			res = memcmp((char*)&buff[0], "PBRSNP", 6);
 		}
 	}
 	
@@ -57,17 +57,17 @@ int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 	if(res == 0)
 	{
 		/* device ident */
-		memcpy(&pDeviceInfo->deviceIdent[0], &buff[7], 4);
+		memcpy(&pDeviceInfo->deviceIdent[0], (char*)&buff[7], 4);
 		pDeviceInfo->deviceIdent[4] = '\0';
 
 		/* pilot name */
-		ft_ftstring2string(&pDeviceInfo->pilotName[0], &buff[12]);
+		ft_ftstring2string(&pDeviceInfo->pilotName[0], (char*)&buff[12]);
 	
 		/* serial number */
-		pDeviceInfo->serialNr = atoi(&buff[30]);
+		pDeviceInfo->serialNr = atoi((char*)&buff[30]);
 		
 		/* SW Version */
-		memcpy(&pDeviceInfo->swVersion[0], &buff[36], 4);
+		memcpy(&pDeviceInfo->swVersion[0], (char*)&buff[36], 4);
 		pDeviceInfo->swVersion[4] = '\0';
 	}
 	else
@@ -83,8 +83,8 @@ int ft_updateConfiguration()
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRCONF,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRCONF,");
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 	
@@ -99,8 +99,8 @@ int ft_ctrListReq()
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRCTR,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRCTR,");
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 	usleep(1000*1000);
@@ -117,32 +117,32 @@ int ft_ctrListRec(ft_CTRType *pCTR)
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRCTR", 6);
+		res = memcmp((char*)&buff[0], "PBRCTR", 6);
 	}
 	
 	if(res == 0)
 	{
 		/* toal sentences */
 		buff[10] = '\0';
-		pCTR->totalSent = atoi(&buff[7]);
+		pCTR->totalSent = atoi((char*)&buff[7]);
 		
 		/* actual sentence */
 		buff[14] = '\0';
-		pCTR->actSent = atoi(&buff[11]);
+		pCTR->actSent = atoi((char*)&buff[11]);
 		
 		if(pCTR->actSent == 0)
 		{ 
 			/* ctr name */
-			ft_ftstring2string(pCTR->sent.first.name, &buff[15]);
+			ft_ftstring2string(pCTR->sent.first.name, (char*)&buff[15]);
 			
 			/* warning distance */
 			buff[37] = '\0';
-			pCTR->sent.first.warnDist = atoi(&buff[33]);
+			pCTR->sent.first.warnDist = atoi((char*)&buff[33]);
 		}
 		else if(pCTR->actSent == 1)
 		{
 			/* remark */
-			ft_ftstring2string(pCTR->sent.second.remark, &buff[15]);
+			ft_ftstring2string(pCTR->sent.second.remark, (char*)&buff[15]);
 		}
 		else
 		{ /* a member */
@@ -154,7 +154,7 @@ int ft_ctrListRec(ft_CTRType *pCTR)
 			{
 				/* radius */
 				buff[45] = '\0';
-				pCTR->sent.member.radius = (uint)atoi(&buff[40]);
+				pCTR->sent.member.radius = (uint)atoi((char*)&buff[40]);
 			}
 			else if((pCTR->sent.member.type == 'T') /* start segment */ ||
 					(pCTR->sent.member.type == 'Z')) /* end segment */
@@ -169,24 +169,24 @@ int ft_ctrListRec(ft_CTRType *pCTR)
 
 int ft_ctrSnd(ft_CTRType *pCTR)
 {
-	u_char len;
+	u_char len = 0;
 	
-	sprintf(&buff[0],  "PBRCTRW,%03d,%03d,", pCTR->totalSent, pCTR->actSent);
+	sprintf((char*)&buff[0],  "PBRCTRW,%03d,%03d,", pCTR->totalSent, pCTR->actSent);
 
 	if(pCTR->actSent == 0)
 	{
 		/* name */
-		ft_string2ftstring(pCTR->sent.first.name, &buff[16]);
+		ft_string2ftstring(pCTR->sent.first.name, (char*)&buff[16]);
 		buff[33] = ',';
 		
 		/* warning distance */
-		sprintf(&buff[34], "%04d", pCTR->sent.first.warnDist);
+		sprintf((char*)&buff[34], "%04d", pCTR->sent.first.warnDist);
 		len = 38;
 	}
 	else if(pCTR->actSent == 1)
 	{
 		/* remark */
-		ft_string2ftstring(pCTR->sent.first.name, &buff[16]);
+		ft_string2ftstring(pCTR->sent.first.name, (char*)&buff[16]);
 		len = 33;
 	}
 	else
@@ -205,7 +205,7 @@ int ft_ctrSnd(ft_CTRType *pCTR)
 			buff[40] = ',';
 
 			/* radius */
-			sprintf(&buff[41], "%05d", pCTR->sent.member.radius);
+			sprintf((char*)&buff[41], "%05d", pCTR->sent.member.radius);
 			len = 46;
 		}
 		else if((pCTR->sent.member.type == 'T') /* start segment */ ||
@@ -226,7 +226,7 @@ extern int ft_ctrDel(const char *pName)
 {
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRCTRD,");
+	sprintf((char*)&buff[0],  "PBRCTRD,");
 
 	if(pName == NULL)
 	{ /* delete all */
@@ -235,7 +235,7 @@ extern int ft_ctrDel(const char *pName)
 	}
 	else
 	{ /* delete one */
-		ft_string2ftstring(pName, &buff[8]);
+		ft_string2ftstring(pName, (char*)&buff[8]);
 		len = 25;
 	}
 	
@@ -251,7 +251,7 @@ int ft_ctrRecAck()
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRANS,", 7);
+		res = memcmp((char*)&buff[0], "PBRANS,", 7);
 	}
 
 	if(res == 0)
@@ -273,8 +273,8 @@ int ft_wayPointListReq()
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRWPS,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRWPS,");
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 	usleep(500*1000);
@@ -291,7 +291,7 @@ int ft_wayPointListRec(ft_WayPointType *pft_WayPoint)
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRWPS", 6);
+		res = memcmp((char*)&buff[0], "PBRWPS", 6);
 	}
 	
 	if(res == 0)
@@ -303,11 +303,11 @@ int ft_wayPointListRec(ft_WayPointType *pft_WayPoint)
 		pft_WayPoint->longitude = stringToDeg(&buff[18], 11);
 		
 		/* name */
-		ft_ftstring2string(&pft_WayPoint->name[0], &buff[37]);
+		ft_ftstring2string((char*)&pft_WayPoint->name[0], (char*)&buff[37]);
 		
 		/* altitude */
 		buff[59] = '\0';
-		pft_WayPoint->altitude = atoi(&buff[55]);
+		pft_WayPoint->altitude = atoi((char*)&buff[55]);
 	}
 	
 	return res;
@@ -315,7 +315,7 @@ int ft_wayPointListRec(ft_WayPointType *pft_WayPoint)
 
 int ft_wayPointSnd(ft_WayPointType *pft_WayPoint)
 {
-	sprintf(&buff[0],  "PBRWPR,");
+	sprintf((char*)&buff[0],  "PBRWPR,");
 
 	/* lat, lon */
 	latlonToString(pft_WayPoint->latitude, pft_WayPoint->longitude, &buff[7]);
@@ -325,11 +325,11 @@ int ft_wayPointSnd(ft_WayPointType *pft_WayPoint)
 	buff[30] = ',';
 
 	/* name */
-	ft_string2ftstring(&pft_WayPoint->name[0], &buff[31]);
+	ft_string2ftstring((char*)&pft_WayPoint->name[0], (char*)&buff[31]);
 	buff[48] = ',';
 	
 	/* altitude */
-	sprintf(&buff[49], "%04d", pft_WayPoint->altitude);
+	sprintf((char*)&buff[49], "%04d", pft_WayPoint->altitude);
 	
 	return flytec_ll_send(&buff[0], 53);
 }
@@ -338,7 +338,7 @@ int ft_wayPointDel(const char *pName) /* NULL = delete all */
 {
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRWPX,");
+	sprintf((char*)&buff[0],  "PBRWPX,");
 	
 	if(pName == NULL)
 	{ /* delete all */
@@ -347,7 +347,7 @@ int ft_wayPointDel(const char *pName) /* NULL = delete all */
 	}
 	else
 	{ /* delete one */
-		ft_string2ftstring(pName, &buff[7]);
+		ft_string2ftstring((char*)pName, (char*)&buff[7]);
 		len = 24;
 	}
 	
@@ -362,8 +362,8 @@ int ft_routeListReq()
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRRTS,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRRTS,");
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 	usleep(500*1000);
@@ -380,30 +380,30 @@ int ft_routeListRec(ft_RouteType *pft_Route)
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRRTS", 6);
+		res = memcmp((char*)&buff[0], "PBRRTS", 6);
 	}
 	
 	if(res == 0)
 	{
 		/* route number */
 		buff[9] = '\0';
-		pft_Route->routeNum = atoi(&buff[7]);
+		pft_Route->routeNum = atoi((char*)&buff[7]);
 		
 		/* toal sentences */
 		buff[12] = '\0';
-		pft_Route->totalSent = atoi(&buff[10]);
+		pft_Route->totalSent = atoi((char*)&buff[10]);
 		
 		/* actual sentence */
 		buff[15] = '\0';
-		pft_Route->actSent = atoi(&buff[13]);
+		pft_Route->actSent = atoi((char*)&buff[13]);
 		
 		if(pft_Route->actSent == 0)
 		{ /* this is the route name */
-			ft_ftstring2string(pft_Route->name, &buff[16]);
+			ft_ftstring2string(pft_Route->name, (char*)&buff[16]);
 		}
 		else
 		{ /* this is a waypoint */
-			ft_ftstring2string(pft_Route->name, &buff[23]);
+			ft_ftstring2string(pft_Route->name, (char*)&buff[23]);
 		}
 	}
 	
@@ -415,10 +415,10 @@ int ft_routeSnd(ft_RouteType *pft_Route)
 	u_char strStart;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRRTR,%02d,%02d,%02d,", pft_Route->routeNum, pft_Route->totalSent,
+	sprintf((char*)&buff[0],  "PBRRTR,%02d,%02d,%02d,", pft_Route->routeNum, pft_Route->totalSent,
 				pft_Route->actSent);
 				
-	strStart = strlen(&buff[0]);
+	strStart = strlen((char*)&buff[0]);
 
 	if(pft_Route->actSent > 0)
 	{
@@ -426,7 +426,7 @@ int ft_routeSnd(ft_RouteType *pft_Route)
 		strStart++;
 	}
 
-	ft_string2ftstring(pft_Route->name, &buff[strStart]);
+	ft_string2ftstring(pft_Route->name, (char*)&buff[strStart]);
 	len = strStart + 17;
 	
 	return flytec_ll_send(&buff[0], len);
@@ -437,9 +437,9 @@ int ft_routeDel(const char *pName) /* NULL = delete all */
 	u_char strStart;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRRTX,");
+	sprintf((char*)&buff[0],  "PBRRTX,");
 	
-	strStart = strlen(&buff[0]);
+	strStart = strlen((char*)&buff[0]);
 
 	if(pName == NULL)
 	{ /* delete all */
@@ -448,7 +448,7 @@ int ft_routeDel(const char *pName) /* NULL = delete all */
 	}
 	else
 	{ /* delete one */
-		ft_string2ftstring(pName, &buff[strStart]);
+		ft_string2ftstring(pName, (char*)&buff[strStart]);
 		len = strStart + 17;
 	}
 	
@@ -463,8 +463,8 @@ int ft_trackListReq()
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRTL,");
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRTL,");
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 	
@@ -480,42 +480,42 @@ int ft_trackListRec(TrackType *pTrack)
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRTL", 5);
+		res = memcmp((char*)&buff[0], "PBRTL", 5);
 	}
 	
 	if(res == 0)
 	{
 		/* nof tracks */
 		buff[8] = '\0';
-		pTrack->totalNum = atoi(&buff[6]);
+		pTrack->totalNum = atoi((char*)&buff[6]);
 		
 		/* track number */
 		buff[11] = '\0';
-		pTrack->trackNum = pTrack->totalNum - atoi(&buff[9]) - 1;
+		pTrack->trackNum = pTrack->totalNum - atoi((char*)&buff[9]) - 1;
 		
 		/* date */
 		buff[14] = '\0';
-		pTrack->date.day= atoi(&buff[12]);
+		pTrack->date.day= atoi((char*)&buff[12]);
 		buff[17] = '\0';
-		pTrack->date.month= atoi(&buff[15]);
+		pTrack->date.month= atoi((char*)&buff[15]);
 		buff[20] = '\0';
-		pTrack->date.year= 2000 + atoi(&buff[18]);
+		pTrack->date.year= 2000 + atoi((char*)&buff[18]);
 		
 		/* start */
 		buff[23] = '\0';
-		pTrack->start.hour = atoi(&buff[21]);
+		pTrack->start.hour = atoi((char*)&buff[21]);
 		buff[26] = '\0';
-		pTrack->start.min = atoi(&buff[24]);
+		pTrack->start.min = atoi((char*)&buff[24]);
 		buff[29] = '\0';
-		pTrack->start.sec = atoi(&buff[27]);
+		pTrack->start.sec = atoi((char*)&buff[27]);
 		
 		/* duration */
 		buff[32] = '\0';
-		pTrack->duration.hour = atoi(&buff[30]);
+		pTrack->duration.hour = atoi((char*)&buff[30]);
 		buff[35] = '\0';
-		pTrack->duration.min = atoi(&buff[33]);
+		pTrack->duration.min = atoi((char*)&buff[33]);
 		buff[38] = '\0';
-		pTrack->duration.sec = atoi(&buff[36]);
+		pTrack->duration.sec = atoi((char*)&buff[36]);
 	}
 	
 	return res;
@@ -526,8 +526,8 @@ int ft_trackReq(u_int trackNum)
 	int res;
 	u_char len;
 	
-	sprintf(&buff[0],  "PBRTR,%02d", trackNum);
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRTR,%02d", trackNum);
+	len = strlen((char*)&buff[0]);
 	
 	res = flytec_ll_send(&buff[0], len);
 /*	usleep(500*1000); */
@@ -561,8 +561,8 @@ int ft_memoryRead(u_int addr, u_char *pPage)
 	}
 
 	/* request */
-	sprintf(&buff[0],  "PBRMEMR,%04X", addr);
-	len = strlen(&buff[0]);
+	sprintf((char*)&buff[0],  "PBRMEMR,%04X", addr);
+	len = strlen((char*)&buff[0]);
 	res = flytec_ll_send(&buff[0], len);
 
 	/* answer */
@@ -570,7 +570,7 @@ int ft_memoryRead(u_int addr, u_char *pPage)
 	
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRMEMR", 7);
+		res = memcmp((char*)&buff[0], "PBRMEMR", 7);
 	}
 	
 	if(res == 0)
@@ -580,7 +580,7 @@ int ft_memoryRead(u_int addr, u_char *pPage)
 		for(byteNr=0; byteNr<PageSize; byteNr++)
 		{
 			buff[start+2] = '\0';
-			pPage[byteNr] = strtol(&buff[start], (char **)NULL, 16);
+			pPage[byteNr] = strtol((char*)&buff[start], (char **)NULL, 16);
 			start += 3;
 		}
 	}
@@ -600,12 +600,12 @@ int ft_memoryWrite(u_int addr, u_char *pPage)
 		return -1;
 	}
 	
-	sprintf(&buff[0],  "PBRMEMW,%04X,%d", addr, ft_PageSize);
+	sprintf((char*)&buff[0],  "PBRMEMW,%04X,%d", addr, ft_PageSize);
 	buffSize = 14;
 
 	for(byteNr=0; byteNr<ft_PageSize; byteNr++)
 	{
-		sprintf(&buff[buffSize], ",%02X", pPage[byteNr]);
+		sprintf((char*)&buff[buffSize], ",%02X", pPage[byteNr]);
 		buffSize += 3;
 	}
 	
@@ -616,7 +616,7 @@ int ft_memoryWrite(u_int addr, u_char *pPage)
 		
 	if(res == 0)
 	{
-		res = memcmp(&buff[0], "PBRMEMR", 7);
+		res = memcmp((char*)&buff[0], "PBRMEMR", 7);
 	}
 	
 	return res;
@@ -665,7 +665,7 @@ void latlonToString(double lat, double lon, u_char *pBuff)
 void degToString(double value, u_char* pbuff, u_char size)
 {
 	#define STR_SIZE 12
-	u_char strValue[STR_SIZE];
+	char strValue[STR_SIZE];
 	u_char strLen;
 	double intValue;
 
@@ -681,6 +681,7 @@ void degToString(double value, u_char* pbuff, u_char size)
 	{
 		snprintf(&strValue[0], STR_SIZE ,"%5.3f", value);
 	}
+
 	strLen = strlen(&strValue[0]);
 	
 	memset(&pbuff[0], '0', size);
@@ -694,7 +695,7 @@ double stringToDeg(u_char *pstr, u_char size)
 	double intValue;
 
 	pstr[size-2] = '\0';
-	value = atof(pstr) / 100;
+	value = atof((char*)pstr) / 100;
 	
 		/* dec to min */
 	intValue = floor(value);
