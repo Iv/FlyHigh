@@ -501,7 +501,7 @@ bool FlytecDevice::add(AirSpace &airspace)
 
 bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 {
-	AirSpaceItem *pItem;
+	AirSpaceItem *pItem = NULL;
 	AirSpaceItemSeg *pSegment;
 	AirSpaceItemCircle *pCircle;
 	AirSpace *pAirspace;
