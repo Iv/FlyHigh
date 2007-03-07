@@ -40,6 +40,7 @@ cp $workDir/release/src/$project $workDir/debian/usr/bin/
 
 mkdir -p $workDir/debian/usr/share/flyhigh/
 cp $workDir/doc/sql/flyhigh.sql $workDir/debian/usr/share/flyhigh/
+cp $workDir/tools/migrate2dbv2 $workDir/debian/usr/share/flyhigh/
 cp $workDir/tools/xtrSwiss100 $workDir/debian/usr/share/flyhigh/
 cp $workDir/src/images/flyhigh.png $workDir/debian/usr/share/flyhigh/
 
