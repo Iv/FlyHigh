@@ -41,6 +41,7 @@ class WayPointWindow: public TableWindow
 		void file_AddToSqlDB();
 		void file_AddToGps();
 		void file_delete();
+		void file_deleteAll();
 		
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};

@@ -77,6 +77,11 @@ bool IDataBase::delWayPoint(WayPoint &wp)
 	return false;
 }
 
+bool IDataBase::delAllWayPoints()
+{
+	return false;
+}
+
 int IDataBase::wayPointsLastModified()
 {
 	return 0;
