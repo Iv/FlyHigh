@@ -63,8 +63,9 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 		break;
 	}
 	
-	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
-	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
+	pMenu->insertItem("Delete", this, SLOT(file_delete()));
+	pMenu->insertItem("Delete all", this, SLOT(file_deleteAll()));
+	pMenu->insertItem("Export all...", this, SLOT(exportTable()));
 	
 	TableWindow::setCaption(caption);
 	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
@@ -157,6 +158,11 @@ void WayPointWindow::file_delete()
 		m_pDb->delWayPoint(m_wpList[row]);
 		TableWindow::unsetCursor();
 	}
+}
+
+void WayPointWindow::file_deleteAll()
+{
+	m_pDb->delAllWayPoints();
 }
 
 void WayPointWindow::file_AddToSqlDB()

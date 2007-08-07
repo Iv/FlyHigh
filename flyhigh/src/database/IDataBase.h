@@ -49,6 +49,7 @@ class IDataBase: public QObject
 		// waypoints
 		virtual bool add(WayPoint &wp);
 		virtual bool delWayPoint(WayPoint &wp);
+		virtual bool delAllWayPoints();
 		virtual int wayPointsLastModified();
 		virtual bool wayPointList(WayPoint::WayPointListType &wpList);
 		

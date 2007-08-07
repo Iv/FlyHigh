@@ -337,6 +337,7 @@ int ft_wayPointSnd(ft_WayPointType *pft_WayPoint)
 int ft_wayPointDel(const char *pName) /* NULL = delete all */
 {
 	u_char len;
+	int res;
 	
 	sprintf((char*)&buff[0],  "PBRWPX,");
 	
@@ -351,7 +352,10 @@ int ft_wayPointDel(const char *pName) /* NULL = delete all */
 		len = 24;
 	}
 	
-	return flytec_ll_send(&buff[0], len);
+	res = flytec_ll_send(&buff[0], len);
+	usleep(1000*1000);
+
+	return res;
 }
 
 /*******************************************************************************************
