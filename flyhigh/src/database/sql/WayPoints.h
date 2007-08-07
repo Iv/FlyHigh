@@ -34,6 +34,7 @@ class WayPoints: public DataBaseSub
 
 		bool add(WayPoint &wp);
 		bool delWayPoint(WayPoint &wp);
+		bool delAllWayPoints();
 		bool wayPoint(int id, WayPoint &wp);
 		// searches a WayPoint around radius from lat and lon of wp
 		// fills values of wp and returns database ID

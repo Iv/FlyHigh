@@ -241,6 +241,17 @@ bool FlytecDevice::delWayPoint(WayPoint &wp)
 	return success;
 }
 
+bool FlytecDevice::delAllWayPoints()
+{
+	bool success;
+	
+	success = (ft_wayPointDel(NULL) == 0);
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	
+	return success;
+}
+
 bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;

@@ -65,6 +65,18 @@ bool WayPoints::delWayPoint(WayPoint &wp)
 	return success;
 }
 
+bool WayPoints::delAllWayPoints()
+{
+	QSqlQuery query(db());
+	bool success;
+	
+	success = query.exec("DELETE * FROM `WayPoints`");
+	DataBaseSub::setLastModified("WayPoints");
+	Error::verify(success, Error::SQL_DEL);
+	
+	return success;
+}
+
 bool WayPoints::wayPoint(int id, WayPoint &wp)
 {
 	QSqlQuery query(db());
