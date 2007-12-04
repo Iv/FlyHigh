@@ -66,7 +66,7 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homeDirPath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.5";
+	m_versionInfo = "FlyHigh Version 0.5.1";
 
 	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
 }
