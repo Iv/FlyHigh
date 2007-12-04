@@ -15,14 +15,17 @@
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description/>
-    <ignoreparts/>
+    <ignoreparts>
+      <part>kdevfilegroups</part>
+      <part>kdevfilelist</part>
+    </ignoreparts>
     <secondaryLanguages/>
     <versioncontrol>kdevcvsservice</versioncontrol>
   </general>
   <kdevautoproject>
     <general>
       <activetarget>src/analysis/libanalysis.a</activetarget>
-      <useconfiguration>debug</useconfiguration>
+      <useconfiguration>release</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
     <run>
