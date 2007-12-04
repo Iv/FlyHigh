@@ -45,6 +45,7 @@
 #include "Flight.h"
 #include "Images.h"
 #include "IGCFileParser.h"
+#include "KmlWriter.h"
 #include "OLCOptimizer.h"
 #include "OLCWebForm.h"
 #include "ProgressDlg.h"
@@ -81,7 +82,8 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 		break;
 	}
 	
-	pMenu->insertItem("&Export...", this, SLOT(file_export()));
+	pMenu->insertItem("&Export IGC...", this, SLOT(file_exportIGC()));
+	pMenu->insertItem("&Export KML...", this, SLOT(file_exportKML()));
 	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
 	
 /*	- ground speed / time
@@ -457,7 +459,7 @@ void FlightWindow::file_import()
 	}
 }
 
-void FlightWindow::file_export()
+void FlightWindow::file_exportIGC()
 {
 	const QDir *pDir;
 	QFile file;
@@ -490,7 +492,7 @@ void FlightWindow::file_export()
 			// IGC file
 			igcParser.parse(m_flightList[row].igcData());
 			
-			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (igc.*)", this,
+			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "IGC Files (*.igc)", this,
 					"IGC file export", true);
 
 			olcWebForm.setFlight(m_flightList[row]);
@@ -551,6 +553,106 @@ void FlightWindow::file_export()
 					}
 					
 					olcWebForm.save(fileName + ".html");
+				}
+				
+				progDlg.endProgress();
+			}
+		}
+	}
+}
+
+void FlightWindow::file_exportKML()
+{
+	const QDir *pDir;
+	QFile file;
+	QString name;
+	QString fileName;
+	QString line;
+	QString comment;
+	IGCFileParser igcParser;
+	OLCOptimizer olcOptimizer;
+	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
+	OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
+	OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
+	KmlWriter kmlWriter;
+	FlightPointList fpList;
+	
+	ProgressDlg progDlg(this);
+	double distFree;
+	double distFAI;
+	double distFlat;
+	double ptsFree;
+	double ptsFAI;
+	double ptsFlat;
+	int row;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		if(m_pDb->loadIGCFile(m_flightList[row]))
+		{
+			// IGC file
+			igcParser.parse(m_flightList[row].igcData());
+			QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "KML Files (*.kml)", this,
+					"KML file export", true);
+
+			fileName = m_flightList[row].startPt().name();
+			fileName += m_flightList[row].date().toString("_dd_MM_yyyy");
+			fileDlg.setSelection(fileName);
+			fileDlg.setMode(QFileDialog::AnyFile);
+
+			if(fileDlg.exec() == QDialog::Accepted)
+			{
+				pDir =  fileDlg.dir();
+				IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+				delete pDir;
+				fileName = fileDlg.selectedFile();
+
+				// OLC file
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+				progDlg.beginProgress("optimize flight...", &olcOptimizer);
+				
+				if(olcOptimizer.optimize())
+				{
+					distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
+					ptsFree = distFree * 1.5;
+					distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
+					ptsFAI = distFAI  * 2.0;
+					distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
+					ptsFlat = distFlat * 1.75;
+					
+					if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
+					{
+						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFree[0]));
+						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[1]).wp);
+						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[2]).wp);
+						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[3]).wp);
+						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFree[4]));
+						kmlWriter.setTriangle(false);
+					}
+					else if(ptsFlat > ptsFAI)
+					{
+						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
+						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[1]).wp);
+						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[2]).wp);
+						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[3]).wp);
+						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
+						kmlWriter.setTriangle(true);
+					}
+					else
+					{
+						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
+						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[1]).wp);
+						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[2]).wp);
+						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[3]).wp);
+						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
+						kmlWriter.setTriangle(true);
+					}
+
+					kmlWriter.setFlight(m_flightList[row]);
+					kmlWriter.setFlightPoints(igcParser.flightPointList());
+					kmlWriter.save(fileName + ".kml");
 				}
 				
 				progDlg.endProgress();
