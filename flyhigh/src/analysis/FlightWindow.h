@@ -46,7 +46,8 @@ class FlightWindow : public TableWindow
 		void file_new();
 		void file_delete();
 		void file_import();
-		void file_export();
+		void file_exportIGC();
+		void file_exportKML();
 		void plot_speedVsTime();
 		void plot_altVsTime();
 		void plot_varioVsTime();
