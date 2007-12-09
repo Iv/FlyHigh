@@ -52,7 +52,6 @@ class FlightWindow : public TableWindow
 		void plot_altVsTime();
 		void plot_varioVsTime();
 		void plot_OLC();
-		void plot_3d();
 		void showOnMap();
 		
 	private:
