@@ -14,7 +14,7 @@ these rights:
 SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, CREATE 
 TEMPORARY TABLES
 
-create initial database
+create initial database (not for Debian users!)
 $ mysql -u root -p < flyhigh.sql
 Enter password:
 
