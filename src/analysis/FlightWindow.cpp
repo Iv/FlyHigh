@@ -97,7 +97,6 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	pMenu->insertItem("&Alt vs Time", this, SLOT(plot_altVsTime()));
 	pMenu->insertItem("&Vario vs Time", this, SLOT(plot_varioVsTime()));
 	pMenu->insertItem("&OLC", this, SLOT(plot_OLC()));
-	pMenu->insertItem("&3D View", this, SLOT(plot_3d()));
 	pMenu->insertItem("&Map View", this, SLOT(showOnMap()));
 	
 	TableWindow::setCaption(caption);
@@ -939,41 +938,6 @@ void FlightWindow::plotFlighPointList(FlightPointList &fpList, const QString& ti
 	}
 	
 	m_plotter.plotXYZ(x, y, z, title);
-}
-
-void FlightWindow::plot_3d()
-{
-	QString fileName = "/tmp/track.igc";
-	QFile file;
-	ProgressDlg progDlg(this);
-	int row;
-	bool success;
-	
-	row = getTable()->currentRow();
-	
-	if(row >= 0)
-	{
-		progDlg.beginProgress("read igc file...", m_pDb);
-		success = m_pDb->loadIGCFile(m_flightList[row]);
-		progDlg.endProgress();
-	
-		if(success)
-		{
-			file.setName(fileName);
-				
-			if(file.open(IO_WriteOnly))
-			{
-				file.writeBlock(m_flightList[row].igcData());
-				file.close();
-			
-				// show flight
-				m_gpligc.clearArguments();
-				m_gpligc.addArgument("openGLIGCexplorer");
-				m_gpligc.addArgument(fileName);
-				Error::verify(m_gpligc.start(), Error::GPLIGC_OPEN);
-			}
-		}
-	}
 }
 
 void FlightWindow::showOnMap()
