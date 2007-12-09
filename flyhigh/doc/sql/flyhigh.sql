@@ -97,5 +97,3 @@ CREATE TABLE IF NOT EXISTS `LastModified`
 	PRIMARY KEY(`Id`),
 	UNIQUE KEY (`Name`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-INSERT INTO `LastModified`(`Id` , `Name` , `Time`) VALUES(NULL, 'DataBaseVersion', '2006-11-14 00:00:00');
