@@ -22,9 +22,8 @@ echo "make --directory=$workDir -f Makefile.cvs"
 make --directory=$workDir -f Makefile.cvs
 
 # create source tar
-echo "tar -czf $project.$revision.tar.gz $workDir"
-tar -czf $curDir/$project.$revision.tar.gz $workDir
-mv $curDir/$project.$revision.tar.gz $workDir
+echo "tar -czf $project.$revision.tar.gz $project.$revision"
+tar -czf $project.$revision.tar.gz $project.$revision
 
 # configure and build
 mkdir $workDir/release
