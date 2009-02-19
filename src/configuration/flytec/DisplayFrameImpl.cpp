@@ -111,11 +111,11 @@ void DisplayFrameImpl::store(QByteArray &arr)
 void DisplayFrameImpl::insertItems( QComboBox * pItem )
 {
 	pItem->clear();
-	pItem->insertItem( tr( "WindSpd" ) );
+	pItem->insertItem( tr( "Wind spd" ) );
 	pItem->insertItem( tr( "Time" ) );
 	pItem->insertItem( tr( "Fl.Time" ) );
 	pItem->insertItem( tr( "Gnd spd" ) );
-	pItem->insertItem( tr( "Spd-Diff" ) );
+	pItem->insertItem( tr( "Speed diff" ) );
 	pItem->insertItem( tr( "Dist WP" ) );
 	pItem->insertItem( tr( "Bearing" ) );
 	pItem->insertItem( tr( "Track" ) );
@@ -130,10 +130,16 @@ void DisplayFrameImpl::insertItems( QComboBox * pItem )
 	pItem->insertItem( QString::null );
 	pItem->insertItem( tr( "Alt @ BG" ) );
 	pItem->insertItem( tr( "FL (ft)" ) );
-	pItem->insertItem( tr( "Dist to CTR" ) );
-	pItem->insertItem( tr( "Airspeed" ) );
-	pItem->insertItem( tr( "Alt a.Gl" ) );
-	pItem->insertItem( tr( "Dist Gl" ) );
+	pItem->insertItem( tr( "Air spd" ) );
+	pItem->insertItem( tr( "Alt @ goal" ) );
+	pItem->insertItem( tr( "Dist goal" ) );
+	pItem->insertItem( tr( "Vario" ) );
+	pItem->insertItem( tr( "Alt 1" ) );
+	pItem->insertItem( tr( "SMS p/t" ) );
+	pItem->insertItem( tr( "Dist toff" ) );
+	pItem->insertItem( tr( "Dist cyl" ) );
+	pItem->insertItem( tr( "L/D rel goal" ) );
+	pItem->insertItem( tr( "Race start" ) );
 }
 
 

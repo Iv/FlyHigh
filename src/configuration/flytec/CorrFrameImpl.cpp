@@ -38,29 +38,28 @@ CorrFrameImpl::~CorrFrameImpl()
 
 void CorrFrameImpl::update(QByteArray &arr)
 {
-	(void)arr;
-/*	int16_t i16value;
-	char i8value;
+	int16_t i16value;
 	
 	// correction of A1
 	i16value = arr[QNH_CORR_A1_POS] << 8;
 	i16value += arr[QNH_CORR_A1_POS+1];
 	spinBox_QNHCorrA1->setValue(i16value);
 
-	// correction of A2	
+	// correction of A2
 	i16value = arr[QNH_CORR_A2_POS] << 8;
 	i16value += arr[QNH_CORR_A2_POS+1];
 	spinBox_QNHCorrA2->setValue(i16value);
-	
+
+/*
 	// temprature correction
 	i8value = (char)arr[TMP_CORR_POS];
-	spinBox_TempCorr->setValue(i8value);*/
+	spinBox_TempCorr->setValue(i8value);
+*/
 }
 
 void CorrFrameImpl::store(QByteArray &arr)
 {
-	(void)arr;
-/*	int16_t i16value;
+	int16_t i16value;
 	
 	// correction of A1
 	i16value = spinBox_QNHCorrA1->value();
@@ -71,9 +70,11 @@ void CorrFrameImpl::store(QByteArray &arr)
 	i16value = spinBox_QNHCorrA2->value();
 	arr[QNH_CORR_A2_POS] = (char)(i16value >> 8);
 	arr[QNH_CORR_A2_POS+1] = (char)(i16value & 0xFF);
-	
+
+/*
 	// temprature correction
-	arr[TMP_CORR_POS] = spinBox_TempCorr->value();*/
+	arr[TMP_CORR_POS] = spinBox_TempCorr->value();
+*/
 }
 
 #include "CorrFrameImpl.moc"

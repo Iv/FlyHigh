@@ -54,7 +54,7 @@ void AcousticFrameImpl::update(QByteArray &arr)
 	slider_Volume->setValue(arr[BASE_VOL_BEEP_POS]);
 	
 	// Vario Offset
-	spinBox_Threshold->setValue(arr[VARIO_OFFSET_POS]);
+	spinBox_Threshold->setValue(arr[ACOUSTIC_LIFT_THR_POS]);
 
 	// Up Base Frequency
 	c16value = arr[UP_BASE_FRQ_POS] << 8;
@@ -94,7 +94,7 @@ void AcousticFrameImpl::store(QByteArray &arr)
 	arr[BASE_VOL_BEEP_POS] = (u_char)slider_Volume->value();
 	
 	// Vario Offset
-	arr[VARIO_OFFSET_POS] = (u_char)spinBox_Threshold->value();
+	arr[ACOUSTIC_LIFT_THR_POS] = (u_char)spinBox_Threshold->value();
 
 	// Up Base Frequency
 	c16value = spinBox_UpFreq->value();

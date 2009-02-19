@@ -159,28 +159,6 @@
                 <number>0</number>
             </property>
         </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>spinBox_UpFreq</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>190</x>
-                    <y>60</y>
-                    <width>100</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="maxValue">
-                <number>1400</number>
-            </property>
-            <property name="minValue">
-                <number>700</number>
-            </property>
-            <property name="lineStep">
-                <number>1</number>
-            </property>
-        </widget>
         <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel_FreqMod</cstring>
@@ -297,6 +275,28 @@
             </property>
             <property name="text">
                 <string>Integration</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>spinBox_UpFreq</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>60</y>
+                    <width>100</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="maxValue">
+                <number>1400</number>
+            </property>
+            <property name="minValue">
+                <number>500</number>
+            </property>
+            <property name="lineStep">
+                <number>1</number>
             </property>
         </widget>
     </widget>
