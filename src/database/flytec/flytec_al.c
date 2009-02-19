@@ -56,18 +56,20 @@ int ft_deviceInfoRead(DeviceInfoType *pDeviceInfo)
 	/* read the response */
 	if(res == 0)
 	{
+/* PBRSNP,5020,nnnnnnnnnnnnnnnnnnnnnnnn,05012,1.21 */
 		/* device ident */
 		memcpy(&pDeviceInfo->deviceIdent[0], (char*)&buff[7], 4);
 		pDeviceInfo->deviceIdent[4] = '\0';
 
 		/* pilot name */
 		ft_ftstring2string(&pDeviceInfo->pilotName[0], (char*)&buff[12]);
-	
+
+
 		/* serial number */
-		pDeviceInfo->serialNr = atoi((char*)&buff[30]);
+		pDeviceInfo->serialNr = atoi((char*)&buff[37]);
 		
 		/* SW Version */
-		memcpy(&pDeviceInfo->swVersion[0], (char*)&buff[36], 4);
+		memcpy(&pDeviceInfo->swVersion[0], (char*)&buff[43], 4);
 		pDeviceInfo->swVersion[4] = '\0';
 	}
 	else
