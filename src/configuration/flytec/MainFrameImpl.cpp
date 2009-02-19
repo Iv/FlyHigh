@@ -75,7 +75,7 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, WFlags fl)
 	// Correction
 	pCorrFrame = new CorrFrameImpl(widgetStack);
 	addPage(pCorrFrame, &pos);
-	pCorrFrame->setEnabled(false);
+	pCorrFrame->setEnabled(true);
 	m_FrameList.push_back(pCorrFrame);
 	
 	// Vario

@@ -39,10 +39,10 @@ VarioFrameImpl::~VarioFrameImpl()
 void VarioFrameImpl::update(QByteArray &arr)
 {
 	// Response Delay
-	spinBox_RespDelay->setValue(arr[RESP_DELAY_POS] * 200);
+//	spinBox_RespDelay->setValue(arr[RESP_DELAY_POS] * 200);
 
 	// Vario Mode
-	comboBox_Variomode->setCurrentItem(arr[VARIOMODE_POS]);
+//	comboBox_Variomode->setCurrentItem(arr[VARIOMODE_POS]);
 
 	// Integration Time
 	spinBox_ITime->setValue(arr[I_TIME_POS]);
@@ -54,10 +54,10 @@ void VarioFrameImpl::update(QByteArray &arr)
 void VarioFrameImpl::store(QByteArray &arr)
 {
 	// Response Delay
-	arr[RESP_DELAY_POS] = spinBox_RespDelay->value() / 200;
+//	arr[RESP_DELAY_POS] = spinBox_RespDelay->value() / 200;
 	
 	// Vario Mode
-	arr[VARIOMODE_POS] = comboBox_Variomode->currentItem();
+//	arr[VARIOMODE_POS] = comboBox_Variomode->currentItem();
 
 	// Integration Time
 	arr[I_TIME_POS] = spinBox_ITime->value();

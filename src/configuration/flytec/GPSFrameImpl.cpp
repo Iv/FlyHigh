@@ -20,6 +20,7 @@
 
 #include <qspinbox.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
 #include "IFlyHighRC.h"
 
 #include "GPSFrameImpl.h"
@@ -41,12 +42,18 @@ void GPSFrameImpl::update(QByteArray &arr)
 {
 	char i8value;
 
+	// Grid System
 	comboBox_GridSys->setCurrentItem(arr[GRID_SYS_POS]);
 	
+	// UTC Offset
 	i8value = arr[UTC_OFFSET_POS];
 	spinBox_UTCoffset->setValue(i8value);
 
-	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
+	// Half UTC offset
+	i8value = arr[UTC_HALF_OFFSET_POS];
+	checkBox_UTChalfOffset->setChecked(i8value);
+
+//	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
 }
 
 void GPSFrameImpl::store(QByteArray &arr)
@@ -54,14 +61,17 @@ void GPSFrameImpl::store(QByteArray &arr)
 	// Grid System
 	arr[GRID_SYS_POS] = comboBox_GridSys->currentItem();
 	
-	// UTC Offset
+	// UTC offset
 	arr[UTC_OFFSET_POS] = spinBox_UTCoffset->value();
 	
-	// sync UTC Offset with ressources
+	// sync UTC offset with ressources
 	IFlyHighRC::pInstance()->setUtcOffset(spinBox_UTCoffset->value());
 
+	// Half UTC offset
+	arr[UTC_HALF_OFFSET_POS] = checkBox_UTChalfOffset->isChecked();
+
 	// Geodic ID
-	arr[GEO_ID_POS] = spinBox_GeoID->value();
+//	arr[GEO_ID_POS] = spinBox_GeoID->value();
 }
 
 #include "GPSFrameImpl.moc"

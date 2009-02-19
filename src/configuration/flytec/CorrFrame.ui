@@ -49,25 +49,6 @@
     </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_TempCorr</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>140</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>10</number>
-        </property>
-        <property name="minValue">
-            <number>-10</number>
-        </property>
-    </widget>
-    <widget class="QSpinBox">
-        <property name="name">
             <cstring>spinBox_QNHCorrA2</cstring>
         </property>
         <property name="geometry">
@@ -166,6 +147,28 @@
         </property>
         <property name="text">
             <string>[°C]</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_TempCorr</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>140</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>10</number>
+        </property>
+        <property name="minValue">
+            <number>-10</number>
         </property>
     </widget>
 </widget>
