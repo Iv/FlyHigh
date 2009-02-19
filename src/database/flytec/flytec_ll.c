@@ -80,7 +80,7 @@ int cmpRecieveZZ(u_char calcZZ)
 	int res = -1;
 	
 	/* compare checksum */
-	sprintf(&strCalcZZ[0], "%02X", calcZZ);
+	sprintf(&strCalcZZ[0], "%02X", (int)calcZZ);
 	flytec_pl_getChar(&strRecZZ[0]);
 	flytec_pl_getChar(&strRecZZ[1]);
 	
@@ -147,7 +147,7 @@ static void sendZZ(u_char ZZ)
 {
 	u_char buff[3];
 	
-	sprintf(&buff[0], "%02X", ZZ);
+	sprintf(&buff[0], "%02X", (int)ZZ);
 	
 	/* send checksum  */
 	flytec_pl_putChar('*');
