@@ -48,7 +48,7 @@ class ISql: public IDataBase
 {
 	public:
 		static ISql* pInstance();
-		~ISql();
+		virtual ~ISql();
 
 		void setName(const QString &name);
 		void setUserName(const QString &userName);
