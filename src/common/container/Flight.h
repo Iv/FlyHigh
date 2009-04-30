@@ -54,10 +54,7 @@ class Flight
 		void setDuration(const QTime &time);
 		Glider& glider();
 		void setGlider(Glider &glider);
-		QByteArray& igcData();
-		/* setIgcData() makes only a shallow copy!!!
-		A shared class consists of a pointer to a shared data block
-		that contains a reference count and the data. */
+		const QByteArray& igcData() const;
 		void setIgcData(const QByteArray &data);
 		const QString& comment();
 		void setComment(const QString &comm);
