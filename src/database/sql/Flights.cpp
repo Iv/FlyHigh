@@ -196,7 +196,7 @@ bool Flights::loadIGCFile(Flight &flight)
 	
 	if(success)
 	{
-		flight.igcData() = query.value(IGCFile).toByteArray();
+		flight.setIgcData(query.value(IGCFile).toByteArray());
 	}
 	
 	Error::verify(success, Error::SQL_CMD);
