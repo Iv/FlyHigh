@@ -39,13 +39,13 @@ class Error
 			GNUPLOT_OPEN,
 			GPLIGC_OPEN,
 			NOF_ERRORS
-		};
+		}ErrorIdType;
 	
 		static void show(ErrorIdType error);
 		static void verify(bool expression, ErrorIdType error);
 
 	private:
-		typedef struct
+		typedef struct ErrorType
 		{
 			QString errorText;
 			QString solution;
