@@ -33,7 +33,7 @@ class IGCFileParser
 	public:
 		IGCFileParser();
 		
-		void parse(QByteArray &igcData);
+		void parse(const QByteArray &igcData);
 		const QString& pilot();
 		const QString& model();
 		const QString& gliderId();
