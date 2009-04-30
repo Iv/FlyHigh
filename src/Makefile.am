@@ -26,14 +26,14 @@ bin_PROGRAMS = flyhigh
 # the application source, library search path, and link libraries
 
 flyhigh_LDFLAGS = $(KDE_RPATH) $(all_libraries)
-flyhigh_LDADD = $(top_builddir)/src/preparation/libpreparation.a \
-	$(top_builddir)/src/analysis/libanalysis.a $(top_builddir)/src/common/form/libform.a \
-	$(top_builddir)/src/configuration/interface/libinterface.a $(top_builddir)/src/images/libimages.a \
-	$(top_builddir)/src/configuration/flytec/libflytec.a $(top_builddir)/src/database/libdatabase.a \
-	$(top_builddir)/src/database/sql/libsql.a $(top_builddir)/src/database/flytec/libflytec.a \
-	$(top_builddir)/src/database/garmin/libgarmin.a $(top_builddir)/src/common/container/libcontainer.a \
-	$(top_builddir)/src/common/utils/libutils.a $(top_builddir)/src/configuration/database/libdatabase.a \
-	$(top_builddir)/src/common/map/libmap.a $(LIB_KDEUI)
+flyhigh_LDADD = $(top_builddir)/src/analysis/libanalysis.a \
+	$(top_builddir)/src/configuration/database/libdatabase.a $(top_builddir)/src/configuration/flytec/libflytec.a \
+	$(top_builddir)/src/configuration/interface/libinterface.a $(top_builddir)/src/database/libdatabase.a \
+	$(top_builddir)/src/database/garmin/libgarmin.a $(top_builddir)/src/database/flytec/libflytec.a \
+	$(top_builddir)/src/database/sql/libsql.a $(top_builddir)/src/images/libimages.a \
+	$(top_builddir)/src/preparation/libpreparation.a $(top_builddir)/src/common/container/libcontainer.a \
+	$(top_builddir)/src/common/form/libform.a $(top_builddir)/src/common/map/libmap.a \
+	$(top_builddir)/src/common/utils/libutils.a $(LIB_KDEUI)
 
 # this is where the desktop file will go 
 shelldesktopdir = $(kde_appsdir)/Utilities
