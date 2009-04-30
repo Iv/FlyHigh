@@ -21,6 +21,7 @@
 #include <qbuffer.h>
 #include <qstring.h>
 #include <math.h>
+#include <stdlib.h>
 #include "AirSpaceItem.h"
 #include "OpenAirFileParser.h"
 #include "WayPoint.h"

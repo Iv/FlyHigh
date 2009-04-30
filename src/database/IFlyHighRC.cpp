@@ -21,6 +21,7 @@
 #include <qdir.h>
 #include <qstringlist.h>
 #include <qtextstream.h>
+#include <stdlib.h>
 #include "IFlyHighRC.h"
 
 #define MAX_LINE_SIZE 255
