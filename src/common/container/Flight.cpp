@@ -124,14 +124,14 @@ void Flight::setGlider(Glider &glider)
 	m_glider = glider;
 }
 
-QByteArray& Flight::igcData()
+const QByteArray& Flight::igcData() const
 {
 	return m_igcData;
 }
 
 void Flight::setIgcData(const QByteArray &data)
 {
-	m_igcData = data;
+	m_igcData = data.copy();
 }
 
 const QString& Flight::comment()
