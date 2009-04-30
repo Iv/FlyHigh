@@ -27,7 +27,7 @@ IGCFileParser::IGCFileParser()
 	m_model = "";
 }
 
-void IGCFileParser::parse(QByteArray &igcData)
+void IGCFileParser::parse(const QByteArray &igcData)
 {
 	#define MAX_REC_SIZE 50
 	QBuffer buff;
