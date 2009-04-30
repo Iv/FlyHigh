@@ -34,7 +34,7 @@ class IDataBase: public QObject
 {
 	Q_OBJECT
 	public:
-		typedef enum SourceType{GPSdevice, SqlDB, File};
+		typedef enum SourceType{GPSdevice, SqlDB, File}SourceType;
 		
 		IDataBase();
 		virtual ~IDataBase();
