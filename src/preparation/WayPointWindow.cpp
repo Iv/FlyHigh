@@ -63,6 +63,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 		break;
 	}
 	
+	pMenu->insertItem("New Waypoint", this, SLOT(file_addNewWp()));
 	pMenu->insertItem("Delete", this, SLOT(file_delete()));
 	pMenu->insertItem("Delete all", this, SLOT(file_deleteAll()));
 	pMenu->insertItem("Export all...", this, SLOT(exportTable()));
@@ -163,6 +164,17 @@ void WayPointWindow::file_delete()
 void WayPointWindow::file_deleteAll()
 {
 	m_pDb->delAllWayPoints();
+}
+
+void WayPointWindow::file_addNewWp()
+{
+	WayPoint wp;
+	IWayPointForm wayPointForm(this, tr("New WayPoint"), &wp);
+
+	if(wayPointForm.exec())
+	{
+		m_pDb->add(wp);
+	}
 }
 
 void WayPointWindow::file_AddToSqlDB()
