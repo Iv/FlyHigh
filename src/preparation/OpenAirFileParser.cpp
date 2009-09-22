@@ -34,74 +34,67 @@ OpenAirFileParser::OpenAirFileParser()
 
 void OpenAirFileParser::parse(QByteArray &openAirData)
 {
-	typedef enum RecordType{Unspecified, OpenAirspace, Flytec};
+	typedef enum RecordType{Unspecified, OpenAirRecord}RecordType;
 
 	QBuffer buff;
-	char record[MAX_REC_SIZE];
-	AirSpace airspace;
+	char pRecord[MAX_REC_SIZE];
 	AirSpace *pAirspace;
-	RecordType recordType = Unspecified;
+	RecordType recType = Unspecified;
+	QString strValue;
+	int intValue;
 	
 	m_airspaceList.clear();
 	buff.setBuffer(openAirData);
+	pAirspace = new AirSpace;
 
 	if(buff.open(IO_ReadOnly))
 	{
-		while(buff.readLine(record, MAX_REC_SIZE) > 0)
+		while(buff.readLine(pRecord, MAX_REC_SIZE) > 0)
 		{
-			if(strncmp(record, "*## ", 4) == 0) // this is a Flytec airspace name
+			if(strncmp(pRecord, "AC", 2) == 0)
 			{
-				airspace.setName(record+4);
-				recordType = Flytec;
+				recType = OpenAirRecord;
+				parseString(pRecord, strValue);
+				pAirspace->setAirspaceClass(strValue);
 			}
-			else if(strncmp(record, "AC", 2) == 0)
+			else if(strncmp(pRecord, "AN", 2) == 0)
 			{
-				if(recordType == Unspecified)
+				parseString(pRecord, strValue);
+				pAirspace->setName(strValue);
+			}
+			else if(strncmp(pRecord, "AH", 2) == 0)
+			{
+				parseString(pRecord, strValue);
+				pAirspace->setHigh(strValue);
+			}
+			else if(strncmp(pRecord, "AL", 2) == 0)
+			{
+				parseString(pRecord, strValue);
+				pAirspace->setLow(strValue);
+			}
+			else if(strncmp(pRecord, "V", 1) == 0)
+			{
+				parseVarAssign(pRecord);
+			}
+			else if(strncmp(pRecord, "DP", 2) == 0)
+			{
+				parsePoint(pRecord, pAirspace);
+			}
+			else if(strncmp(pRecord, "DB", 2) == 0)
+			{
+				parseArc(pRecord, pAirspace);
+			}
+			else if(strncmp(pRecord, "DC", 2) == 0)
+			{
+				parseCircle(pRecord, pAirspace);
+			}
+			else if(strncmp(pRecord, "*", 1) == 0)
+			{
+				if(recType != Unspecified)
 				{
-					recordType = OpenAirspace;
-				}
-				airspace.setAirspaceClass(record+3);
-			}
-			else if(strncmp(record, "AN", 2) == 0)
-			{
-				if(recordType != Flytec) // skip AN on Flytec record 
-				{
-					airspace.setName(record+3);
-				}
-			}
-			else if(strncmp(record, "AH", 2) == 0)
-			{
-				airspace.setHigh(record+3);
-			}
-			else if(strncmp(record, "AL", 2) == 0)
-			{
-				airspace.setLow(record+3);
-			}
-			else if(strncmp(record, "V", 1) == 0)
-			{
-				parseVarAssign(record+2);
-			}
-			else if(strncmp(record, "DP", 2) == 0)
-			{
-				parsePoint(record+3, airspace);
-			}
-			else if(strncmp(record, "DB", 2) == 0)
-			{
-				parseArc(record+3, airspace);
-			}
-			else if(strncmp(record, "DC", 2) == 0)
-			{
-				parseCircle(record+3, airspace);
-			}
-			else if(strncmp(record, "*", 1) == 0)
-			{
-				if(recordType != Unspecified)
-				{
-					pAirspace = new AirSpace;
-					*pAirspace = airspace;
 					m_airspaceList.append(pAirspace);
-					airspace.airSpaceItemList().clear();
-					recordType = Unspecified;
+					pAirspace = new AirSpace;
+					recType = Unspecified;
 				}
 			}
 		}
@@ -114,9 +107,52 @@ AirSpace::AirSpaceListType& OpenAirFileParser::airspaceList()
 	return m_airspaceList;
 }
 
-void OpenAirFileParser::parseAirspaceClass(char *record, AirSpace &airspace)
+void OpenAirFileParser::parseString(char *pRecord, QString &str)
 {
-	QString str = record;
+	std::string locStr = pRecord;
+	int end;
+
+	end = locStr.rfind('\r');
+
+	if(end < 0)
+	{
+		end = locStr.rfind('\n');
+	}
+
+	if(end < 0)
+	{
+		end = locStr.size();
+	}
+
+	str = locStr.substr(3, end - 3);
+}
+
+void OpenAirFileParser::parseHeight(char *pRecord, int &height)
+{
+	int strLen;
+	int chNr;
+
+	height = 0x80000000;
+	pRecord += 3;
+	strLen = strlen(pRecord);
+
+	for(chNr=(strLen-1); chNr>0; chNr--)
+	{
+		if(isdigit(pRecord[chNr]))
+		{
+			height = atoi(pRecord);
+			break;
+		}
+		else
+		{
+			pRecord[chNr] = 0;
+		}
+	}
+}
+
+void OpenAirFileParser::parseAirspaceClass(char *pRecord, AirSpace *pAirspace)
+{
+	QString str = pRecord;
 	int begin;
 	int end;
 	
@@ -124,26 +160,28 @@ void OpenAirFileParser::parseAirspaceClass(char *record, AirSpace &airspace)
 	end = str.find('\r');
 	str = str.mid(begin, end-begin);
 
-	airspace.setAirspaceClass(str);
+	pAirspace->setAirspaceClass(str);
 }
 
-void OpenAirFileParser::parseVarAssign(char *record)
+void OpenAirFileParser::parseVarAssign(char *pRecord)
 {
-	if(strncmp(record, "D=+", 3) == 0)
+	pRecord += 2;
+
+	if(strncmp(pRecord, "D=+", 3) == 0)
 	{
 		m_arcDir = true;
 	}
-	else if(strncmp(record, "D=-", 3) == 0)
+	else if(strncmp(pRecord, "D=-", 3) == 0)
 	{
 		m_arcDir = false;
 	}
-	else if(strncmp(record, "X=", 2) == 0)
+	else if(strncmp(pRecord, "X=", 2) == 0)
 	{
-		parseCoordinate(record+2, m_arcCenterLat, m_arcCenterLon);
+		parseCoordinate(pRecord+2, m_arcCenterLat, m_arcCenterLon);
 	}
 }
 
-void OpenAirFileParser::parsePoint(char *record, AirSpace &airspace)
+void OpenAirFileParser::parsePoint(char *pRecord, AirSpace *pAirspace)
 {
 // DP 46:57:47 N 007:16:59 E
 	AirSpaceItemPoint *pPoint;
@@ -151,14 +189,14 @@ void OpenAirFileParser::parsePoint(char *record, AirSpace &airspace)
 	double lon;
 	
 	pPoint = new AirSpaceItemPoint(AirSpaceItem::Point);
-	parseCoordinate(record, lat, lon);
+	parseCoordinate(pRecord, lat, lon);
 	pPoint->setPoint(lat, lon);
-	airspace.airSpaceItemList().push_back(pPoint);
+	pAirspace->airSpaceItemList().push_back(pPoint);
 }
 
-void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
+void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
 {
-	QString str = record;
+	QString str = pRecord;
 	AirSpaceItemPoint *pCenter;
 	AirSpaceItemSeg *pSeg;
 	double beginLat;
@@ -166,40 +204,40 @@ void OpenAirFileParser::parseArc(char *record, AirSpace &airspace)
 	double endLat;
 	double endLon;
 
-	parseCoordinate(record, beginLat, beginLon);
-	parseCoordinate(record+str.find(',')+1, endLat, endLon);
+	parseCoordinate(pRecord, beginLat, beginLon);
+	parseCoordinate(pRecord+str.find(',')+1, endLat, endLon);
 
 	// center
 	pCenter = new AirSpaceItemPoint(AirSpaceItem::Center);
 	pCenter->setPoint(m_arcCenterLat, m_arcCenterLon);
-	airspace.airSpaceItemList().push_back(pCenter);
+	pAirspace->airSpaceItemList().push_back(pCenter);
 
 	// start
 	pSeg = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
 	pSeg->setPoint(beginLat, beginLon);
 	pSeg->setDir(m_arcDir);
-	airspace.airSpaceItemList().push_back(pSeg);
+	pAirspace->airSpaceItemList().push_back(pSeg);
 
 	//stop
 	pSeg = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
 	pSeg->setPoint(endLat, endLon);
 	pSeg->setDir(m_arcDir);
-	airspace.airSpaceItemList().push_back(pSeg);
+	pAirspace->airSpaceItemList().push_back(pSeg);
 }
 
-void OpenAirFileParser::parseCircle(char *record, AirSpace &airspace)
+void OpenAirFileParser::parseCircle(char *pRecord, AirSpace *pAirspace)
 {
 	AirSpaceItemCircle *pCircle;
 	uint radius;
 
 	pCircle = new AirSpaceItemCircle();
 	pCircle->setPoint(m_arcCenterLat, m_arcCenterLon);
-	radius = WayPoint::meters(atof(record));
+	radius = WayPoint::meters(atof(pRecord));
 	pCircle->setRadius(radius);
-	airspace.airSpaceItemList().push_back(pCircle);
+	pAirspace->airSpaceItemList().push_back(pCircle);
 }
 
-bool OpenAirFileParser::parseCoordinate(char *record, double &latitude, double &longitude)
+bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double &longitude)
 {
 	char lat[15];
 	char NS[5];
@@ -210,7 +248,7 @@ bool OpenAirFileParser::parseCoordinate(char *record, double &latitude, double &
 	int sec;
 	bool success;
 	
-	success = (sscanf(record, "%s %1s %s %1s", lat, NS, lon, EW) == 4);
+	success = (sscanf(pRecord, "%s %1s %s %1s", lat, NS, lon, EW) == 4);
 	
 	if(success)
 	{

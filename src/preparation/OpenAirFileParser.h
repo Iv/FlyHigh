@@ -37,13 +37,15 @@ class OpenAirFileParser
 		double m_arcCenterLat;
 		double m_arcCenterLon;
 		bool m_arcDir;
-		
-		void parseAirspaceClass(char *record, AirSpace &airspace);
-		void parseVarAssign(char *record);
-		void parsePoint(char *record, AirSpace &airspace);
-		void parseArc(char *record, AirSpace &airspace);
-		void parseCircle(char *record, AirSpace &airspace);
-		bool parseCoordinate(char *record, double &latitude, double &longitude);
+
+		void parseString(char *pRecord, QString &str);
+		void parseHeight(char *pRecord, int &height);
+		void parseAirspaceClass(char *pRecord, AirSpace *pAirspace);
+		void parseVarAssign(char *pRecord);
+		void parsePoint(char *pRecord, AirSpace *pAirspace);
+		void parseArc(char *pRecord, AirSpace *pAirspace);
+		void parseCircle(char *pRecord, AirSpace *pAirspace);
+		bool parseCoordinate(char *pRecord, double &latitude, double &longitude);
 };
 
 #endif
