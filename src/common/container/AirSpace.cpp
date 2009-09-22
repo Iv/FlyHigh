@@ -102,19 +102,6 @@ const QString& AirSpace::remark()
 	return m_remark;
 }
 
-AirSpace& AirSpace::operator=(const AirSpace &airspace)
-{
-	m_name = airspace.m_name;
-	m_airspaceClass = airspace.m_airspaceClass;
-	m_high = airspace.m_high;
-	m_low = airspace.m_low;
-	m_warnDist = airspace.m_warnDist;
-	m_remark = airspace.m_remark;
-	m_airSpaceItemList = airspace.m_airSpaceItemList;
-	
-	return *this;
-}
-
 bool AirSpace::operator<(const AirSpace &airspace)
 {
 	return (m_name < airspace.m_name);

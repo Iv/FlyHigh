@@ -29,7 +29,7 @@ class AirSpace
 {
 	public:
 		enum {MaxNameSize=17};
-		typedef QSortedList<AirSpace> AirSpaceListType;
+		typedef QPtrList<AirSpace> AirSpaceListType;
 
 		AirSpace();
 		virtual ~AirSpace();
@@ -37,9 +37,9 @@ class AirSpace
 		const QString& name();
 		void setName(const QString &name);
 		const QString& high();
-		void setHigh(const QString &high);
+		void setHigh(const QString & high);
 		const QString& low();
-		void setLow(const QString &low);
+		void setLow(const QString & low);
 		const QString& airspaceClass();
 		void setAirspaceClass(const QString &airspaceClass);
 		AirSpaceItem::AirSpaceItemListType& airSpaceItemList();
@@ -48,7 +48,6 @@ class AirSpace
 		void setRemark(const QString &remark);
 		const QString& remark();
 		
-		AirSpace& operator=(const AirSpace &airspace);
 		bool operator<(const AirSpace &airspace);
 		bool operator==(const AirSpace &airspace);
 	
