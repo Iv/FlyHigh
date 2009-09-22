@@ -26,7 +26,7 @@ class AirSpaceItem
 {
 	public:
 		typedef QValueVector<AirSpaceItem*> AirSpaceItemListType;
-		typedef enum ItemType{Point, Circle, Center, StartSegment, StopSegment};
+		typedef enum ItemType{Point, Circle, Center, StartSegment, StopSegment}ItemType;
 
 		AirSpaceItem();
 		virtual ~AirSpaceItem();
