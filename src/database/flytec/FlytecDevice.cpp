@@ -179,15 +179,16 @@ bool FlytecDevice::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 bool FlytecDevice::loadIGCFile(Flight &flight)
 {
 	QBuffer buff;
+	QByteArray track;
 	uchar line[255];
 	uchar size;
 	bool success;
 	int prog = 0;
-	
-	buff.setBuffer(flight.igcData());
+
+	buff.setBuffer(track);
 	success = (ft_trackReq(flight.number()) == 0);
 	m_cancel = false;
-	
+
 	if(success)
 	{
 		buff.open(IO_WriteOnly);
@@ -204,9 +205,11 @@ bool FlytecDevice::loadIGCFile(Flight &flight)
 			
 			buff.writeBlock((char*)&line[0], size);
 		}
+
 		buff.close();
+		flight.setIgcData(track);
 	}
-	
+
 	Error::verify(success, Error::FLYTEC_CMD);
 	
 	return success;
@@ -516,7 +519,6 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 	AirSpaceItemSeg *pSegment;
 	AirSpaceItemCircle *pCircle;
 	AirSpace *pAirspace;
-	AirSpace airSpace;
 	ft_CTRType ftCTR;
 	bool success;
 	char string[20];
@@ -538,19 +540,19 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 				return false;
 			}
 
+			pAirspace = new AirSpace;
+
 			// first sentence
 			ft_ftstring2string(string, ftCTR.sent.first.name);
-			airSpace.setName(string);
-			airSpace.setWarnDist(ftCTR.sent.first.warnDist);
+			pAirspace->setName(string);
+			pAirspace->setWarnDist(ftCTR.sent.first.warnDist);
 			
 			// second sentence
 			success &= (ft_ctrListRec(&ftCTR) == 0);
 			ft_ftstring2string(string, ftCTR.sent.second.remark);
-			airSpace.setRemark(string);
+			pAirspace->setRemark(string);
 
 			// members
-			airSpace.airSpaceItemList().clear();
-
 			while(ftCTR.actSent < (ftCTR.totalSent - 1))
 			{
 				if(ft_ctrListRec(&ftCTR) == 0)
@@ -583,7 +585,7 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 					}
 					
 					pItem->setPoint(ftCTR.sent.member.latitude, ftCTR.sent.member.longitude);
-					airSpace.airSpaceItemList().push_back(pItem);
+					pAirspace->airSpaceItemList().push_back(pItem);
 				}
 				else
 				{
@@ -591,8 +593,6 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 				}
 			}
 			
-			pAirspace = new AirSpace;
-			*pAirspace = airSpace;
 			airspaceList.append(pAirspace);
 		}
 	}
