@@ -25,18 +25,23 @@
 //#include "IAirSpaceForm.h"
 #include "TableWindow.h"
 
+class QWidget;
+
 class AirSpaceWindow: public TableWindow
 {
 	Q_OBJECT
 	
 	public:
 		AirSpaceWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
+
+		~AirSpaceWindow();
 	
 	private slots:
 		void file_open();
 		void file_delete();
 		void file_update();
 		void file_AddToGPS();
+		void selectionChanged();
 
 	protected:
 		bool periodicalUpdate();
@@ -47,6 +52,7 @@ class AirSpaceWindow: public TableWindow
 		IDataBase *m_pDb;
 		int m_lastModified;
 		AirSpace::AirSpaceListType m_airSpaceList;
+		QWidget *m_pAirSpaceView;
 		
 		void setAirSpaceToRow(uint row, AirSpace &airspace);
 };
