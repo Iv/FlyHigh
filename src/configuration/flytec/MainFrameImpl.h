@@ -47,7 +47,7 @@ class MainFrameImpl: public MainFrame
 
 	private:
 		typedef std::vector<Frame*> FrameListType;
-		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig};
+		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
 		QByteArray m_flytecMem;
 		FrameListType m_FrameList;
