@@ -28,6 +28,7 @@
 #include <qpopupmenu.h>
 #include <qstring.h>
 #include <qtable.h>
+#include <qwidget.h>
 #include "AirSpace.h"
 #include "AirSpaceWindow.h"
 #include "IGPSDevice.h"
@@ -90,6 +91,17 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setColumnWidth(Class, 60);
 	
 	m_lastModified = 0;
+
+	m_pAirSpaceView = new QWidget();
+	m_pAirSpaceView->setGeometry(QRect(0, 0, 200, 200));
+	m_pAirSpaceView->show();
+
+	connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+}
+
+AirSpaceWindow::~AirSpaceWindow()
+{
+	delete m_pAirSpaceView;
 }
 
 bool AirSpaceWindow::periodicalUpdate()
@@ -208,10 +220,14 @@ void AirSpaceWindow::file_AddToGPS()
 	}
 }
 
+void AirSpaceWindow::selectionChanged()
+{
+}
+
 void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
 {
 	QTable *pTable = TableWindow::getTable();
-	
+
 	pTable->setText(row, Name, airspace.name());
 	pTable->setText(row, High, airspace.high());
 	pTable->setText(row, Low, airspace.low());
