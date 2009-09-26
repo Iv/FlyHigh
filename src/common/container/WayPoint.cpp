@@ -21,6 +21,9 @@
 #include <math.h>
 #include "WayPoint.h"
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 const uint WayPoint::startLandRadius = 500;
 const double WayPoint::earthRadius = 6371000.0;
  
@@ -36,7 +39,7 @@ WayPoint::WayPoint()
 	m_spot = "";
 }
 
-int WayPoint::id()
+int WayPoint::id() const
 {
 	return m_id;
 }
@@ -46,7 +49,7 @@ void WayPoint::setId(int id)
 	m_id = id;
 }
 
-const QString& WayPoint::name()
+const QString& WayPoint::name() const
 {
 	return m_name;
 }
@@ -56,7 +59,7 @@ void WayPoint::setName(const QString &name)
 	m_name = name;
 }
 
-void WayPoint::fullName(QString& name)
+void WayPoint::fullName(QString& name) const
 {
 	name = m_name;
 
@@ -66,7 +69,7 @@ void WayPoint::fullName(QString& name)
 	}
 }
 
-const QString& WayPoint::description()
+const QString& WayPoint::description() const
 {
 	return m_desc;
 }
@@ -76,11 +79,6 @@ void WayPoint::setDescription(const QString &desc)
 	m_desc = desc;
 }
 
-void WayPoint::setWayPoint(const WayPoint &wp)
-{
-	*this = wp;
-}
-
 void WayPoint::setCoordinates(double lat, double lon, int alt)
 {
 	m_lat = lat;
@@ -88,17 +86,27 @@ void WayPoint::setCoordinates(double lat, double lon, int alt)
 	m_alt = alt;
 }
 
-double WayPoint::latitude()
+void WayPoint::setLatitude(double lat)
+{
+	m_lat = lat;
+}
+
+double WayPoint::latitude() const
 {
 	return m_lat;
 }
 
-double WayPoint::longitude()
+void WayPoint::setLongitude(double lon)
+{
+	m_lon = lon;
+}
+
+double WayPoint::longitude() const
 {
 	return m_lon;
 }
 
-int WayPoint::altitude()
+int WayPoint::altitude() const
 {
 	return m_alt;
 }
@@ -108,7 +116,7 @@ void WayPoint::setCountry(const QString &country)
 	m_country = country;
 }
 
-const QString& WayPoint::country()
+const QString& WayPoint::country() const
 {
 	return m_country;
 }
@@ -118,28 +126,54 @@ void WayPoint::setSpot(const QString &spot)
 	m_spot = spot;
 }
 
-const QString& WayPoint::spot()
+const QString& WayPoint::spot() const
 {
 	return m_spot;
 }
 
-uint WayPoint::distance(WayPoint &wp)
+uint WayPoint::distance(const WayPoint &wp) const
 {
 	return distance(wp, *this);
 }
 
-WayPoint& WayPoint::operator=(const WayPoint &wp)
+void WayPoint::distBear(const WayPoint &wp, double &dist, double &bear) const
 {
-	m_id = wp.m_id;
-	m_name = wp.m_name;
-	m_spot = wp.m_spot;
-	m_country = wp.m_country;
-	m_desc = wp.m_desc;
-	m_lat = wp.m_lat;
-	m_lon = wp.m_lon;
-	m_alt = wp.m_alt;
-	
-	return *this;
+	double deltaLat;
+	double deltaLon;
+	double angle;
+	double lat1;
+	double lon1;
+	double lat2;
+	double lon2;
+
+	lat1 = (m_lat * M_PI / 180);
+	lon1 = (m_lon * M_PI / 180);
+	lat2 = (wp.latitude() * M_PI / 180);
+	lon2 = (wp.longitude() * M_PI / 180);
+
+	deltaLat = lat1 - lat2;
+	deltaLon = lon1 -lon2;
+
+	// distance
+	angle = sin(deltaLat / 2) * sin(deltaLat / 2) +
+			cos(lat1) * cos(lat2) * sin(deltaLon / 2) * sin(deltaLon / 2);
+	dist = 2 * atan2(sqrt(angle), sqrt(1 - angle)) * earthRadius;
+
+	// start angle
+	bear = atan2(sin(deltaLon) * cos(lat2),
+			cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(deltaLon));
+
+	bear = (bear * 180 / M_PI);
+
+	// angle from +/-180° to 0-360°
+	if(bear < 0)
+	{
+		bear = -bear;
+	}
+	else if(bear > 0)
+	{
+		bear = 360 - bear;
+	}
 }
 
 bool WayPoint::operator==(const WayPoint &wp)
@@ -147,7 +181,7 @@ bool WayPoint::operator==(const WayPoint &wp)
 	return (m_name == wp.m_name) && (m_spot == wp.m_spot) && (m_country == wp.m_country);
 }
 
-uint WayPoint::distance(WayPoint &wp1, WayPoint &wp2)
+uint WayPoint::distance(const WayPoint &wp1, const WayPoint &wp2)
 {
 	double dist;
 	double angle; // in radians
@@ -182,4 +216,18 @@ double WayPoint::arc(uint distance)
 uint WayPoint::meters(double nautmil)
 {
 	return (uint)round(1852.0 * nautmil);
+}
+
+void WayPoint::setMin(const WayPoint &wp)
+{
+	m_lat = MIN(wp.m_lat, m_lat);
+	m_lon = MIN(wp.m_lon, m_lon);
+	m_alt = MIN(wp.m_alt, m_alt);
+}
+
+void WayPoint::setMax(const WayPoint &wp)
+{
+	m_lat = MAX(wp.m_lat, m_lat);
+	m_lon = MAX(wp.m_lon, m_lon);
+	m_alt = MAX(wp.m_alt, m_alt);
 }

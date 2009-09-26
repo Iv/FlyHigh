@@ -39,30 +39,62 @@ class WayPoint
 		
 		WayPoint();
 
-		int id();
+		int id() const;
+
 		void setId(int id);
-		const QString& name();
+
+		const QString& name() const;
+
 		void setName(const QString &name);
+
 		void setSpot(const QString &spot);
-		const QString& spot();
+
+		const QString& spot() const;
+
 		void setCountry(const QString &country);
-		const QString& country();
-		void fullName(QString& name);
-		const QString& description();
+
+		const QString& country() const;
+
+		void fullName(QString& name) const;
+
+		const QString& description() const;
+
 		void setDescription(const QString &desc);
-		void setWayPoint(const WayPoint &wp);
+
 		// latitude and longitude are in WGS84 (degree)
 		void setCoordinates(double lat, double lon, int alt=0);
-		double latitude();
-		double longitude();
-		int altitude();
+
+		void setLatitude(double lat);
+
+		double latitude() const;
+
+		void setLongitude(double lon);
+
+		double longitude() const;
+
+		int altitude() const;
 		
-		uint distance(WayPoint &wp);
-		static uint distance(WayPoint &wp1, WayPoint &wp2);
+		uint distance(const WayPoint &wp) const;
+
+		/**
+			Calculates distance and bearing from this waypoint to wp. The
+			calculation is done by the Haversine formula.
+			@param wp distance and bearing are calculated to this waypoint
+			@param dist distance in meters
+			@param bear bearing in degrees
+		*/
+		void distBear(const WayPoint &wp, double &dist, double &bear) const;
+
+		static uint distance(const WayPoint &wp1, const WayPoint &wp2);
+
 		static double arc(uint distance);
+
 		static uint meters(double nautmil);
-		
-		WayPoint& operator=(const WayPoint &wp);
+
+		void setMin(const WayPoint &wp);
+
+		void setMax(const WayPoint &wp);
+
 		bool operator==(const WayPoint &wp);
 		
 	private:
