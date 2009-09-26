@@ -29,28 +29,24 @@ AirSpaceItem::~AirSpaceItem()
 
 void AirSpaceItem::setPoint(double lat, double lon)
 {
-	m_lat = lat;
-	m_lon = lon;
+	m_pos.setLatitude(lat);
+	m_pos.setLongitude(lon);
 }
 
 double AirSpaceItem::lat()
 {
-	return m_lat;
+	return m_pos.latitude();
 }
 
 double AirSpaceItem::lon()
 {
-	return m_lon;
+	return m_pos.longitude();
 }
 
-/*
-AirSpaceItem& AirSpaceItem::operator=(const AirSpaceItem &airSpaceItem)
+const WayPoint& AirSpaceItem::pos()
 {
-	(void)airSpaceItem;
-
-	return *this;
+	return m_pos;
 }
-*/
 
 AirSpaceItem::ItemType AirSpaceItem::type()
 {
@@ -74,18 +70,6 @@ AirSpaceItemPoint::~AirSpaceItemPoint()
 {
 }
 
-/*
-AirSpaceItem& AirSpaceItemPoint::operator=(const AirSpaceItem &airSpaceItem)
-{
-	AirSpaceItemPoint *pAirSpaceItem = (AirSpaceItemPoint*) &airSpaceItem;
-	
-	m_lat = pAirSpaceItem->m_lat;
-	m_lon = pAirSpaceItem->m_lon;
-
-	return *((AirSpaceItem*)this);
-}
-*/
-
 /*****************
 Segment
 ******************/
@@ -97,23 +81,6 @@ AirSpaceItemSeg::AirSpaceItemSeg(AirSpaceItem::ItemType type)
 AirSpaceItemSeg::~AirSpaceItemSeg()
 {
 }
-
-/*
-AirSpaceItem& AirSpaceItemSeg::operator=(const AirSpaceItem &airSpaceItem)
-{
-	AirSpaceItemSeg *pAirSpaceItem = (AirSpaceItemSeg*) &airSpaceItem;
-	
-	m_centerLat = pAirSpaceItem->m_centerLat;
-	m_centerLon = pAirSpaceItem->m_centerLon;
-	m_beginLat = pAirSpaceItem->m_beginLat;
-	m_beginLon = pAirSpaceItem->m_beginLon;
-	m_endLat = pAirSpaceItem->m_endLat;
-	m_endLon = pAirSpaceItem->m_endLon;
-	m_dir = pAirSpaceItem->m_dir;
-
-	return *((AirSpaceItem*)this);
-}
-*/
 
 void AirSpaceItemSeg::setDir(bool dir)
 {
@@ -146,16 +113,3 @@ uint AirSpaceItemCircle::radius()
 {
 	return m_radius;
 }
-
-/*
-AirSpaceItem& AirSpaceItemCircle::operator=(const AirSpaceItem &airSpaceItem)
-{
-	AirSpaceItemCircle *pAirSpaceItem = (AirSpaceItemCircle*) &airSpaceItem;
-	
-	m_centerLat = pAirSpaceItem->m_centerLat;
-	m_centerLon = pAirSpaceItem->m_centerLon;
-	m_radius = pAirSpaceItem->m_radius;
-
-	return *((AirSpaceItem*)this);
-}
-*/

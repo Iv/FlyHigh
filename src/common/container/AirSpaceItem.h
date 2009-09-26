@@ -21,6 +21,7 @@
 #define AirSpaceItem_h
 
 #include <qvaluevector.h>
+#include "WayPoint.h"
 
 class AirSpaceItem
 {
@@ -29,20 +30,25 @@ class AirSpaceItem
 		typedef enum ItemType{Point, Circle, Center, StartSegment, StopSegment}ItemType;
 
 		AirSpaceItem();
+
 		virtual ~AirSpaceItem();
 
 		void setPoint(double lat, double lon);
+
 		double lat();
+
 		double lon();
+
+		const WayPoint& pos();
+
 		ItemType type();
-	
+
 	protected:
 		void setType(ItemType type);
 
 	private:
 		ItemType m_type;
-		double m_lat;
-		double m_lon;
+		WayPoint m_pos;
 };
 
 class AirSpaceItemPoint: public AirSpaceItem
