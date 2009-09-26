@@ -24,6 +24,8 @@
 #include <qptrlist.h>
 #include <qsortedlist.h>
 #include "AirSpaceItem.h"
+#include "BoundBox.h"
+#include "WayPoint.h"
 
 class AirSpace
 {
@@ -32,23 +34,45 @@ class AirSpace
 		typedef QPtrList<AirSpace> AirSpaceListType;
 
 		AirSpace();
+
 		virtual ~AirSpace();
 
 		const QString& name();
+
 		void setName(const QString &name);
+
 		const QString& high();
+
 		void setHigh(const QString & high);
+
 		const QString& low();
+
 		void setLow(const QString & low);
+
 		const QString& airspaceClass();
+
 		void setAirspaceClass(const QString &airspaceClass);
+
 		AirSpaceItem::AirSpaceItemListType& airSpaceItemList();
+
 		void setWarnDist(uint meters);
+
 		uint warnDist();
+
 		void setRemark(const QString &remark);
+
 		const QString& remark();
+
+		void createPointList();
+
+		const WayPoint::WayPointListType& pointList() const;
+
+		const BoundBox& boundBox() const;
+
+		bool isInside(const WayPoint &wp) const;
 		
 		bool operator<(const AirSpace &airspace);
+
 		bool operator==(const AirSpace &airspace);
 	
 	private:
@@ -57,6 +81,8 @@ class AirSpace
 		QString m_high;
 		QString m_low;
 		AirSpaceItem::AirSpaceItemListType m_airSpaceItemList;
+		WayPoint::WayPointListType m_pointList;
+		BoundBox m_boundBox;
 		uint m_warnDist;
 		QString m_remark;
 };
