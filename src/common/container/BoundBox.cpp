@@ -56,6 +56,17 @@ double BoundBox::east() const
 	return m_ne.longitude();
 }
 
+
+double BoundBox::width() const
+{
+	return (east() - west());
+}
+
+double BoundBox::height() const
+{
+	return (north() - south());
+}
+
 void BoundBox::setSouthWest(const WayPoint &sw)
 {
 	m_sw = sw;

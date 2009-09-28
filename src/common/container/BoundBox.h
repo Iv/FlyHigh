@@ -42,6 +42,10 @@ class BoundBox
 
 		double east() const;
 
+		double width() const;
+
+		double height() const;
+
 		bool intersect(const BoundBox &bb) const;
 		
 	private:
