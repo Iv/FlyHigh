@@ -26,6 +26,8 @@ class TableWindow: public MDIWindow
 
 	protected slots:
 		void exportTable();
+
+		virtual void selectionChanged();
 		
 	protected:
 		QTable* getTable();
