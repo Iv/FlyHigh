@@ -21,8 +21,8 @@
 #define AirSpaceWindow_h
 
 #include "AirSpace.h"
+#include "AirSpaceView.h"
 #include "IDataBase.h"
-//#include "IAirSpaceForm.h"
 #include "TableWindow.h"
 
 class QWidget;
@@ -38,13 +38,17 @@ class AirSpaceWindow: public TableWindow
 	
 	private slots:
 		void file_open();
+
 		void file_delete();
+
 		void file_update();
+
 		void file_AddToGPS();
-		void selectionChanged();
 
 	protected:
 		bool periodicalUpdate();
+
+		void selectionChanged();
 		
 	private:
 		enum Fields{Name, Low, High, Class};
@@ -52,7 +56,7 @@ class AirSpaceWindow: public TableWindow
 		IDataBase *m_pDb;
 		int m_lastModified;
 		AirSpace::AirSpaceListType m_airSpaceList;
-		QWidget *m_pAirSpaceView;
+		AirSpaceView m_airSpaceView;
 		
 		void setAirSpaceToRow(uint row, AirSpace &airspace);
 };

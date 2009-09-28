@@ -92,16 +92,14 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	
 	m_lastModified = 0;
 
-	m_pAirSpaceView = new QWidget();
-	m_pAirSpaceView->setGeometry(QRect(0, 0, 200, 200));
-	m_pAirSpaceView->show();
+	m_airSpaceView.setGeometry(QRect(0, 0, 200, 200));
+	m_airSpaceView.show();
 
 	connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
 AirSpaceWindow::~AirSpaceWindow()
 {
-	delete m_pAirSpaceView;
 }
 
 bool AirSpaceWindow::periodicalUpdate()
@@ -222,6 +220,17 @@ void AirSpaceWindow::file_AddToGPS()
 
 void AirSpaceWindow::selectionChanged()
 {
+	AirSpace *pAirSpace;
+	int row;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		pAirSpace = m_airSpaceList.at(row);
+		pAirSpace->createPointList();
+		m_airSpaceView.setAirSpace(pAirSpace);
+	}
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
