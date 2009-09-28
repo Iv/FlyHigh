@@ -34,18 +34,13 @@ OpenAirFileParser::OpenAirFileParser()
 
 void OpenAirFileParser::parse(QByteArray &openAirData)
 {
-	typedef enum RecordType{Unspecified, OpenAirRecord}RecordType;
-
 	QBuffer buff;
 	char pRecord[MAX_REC_SIZE];
-	AirSpace *pAirspace;
-	RecordType recType = Unspecified;
+	AirSpace *pAirspace = NULL;
 	QString strValue;
-	int intValue;
 	
 	m_airspaceList.clear();
 	buff.setBuffer(openAirData);
-	pAirspace = new AirSpace;
 
 	if(buff.open(IO_ReadOnly))
 	{
@@ -53,24 +48,34 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 		{
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
-				recType = OpenAirRecord;
+				pAirspace = new AirSpace;
+				m_airspaceList.append(pAirspace);
 				parseString(pRecord, strValue);
 				pAirspace->setAirspaceClass(strValue);
 			}
 			else if(strncmp(pRecord, "AN", 2) == 0)
 			{
-				parseString(pRecord, strValue);
-				pAirspace->setName(strValue);
+				if(pAirspace != NULL)
+				{
+					parseString(pRecord, strValue);
+					pAirspace->setName(strValue);
+				}
 			}
 			else if(strncmp(pRecord, "AH", 2) == 0)
 			{
-				parseString(pRecord, strValue);
-				pAirspace->setHigh(strValue);
+				if(pAirspace != NULL)
+				{
+					parseString(pRecord, strValue);
+					pAirspace->setHigh(strValue);
+				}
 			}
 			else if(strncmp(pRecord, "AL", 2) == 0)
 			{
-				parseString(pRecord, strValue);
-				pAirspace->setLow(strValue);
+				if(pAirspace != NULL)
+				{
+					parseString(pRecord, strValue);
+					pAirspace->setLow(strValue);
+				}
 			}
 			else if(strncmp(pRecord, "V", 1) == 0)
 			{
@@ -78,26 +83,27 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			}
 			else if(strncmp(pRecord, "DP", 2) == 0)
 			{
-				parsePoint(pRecord, pAirspace);
+				if(pAirspace != NULL)
+				{
+					parsePoint(pRecord, pAirspace);
+				}
 			}
 			else if(strncmp(pRecord, "DB", 2) == 0)
 			{
-				parseArc(pRecord, pAirspace);
+				if(pAirspace != NULL)
+				{
+					parseArc(pRecord, pAirspace);
+				}
 			}
 			else if(strncmp(pRecord, "DC", 2) == 0)
 			{
-				parseCircle(pRecord, pAirspace);
-			}
-			else if(strncmp(pRecord, "*", 1) == 0)
-			{
-				if(recType != Unspecified)
+				if(pAirspace != NULL)
 				{
-					m_airspaceList.append(pAirspace);
-					pAirspace = new AirSpace;
-					recType = Unspecified;
+					parseCircle(pRecord, pAirspace);
 				}
 			}
 		}
+
 		buff.close();
 	}
 }
@@ -189,7 +195,7 @@ void OpenAirFileParser::parsePoint(char *pRecord, AirSpace *pAirspace)
 	double lon;
 	
 	pPoint = new AirSpaceItemPoint(AirSpaceItem::Point);
-	parseCoordinate(pRecord, lat, lon);
+	parseCoordinate(pRecord + 3, lat, lon);
 	pPoint->setPoint(lat, lon);
 	pAirspace->airSpaceItemList().push_back(pPoint);
 }
@@ -204,7 +210,7 @@ void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
 	double endLat;
 	double endLon;
 
-	parseCoordinate(pRecord, beginLat, beginLon);
+	parseCoordinate(pRecord + 3, beginLat, beginLon);
 	parseCoordinate(pRecord+str.find(',')+1, endLat, endLon);
 
 	// center
