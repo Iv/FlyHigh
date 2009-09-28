@@ -27,6 +27,8 @@ TableWindow::TableWindow(QWidget* parent, const char* name, int wflags)
 	m_pTable->show();
 	setFocusProxy(m_pTable);
 	setCentralWidget(m_pTable);
+
+	connect(m_pTable, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
 TableWindow::~TableWindow()
@@ -158,4 +160,8 @@ void TableWindow::exportTable()
 			file.close();
 		}
 	}
+}
+
+void TableWindow::selectionChanged()
+{
 }
