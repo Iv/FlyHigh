@@ -4,5 +4,5 @@ METASOURCES = AUTO
 lib_LIBRARIES =  libpreparation.a
 noinst_HEADERS = WayPointWindow.h RouteWindow.h AirSpaceWindow.h \
 	OpenAirFileParser.h
-libpreparation_a_SOURCES = WayPointWindow.cpp RouteWindow.cpp \
-		AirSpaceWindow.cpp OpenAirFileParser.cpp
+libpreparation_a_SOURCES = AirSpaceView.cpp AirSpaceWindow.cpp \
+	OpenAirFileParser.cpp RouteWindow.cpp WayPointWindow.cpp
