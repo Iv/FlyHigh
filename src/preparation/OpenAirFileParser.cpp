@@ -238,7 +238,7 @@ void OpenAirFileParser::parseCircle(char *pRecord, AirSpace *pAirspace)
 
 	pCircle = new AirSpaceItemCircle();
 	pCircle->setPoint(m_arcCenterLat, m_arcCenterLon);
-	radius = WayPoint::meters(atof(pRecord));
+	radius = WayPoint::meters(atof(pRecord + 3));
 	pCircle->setRadius(radius);
 	pAirspace->airSpaceItemList().push_back(pCircle);
 }
