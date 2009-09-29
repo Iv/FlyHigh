@@ -38,6 +38,7 @@ void AirSpaceView::setAirSpace(const AirSpace *pAirSpace)
 
 void AirSpaceView::paintEvent(QPaintEvent *pEvent)
 {
+	(void)pEvent;
 	drawAirspace();
 }
 
@@ -45,6 +46,7 @@ void AirSpaceView::paintEvent(QPaintEvent *pEvent)
 
 void AirSpaceView::drawAirspace()
 {
+	enum {Border = 5, MinSize = 50};
 	QPainter paint(this);
 	QRect viewRect;
 	QPointArray pointList;
@@ -53,6 +55,7 @@ void AirSpaceView::drawAirspace()
 	int viewHeight;
 	int viewWidth;
 	int ptNr = 0;
+	double lat;
 
 	if(m_pAirSpace != NULL)
 	{
@@ -65,22 +68,38 @@ void AirSpaceView::drawAirspace()
 	
 		if(bbox.width() > bbox.height())
 		{
-			viewHeight = viewRect.width() * bbox.height() / bbox.width();
-			paint.setViewport(viewRect.left(), (viewRect.height() - viewHeight) / 2,
-					viewRect.width(), viewHeight);
+			if(bbox.width() == 0)
+			{
+				viewHeight = MinSize;
+			}
+			else
+			{
+				viewHeight = (int)(viewRect.width() * bbox.height() / bbox.width());
+			}
+
+			paint.setViewport(viewRect.left() + Border, (viewRect.height() - viewHeight) / 2 + Border,
+					viewRect.width() - 2 * Border, viewHeight - 2 * Border);
 		}
 		else
 		{
-			viewWidth = viewRect.height() * bbox.width() / bbox.height();
-			paint.setViewport((viewRect.width() - viewWidth) / 2, viewRect.top(),
-					viewWidth, viewRect.height());
+			if(bbox.height() == 0)
+			{
+				viewWidth = MinSize;
+			}
+			else
+			{
+				viewWidth = (int)(viewRect.height() * bbox.width() / bbox.height());
+				paint.setViewport((viewRect.width() - viewWidth) / 2 + Border, viewRect.top() + Border,
+						viewWidth - 2 * Border, viewRect.height() - 2 * Border);
+			}
 		}
 	
 		pointList.resize(m_pAirSpace->pointList().size());
 	
 		for(it=m_pAirSpace->pointList().begin(); it!=m_pAirSpace->pointList().end(); it++)
 		{
-			pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt((*it).latitude()));
+			lat = bbox.north() + bbox.south() - (*it).latitude();
+			pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
 			ptNr++;
 		}
 	
