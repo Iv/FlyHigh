@@ -121,14 +121,11 @@ void AirSpace::createPointList()
 	double bear;
 	double beginArc;
 	double endArc;
-	double cosPhi;
-	double sinPhi;
 	double angDist;
 	int inc;
 	int stepCnt;
 	int stepNr;
 	WayPoint curPt;
-	bool firstPt = true;
 
 	m_pointList.clear();
 
@@ -234,7 +231,8 @@ void AirSpace::createPointList()
 
 	if(pCircle == NULL && (m_pointList.size() > 0))
 	{
-		m_pointList.push_back(m_pointList[0]);
+		curPt = m_pointList[0];
+		m_pointList.push_back(curPt);
 	}
 }
 
