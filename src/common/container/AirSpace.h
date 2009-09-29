@@ -31,7 +31,7 @@ class AirSpace
 {
 	public:
 		enum {MaxNameSize=17};
-		typedef QPtrList<AirSpace> AirSpaceListType;
+		typedef QSortedList<AirSpace> AirSpaceListType;
 
 		AirSpace();
 
