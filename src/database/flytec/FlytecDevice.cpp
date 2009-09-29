@@ -592,7 +592,7 @@ bool FlytecDevice::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 					break;
 				}
 			}
-			
+
 			airspaceList.append(pAirspace);
 		}
 	}
