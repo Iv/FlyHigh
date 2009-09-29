@@ -160,6 +160,7 @@ void AirSpaceWindow::file_open()
 			}
 		
 			pTable->selectRow(0);
+			selectionChanged();
 		}
 		
 		TableWindow::unsetCursor();
