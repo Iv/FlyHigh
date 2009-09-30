@@ -36,6 +36,8 @@ class AirSpaceView: public QWidget
 	protected:
 		void paintEvent(QPaintEvent *pEvent);
 
+		void closeEvent(QCloseEvent *pEvent);
+
 	private:
 		const AirSpace *m_pAirSpace;
 
