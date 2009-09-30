@@ -42,6 +42,11 @@ void AirSpaceView::paintEvent(QPaintEvent *pEvent)
 	drawAirspace();
 }
 
+void AirSpaceView::closeEvent(QCloseEvent *pEvent)
+{
+	pEvent->ignore();
+}
+
 #define ToInt(x) ((int)(x * 1000))
 
 void AirSpaceView::drawAirspace()
