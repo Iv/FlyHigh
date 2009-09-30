@@ -60,6 +60,8 @@ class FlytecDevice: public IGPSDevice
 		
 	private:
 		bool m_cancel;
+
+		QString toFtString(const QString &inStr);
 };
 
 #endif
