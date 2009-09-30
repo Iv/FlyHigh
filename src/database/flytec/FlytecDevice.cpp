@@ -20,6 +20,7 @@
  
 #include <qbuffer.h>
 #include <qdatetime.h>
+#include <qstring.h>
 #include "Error.h"
 #include "FlytecDevice.h"
 #include "IFlyHighRC.h"
@@ -221,7 +222,7 @@ bool FlytecDevice::add(WayPoint &wp)
 	bool success;
 	ft_WayPointType ftWp;
 	
-	ft_string2ftstring(wp.name().ascii(), ftWp.name);
+	ft_string2ftstring(toFtString(wp.name()).ascii(), ftWp.name);
 	ftWp.latitude = wp.latitude();
 	ftWp.longitude = wp.longitude();
 	ftWp.altitude = wp.altitude();
@@ -299,7 +300,7 @@ bool FlytecDevice::add(Route &route)
 	uint nofWp;
 	bool success;
 	
-	ft_string2ftstring(route.name().ascii(), ftRoute.name);
+	ft_string2ftstring(toFtString(route.name()).ascii(), ftRoute.name);
 	ftRoute.routeNum = 1;
 	nofWp = route.wayPointList().size();
 	ftRoute.totalSent = nofWp + 1;
@@ -323,7 +324,7 @@ bool FlytecDevice::add(Route &route)
 			}
 			
 			name = route.wayPointList().at(wpNr).name();
-			ft_string2ftstring(name.ascii(), ftRoute.name);
+			ft_string2ftstring(toFtString(name.ascii()), ftRoute.name);
 			ftRoute.actSent = wpNr + 1;
 			success = (ft_routeSnd(&ftRoute) == 0);
 			
@@ -422,13 +423,13 @@ bool FlytecDevice::add(AirSpace &airspace)
 	// first sentence
 	ftCTR.totalSent = nofMember + 2; // inclusive first and second sentence
 	ftCTR.actSent = 0;
-	ft_string2ftstring(airspace.name().ascii(), ftCTR.sent.first.name);
+	ft_string2ftstring(toFtString(airspace.name()).ascii(), ftCTR.sent.first.name);
 	ftCTR.sent.first.warnDist = airspace.warnDist();
 	success = (ft_ctrSnd(&ftCTR) == 0);
 
 	// second sentence
 	ftCTR.actSent = 1;
-	ft_string2ftstring(airspace.remark().ascii(), ftCTR.sent.second.remark);
+	ft_string2ftstring(toFtString(airspace.remark()).ascii(), ftCTR.sent.second.remark);
 	success &= (ft_ctrSnd(&ftCTR) == 0);
 
 	if(success)
@@ -622,4 +623,23 @@ bool FlytecDevice::delAirSpace(AirSpace &airspace)
 void FlytecDevice::cancel()
 {
 	m_cancel = true;
+}
+
+QString FlytecDevice::toFtString(const QString &inStr)
+{
+	QString locStr;
+
+	locStr = inStr.upper();
+
+	if(locStr.length() > FT_STRING_SIZE)
+	{
+		locStr = locStr.remove(' ');
+
+		if(locStr.length() > FT_STRING_SIZE)
+		{
+			locStr = locStr.left(12) + "-" + locStr.right(4);
+		}
+	}
+
+	return locStr;
 }
