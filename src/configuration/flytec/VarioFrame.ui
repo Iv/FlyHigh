@@ -15,22 +15,6 @@
     <property name="caption">
         <string>Variometer</string>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Variomode</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>90</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Variomode</string>
-        </property>
-    </widget>
     <widget class="QSpinBox">
         <property name="name">
             <cstring>spinBox_ITime</cstring>
@@ -52,22 +36,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_RespDelay</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>40</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Response delay</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_RespDelayUnit</cstring>
         </property>
         <property name="geometry">
@@ -84,22 +52,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_ITime</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>140</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Integration Time</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_ITimeUnit</cstring>
         </property>
         <property name="geometry">
@@ -112,22 +64,6 @@
         </property>
         <property name="text">
             <string>[s]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TEC</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>190</y>
-                <width>174</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Total Energy Compensation</string>
         </property>
     </widget>
     <widget class="QLabel">
@@ -216,6 +152,70 @@
                 <width>100</width>
                 <height>20</height>
             </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_TEC</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>190</y>
+                <width>203</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Total Energy Compensation</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_ITime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>140</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Integration Time</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Variomode</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>90</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Variomode</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_RespDelay</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>150</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Response delay</string>
         </property>
     </widget>
 </widget>

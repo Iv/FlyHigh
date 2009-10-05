@@ -52,54 +52,6 @@
             </date>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_DateOfBirth</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>130</y>
-                <width>81</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Date of birth</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_GliderID</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>180</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Call Sign</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>230</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Glider</string>
-        </property>
-    </widget>
     <widget class="QPushButton">
         <property name="name">
             <cstring>pushButtonGlider</cstring>
@@ -186,38 +138,6 @@
             <number>16</number>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_LastName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>80</y>
-                <width>55</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Last Name</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_FirstName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>30</y>
-                <width>56</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>First Name</string>
-        </property>
-    </widget>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>Layout1</cstring>
@@ -289,6 +209,86 @@
                 </property>
             </widget>
         </hbox>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_FirstName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>30</y>
+                <width>83</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>First Name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_LastName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>80</y>
+                <width>82</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Last Name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_DateOfBirth</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>130</y>
+                <width>94</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Date of birth</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_GliderID</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>180</y>
+                <width>70</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Call Sign</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>230</y>
+                <width>50</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Glider</string>
+        </property>
     </widget>
 </widget>
 <connections>

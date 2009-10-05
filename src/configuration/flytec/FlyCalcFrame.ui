@@ -56,22 +56,6 @@
             <number>0</number>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Gap</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>100</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>McCready Gap</string>
-        </property>
-    </widget>
     <widget class="QSpinBox">
         <property name="name">
             <cstring>spinBox_Gap</cstring>
@@ -140,22 +124,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_Average</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>160</y>
-                <width>170</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Daytypical Rising Average</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_AverageUnit</cstring>
         </property>
         <property name="geometry">
@@ -172,11 +140,43 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
+            <cstring>textLabel_Average</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>160</y>
+                <width>188</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Daytypical Rising Average</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Gap</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>100</y>
+                <width>150</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>McCready Gap</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>textLabel_Delay</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>40</x>
+                <x>30</x>
                 <y>40</y>
                 <width>150</width>
                 <height>20</height>

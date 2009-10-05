@@ -36,54 +36,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_Mode</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>80</y>
-                <width>120</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Competition Mode</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Emerg</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>196</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Emergency</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Intervall</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>140</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Cycling Rate</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_IntervallUnit</cstring>
         </property>
         <property name="geometry">
@@ -180,6 +132,54 @@
                 <width>160</width>
                 <height>28</height>
             </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Mode</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>80</y>
+                <width>135</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Competition Mode</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Intervall</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>140</y>
+                <width>91</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Cycling Rate</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Emerg</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>196</y>
+                <width>84</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Emergency</string>
         </property>
     </widget>
 </widget>

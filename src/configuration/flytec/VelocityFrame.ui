@@ -167,22 +167,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_Windweel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>110</y>
-                <width>144</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Speedgain Windweel</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_SpeedBestLDUnit</cstring>
         </property>
         <property name="geometry">
@@ -277,6 +261,22 @@
         </property>
         <property name="minValue">
             <number>70</number>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Windweel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>110</y>
+                <width>153</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Speedgain Windweel</string>
         </property>
     </widget>
 </widget>
