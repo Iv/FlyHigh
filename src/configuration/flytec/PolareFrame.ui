@@ -24,9 +24,9 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>30</x>
+                <x>20</x>
                 <y>0</y>
-                <width>380</width>
+                <width>390</width>
                 <height>280</height>
             </rect>
         </property>
@@ -109,23 +109,6 @@
                 <property name="text">
                     <string>Sink
 [cm/s]</string>
-                </property>
-            </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel_SpeedUnit1</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>330</x>
-                        <y>100</y>
-                        <width>41</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Speed
-[km/h]</string>
                 </property>
             </widget>
             <widget class="QSpinBox">
@@ -284,6 +267,23 @@
                     <string>Sink</string>
                 </property>
             </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel_SpeedUnit1</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>330</x>
+                        <y>90</y>
+                        <width>51</width>
+                        <height>37</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Speed
+[km/h]</string>
+                </property>
+            </widget>
         </widget>
         <widget class="QWidget">
             <property name="name">
@@ -380,23 +380,6 @@
                 <property name="text">
                     <string>Sink
 [cm/s]</string>
-                </property>
-            </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel_SpeedUnit2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>330</x>
-                        <y>100</y>
-                        <width>41</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Speed
-[km/h]</string>
                 </property>
             </widget>
             <widget class="QSpinBox">
@@ -537,6 +520,23 @@
                 </property>
                 <property name="text">
                     <string>Speed</string>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel_SpeedUnit2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>330</x>
+                        <y>90</y>
+                        <width>51</width>
+                        <height>37</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Speed
+[km/h]</string>
                 </property>
             </widget>
         </widget>

@@ -15,38 +15,6 @@
     <property name="caption">
         <string>Correction</string>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>40</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>QNH Correction of A1</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>90</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>QNH Correction of A2</string>
-        </property>
-    </widget>
     <widget class="QSpinBox">
         <property name="name">
             <cstring>spinBox_QNHCorrA2</cstring>
@@ -119,22 +87,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_TempCorr</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>140</y>
-                <width>144</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Temperatur Correction</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel_TempCorrUnit</cstring>
         </property>
         <property name="geometry">
@@ -169,6 +121,54 @@
         </property>
         <property name="minValue">
             <number>-10</number>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_QNHCorrA1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>40</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>QNH Correction of A1</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_QNHCorrA2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>90</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>QNH Correction of A2</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_TempCorr</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>140</y>
+                <width>169</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Temperatur Correction</string>
         </property>
     </widget>
 </widget>

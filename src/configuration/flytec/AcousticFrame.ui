@@ -159,22 +159,6 @@
                 <number>0</number>
             </property>
         </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_FreqMod</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>100</y>
-                    <width>150</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Frequency Modulation</string>
-            </property>
-        </widget>
         <widget class="QSlider">
             <property name="name">
                 <cstring>slider_Integration</cstring>
@@ -299,6 +283,22 @@
                 <number>1</number>
             </property>
         </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_FreqMod</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>100</y>
+                    <width>162</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Frequency Modulation</string>
+            </property>
+        </widget>
     </widget>
     <widget class="QGroupBox">
         <property name="name">
@@ -360,38 +360,6 @@
             </property>
             <property name="minValue">
                 <number>-99</number>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_SinkUnit</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>310</x>
-                    <y>60</y>
-                    <width>41</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>[cm/s]</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_DownFreqUnit</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>310</x>
-                    <y>100</y>
-                    <width>26</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>[Hz]</string>
             </property>
         </widget>
         <widget class="QLabel">
@@ -459,6 +427,38 @@
             </property>
             <property name="checked">
                 <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_SinkUnit</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>310</x>
+                    <y>60</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>[cm/s]</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_DownFreqUnit</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>310</x>
+                    <y>100</y>
+                    <width>33</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>[Hz]</string>
             </property>
         </widget>
     </widget>

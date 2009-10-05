@@ -115,7 +115,7 @@
             <rect>
                 <x>30</x>
                 <y>0</y>
-                <width>380</width>
+                <width>390</width>
                 <height>230</height>
             </rect>
         </property>
@@ -207,12 +207,12 @@
             </widget>
             <widget class="QComboBox">
                 <property name="name">
-                    <cstring>comboBox_UserField_1_0</cstring>
+                    <cstring>comboBox_UserField_1_1</cstring>
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>211</x>
-                        <y>17</y>
+                        <x>29</x>
+                        <y>147</y>
                         <width>110</width>
                         <height>28</height>
                     </rect>
@@ -233,12 +233,12 @@
             </widget>
             <widget class="QComboBox">
                 <property name="name">
-                    <cstring>comboBox_UserField_1_1</cstring>
+                    <cstring>comboBox_UserField_1_0</cstring>
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>29</x>
-                        <y>147</y>
+                        <x>211</x>
+                        <y>17</y>
                         <width>110</width>
                         <height>28</height>
                     </rect>
