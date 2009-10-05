@@ -61,7 +61,7 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, int wflags)
 
 	setupHeader(nameList);
 	
-	pTable->setColumnWidth(Manufacturer, 100);
+	pTable->setColumnWidth(Manufacturer, 110);
 	pTable->setColumnWidth(Model, 120);
 	pTable->setColumnWidth(Serial, 100);
 	pTable->setColumnWidth(Flights, 100);
