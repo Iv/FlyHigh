@@ -27,8 +27,6 @@ WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayP
 	:WayPointForm(parent, caption, true)
 {
 	QString str;
-	double lat;
-	double lon;
 
 	Q_CHECK_PTR(pWayPoint);
 	m_pWayPoint = pWayPoint;
@@ -45,33 +43,11 @@ WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayP
 	lineEditCountry->setText(pWayPoint->country());
 
 	// latitude
-	lat = pWayPoint->latitude();
-	
-	if(lat < 0.0)
-	{
-		comboBoxNS->setCurrentItem(1);
-		lat *= -1.0;
-	}
-	else
-	{
-		comboBoxNS->setCurrentItem(0);
-	}
-	str.sprintf("%f", lat);
+	str.sprintf("%f", pWayPoint->latitude());
 	lineEditLat->setText(str);
 	
 	// longitude
-	lon = pWayPoint->longitude();
-	
-	if(lon < 0.0)
-	{
-		comboBoxEW->setCurrentItem(1);
-		lon *= -1.0;
-	}
-	else
-	{
-		comboBoxEW->setCurrentItem(0);
-	}
-	str.sprintf("%f", lon);
+	str.sprintf("%f", pWayPoint->longitude());
 	lineEditLon->setText(str);
 	
 	// altitude
@@ -96,18 +72,8 @@ void WayPointFormImpl::accept()
 	// latitude
 	lat = lineEditLat->text().toDouble();
 	
-	if(comboBoxNS->currentText() == "S")
-	{
-		lat *= -1.0;
-	}
-	
 	// longitude
 	lon = lineEditLon->text().toDouble();
-	
-	if(comboBoxEW->currentText() == "W")
-	{
-		lon *= -1.0;
-	}
 	
 	// altitude
 	alt = spinBoxAlt->value();
@@ -123,9 +89,9 @@ void WayPointFormImpl::limitLatitude()
 
 	lat = lineEditLat->text().toDouble();
 	
-	if(lat < 0.0)
+	if(lat < -90.0)
 	{
-		lat = 0.0;
+		lat = -90.0;
 	}
 	else if(lat > 90.0)
 	{
@@ -143,9 +109,9 @@ void WayPointFormImpl::limitLongitude()
 	
 	lon = lineEditLon->text().toDouble();
 	
-	if(lon < 0.0)
+	if(lon < -180.0)
 	{
-		lon = 0.0;
+		lon = -180.0;
 	}
 	else if(lon > 180.0)
 	{
