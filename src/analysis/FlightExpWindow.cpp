@@ -56,8 +56,8 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, int wflags)
 
 	setupHeader(nameList);
 	
-	pTable->setColumnWidth(Year, 100);
-	pTable->setColumnWidth(NrFlights, 120);
+	pTable->setColumnWidth(Year, 60);
+	pTable->setColumnWidth(NrFlights, 140);
 	pTable->setColumnWidth(Airtime, 100);
 
 	m_lastModified = 0;

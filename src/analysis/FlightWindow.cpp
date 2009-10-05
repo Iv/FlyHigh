@@ -119,14 +119,14 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, int wflags, IDataB
 	setupHeader(nameList);
 	
 	pTable->setColumnWidth(Nr, 50);
-	pTable->setColumnWidth(Date, 95);
-	pTable->setColumnWidth(Time, 80);
-	pTable->setColumnWidth(Duration, 80);
-	pTable->setColumnWidth(Model, 120);
-	pTable->setColumnWidth(StartPt, 120);
-	pTable->setColumnWidth(LandPt, 120);
-	pTable->setColumnWidth(Distance, 65);
-	pTable->setColumnWidth(Comment, 500);
+	pTable->setColumnWidth(Date, 115);
+	pTable->setColumnWidth(Time, 95);
+	pTable->setColumnWidth(Duration, 95);
+	pTable->setColumnWidth(Model, 175);
+	pTable->setColumnWidth(StartPt, 150);
+	pTable->setColumnWidth(LandPt, 150);
+	pTable->setColumnWidth(Distance, 70);
+	pTable->setColumnWidth(Comment, 1000);
 	
 	// menu
 /*
