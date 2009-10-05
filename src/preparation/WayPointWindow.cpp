@@ -84,12 +84,12 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, ID
 	nameList += "Altitude\n[m]";
 	nameList += "Description";
 	setupHeader(nameList);
-	
-	pTable->setColumnWidth(Country, 50);
-	pTable->setColumnWidth(Spot, 100);
-	pTable->setColumnWidth(Name, 100);
-	pTable->setColumnWidth(Longitude, 70);
-	pTable->setColumnWidth(Latitude, 70);
+
+	pTable->setColumnWidth(Name, 150);	
+	pTable->setColumnWidth(Country, 70);
+	pTable->setColumnWidth(Spot, 120);
+	pTable->setColumnWidth(Longitude, 90);
+	pTable->setColumnWidth(Latitude, 90);
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
 	

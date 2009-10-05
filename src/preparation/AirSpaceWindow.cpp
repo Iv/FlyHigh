@@ -88,7 +88,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(High, 100);
 	pTable->setColumnWidth(Low, 100);
-	pTable->setColumnWidth(Class, 60);
+	pTable->setColumnWidth(Class, 80);
 	
 	m_lastModified = 0;
 

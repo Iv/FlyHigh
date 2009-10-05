@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>555</width>
+            <width>606</width>
             <height>519</height>
         </rect>
     </property>
@@ -21,128 +21,6 @@
     <property name="modal">
         <bool>true</bool>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelDuration</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>280</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Duration</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelFlightNr</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>20</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Flight Number</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelStart</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>70</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Starting Place</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>170</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Glider</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelLand</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>120</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Landing Strip</string>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pushButtonLand</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>390</x>
-                <y>120</y>
-                <width>60</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>new...</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <property name="name">
-            <cstring>comboBoxLand</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>120</y>
-                <width>190</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <property name="name">
-            <cstring>comboBoxModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>170</y>
-                <width>190</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
     <widget class="QSpinBox">
         <property name="name">
             <cstring>spinBoxFlightNr</cstring>
@@ -162,43 +40,6 @@
             <number>1</number>
         </property>
     </widget>
-    <widget class="QDateEdit">
-        <property name="name">
-            <cstring>dateEditStart</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>230</y>
-                <width>98</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="order">
-            <enum>DMY</enum>
-        </property>
-        <property name="date">
-            <date>
-                <year>2000</year>
-                <month>1</month>
-                <day>1</day>
-            </date>
-        </property>
-        <property name="maxValue">
-            <date>
-                <year>2020</year>
-                <month>12</month>
-                <day>31</day>
-            </date>
-        </property>
-        <property name="minValue">
-            <date>
-                <year>2000</year>
-                <month>1</month>
-                <day>1</day>
-            </date>
-        </property>
-    </widget>
     <widget class="QTimeEdit">
         <property name="name">
             <cstring>timeEditDuration</cstring>
@@ -208,48 +49,6 @@
                 <x>170</x>
                 <y>280</y>
                 <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>pushButtonStart</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>390</x>
-                <y>70</y>
-                <width>60</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>new...</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <property name="name">
-            <cstring>comboBoxStart</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>70</y>
-                <width>190</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QTimeEdit">
-        <property name="name">
-            <cstring>timeEditStart</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>280</x>
-                <y>230</y>
-                <width>82</width>
                 <height>20</height>
             </rect>
         </property>
@@ -351,86 +150,6 @@
             </widget>
         </hbox>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelStartDateTime</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>230</y>
-                <width>130</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Start Date and Time</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelStartUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>370</x>
-                <y>230</y>
-                <width>156</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[DD/MM/YYYY][hh:mm:ss]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelDurationUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>370</x>
-                <y>280</y>
-                <width>72</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[hh:mm:ss]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelDistanceUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>370</x>
-                <y>330</y>
-                <width>30</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[km]</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelDistance</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>330</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Distance</string>
-        </property>
-    </widget>
     <widget class="QLineEdit">
         <property name="name">
             <cstring>lineEditDistance</cstring>
@@ -444,13 +163,205 @@
             </rect>
         </property>
     </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelStartDateTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>230</y>
+                <width>152</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Start Date and Time</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelLand</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>120</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Landing Strip</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>170</y>
+                <width>80</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Glider</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelFlightNr</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>105</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Flight Number</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelStart</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>70</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Starting Place</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelDistance</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>330</y>
+                <width>90</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Distance</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelDuration</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>280</y>
+                <width>80</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Duration</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelStartUnit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>230</y>
+                <width>194</width>
+                <height>18</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[DD/MM/YYYY][hh:mm:ss]</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelDurationUnit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>280</y>
+                <width>88</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[hh:mm:ss]</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelDistanceUnit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>330</y>
+                <width>37</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[km]</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonStart</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>70</y>
+                <width>60</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>new...</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pushButtonLand</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>120</y>
+                <width>60</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>new...</string>
+        </property>
+    </widget>
     <widget class="QPushButton">
         <property name="name">
             <cstring>pushButtonGlider</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>390</x>
+                <x>400</x>
                 <y>170</y>
                 <width>60</width>
                 <height>28</height>
@@ -458,6 +369,95 @@
         </property>
         <property name="text">
             <string>new...</string>
+        </property>
+    </widget>
+    <widget class="QDateEdit">
+        <property name="name">
+            <cstring>dateEditStart</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>230</y>
+                <width>120</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="order">
+            <enum>DMY</enum>
+        </property>
+        <property name="date">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+        <property name="maxValue">
+            <date>
+                <year>2020</year>
+                <month>12</month>
+                <day>31</day>
+            </date>
+        </property>
+        <property name="minValue">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+    </widget>
+    <widget class="QTimeEdit">
+        <property name="name">
+            <cstring>timeEditStart</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>300</x>
+                <y>230</y>
+                <width>92</width>
+                <height>23</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBoxStart</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>70</y>
+                <width>220</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBoxLand</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>120</y>
+                <width>220</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBoxModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>170</y>
+                <width>220</width>
+                <height>28</height>
+            </rect>
         </property>
     </widget>
 </widget>

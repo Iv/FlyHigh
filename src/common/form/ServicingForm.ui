@@ -31,19 +31,6 @@
             <string>Glider</string>
         </property>
     </widget>
-    <widget class="QComboBox">
-        <property name="name">
-            <cstring>comboBoxModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>30</y>
-                <width>190</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>Layout1</cstring>
@@ -132,78 +119,6 @@
             <string>Date</string>
         </property>
     </widget>
-    <widget class="QDateEdit">
-        <property name="name">
-            <cstring>dateEditDate</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>90</y>
-                <width>98</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="order">
-            <enum>DMY</enum>
-        </property>
-        <property name="date">
-            <date>
-                <year>2000</year>
-                <month>1</month>
-                <day>1</day>
-            </date>
-        </property>
-        <property name="maxValue">
-            <date>
-                <year>2020</year>
-                <month>12</month>
-                <day>31</day>
-            </date>
-        </property>
-        <property name="minValue">
-            <date>
-                <year>2000</year>
-                <month>1</month>
-                <day>1</day>
-            </date>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEditRespons</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>170</x>
-                <y>150</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-        <property name="maxLength">
-            <number>16</number>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelResponse</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>150</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Responsibility</string>
-        </property>
-    </widget>
     <widget class="QTextEdit">
         <property name="name">
             <cstring>textEditComment</cstring>
@@ -243,6 +158,91 @@
         </property>
         <property name="text">
             <string>new...</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelResponse</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>150</y>
+                <width>99</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Responsibility</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <property name="name">
+            <cstring>comboBoxModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>30</y>
+                <width>230</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QDateEdit">
+        <property name="name">
+            <cstring>dateEditDate</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>90</y>
+                <width>120</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="order">
+            <enum>DMY</enum>
+        </property>
+        <property name="date">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+        <property name="maxValue">
+            <date>
+                <year>2020</year>
+                <month>12</month>
+                <day>31</day>
+            </date>
+        </property>
+        <property name="minValue">
+            <date>
+                <year>2000</year>
+                <month>1</month>
+                <day>1</day>
+            </date>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEditRespons</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>150</y>
+                <width>220</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="maxLength">
+            <number>16</number>
         </property>
     </widget>
 </widget>

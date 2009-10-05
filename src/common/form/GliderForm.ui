@@ -106,54 +106,6 @@
             <number>20</number>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>70</y>
-                <width>32</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Model</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelManu</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>20</y>
-                <width>68</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Manufacturer</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>120</y>
-                <width>30</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Serial</string>
-        </property>
-    </widget>
     <widget class="QLineEdit">
         <property name="name">
             <cstring>lineEditModel</cstring>
@@ -184,6 +136,54 @@
         </property>
         <property name="maxLength">
             <number>20</number>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelManu</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>20</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Manufacturer</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelModel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>70</y>
+                <width>45</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Model</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabelModel_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>120</y>
+                <width>42</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Serial</string>
         </property>
     </widget>
 </widget>

@@ -78,7 +78,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBas
 	nameList += "Name";
 	setupHeader(nameList);
 	
-	pTable->setColumnWidth(Name, 140);
+	pTable->setColumnWidth(Name, 200);
 	
 	m_lastModified = 0;
 }
