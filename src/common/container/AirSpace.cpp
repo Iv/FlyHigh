@@ -228,12 +228,6 @@ void AirSpace::createPointList()
 			break;
 		}
 	}
-
-	if(pCircle == NULL && (m_pointList.size() > 0))
-	{
-		curPt = m_pointList[0];
-		m_pointList.push_back(curPt);
-	}
 }
 
 const WayPoint::WayPointListType& AirSpace::pointList() const
