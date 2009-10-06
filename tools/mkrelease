@@ -2,28 +2,29 @@
 
 if [ -z $1 ]
 then
-	echo "usage: mkrelease revision\nFor example ./mkrelease 0.4-1"; exit
+	echo "usage: mkrelease revision\nFor example ./mkrelease 0.4.1"; exit
 fi
 
 project=flyhigh
 revision=$1
 curDir=`pwd`
-workDir=$curDir/$project.$revision
+workDir=$curDir/$project-$revision
 
 # tag and get source on CVS
-cvstag="version_`echo $revision | sed s/"\."/_/`"
+cvstag="version_`echo $revision | sed 's/[\.-]/_/g'`"
+
 echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project"
 cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project
-echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project.$revision -r $cvstag $project"
-cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project.$revision -r $cvstag $project
+echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project-$revision -r $cvstag $project"
+cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project-$revision -r $cvstag $project
 
 # create configure
 echo "make --directory=$workDir -f Makefile.cvs"
 make --directory=$workDir -f Makefile.cvs
 
 # create source tar
-echo "tar -czf $project.$revision.tar.gz $project.$revision"
-tar -czf $project.$revision.tar.gz $project.$revision
+echo "tar -czf $project-$revision.tar.gz $project-$revision"
+tar -czf $project-$revision.tar.gz $project-$revision
 
 # configure and build
 mkdir $workDir/release
@@ -58,4 +59,4 @@ projectsize="`du -sk $workDir/debian/usr/ | awk '{print $1}'`"
 cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > $workDir/debian/DEBIAN/control
 
 # create debian archive
-dpkg --build $workDir/debian/ $workDir/$project.$revision.deb
+dpkg --build $workDir/debian/ $workDir/$project-$revision.deb
