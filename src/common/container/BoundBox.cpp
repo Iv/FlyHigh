@@ -26,6 +26,11 @@ BoundBox::BoundBox()
 	m_isInit = false;
 }
 
+void BoundBox::init()
+{
+	m_isInit = false;
+}
+
 void BoundBox::setMinMax(const WayPoint &wp)
 {
 	if(m_isInit)
@@ -38,6 +43,21 @@ void BoundBox::setMinMax(const WayPoint &wp)
 		m_isInit = true;
 		m_sw = wp;
 		m_ne = wp;
+	}
+}
+
+void BoundBox::setMinMax(const BoundBox &bbox)
+{
+	if(m_isInit)
+	{
+		m_sw.setMin(bbox.m_sw);
+		m_ne.setMax(bbox.m_ne);
+	}
+	else
+	{
+		m_isInit = true;
+		m_sw = bbox.m_sw;
+		m_ne = bbox.m_ne;
 	}
 }
 
