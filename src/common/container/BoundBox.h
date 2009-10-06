@@ -28,7 +28,11 @@ class BoundBox
 	public:
 		BoundBox();
 
+		void init();
+
 		void setMinMax(const WayPoint &wp);
+
+		void setMinMax(const BoundBox &bbox);
 
 		void setNorthEast(const WayPoint &ne);
 
