@@ -21,15 +21,17 @@
     </ignoreparts>
     <secondaryLanguages/>
     <versioncontrol>kdevcvsservice</versioncontrol>
+    <projectname>flyhigh</projectname>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
       <activetarget>src/analysis/libanalysis.a</activetarget>
-      <useconfiguration>release</useconfiguration>
+      <useconfiguration>debug</useconfiguration>
       <useactivetarget>true</useactivetarget>
     </general>
     <run>
-      <mainprogram>src/flyhigh</mainprogram>
+      <mainprogram>/home/grafal/project/flyhigh/debug/src/flyhigh</mainprogram>
       <directoryradio>build</directoryradio>
       <runarguments>
         <flyhigh/>
@@ -39,6 +41,17 @@
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
+      <debugarguments>
+        <flyhigh/>
+      </debugarguments>
+      <cwd>
+        <flyhigh>/home/grafal/project/flyhigh/debug/./src/analysis</flyhigh>
+      </cwd>
+      <globaldebugarguments/>
+      <globalcwd>/home/grafal/project/flyhigh/debug</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
     </run>
     <configurations>
       <debug>
@@ -192,6 +205,7 @@
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -225,6 +239,21 @@
       <codeCompletionDelay>250</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
+      <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
+      <completionBoxItemOrder>0</completionBoxItemOrder>
+      <howEvaluationContextMenu>true</howEvaluationContextMenu>
+      <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
+      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
+      <processPrimaryTypes>true</processPrimaryTypes>
+      <processFunctionArguments>false</processFunctionArguments>
+      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
+      <alwaysParseInBackground>true</alwaysParseInBackground>
+      <usePermanentCaching>true</usePermanentCaching>
+      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <includePaths>.;</includePaths>
     </codecompletion>
     <references/>
     <designerintegration>
@@ -235,7 +264,12 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root/>
+      <root>/usr/share/qt3</root>
+      <includestyle>3</includestyle>
+      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <qmake>/usr/bin/qmake-qt3</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
+      <designerpluginpaths/>
     </qt>
     <creategettersetter>
       <prefixGet/>
@@ -245,6 +279,11 @@
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>
     </creategettersetter>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
   </kdevcppsupport>
   <kdevcvsservice>
     <recursivewhenupdate>true</recursivewhenupdate>
