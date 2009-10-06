@@ -23,16 +23,34 @@
 
 AirSpaceView::AirSpaceView()
 {
-	m_pAirSpace = NULL;
+	m_pAirSpaceList = NULL;
+	m_selected = -1;
 }
 
 AirSpaceView::~AirSpaceView()
 {
 }
 
-void AirSpaceView::setAirSpace(const AirSpace *pAirSpace)
+void AirSpaceView::setAirSpaceList(AirSpace::AirSpaceListType *pAirSpaceList, int selected)
 {
-	m_pAirSpace = pAirSpace;
+	AirSpace *pAirSpace;
+
+	m_pAirSpaceList = pAirSpaceList;
+	m_selected = selected;
+	m_bbox.init();
+
+	for(pAirSpace=pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=pAirSpaceList->next())
+	{
+		pAirSpace->createPointList();
+		m_bbox.setMinMax(pAirSpace->boundBox());
+	}
+
+	update();
+}
+
+void AirSpaceView::setSelected(int sel)
+{
+	m_selected = sel;
 	update();
 }
 
@@ -57,29 +75,29 @@ void AirSpaceView::drawAirspace()
 	QPointArray pointList;
 	BoundBox bbox;
 	WayPoint::WayPointListType::const_iterator it;
+	AirSpace *pAirSpace;
+	AirSpace *pSelAirSpace = NULL;
 	int viewHeight;
 	int viewWidth;
-	int ptNr = 0;
+	int ptNr;
+	int spaceNr = 0;
 	double lat;
 
-	if(m_pAirSpace != NULL)
+	if(m_pAirSpaceList != NULL)
 	{
-		bbox = m_pAirSpace->boundBox();
-	
-		paint.setBrush(colorGroup().foreground());
 		paint.save();
-		paint.setWindow(ToInt(bbox.west()), ToInt(bbox.south()), ToInt(bbox.width()), ToInt(bbox.height()));
+		paint.setWindow(ToInt(m_bbox.west()), ToInt(m_bbox.south()), ToInt(m_bbox.width()), ToInt(m_bbox.height()));
 		viewRect = paint.viewport();
 	
-		if(bbox.width() > bbox.height())
+		if(m_bbox.width() > m_bbox.height())
 		{
-			if(bbox.width() == 0)
+			if(m_bbox.width() == 0)
 			{
 				viewHeight = MinSize;
 			}
 			else
 			{
-				viewHeight = (int)(viewRect.width() * bbox.height() / bbox.width());
+				viewHeight = (int)(viewRect.width() * m_bbox.height() / m_bbox.width());
 			}
 
 			paint.setViewport(viewRect.left() + Border, (viewRect.height() - viewHeight) / 2 + Border,
@@ -87,28 +105,60 @@ void AirSpaceView::drawAirspace()
 		}
 		else
 		{
-			if(bbox.height() == 0)
+			if(m_bbox.height() == 0)
 			{
 				viewWidth = MinSize;
 			}
 			else
 			{
-				viewWidth = (int)(viewRect.height() * bbox.width() / bbox.height());
+				viewWidth = (int)(viewRect.height() * m_bbox.width() / m_bbox.height());
 				paint.setViewport((viewRect.width() - viewWidth) / 2 + Border, viewRect.top() + Border,
 						viewWidth - 2 * Border, viewRect.height() - 2 * Border);
 			}
 		}
-	
-		pointList.resize(m_pAirSpace->pointList().size());
-	
-		for(it=m_pAirSpace->pointList().begin(); it!=m_pAirSpace->pointList().end(); it++)
+
+		paint.setPen(colorGroup().foreground());
+
+		for(pAirSpace=m_pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=m_pAirSpaceList->next())
 		{
-			lat = bbox.north() + bbox.south() - (*it).latitude();
-			pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
-			ptNr++;
-		}
+			pointList.resize(pAirSpace->pointList().size());
+			ptNr = 0;
+		
+			for(it=pAirSpace->pointList().begin(); it!=pAirSpace->pointList().end(); it++)
+			{
+				lat = m_bbox.north() + m_bbox.south() - (*it).latitude();
+				pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
+				ptNr++;
+			}
 	
-		paint.drawPolyline(pointList);
+			if(spaceNr == m_selected)
+			{
+				pSelAirSpace = pAirSpace;
+			}
+			else
+			{
+				paint.drawPolyline(pointList);
+			}
+
+			spaceNr++;
+		}
+
+		if(pSelAirSpace != NULL)
+		{
+			pointList.resize(pSelAirSpace->pointList().size());
+			ptNr = 0;
+		
+			for(it=pSelAirSpace->pointList().begin(); it!=pSelAirSpace->pointList().end(); it++)
+			{
+				lat = m_bbox.north() + m_bbox.south() - (*it).latitude();
+				pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
+				ptNr++;
+			}
+
+			paint.setPen(QColor(255, 0, 0));
+			paint.drawPolyline(pointList);
+		}
+
 		paint.restore();
 	}
 }

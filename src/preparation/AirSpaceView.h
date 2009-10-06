@@ -31,7 +31,9 @@ class AirSpaceView: public QWidget
 
 		~AirSpaceView();
 
-		void setAirSpace(const AirSpace *pAirSpace);
+		void setAirSpaceList(AirSpace::AirSpaceListType *pAirSpaceList, int selected);
+
+		void setSelected(int selected);
 
 	protected:
 		void paintEvent(QPaintEvent *pEvent);
@@ -39,7 +41,9 @@ class AirSpaceView: public QWidget
 		void closeEvent(QCloseEvent *pEvent);
 
 	private:
-		const AirSpace *m_pAirSpace;
+		AirSpace::AirSpaceListType *m_pAirSpaceList;
+		BoundBox m_bbox;
+		int m_selected;
 
 		void drawAirspace();
 };

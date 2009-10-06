@@ -92,9 +92,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, int wflags, ID
 	
 	m_lastModified = 0;
 
-	m_airSpaceView.setGeometry(QRect(0, 0, 200, 200));
-	m_airSpaceView.show();
-
+	m_airSpaceView.setGeometry(QRect(0, 0, 500, 500));
+	m_airSpaceView.setCaption("AirSpace View");
 	connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
@@ -158,7 +157,9 @@ void AirSpaceWindow::file_open()
 			{
 				setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
 			}
-		
+
+			m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
+			m_airSpaceView.show();
 			pTable->selectRow(0);
 			selectionChanged();
 		}
@@ -198,7 +199,10 @@ void AirSpaceWindow::file_update()
 	{
 		setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
 	}
-	
+
+	m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
+	m_airSpaceView.show();
+	pTable->selectRow(0);
 	TableWindow::unsetCursor();
 }
 
@@ -221,17 +225,7 @@ void AirSpaceWindow::file_AddToGPS()
 
 void AirSpaceWindow::selectionChanged()
 {
-	AirSpace *pAirSpace;
-	int row;
-	
-	row = getTable()->currentRow();
-	
-	if(row >= 0)
-	{
-		pAirSpace = m_airSpaceList.at(row);
-		pAirSpace->createPointList();
-		m_airSpaceView.setAirSpace(pAirSpace);
-	}
+	m_airSpaceView.setSelected(getTable()->currentRow());
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
