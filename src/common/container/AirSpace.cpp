@@ -150,7 +150,7 @@ void AirSpace::createPointList()
 					center = pCircle->pos();
 					centerLat = (center.latitude() * M_PI) / 180;
 					centerLon = (center.longitude() * M_PI) / 180;
-					angDist = WayPoint::arc(pCircle->radius());
+					angDist = pCircle->radius() / WayPoint::earthRadius;
 			
 					for(stepNr=0; stepNr<=360; stepNr+=10)
 					{
