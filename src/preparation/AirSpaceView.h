@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
+ *   Copyright (C) 2009 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -40,12 +40,28 @@ class AirSpaceView: public QWidget
 
 		void closeEvent(QCloseEvent *pEvent);
 
+		void mousePressEvent(QMouseEvent *pEvent);
+
+		void mouseReleaseEvent(QMouseEvent *pEvent);
+
+		void mouseMoveEvent(QMouseEvent *pEvent);
+
+		void wheelEvent(QWheelEvent * pEvent);
+
 	private:
+		enum {MinScale=1, MaxScale=10};
 		AirSpace::AirSpaceListType *m_pAirSpaceList;
 		BoundBox m_bbox;
+		QPoint m_offset;
+		int m_scale;
+		bool m_mouseDown;
+		QPoint m_prevPos;
+
 		int m_selected;
 
 		void drawAirspace();
+
+		void calcOffset(const QPoint &mousePos);
 };
 
 #endif
