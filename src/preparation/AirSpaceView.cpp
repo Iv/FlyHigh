@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
+ *   Copyright (C) 2009 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,6 +25,8 @@ AirSpaceView::AirSpaceView()
 {
 	m_pAirSpaceList = NULL;
 	m_selected = -1;
+	m_scale = MinScale;
+	m_mouseDown = false;
 }
 
 AirSpaceView::~AirSpaceView()
@@ -65,6 +67,61 @@ void AirSpaceView::closeEvent(QCloseEvent *pEvent)
 	pEvent->ignore();
 }
 
+void AirSpaceView::mousePressEvent(QMouseEvent *pEvent)
+{
+	if(pEvent->button() == LeftButton)
+	{
+		m_mouseDown = true;
+		m_prevPos = pEvent->pos();
+	}
+}
+
+void AirSpaceView::mouseReleaseEvent(QMouseEvent *pEvent)
+{
+	if(pEvent->button() == LeftButton)
+	{
+		m_mouseDown = false;
+	}
+}
+
+void AirSpaceView::mouseMoveEvent(QMouseEvent *pEvent)
+{
+	QPoint prevOff;
+
+	if(m_mouseDown && (pEvent->state() & LeftButton))
+	{
+		prevOff = m_offset;
+		calcOffset(pEvent->pos());
+
+		if(prevOff != m_offset)
+		{
+			update();
+		}
+	}
+}
+
+void AirSpaceView::wheelEvent(QWheelEvent * pEvent)
+{
+	if(pEvent->delta() > 0)
+	{
+		if(m_scale < MaxScale)
+		{
+			m_scale++;
+			calcOffset(m_prevPos);
+			update();
+		}
+	}
+	else
+	{
+		if(m_scale > MinScale)
+		{
+			m_scale--;
+			calcOffset(m_prevPos);
+			update();
+		}
+	}
+}
+
 #define ToInt(x) ((int)(x * 1000))
 
 void AirSpaceView::drawAirspace()
@@ -77,16 +134,22 @@ void AirSpaceView::drawAirspace()
 	WayPoint::WayPointListType::const_iterator it;
 	AirSpace *pAirSpace;
 	AirSpace *pSelAirSpace = NULL;
+	QString str;
 	int viewHeight;
 	int viewWidth;
 	int ptNr;
 	int spaceNr = 0;
 	double lat;
+	double lon;
+	double offLat;
+	double offLon;
 
 	if(m_pAirSpaceList != NULL)
 	{
 		paint.save();
-		paint.setWindow(ToInt(m_bbox.west()), ToInt(m_bbox.south()), ToInt(m_bbox.width()), ToInt(m_bbox.height()));
+		paint.setWindow(-ToInt(m_bbox.width() / 2), -ToInt(m_bbox.height() / 2), ToInt(m_bbox.width()), ToInt(m_bbox.height()));
+		offLat = (m_bbox.north() + m_bbox.south()) / 2;
+		offLon = (m_bbox.east() + m_bbox.west()) / 2;
 		viewRect = paint.viewport();
 	
 		if(m_bbox.width() > m_bbox.height())
@@ -117,8 +180,14 @@ void AirSpaceView::drawAirspace()
 			}
 		}
 
+		// offset, scale and color
+		paint.translate(m_offset.x() * paint.window().width() / viewRect.width(), m_offset.y() * paint.window().height() / viewRect.height());
+		paint.scale(m_scale, m_scale);
 		paint.setPen(colorGroup().foreground());
 
+
+
+		// draw airspaces
 		for(pAirSpace=m_pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=m_pAirSpaceList->next())
 		{
 			pointList.resize(pAirSpace->pointList().size());
@@ -126,8 +195,9 @@ void AirSpaceView::drawAirspace()
 		
 			for(it=pAirSpace->pointList().begin(); it!=pAirSpace->pointList().end(); it++)
 			{
-				lat = m_bbox.north() + m_bbox.south() - (*it).latitude();
-				pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
+				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;
+				lon = (*it).longitude() - offLon;
+				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
 			}
 	
@@ -143,6 +213,7 @@ void AirSpaceView::drawAirspace()
 			spaceNr++;
 		}
 
+		// draw hilited airspace
 		if(pSelAirSpace != NULL)
 		{
 			pointList.resize(pSelAirSpace->pointList().size());
@@ -150,8 +221,9 @@ void AirSpaceView::drawAirspace()
 		
 			for(it=pSelAirSpace->pointList().begin(); it!=pSelAirSpace->pointList().end(); it++)
 			{
-				lat = m_bbox.north() + m_bbox.south() - (*it).latitude();
-				pointList.setPoint(ptNr, ToInt((*it).longitude()), ToInt(lat));
+				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;
+				lon = (*it).longitude() - offLon;
+				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
 			}
 
@@ -160,5 +232,46 @@ void AirSpaceView::drawAirspace()
 		}
 
 		paint.restore();
+
+		// draw scale
+		str.sprintf("Scale = %i", m_scale);
+		paint.drawText(10, 20, str);
 	}
+}
+
+void AirSpaceView::calcOffset(const QPoint &mousePos)
+{
+	int off;
+	int maxOff;
+
+	// X offset
+	off = m_offset.x() - m_prevPos.x() + mousePos.x();
+	maxOff = (m_scale - 1) * geometry().width() / 2;
+
+	if(off > maxOff)
+	{
+		off = maxOff;
+	}
+	else if(off < -maxOff)
+	{
+		off = -maxOff;
+	}
+
+	m_offset.setX(off);
+
+	// Y offset
+	off = m_offset.y() - m_prevPos.y() + mousePos.y();
+	maxOff = (m_scale - 1) * geometry().height() / 2;
+
+	if(off > maxOff)
+	{
+		off = maxOff;
+	}
+	else if(off < -maxOff)
+	{
+		off = -maxOff;
+	}
+
+	m_offset.setY(off);
+	m_prevPos = mousePos;
 }
