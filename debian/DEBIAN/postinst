@@ -7,8 +7,13 @@ set -e
 case "$1" in
 	configure)
 		# Compatibility symlinks into /usr/doc
-		echo "Setup flyhigh SQL database"
-		mysql -u root -p < /usr/share/flyhigh/flyhigh.sql
+		dbvers=$(echo "SELECT Time FROM LastModified WHERE Name='DataBaseVersion'" | mysql -u flyhigh --password=flyhigh -D flyhigh_v2)
+
+		if [ -z "$dbvers" ]
+		then
+			echo "Setup flyhigh SQL database"
+			mysql -u root -p < /usr/share/flyhigh/flyhigh.sql
+		fi
 		;;
 	*)
 		#
