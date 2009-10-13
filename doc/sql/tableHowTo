@@ -1,7 +1,7 @@
-use for configuration http://localhost/phpmyadmin/
+// use for configuration http://localhost/phpmyadmin/
 # apt-get install apache2 phpmyadmin libapache2-mod-php5 php5-mysql
 
-enable InnoDB.
+// enable InnoDB
 # vi /etc/mysql/my.cnf
 #skip-innodb
 innodb_data_home_dir=/var/lib/mysql
@@ -9,25 +9,26 @@ innodb_data_file_path=ibdata1:10M:autoextend
 
 # /etc/init.d/mysql restart
 
-create a new user "flyhigh" with password "flyhigh" from localhost with 
-these rights:
+// create a new user "flyhigh" with password "flyhigh" from localhost with
+// these rights:
 SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, CREATE 
 TEMPORARY TABLES
 
-create initial database (not for Debian users!)
+// create initial database (not for Debian users!)
 $ mysql -u root -p < flyhigh.sql
 Enter password:
 
+/* OTHERS */
+// backup the database
+$ mysqldump flyhigh_v2 -h localhost -u root -p > flyhigh.backup
 
-OTHERS
-backup the database
-$ mysqldump flyhigh -h localhost -u root -p > flyhigh.backup
-
-restore the database
+// restore the database
 $ mysql -u root -p < flyhigh.backup
 Enter password:
 
-remove the database
-$ mysqladmin -u root -p drop flyhigh
+// remove the database
+$ mysqladmin -u root -p drop flyhigh_v2
 Enter password:
 
+// query version of database
+echo "SELECT Time FROM LastModified WHERE Name='DataBaseVersion'" | mysql -u flyhigh --password=flyhigh -D flyhigh_v2
