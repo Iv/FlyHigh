@@ -57,7 +57,7 @@ bool Servicings::delServicing(Servicing &servicing)
 	QString sqls;
 	bool success;
 	 
-	sqls.sprintf("DELETE FROM `Servicings` WHERE `Id` = '%i'", servicing.id());
+	sqls.sprintf("DELETE FROM Servicings WHERE Id = %i", servicing.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
@@ -70,7 +70,7 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	Servicing servicing;
 	Glider glider;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM `Servicings` ORDER BY `Id` DESC";
+	QString sqls = "SELECT * FROM Servicings ORDER BY Id DESC";
 	bool success;
 	
 	success = query.exec(sqls);

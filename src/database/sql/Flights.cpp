@@ -72,7 +72,7 @@ bool Flights::delFlight(Flight &flight)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("DELETE FROM `Flights` WHERE `PilotId` = %i AND `Number` = %i", flight.pilot().id(), flight.number());
+	sqls.sprintf("DELETE FROM Flights WHERE PilotId = %i AND Number = %i", flight.pilot().id(), flight.number());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
@@ -86,7 +86,7 @@ int Flights::newFlightNr(Pilot &pilot)
 	QSqlQuery query(db());
 	int newFlightNr = -1;
 	
-	sqls.sprintf("SELECT MAX(Number) FROM `Flights` WHERE `PilotId` = %i", pilot.id());
+	sqls.sprintf("SELECT MAX(Number) FROM Flights WHERE PilotId = %i", pilot.id());
 	
 	if(query.exec(sqls) && query.first())
 	{
@@ -106,7 +106,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Glider glider;
 	WayPoint wayPoint;
 
-	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = '%i' ORDER BY `Number` DESC;", pilot.id());
+	sqls.sprintf("SELECT * FROM Flights WHERE PilotId = %i ORDER BY Number DESC;", pilot.id());
 	success = query.exec(sqls);
 	
 	if(success)
@@ -150,10 +150,10 @@ bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 	
 	for(year=2000; year<=now.year(); year++)
 	{
-		sqls.sprintf("SELECT * FROM `Flights` WHERE "
-			"`PilotId` = %i AND "
-			"`Date` >= '%i-01-01' AND "
-			"`Date` <= '%i-12-31';",
+		sqls.sprintf("SELECT * FROM Flights WHERE "
+			"PilotId = %i AND "
+			"Date >= '%i-01-01' AND "
+			"Date <= '%i-12-31';",
 				pilot.id(), year, year);
 		success = query.exec(sqls);
 	
@@ -191,7 +191,7 @@ bool Flights::loadIGCFile(Flight &flight)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM `Flights` WHERE `PilotId` = '%i' AND `Number` = '%i';", flight.pilot().id(), flight.number());
+	sqls.sprintf("SELECT * FROM Flights WHERE PilotId = %i AND Number = %i;", flight.pilot().id(), flight.number());
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
@@ -212,7 +212,7 @@ bool Flights::setFlightStatistic(Glider &glider)
 	uint flights = 0;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `Flights` WHERE `GliderId` = '%i';", glider.id());
+	sqls.sprintf("SELECT * FROM Flights WHERE GliderId = %i;", glider.id());
 	success = query.exec(sqls);
 	
 	if(success)
@@ -240,9 +240,9 @@ bool Flights::setId(Flight &flight)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM `Flights` WHERE "
-		"`Number` = '%i' AND "
-		"`PilotId` = '%i';",
+	sqls.sprintf("SELECT * FROM Flights WHERE "
+		"Number = %i AND "
+		"PilotId = %i;",
 		flight.number(), flight.pilot().id());
 
 	success = (query.exec(sqls) && query.first());

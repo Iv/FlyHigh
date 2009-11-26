@@ -67,7 +67,7 @@ bool Pilots::update(Pilot &pilot)
 
 	birthDate = pilot.birthDate().toString("yyyy-MM-dd");
 
-	sqls.sprintf("UPDATE `Pilots` SET `FirstName`= '%s', `LastName` = '%s', `BirthDate` = '%s', `CallSign` = '%s', `GliderId` = %i WHERE `Id` = %i",
+	sqls.sprintf("UPDATE Pilots SET FirstName= '%s', LastName = '%s', BirthDate = '%s', CallSign = '%s', GliderId = %i WHERE Id = %i",
 		pilot.firstName().ascii(), pilot.lastName().ascii(), birthDate.ascii(), pilot.callSign().ascii(), pilot.glider().id(), pilot.id());
 	success = query.exec(sqls);
 	
@@ -85,7 +85,7 @@ bool Pilots::pilot(int id, Pilot &pilot)
 	Glider glider;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM `Pilots` WHERE `Id` = %i ", id);
+	sqls.sprintf("SELECT * FROM Pilots WHERE Id = %i ", id);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
@@ -114,10 +114,10 @@ bool Pilots::setId(Pilot &pilot)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM `Pilots` WHERE "
-		"`FirstName` = '%s' AND "
-		"`LastName` = '%s' AND "
-		"`BirthDate` = '%s'",
+	sqls.sprintf("SELECT * FROM Pilots WHERE "
+		"FirstName = '%s' AND "
+		"LastName = '%s' AND "
+		"BirthDate = '%s'",
 		pilot.firstName().ascii(), pilot.lastName().ascii(), pilot.birthDate().toString("yyyy-MM-dd").ascii());
 
 	success = (query.exec(sqls) && query.first());

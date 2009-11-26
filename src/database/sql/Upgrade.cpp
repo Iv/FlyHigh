@@ -50,7 +50,7 @@ Upgrade::DataBaseVersion Upgrade::dataBaseVersion()
 	QSqlQuery query(db());
 	DataBaseVersion dbVers = DataBaseVersion_0_5_0;
 	
-	sqls.sprintf("SELECT `Time` FROM `LastModified` WHERE `Name` = 'DataBaseVersion'");
+	sqls.sprintf("SELECT Time FROM LastModified WHERE Name = 'DataBaseVersion'");
 	
 	if(query.exec(sqls) && query.first())
 	{
@@ -67,7 +67,7 @@ void Upgrade::setDataBaseVersion(const DataBaseVersion &tabVers)
 	QSqlQuery query(db());
 	
 	version = tabVers.toString("yyyy-MM-dd hh:mm:ss").ascii();
-	sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = 'DataBaseVersion'",
+	sqls.sprintf("UPDATE LastModified SET Time = '%s' WHERE Name = 'DataBaseVersion'",
 				version.ascii());
 	query.exec(sqls);
 }

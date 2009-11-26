@@ -57,7 +57,7 @@ bool WayPoints::delWayPoint(WayPoint &wp)
 	QString sqls;
 	bool success;
 	
-	sqls.sprintf("DELETE FROM `WayPoints` WHERE `Id` = %i", wp.id());
+	sqls.sprintf("DELETE FROM WayPoints WHERE Id = %i", wp.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_DEL);
@@ -70,7 +70,7 @@ bool WayPoints::delAllWayPoints()
 	QSqlQuery query(db());
 	bool success;
 	
-	success = query.exec("DELETE * FROM `WayPoints`");
+	success = query.exec("DELETE * FROM WayPoints");
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_DEL);
 	
@@ -86,7 +86,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 	int alt;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `WayPoints` WHERE `Id` = %i", id);
+	sqls.sprintf("SELECT * FROM WayPoints WHERE Id = %i", id);
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
@@ -112,7 +112,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 {
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM `WayPoints`";
+	QString sqls = "SELECT * FROM WayPoints";
 	WayPoint locWp;
 	double lat;
 	double lon;
@@ -154,7 +154,7 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM `WayPoints` ORDER BY `Country`, `Name`, `Spot` ASC";
+	QString sqls = "SELECT * FROM WayPoints ORDER BY Country, Name, Spot ASC";
 	double lon;
 	double lat;
 	int alt;
@@ -192,10 +192,10 @@ bool WayPoints::setId(WayPoint &wp)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM `WayPoints` WHERE "
-		"`Name` = '%s' AND "
-		"`Spot` = '%s' AND "
-		"`Country` = '%s'", wp.name().ascii(), wp.spot().ascii(), wp.country().ascii());
+	sqls.sprintf("SELECT * FROM WayPoints WHERE "
+		"Name = '%s' AND "
+		"Spot = '%s' AND "
+		"Country = '%s'", wp.name().ascii(), wp.spot().ascii(), wp.country().ascii());
 
 	success = (query.exec(sqls) && query.first());
 
