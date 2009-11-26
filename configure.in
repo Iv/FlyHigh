@@ -65,7 +65,6 @@ KDE_CREATE_SUBDIRSLIST
 AC_CONFIG_FILES([ Makefile ])
 AC_CONFIG_FILES([ doc/Makefile ])
 AC_CONFIG_FILES([ doc/en/Makefile ])
-AC_CONFIG_FILES([ po/Makefile ])
 AC_CONFIG_FILES([ src/Makefile ])
 AC_CONFIG_FILES([ src/analysis/Makefile ])
 AC_CONFIG_FILES([ src/common/Makefile ])

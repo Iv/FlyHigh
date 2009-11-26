@@ -31522,8 +31522,6 @@ ac_config_files="$ac_config_files doc/Makefile"
 
 ac_config_files="$ac_config_files doc/en/Makefile"
 
-ac_config_files="$ac_config_files po/Makefile"
-
 ac_config_files="$ac_config_files src/Makefile"
 
 ac_config_files="$ac_config_files src/analysis/Makefile"
@@ -32139,7 +32137,6 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "doc/en/Makefile") CONFIG_FILES="$CONFIG_FILES doc/en/Makefile" ;;
-    "po/Makefile") CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/analysis/Makefile") CONFIG_FILES="$CONFIG_FILES src/analysis/Makefile" ;;
     "src/common/Makefile") CONFIG_FILES="$CONFIG_FILES src/common/Makefile" ;;
