@@ -54,7 +54,7 @@ bool Gliders::delGlider(Glider &glider)
 	QString sqls;
 	bool success;
 	 
-	sqls.sprintf("DELETE FROM `Gliders` WHERE `Id` = '%i'", glider.id());
+	sqls.sprintf("DELETE FROM Gliders WHERE Id = %i", glider.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Gliders");
 	Error::verify(success, Error::SQL_CMD);
@@ -69,7 +69,7 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	QString dbModel;
 	bool success = false;
 	
-	sqls.sprintf("SELECT * FROM `Gliders`");
+	sqls.sprintf("SELECT * FROM Gliders");
 	
 	if(query.exec(sqls))
 	{
@@ -100,7 +100,7 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 {
 	Glider glider;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM `Gliders` ORDER BY `Manufacturer`, `Model` ASC";
+	QString sqls = "SELECT * FROM Gliders ORDER BY Manufacturer, Model ASC";
 	bool success;
 	
 	success = query.exec(sqls);
@@ -129,7 +129,7 @@ bool Gliders::glider(int id, Glider &glider)
 	QString sqls;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `Gliders` WHERE `Id` = %i", id);
+	sqls.sprintf("SELECT * FROM Gliders WHERE Id = %i", id);
 	success = (query.exec(sqls) && query.first());
 	
 	if(success)
@@ -155,10 +155,10 @@ bool Gliders::setGliderId(Glider &glider)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM `Gliders` WHERE "
-		"`Manufacturer` = '%s' AND "
-		"`Model` = '%s' AND "
-		"`Serial` = '%s'",
+	sqls.sprintf("SELECT * FROM Gliders WHERE "
+		"Manufacturer = '%s' AND "
+		"Model = '%s' AND "
+		"Serial = '%s'",
 		glider.manufacturer().ascii(), glider.model().ascii(), glider.serial().ascii());
 
 	success = (query.exec(sqls) && query.first());

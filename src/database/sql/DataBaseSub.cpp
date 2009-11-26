@@ -62,13 +62,13 @@ void DataBaseSub::setLastModified(const QString &field)
 	
 	if(lastModified(field) > 1)
 	{
-		sqls.sprintf("UPDATE `LastModified` SET `Time` = '%s' WHERE `Name` = '%s'", 
+		sqls.sprintf("UPDATE LastModified SET Time = '%s' WHERE Name = '%s'", 
 										date.ascii(), field.ascii());
 		query.exec(sqls);
 	}
 	else
 	{
-		sqls.sprintf("INSERT INTO `LastModified` (`Name`, `Time`) VALUES ('%s', '%s')", 
+		sqls.sprintf("INSERT INTO LastModified (Name, Time) VALUES ('%s', '%s')", 
 										field.ascii(), date.ascii());
 		query.exec(sqls);
 	}
@@ -81,7 +81,7 @@ int DataBaseSub::lastModified(const QString &field)
 	QSqlQuery query(db());
 	int time = 1;
 	
-	sqls.sprintf("SELECT `Time` FROM `LastModified` WHERE `Name` = '%s'", field.ascii());
+	sqls.sprintf("SELECT Time FROM LastModified WHERE Name = '%s'", field.ascii());
 	
 	if(query.exec(sqls) && query.first())
 	{

@@ -68,7 +68,7 @@ bool AirSpaces::delAirSpace(const QString &name)
 	QString sqls;
 	bool success;
 	 
-	sqls.sprintf("DELETE FROM `AirSpaces` WHERE `Name` = '%s'", name.ascii());
+	sqls.sprintf("DELETE FROM  AirSpaces WHERE Name='%s'", name.ascii());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("AirSpaces");
 	Error::verify(success, Error::SQL_CMD);
@@ -91,7 +91,7 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 	int pos;
 	bool success;
 	
-	sqls.sprintf("SELECT * FROM `AirSpaces` WHERE `Name` = '%s'", name.ascii());
+	sqls.sprintf("SELECT * FROM AirSpaces WHERE Name='%s'", name.ascii());
 	success = query.exec(sqls);
 	
 	if(success)

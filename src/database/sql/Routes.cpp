@@ -41,14 +41,14 @@ bool Routes::add(Route &route)
 	bool success;
 	
 	// insert route name
-	sqls.sprintf("INSERT INTO `Routes`(`Id`, `Name`) VALUES(NULL, '%s');", route.name().ascii());
+	sqls.sprintf("INSERT INTO Routes(Id, Name) VALUES(NULL, '%s');", route.name().ascii());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
 	if(success)
 	{
 		setId(route);
-		sqls = "INSERT INTO `RouteItems`(`Id`, `RouteId`, `WayPointId`) VALUES";
+		sqls = "INSERT INTO RouteItems(Id, RouteId, WayPointId) VALUES";
 	
 		// insert route items
 		nWps = route.wayPointList().size();
@@ -80,12 +80,12 @@ bool Routes::delRoute(Route &route)
 	bool success;
 
 	// first delete route items
-	sqls.sprintf("DELETE FROM `RouteItems` WHERE `RouteId` = %i;", route.id());
+	sqls.sprintf("DELETE FROM RouteItems WHERE RouteId = %i;", route.id());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	
 	// route
-	sqls.sprintf("DELETE FROM `Routes` WHERE `Id` = %i;", route.id());
+	sqls.sprintf("DELETE FROM Routes WHERE Id = %i;", route.id());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 
@@ -100,7 +100,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 	WayPoint wp;
 	QSqlQuery routeQuery(db());
 	QSqlQuery routeItemsQuery(db());
-	QString sqls = "SELECT * FROM `Routes` ORDER BY `Name` ASC;";
+	QString sqls = "SELECT * FROM Routes ORDER BY Name ASC;";
 	QString wpName;
 	int wpId;
 	bool success;
@@ -117,7 +117,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			route.wayPointList().clear();
 
 			// route items
-			sqls.sprintf("SELECT * FROM `RouteItems` WHERE `RouteId`=%i;", route.id());
+			sqls.sprintf("SELECT * FROM RouteItems WHERE RouteId = %i;", route.id());
 			success = routeItemsQuery.exec(sqls);
 			
 			if(success)
@@ -147,7 +147,7 @@ bool Routes::setId(Route &route)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM `Routes` WHERE `Name` = '%s';", route.name().ascii());
+	sqls.sprintf("SELECT * FROM Routes WHERE Name = '%s';", route.name().ascii());
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
