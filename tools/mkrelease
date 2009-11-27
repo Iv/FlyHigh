@@ -60,4 +60,4 @@ cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision
 
 # create debian archive
 dpkg --build $workDir/debian/ $workDir/$project-$revision.deb
-mv $workDir/$project-$revision.deb .
+mv $workDir/$project-$revision.deb $curDir
