@@ -10,13 +10,17 @@ revision=$1
 curDir=`pwd`
 workDir=$curDir/$project-$revision
 
-# tag and get source on CVS
-cvstag="version_`echo $revision | sed 's/[\.-]/_/g'`"
+# tag and get source on SVN
+svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
 
-echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project"
-cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh rtag $cvstag $project
-echo "cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project-$revision -r $cvstag $project"
-cvs -z3 -d:ext:grafal@flyhigh.cvs.sourceforge.net:/cvsroot/flyhigh checkout -d $project-$revision -r $cvstag $project
+echo "creating tag..."
+svn copy https://flyhigh.svn.sourceforge.net/svnroot/flyhigh/trunk/  https://flyhigh.svn.sourceforge.net/svnroot/flyhigh/tags/$svntag -m $svntag
+
+echo "checkout source"
+svn checkout https://flyhigh.svn.sourceforge.net/svnroot/flyhigh/tags/$svntag $workDir
+
+echo "removing .svn folders"
+rm -rf `find $workDir -name "*.svn"`
 
 # create configure
 echo "make --directory=$workDir -f Makefile.cvs"
@@ -50,13 +54,10 @@ cp $workDir/doc/flyhigh $workDir/debian/usr/share/doc/flyhigh/
 mkdir -p $workDir/debian/usr/share/applications/
 cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
 
-# remove disturbing dirs
-rm -r $workDir/debian/DEBIAN/CVS/
-rm -r $workDir/debian/CVS
-
 # fill control file
 projectsize="`du -sk $workDir/debian/usr/ | awk '{print $1}'`"
 cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > $workDir/debian/DEBIAN/control
 
 # create debian archive
 dpkg --build $workDir/debian/ $workDir/$project-$revision.deb
+mv $workDir/$project-$revision.deb .
