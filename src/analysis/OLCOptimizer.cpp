@@ -1,6 +1,6 @@
 /***************************************************************************
 	Copyright (C) 2002 by Thomas Kuhlmann, Berlin. Contact: coooly @ freenet de
-	Thanks to Dr.Dietrich Münchmeyer und Andreas Rieck for valuable inputs!
+	Thanks to Dr.Dietrich Mï¿½nchmeyer und Andreas Rieck for valuable inputs!
 	adapted, aranged for better understanding and comments in english
 	by Alex Graf 2005
 
@@ -267,9 +267,9 @@ void OLCOptimizer::initmaxend()
 
 void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist, uint filterDist)
 {
-	uint index;
-	uint lastIndex = (flightPoints.size() - 2);
-	uint distance = deltaDist;
+	int index;
+	int lastIndex = (flightPoints.size() - 2);
+	uint distance;
 	WayPoint lastValidWp;
 	
 	m_flightPointList.clear();
