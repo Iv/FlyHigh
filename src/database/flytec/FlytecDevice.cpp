@@ -183,14 +183,13 @@ bool FlytecDevice::loadIGCFile(Flight &flight)
 	QByteArray track;
 	uchar line[255];
 	uchar size;
-	bool success;
+	bool success = false;
 	int prog = 0;
 
 	buff.setBuffer(track);
-	success = (ft_trackReq(flight.number()) == 0);
 	m_cancel = false;
 
-	if(success)
+	if(ft_trackReq(flight.number()) == 0)
 	{
 		buff.open(IO_WriteOnly);
 	
@@ -203,8 +202,9 @@ bool FlytecDevice::loadIGCFile(Flight &flight)
 			{
 				return false;
 			}
-			
+
 			buff.writeBlock((char*)&line[0], size);
+			success = true;
 		}
 
 		buff.close();
