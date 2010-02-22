@@ -228,6 +228,7 @@ void FlightWindow::file_AddToSqlDB()
 	uint gpsFlightNr;
 	uint newFlightNr;
 	int id;
+	bool success;
 
 	row = getTable()->currentRow();
 	
@@ -238,91 +239,95 @@ void FlightWindow::file_AddToSqlDB()
 	
 		// load igc data
 		progDlg.beginProgress("read igc file...", m_pDb);
-		m_pDb->loadIGCFile(m_flightList[row]);
+		success = m_pDb->loadIGCFile(m_flightList[row]);
 		progDlg.endProgress();
 	
-		// parse and optimize
-		igcParser.parse(m_flightList[row].igcData());
-		olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
-		progDlg.beginProgress("optimize flight...", &olcOptimizer);
-		
-		if(olcOptimizer.optimize())
+		if(success)
 		{
-			// distance
-			m_flightList[row].setDistance(olcOptimizer.freeDistance(fpIndexList));
-		}
-		
-		progDlg.endProgress();
-		
-		// nr
-		gpsFlightNr = getTable()->text(row, Nr).toUInt(); // store this for restore
-		newFlightNr = ISql::pInstance()->newFlightNr(pilot);
-		m_flightList[row].setNumber(newFlightNr);
-		
-		// start
-		id = igcParser.flightPointList().firstValidFlightData();
-		
-		if(id >= 0)
-		{
-			// start time
-			time = igcParser.flightPointList().at(id).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
-			m_flightList[row].setTime(time);
-		
-			// start place
-			wp = igcParser.flightPointList().at(id).wp;
+			// parse and optimize
+			igcParser.parse(m_flightList[row].igcData());
+			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+			progDlg.beginProgress("optimize flight...", &olcOptimizer);
 			
-			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+			if(olcOptimizer.optimize())
 			{
-				IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
-	
-				if(newWayPoint.exec())
+				// distance
+				m_flightList[row].setDistance(olcOptimizer.freeDistance(fpIndexList));
+			}
+			
+			progDlg.endProgress();
+			
+			// nr
+			gpsFlightNr = getTable()->text(row, Nr).toUInt(); // store this for restore
+			newFlightNr = ISql::pInstance()->newFlightNr(pilot);
+			m_flightList[row].setNumber(newFlightNr);
+			
+			// start
+			id = igcParser.flightPointList().firstValidFlightData();
+			
+			if(id >= 0)
+			{
+				// start time
+				time = igcParser.flightPointList().at(id).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+				m_flightList[row].setTime(time);
+			
+				// start place
+				wp = igcParser.flightPointList().at(id).wp;
+				
+				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
-					ISql::pInstance()->add(wp);
+					IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
+		
+					if(newWayPoint.exec())
+					{
+						ISql::pInstance()->add(wp);
+					}
+				}
+				m_flightList[row].setStartPt(wp);
+			}
+			
+			// landing strip
+			id = igcParser.flightPointList().lastValidFlightData();
+			
+			if(id >= 0)
+			{
+				wp = igcParser.flightPointList().at(id).wp;
+				
+				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
+				{
+					IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
+		
+					if(newWayPoint.exec())
+					{
+						ISql::pInstance()->add(wp);
+					}
+				}
+				m_flightList[row].setLandPt(wp);
+			}
+	
+			// glider
+			if(!ISql::pInstance()->glider(igcParser.model(), glider))
+			{
+				IGliderForm newGlider(this, "New Glider", &glider);
+				
+				if(newGlider.exec())
+				{
+					ISql::pInstance()->add(glider);
 				}
 			}
-			m_flightList[row].setStartPt(wp);
-		}
-		
-		// landing strip
-		id = igcParser.flightPointList().lastValidFlightData();
-		
-		if(id >= 0)
-		{
-			wp = igcParser.flightPointList().at(id).wp;
-			
-			if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
-			{
-				IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
 	
-				if(newWayPoint.exec())
-				{
-					ISql::pInstance()->add(wp);
-				}
-			}
-			m_flightList[row].setLandPt(wp);
-		}
-
-		// glider
-		if(!ISql::pInstance()->glider(igcParser.model(), glider))
-		{
-			IGliderForm newGlider(this, "New Glider", &glider);
+			m_flightList[row].setGlider(glider);
 			
-			if(newGlider.exec())
+			// a new flight
+			newFlightForm.setFlight(&m_flightList[row]);
+			
+			if(newFlightForm.exec())
 			{
-				ISql::pInstance()->add(glider);
+				ISql::pInstance()->add(m_flightList[row]);
+				setFlightToRow(row, m_flightList[row]);
 			}
-		}
 
-		m_flightList[row].setGlider(glider);
-		
-		// a new flight
-		newFlightForm.setFlight(&m_flightList[row]);
-		
-		if(newFlightForm.exec())
-		{
-			ISql::pInstance()->add(m_flightList[row]);
 			m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
-			setFlightToRow(row, m_flightList[row]);
 		}
 	}
 }
