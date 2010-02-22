@@ -53,11 +53,13 @@ int FlightPointList::firstValidFlightData()
 {
 	int index = -1;
 	int lastIndex = (size() - 2);
+	int fpNr;
 	
-	for(index=0; index<lastIndex; index++)
+	for(fpNr=0; fpNr<lastIndex; fpNr++)
 	{
-		if(speedH(index, index+1) > 2.777777)
+		if(speedH(fpNr, fpNr+1) > 2.777777)
 		{
+			index = fpNr;
 			break;
 		}
 	}
@@ -69,11 +71,13 @@ int FlightPointList::lastValidFlightData()
 {
 	int index = -1;
 	int lastIndex = (size() - 2);
+	int fpNr;
 	
-	for(index=lastIndex; index>0; index--)
+	for(fpNr=lastIndex; fpNr>0; fpNr--)
 	{
-		if(speedH(index, index+1)  > 0.5)
+		if(speedH(fpNr, fpNr+1)  > 0.5)
 		{
+			index = fpNr;
 			break;
 		}
 	}
