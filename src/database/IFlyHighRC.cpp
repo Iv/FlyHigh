@@ -53,6 +53,7 @@ IFlyHighRC* IFlyHighRC::pInstance()
 IFlyHighRC::IFlyHighRC()
 {
 	m_deviceNameList = "Flytec5020";
+	m_deviceNameList += "Flytec6015";
 //	m_deviceNameList += "Garmin";
 
 /*	m_deviceSpeedList = "9600";
@@ -100,6 +101,18 @@ uint IFlyHighRC::deviceSpeed()
 void IFlyHighRC::setDeviceSpeed(uint index)
 {
 	m_deviceSpeed = index;
+}
+
+const QString IFlyHighRC::deviceSpeedString() const
+{
+	QString speed = "";
+
+	if(m_deviceSpeed < m_deviceSpeedList.size())
+	{
+		speed = m_deviceSpeedList[m_deviceSpeed];
+	}
+
+	return speed;
 }
 
 char IFlyHighRC::utcOffset()

@@ -40,6 +40,9 @@ class IFlyHighRC
 		void setDeviceLine(const QString &name);
 		uint deviceSpeed();
 		void setDeviceSpeed(uint index);
+
+		const QString deviceSpeedString() const;
+
 		uint deviceName();
 		void setDeviceName(uint index);
 		char utcOffset();
