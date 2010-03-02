@@ -35,7 +35,7 @@ const Error::ErrorType Error::m_errorList[NOF_ERRORS] =
 		"Please set pilot information, or be sure\n"
 		"that SQL database is setup correct."
 	},
-{"Can not insert route.", "Be sure that route name is unique!"},
+	{"Can not insert route.", "Be sure that route name is unique!"},
 	{
 		"Can not connect to Flytec device.",
 		"Make sure that the device is connected to the\n"
