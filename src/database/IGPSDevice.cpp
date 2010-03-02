@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
+#include "Flytec6015.h"
 #include "FlytecDevice.h"
 #include "GarminDevice.h"
 
@@ -64,10 +65,10 @@ IGPSDevice* IGPSDevice::pInstance()
 		switch(curDevice)
 		{
 			case 0:
-				m_pGPSDevice = new FlytecDevice;
+				m_pGPSDevice = new FlytecDevice();
 			break;
 			case 1:
-				m_pGPSDevice = new GarminDevice;
+				m_pGPSDevice = new Flytec6015();
 			break;
 			default:
 				m_pGPSDevice = new FlytecDevice;
