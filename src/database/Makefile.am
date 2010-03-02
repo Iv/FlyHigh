@@ -1,9 +1,9 @@
 INCLUDES = -I$(top_srcdir)/src/common/container \
 	-I$(top_srcdir)/src/common/utils -I$(top_srcdir)/src/database/flytec -I$(top_srcdir)/src/database/garmin \
-	-I$(top_srcdir)/src/database/sql $(all_includes)
+	-I$(top_srcdir)/src/database/sql -I$(top_srcdir)/src/database/flytec6015 $(all_includes)
 METASOURCES = AUTO
 
-SUBDIRS = sql flytec garmin
+SUBDIRS = flytec garmin sql flytec6015
 
 
 noinst_HEADERS = IDataBase.h IGPSDevice.h ISql.h IFlyHighRC.h
