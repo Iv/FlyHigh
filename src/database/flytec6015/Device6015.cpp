@@ -7,7 +7,7 @@
 
 #include <sys/ioctl.h>
 #include <linux/serial.h>
-
+#include <sys/timeb.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -20,9 +20,7 @@ Device6015::Device6015()
 {
 	m_tlg = "";
 	m_ttyFd = -1;
-	m_elapsed = false;
-
-	connect(&m_tout, SIGNAL(timeout()), this, SLOT(timeout()));
+	m_tout = 0;
 }
 
 bool Device6015::openDevice(const QString &dev, int baud)
@@ -97,8 +95,7 @@ bool Device6015::recieveTlg(int tout)
 	bool validTlg = false;
 
 	m_tlg = "";
-	m_elapsed = false;
-	m_tout.start(tout, true);
+	startTimer(tout);
 
 	do
 	{
@@ -110,7 +107,6 @@ bool Device6015::recieveTlg(int tout)
 
 			if(validTlg || (charNr >= MaxTlgSize))
 			{
-				m_tout.stop();
 				break;
 			}
 
@@ -119,7 +115,7 @@ bool Device6015::recieveTlg(int tout)
 				m_tlg = "";
 			}
 		}
-	}while(!m_elapsed);
+	}while(!isElapsed());
 
 	return validTlg;
 }
@@ -132,11 +128,6 @@ const QString& Device6015::getTlg()
 bool Device6015::sendTlg(const QString &tlg)
 {
 	return writeBuffer(tlg.ascii(), tlg.length());
-}
-
-void Device6015::timeout()
-{
-	m_elapsed = true;
 }
 
 bool Device6015::getChar(char &ch)
@@ -162,4 +153,23 @@ bool Device6015::writeBuffer(const char *pBuff, int len)
 	}
 
 	return success;
+}
+
+bool Device6015::startTimer(int tout)
+{
+	struct timeb tb;
+
+	ftime(&tb);
+	m_tout = (tb.time % 1000) * 1000 + tb.millitm + tout;
+}
+
+bool Device6015::isElapsed()
+{
+	struct timeb tb;
+	int curTime;
+
+	ftime(&tb);
+	curTime = (tb.time % 1000) * 1000 + tb.millitm;
+
+	return (curTime >= m_tout);
 }
