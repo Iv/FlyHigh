@@ -48,7 +48,7 @@ class Protocol6015
 
 		bool trackReq(int trackNr);
 
-		bool trackRec(std::string &track);
+		bool trackRec(QString &line);
 
 		/** Waypoint */
 		bool wpListReq();

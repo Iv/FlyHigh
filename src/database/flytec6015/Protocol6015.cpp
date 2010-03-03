@@ -47,7 +47,7 @@ void Protocol6015::close()
 
 bool Protocol6015::trackListReq()
 {
-	std::string request = "ACT_20_00\r\n";
+	QString request = "ACT_20_00\r\n";
 	bool success;
 
 	success = m_device.sendTlg(request);
@@ -68,6 +68,30 @@ bool Protocol6015::trackListRec(Flight &flight)
 		{
 			success = parseTrack(tlg, flight);
 		}
+	}
+
+	return success;
+}
+
+bool Protocol6015::trackReq(int trackNr)
+{
+	QString request;
+	bool success;
+
+	request.sprintf("ACT_21_%02x\r\n", trackNr);
+	success = m_device.sendTlg(request);
+
+	return success;
+}
+
+bool Protocol6015::trackRec(QString &line)
+{
+	bool success = false;
+
+	if(m_device.recieveTlg(100))
+	{
+		line = m_device.getTlg();
+		success = (line.length() > 0);
 	}
 
 	return success;
