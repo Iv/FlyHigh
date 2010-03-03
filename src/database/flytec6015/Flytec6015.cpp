@@ -72,7 +72,7 @@ bool Flytec6015::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	{
 		while(m_protocol->trackListRec(flight))
 		{
-			emit progress((trackNr * 100 / 5) % 100);
+			emit progress(trackNr * 100 / 5);
 			
 			if(m_cancel)
 			{
@@ -91,7 +91,40 @@ bool Flytec6015::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 
 bool Flytec6015::loadIGCFile(Flight &flight)
 {
-	return false;
+	QBuffer buff;
+	QByteArray track;
+	QString line;
+	bool success = false;
+	int prog = 0;
+
+	buff.setBuffer(track);
+	m_cancel = false;
+
+	if(m_protocol->trackReq(flight.number()))
+	{
+		buff.open(IO_WriteOnly);
+	
+		while(m_protocol->trackRec(line))
+		{
+			prog = (prog + 1) % 100;
+			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			buff.writeBlock(line.ascii(), line.length());
+			success = true;
+		}
+
+		buff.close();
+		flight.setIgcData(track);
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+	
+	return success;
 }
 
 bool Flytec6015::add(WayPoint &wp)
