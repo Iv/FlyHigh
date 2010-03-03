@@ -7,8 +7,6 @@
 
 class Device6015: public QObject
 {
-	Q_OBJECT
-
 	public:
 		Device6015();
 
@@ -24,19 +22,20 @@ class Device6015: public QObject
 
 		bool sendTlg(const QString &tlg);
 
-	private slots:
-		void timeout();
-
 	private:
 		enum {MaxTlgSize = 255};
 
 		QString m_tlg;
-		QTimer m_tout;
+		int m_tout;
 		int m_ttyFd;
 		bool m_elapsed;
 
 		bool getChar(char &ch);
 
 		bool writeBuffer(const char *pBuff, int len);
+
+		bool startTimer(int tout);
+
+		bool isElapsed();
 };
 #endif
