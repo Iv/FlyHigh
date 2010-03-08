@@ -77,6 +77,16 @@ class Protocol6015
 		QDate parseDate(const QString &token);
 
 		QTime parseTime(const QString &token);
+
+		QString value2ftString(int value, int length, const char *format);
+
+		QString deg2ftString(double value, int length, char dir);
+
+		double ftString2Deg(const QString &token);
+
+		QString qString2ftString(const QString &qString, int length);
+
+		QString ftString2qString(const QString &ftString, int length);
 };
 
 #endif

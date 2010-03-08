@@ -129,7 +129,13 @@ bool Flytec6015::loadIGCFile(Flight &flight)
 
 bool Flytec6015::add(WayPoint &wp)
 {
-	return false;
+	bool success;
+
+	success = m_protocol->wpSnd(wp);
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	
+	return success;
 }
 
 bool Flytec6015::delWayPoint(WayPoint &wp)

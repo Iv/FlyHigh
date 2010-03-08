@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <math.h>
 #include "Protocol6015.h"
 #include "Tokenizer.h"
+#include "WayPoint.h"
 
 Protocol6015::Protocol6015()
 {
@@ -97,6 +99,78 @@ bool Protocol6015::trackRec(QString &line)
 	return success;
 }
 
+bool Protocol6015::wpListReq()
+{
+}
+
+bool Protocol6015::wpListRec(WayPoint &wp)
+{
+}
+
+bool Protocol6015::wpSnd(const WayPoint &wp)
+{
+	QString request;
+	QString response;
+	char dir;
+	bool success = false;
+
+	request = "ACT_32_00\r\n";
+	m_device.sendTlg(request);
+
+	// Name
+	request = qString2ftString(wp.name(), 16);
+	request += ';';
+
+	// lat
+	if(wp.latitude() < 0)
+	{
+		dir = 'S';
+	}
+	else
+	{
+		dir = 'N';
+	}
+
+	request += deg2ftString(wp.latitude(), 12, dir);
+	request += ';';
+
+	// lon
+	if(wp.longitude() < 0)
+	{
+		dir = 'W';
+	}
+	else
+	{
+		dir = 'E';
+	}
+
+	request += deg2ftString(wp.longitude(), 12, dir);
+	request += ';';
+
+	// alt
+	request += value2ftString(wp.altitude(), 6, "%i");
+	request += ';';
+
+	// cylinder radius default 400 m
+	request += value2ftString(400, 6, "%i");
+	request += "\r\n";
+
+	m_device.sendTlg(request);
+
+	// Recieve Done
+	if(m_device.recieveTlg(100))
+	{
+		response = m_device.getTlg();
+		success = (response == " Done\r\n");
+	}
+
+	return success;
+}
+
+bool Protocol6015::wpDelAll()
+{
+}
+
 bool Protocol6015::parseTrack(const QString &tlg, Flight &flight)
 {
 	Tokenizer tokenizer;
@@ -160,4 +234,105 @@ QTime Protocol6015::parseTime(const QString &token)
 	sec = timeToken.toInt();
 
 	return QTime(hour, min, sec);
+}
+
+QString Protocol6015::value2ftString(int value, int length, const char *format)
+{
+	QString ftStr;
+	QString pad;
+	QString strValue;
+
+	strValue.sprintf("%i", value);
+	strValue.truncate(length);
+	pad.fill(' ', length - strValue.length());
+	ftStr = pad;
+	ftStr += strValue;
+
+	return ftStr;
+}
+
+QString Protocol6015::deg2ftString(double value, int length, char dir)
+{
+	QString ftStr;
+	QString degStr;
+	QString pad;
+	double degValue;
+	double minValue;
+
+	if(value < 0)
+	{
+		value *= (-1);
+	}
+
+	degValue = floor(value);
+	minValue = (value - degValue) * 60;
+
+	degStr.sprintf("%.0f'%06.3f", degValue, minValue);
+	pad.fill(' ', length - degStr.length() - 1);
+
+	ftStr = dir;
+	ftStr += pad;
+	ftStr += degStr;
+
+	return ftStr;
+}
+
+/* format: "[N|S|E|W] dddd[d]'mm.mmm" */
+double Protocol6015::ftString2Deg(const QString &token)
+{
+	Tokenizer subTokenizer;
+	QString subToken;
+	char dir;
+	double deg;
+
+	subTokenizer.getFirstToken(token, ' ', subToken);
+	dir = token.at(0);
+
+	subTokenizer.getNextToken(token, '\'', subToken);
+	deg = subToken.toDouble();
+
+	subTokenizer.getNextToken(token, ' ', subToken);
+	deg += (subToken.toDouble() / 60);
+
+	if((dir == 'W') || (dir == 'S'))
+	{
+		deg *= (-1); // negate values below equator and west
+	}
+
+	return deg;
+}
+
+QString Protocol6015::qString2ftString(const QString &qString, int length)
+{
+	QString pad;
+	QString ftString;
+
+	if(qString.length() < length)
+	{
+		pad.fill(' ', length - qString.length());
+		ftString = qString;
+		ftString += pad;
+	}
+	else
+	{
+		ftString = qString;
+		ftString.truncate(length);
+	}
+
+	return ftString;
+}
+
+QString Protocol6015::ftString2qString(const QString &ftString, int length)
+{
+	int cpyLength;
+	
+	for(cpyLength=ftString.length(); cpyLength>0; cpyLength--)
+	{
+		if(ftString[cpyLength-1] != ' ')
+		{
+			break;
+		}
+	}
+
+	return ftString.left(cpyLength);
 }
