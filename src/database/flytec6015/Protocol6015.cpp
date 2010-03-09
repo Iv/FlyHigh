@@ -47,6 +47,20 @@ void Protocol6015::close()
 	m_device.closeDevice();
 }
 
+bool Protocol6015::recieveDone()
+{
+	QString response;
+	bool success = false;
+
+	if(m_device.recieveTlg(100))
+	{
+		response = m_device.getTlg();
+		success = (response == " Done\r\n");
+	}
+
+	return success;
+}
+
 bool Protocol6015::trackListReq()
 {
 	QString request = "ACT_20_00\r\n";
@@ -62,7 +76,7 @@ bool Protocol6015::trackListRec(Flight &flight)
 	QString tlg;
 	bool success = false;
 
-	if(m_device.recieveTlg(100))
+	if(m_device.recieveTlg(500))
 	{
 		tlg = m_device.getTlg();
 
@@ -101,10 +115,31 @@ bool Protocol6015::trackRec(QString &line)
 
 bool Protocol6015::wpListReq()
 {
+	QString request;
+	bool success;
+
+	request.sprintf("ACT_31_00\r\n");
+	success = m_device.sendTlg(request);
+
+	return success;
 }
 
 bool Protocol6015::wpListRec(WayPoint &wp)
 {
+	QString tlg;
+	bool success = false;
+
+	if(m_device.recieveTlg(200))
+	{
+		tlg = m_device.getTlg();
+
+		if((tlg != " Done\r\n") && (tlg != "No Data\r\n"))
+		{
+			success = parseWp(tlg, wp);
+		}
+	}
+
+	return success;
 }
 
 bool Protocol6015::wpSnd(const WayPoint &wp)
@@ -148,17 +183,17 @@ bool Protocol6015::wpSnd(const WayPoint &wp)
 	request += ';';
 
 	// alt
-	request += value2ftString(wp.altitude(), 6, "%i");
+	request += value2ftString(wp.altitude(), 6);
 	request += ';';
 
 	// cylinder radius default 400 m
-	request += value2ftString(400, 6, "%i");
+	request += value2ftString(400, 6);
 	request += "\r\n";
 
 	m_device.sendTlg(request);
 
 	// Recieve Done
-	if(m_device.recieveTlg(100))
+	if(m_device.recieveTlg(125))
 	{
 		response = m_device.getTlg();
 		success = (response == " Done\r\n");
@@ -169,6 +204,13 @@ bool Protocol6015::wpSnd(const WayPoint &wp)
 
 bool Protocol6015::wpDelAll()
 {
+	QString request = "ACT_30_00\r\n";
+	QString response;
+	bool success = false;
+
+	success = m_device.sendTlg(request);
+
+	return success;
 }
 
 bool Protocol6015::parseTrack(const QString &tlg, Flight &flight)
@@ -196,6 +238,30 @@ bool Protocol6015::parseTrack(const QString &tlg, Flight &flight)
 	tokenizer.getNextToken(tlg, ';', token);
 	time = parseTime(token);
 	flight.setDuration(time.hour() * 3600 + time.minute () * 60 + time.second());
+
+	return true;
+}
+
+bool Protocol6015::parseWp(const QString &tlg, WayPoint &wp)
+{
+	Tokenizer tokenizer;
+	QString token;
+
+	// name
+	tokenizer.getFirstToken(tlg, ';', token);
+	wp.setName(ftString2qString(token));
+
+	// latitude
+	tokenizer.getNextToken(tlg, ';', token);
+	wp.setLatitude(ftString2Deg(token));
+
+	// longitude
+	tokenizer.getNextToken(tlg, ';', token);
+	wp.setLongitude(ftString2Deg(token));
+
+	// altitude
+	tokenizer.getNextToken(tlg, ';', token);
+	wp.setAltitude(token.toInt());
 
 	return true;
 }
@@ -236,7 +302,7 @@ QTime Protocol6015::parseTime(const QString &token)
 	return QTime(hour, min, sec);
 }
 
-QString Protocol6015::value2ftString(int value, int length, const char *format)
+QString Protocol6015::value2ftString(int value, int length)
 {
 	QString ftStr;
 	QString pad;
@@ -302,7 +368,7 @@ double Protocol6015::ftString2Deg(const QString &token)
 	return deg;
 }
 
-QString Protocol6015::qString2ftString(const QString &qString, int length)
+QString Protocol6015::qString2ftString(const QString &qString, uint length)
 {
 	QString pad;
 	QString ftString;
@@ -322,7 +388,7 @@ QString Protocol6015::qString2ftString(const QString &qString, int length)
 	return ftString;
 }
 
-QString Protocol6015::ftString2qString(const QString &ftString, int length)
+QString Protocol6015::ftString2qString(const QString &ftString)
 {
 	int cpyLength;
 	
