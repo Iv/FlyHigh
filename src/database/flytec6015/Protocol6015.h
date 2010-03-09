@@ -41,6 +41,12 @@ class Protocol6015
 
 		void close();
 
+		/**
+			Tries to recieve a " Done\r\n". Waits 100ms until returns.
+			@return true = done recieved
+		*/
+		bool recieveDone();
+
 		/** Track */
 		bool trackListReq();
 
@@ -74,19 +80,21 @@ class Protocol6015
 
 		bool parseTrack(const QString &tlg, Flight &flight);
 
+		bool parseWp(const QString &tlg, WayPoint &wp);
+
 		QDate parseDate(const QString &token);
 
 		QTime parseTime(const QString &token);
 
-		QString value2ftString(int value, int length, const char *format);
+		QString value2ftString(int value, int length);
 
 		QString deg2ftString(double value, int length, char dir);
 
 		double ftString2Deg(const QString &token);
 
-		QString qString2ftString(const QString &qString, int length);
+		QString qString2ftString(const QString &qString, uint length);
 
-		QString ftString2qString(const QString &ftString, int length);
+		QString ftString2qString(const QString &ftString);
 };
 
 #endif
