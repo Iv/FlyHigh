@@ -106,6 +106,11 @@ double WayPoint::longitude() const
 	return m_lon;
 }
 
+void WayPoint::setAltitude(int alt)
+{
+	m_alt = alt;
+}
+
 int WayPoint::altitude() const
 {
 	return m_alt;
@@ -165,7 +170,7 @@ void WayPoint::distBear(const WayPoint &wp, double &dist, double &bear) const
 
 	bear = (bear * 180 / M_PI);
 
-	// angle from +/-180° to 0-360°
+	// angle from +/-180ï¿½ to 0-360ï¿½
 	if(bear < 0)
 	{
 		bear = -bear;

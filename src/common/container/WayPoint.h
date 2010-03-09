@@ -72,6 +72,8 @@ class WayPoint
 
 		double longitude() const;
 
+		void setAltitude(int alt);
+
 		int altitude() const;
 		
 		uint distance(const WayPoint &wp) const;
