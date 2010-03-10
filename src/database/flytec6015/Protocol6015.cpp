@@ -151,7 +151,7 @@ bool Protocol6015::wpSnd(const WayPoint &wp)
 	m_device.sendTlg(tlg);
 
 	// Waypoint telegram
-	getWpSndTlg(wp.name(), wp, tlg);
+	getWpSndTlg(wp, tlg);
 	m_device.sendTlg(tlg);
 
 	// Recieve Done
@@ -191,7 +191,7 @@ bool Protocol6015::routeSnd(const WayPoint &wp)
 	m_device.sendTlg(tlg);
 
 	// Waypoint telegram
-	getWpSndTlg(wp.name(), wp, tlg);
+	getWpSndTlg(wp, tlg);
 	m_device.sendTlg(tlg);
 
 	// Recieve Done
@@ -303,12 +303,12 @@ QTime Protocol6015::parseTime(const QString &token)
 	return QTime(hour, min, sec);
 }
 
-void Protocol6015::getWpSndTlg(const QString &wpName, const WayPoint &wp, QString &tlg)
+void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 {
 	char dir;
 
 	// Name
-	tlg = qString2ftString(wpName, 16);
+	tlg = qString2ftString(wp.name(), 16);
 	tlg += ';';
 
 	// lat
