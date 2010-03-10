@@ -446,6 +446,9 @@ void MainWindow::settings_configure_device()
 			pFrame = new IFlytecConfig();
 			pFrame->show();
 		break;
+		case 1:
+			
+		break;
 			/*
 			handle here other devices
 			case 1:
