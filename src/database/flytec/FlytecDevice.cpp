@@ -299,7 +299,17 @@ bool FlytecDevice::add(Route &route)
 	uint wpNr;
 	uint nofWp;
 	bool success;
+
+	// make sure all waypoints exist on GPS
+	nofWp = route.wayPointList().size();
 	
+	for(wpNr=0; wpNr<nofWp; wpNr++)
+	{
+		emit progress(wpNr*100/nofWp);
+		add(route.wayPointList().at(wpNr));
+	}
+
+	// now write the route
 	ft_string2ftstring(toFtString(route.name()).ascii(), ftRoute.name);
 	ftRoute.routeNum = 1;
 	nofWp = route.wayPointList().size();
