@@ -49,13 +49,13 @@ void Protocol6015::close()
 
 bool Protocol6015::recieveDone()
 {
-	QString response;
+	QString tlg;
 	bool success = false;
 
 	if(m_device.recieveTlg(100))
 	{
-		response = m_device.getTlg();
-		success = (response == " Done\r\n");
+		tlg = m_device.getTlg();
+		success = (tlg == " Done\r\n");
 	}
 
 	return success;
@@ -63,10 +63,10 @@ bool Protocol6015::recieveDone()
 
 bool Protocol6015::trackListReq()
 {
-	QString request = "ACT_20_00\r\n";
+	QString tlg = "ACT_20_00\r\n";
 	bool success;
 
-	success = m_device.sendTlg(request);
+	success = m_device.sendTlg(tlg);
 
 	return success;
 }
@@ -91,11 +91,11 @@ bool Protocol6015::trackListRec(Flight &flight)
 
 bool Protocol6015::trackReq(int trackNr)
 {
-	QString request;
+	QString tlg;
 	bool success;
 
-	request.sprintf("ACT_21_%02x\r\n", trackNr);
-	success = m_device.sendTlg(request);
+	tlg.sprintf("ACT_21_%02x\r\n", trackNr);
+	success = m_device.sendTlg(tlg);
 
 	return success;
 }
@@ -115,11 +115,11 @@ bool Protocol6015::trackRec(QString &line)
 
 bool Protocol6015::wpListReq()
 {
-	QString request;
+	QString tlg;
 	bool success;
 
-	request.sprintf("ACT_31_00\r\n");
-	success = m_device.sendTlg(request);
+	tlg.sprintf("ACT_31_00\r\n");
+	success = m_device.sendTlg(tlg);
 
 	return success;
 }
@@ -144,59 +144,21 @@ bool Protocol6015::wpListRec(WayPoint &wp)
 
 bool Protocol6015::wpSnd(const WayPoint &wp)
 {
-	QString request;
-	QString response;
-	char dir;
+	QString tlg;
 	bool success = false;
 
-	request = "ACT_32_00\r\n";
-	m_device.sendTlg(request);
+	tlg = "ACT_32_00\r\n";
+	m_device.sendTlg(tlg);
 
-	// Name
-	request = qString2ftString(wp.name(), 16);
-	request += ';';
-
-	// lat
-	if(wp.latitude() < 0)
-	{
-		dir = 'S';
-	}
-	else
-	{
-		dir = 'N';
-	}
-
-	request += deg2ftString(wp.latitude(), 12, dir);
-	request += ';';
-
-	// lon
-	if(wp.longitude() < 0)
-	{
-		dir = 'W';
-	}
-	else
-	{
-		dir = 'E';
-	}
-
-	request += deg2ftString(wp.longitude(), 12, dir);
-	request += ';';
-
-	// alt
-	request += value2ftString(wp.altitude(), 6);
-	request += ';';
-
-	// cylinder radius default 400 m
-	request += value2ftString(400, 6);
-	request += "\r\n";
-
-	m_device.sendTlg(request);
+	// Waypoint telegram
+	getWpSndTlg(wp.name(), wp, tlg);
+	m_device.sendTlg(tlg);
 
 	// Recieve Done
 	if(m_device.recieveTlg(125))
 	{
-		response = m_device.getTlg();
-		success = (response == " Done\r\n");
+		tlg = m_device.getTlg();
+		success = (tlg == " Done\r\n");
 	}
 
 	return success;
@@ -204,11 +166,50 @@ bool Protocol6015::wpSnd(const WayPoint &wp)
 
 bool Protocol6015::wpDelAll()
 {
-	QString request = "ACT_30_00\r\n";
-	QString response;
+	QString tlg = "ACT_30_00\r\n";
 	bool success = false;
 
-	success = m_device.sendTlg(request);
+	success = m_device.sendTlg(tlg);
+
+	return success;
+}
+
+bool Protocol6015::routeListReq()
+{
+}
+
+bool Protocol6015::routeListRec(Route &route)
+{
+}
+
+bool Protocol6015::routeSnd(const WayPoint &wp)
+{
+	QString tlg;
+	bool success = false;
+
+	tlg = "ACT_42_00\r\n";
+	m_device.sendTlg(tlg);
+
+	// Waypoint telegram
+	getWpSndTlg(wp.name(), wp, tlg);
+	m_device.sendTlg(tlg);
+
+	// Recieve Done
+	if(m_device.recieveTlg(300))
+	{
+		tlg = m_device.getTlg();
+		success = (tlg == " Done\r\n");
+	}
+
+	return success;
+}
+
+bool Protocol6015::routeDel()
+{
+	QString tlg = "ACT_40_00\r\n";
+	bool success = false;
+
+	success = m_device.sendTlg(tlg);
 
 	return success;
 }
@@ -300,6 +301,49 @@ QTime Protocol6015::parseTime(const QString &token)
 	sec = timeToken.toInt();
 
 	return QTime(hour, min, sec);
+}
+
+void Protocol6015::getWpSndTlg(const QString &wpName, const WayPoint &wp, QString &tlg)
+{
+	char dir;
+
+	// Name
+	tlg = qString2ftString(wpName, 16);
+	tlg += ';';
+
+	// lat
+	if(wp.latitude() < 0)
+	{
+		dir = 'S';
+	}
+	else
+	{
+		dir = 'N';
+	}
+
+	tlg += deg2ftString(wp.latitude(), 12, dir);
+	tlg += ';';
+
+	// lon
+	if(wp.longitude() < 0)
+	{
+		dir = 'W';
+	}
+	else
+	{
+		dir = 'E';
+	}
+
+	tlg += deg2ftString(wp.longitude(), 12, dir);
+	tlg += ';';
+
+	// alt
+	tlg += value2ftString(wp.altitude(), 6);
+	tlg += ';';
+
+	// cylinder radius default 400 m
+	tlg += value2ftString(400, 6);
+	tlg += "\r\n";
 }
 
 QString Protocol6015::value2ftString(int value, int length)
@@ -402,3 +446,4 @@ QString Protocol6015::ftString2qString(const QString &ftString)
 
 	return ftString.left(cpyLength);
 }
+

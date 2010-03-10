@@ -70,9 +70,9 @@ class Protocol6015
 
 		bool routeListRec(Route &route);
 
-		bool routeSnd(const Route &route);
+		bool routeSnd(const WayPoint &wp);
 
-		bool routeDel(int routeNr);
+		bool routeDel();
 
 	private:
 		Device6015 m_device;
@@ -85,6 +85,8 @@ class Protocol6015
 		QDate parseDate(const QString &token);
 
 		QTime parseTime(const QString &token);
+
+		void getWpSndTlg(const QString &wpName, const WayPoint &wp, QString &tlg);
 
 		QString value2ftString(int value, int length);
 
