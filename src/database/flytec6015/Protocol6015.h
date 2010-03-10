@@ -86,7 +86,7 @@ class Protocol6015
 
 		QTime parseTime(const QString &token);
 
-		void getWpSndTlg(const QString &wpName, const WayPoint &wp, QString &tlg);
+		void getWpSndTlg(const WayPoint &wp, QString &tlg);
 
 		QString value2ftString(int value, int length);
 
