@@ -175,17 +175,6 @@ void RouteWindow::file_AddToGPS()
 	
 	if(row >= 0)
 	{
-		// make sure all WayPoints exist on GPS
-		nofWp = m_routeList[row].wayPointList().size();
-		progDlg.beginProgress("writing waypoints...", IGPSDevice::pInstance());
-		
-		for(wpNr=0; wpNr<nofWp; wpNr++)
-		{
-			IGPSDevice::pInstance()->add(m_routeList[row].wayPointList().at(wpNr));
-		}
-		
-		progDlg.endProgress();
-		
 		// Route
 		progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(m_routeList[row]);
