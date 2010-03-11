@@ -68,7 +68,7 @@ class Protocol6015
 		/** Route */
 		bool routeListReq();
 
-		bool routeListRec(Route &route);
+		bool routeListRec(WayPoint &wp);
 
 		bool routeSnd(const WayPoint &wp);
 

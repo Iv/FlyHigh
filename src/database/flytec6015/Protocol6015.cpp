@@ -176,10 +176,31 @@ bool Protocol6015::wpDelAll()
 
 bool Protocol6015::routeListReq()
 {
+	QString tlg;
+	bool success;
+
+	tlg.sprintf("ACT_41_00\r\n");
+	success = m_device.sendTlg(tlg);
+
+	return success;
 }
 
-bool Protocol6015::routeListRec(Route &route)
+bool Protocol6015::routeListRec(WayPoint &wp)
 {
+	QString tlg;
+	bool success = false;
+
+	if(m_device.recieveTlg(200))
+	{
+		tlg = m_device.getTlg();
+
+		if((tlg != " Done\r\n") && (tlg != "No Data\r\n"))
+		{
+			success = parseWp(tlg, wp);
+		}
+	}
+
+	return success;
 }
 
 bool Protocol6015::routeSnd(const WayPoint &wp)

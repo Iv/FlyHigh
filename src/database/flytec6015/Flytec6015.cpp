@@ -235,14 +235,52 @@ bool Flytec6015::add(Route &route)
 
 bool Flytec6015::routeList(Route::RouteListType &routeList)
 {
-	return false;
+	Route route;
+	WayPoint wp;
+	bool success = false;
+	int prog = 0;
+
+	m_cancel = false;
+
+	success = m_protocol->routeListReq();
+	routeList.clear();
+	
+	if(success)
+	{
+		route.wayPointList().clear();
+
+		while(m_protocol->routeListRec(wp))
+		{
+			prog = (prog + 10) % 100;
+			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			route.wayPointList().push_back(wp);
+		}
+
+		if(route.wayPointList().size() > 0)
+		{
+			route.setName("Route 1");
+			routeList.push_back(route);
+		}
+	}
+	
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
 }
 
 bool Flytec6015::delRoute(Route &route)
 {
 	int prog;
 	bool success;
-	
+
+	(void)route;
+
 	success = m_protocol->routeDel();
 
 	for(prog=0; prog<=100; prog+=10)
@@ -251,6 +289,7 @@ bool Flytec6015::delRoute(Route &route)
 
 		if(m_protocol->recieveDone())
 		{
+			success = true;
 			break;
 		}
 	}
