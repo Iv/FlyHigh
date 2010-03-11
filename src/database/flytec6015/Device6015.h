@@ -5,7 +5,7 @@
 #include <qstring.h>
 #include <qtimer.h>
 
-class Device6015: public QObject
+class Device6015
 {
 	public:
 		Device6015();
@@ -22,6 +22,8 @@ class Device6015: public QObject
 
 		bool sendTlg(const QString &tlg);
 
+		void flush();
+
 	private:
 		enum {MaxTlgSize = 255};
 
@@ -34,7 +36,7 @@ class Device6015: public QObject
 
 		bool writeBuffer(const char *pBuff, int len);
 
-		bool startTimer(int tout);
+		void startTimer(int tout);
 
 		bool isElapsed();
 };

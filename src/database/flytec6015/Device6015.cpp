@@ -70,6 +70,8 @@ bool Device6015::openDevice(const QString &dev, int baud)
 
 		ret = tcsetattr(m_ttyFd, TCSANOW, &sTermSet);
 		success = (ret == 0);
+
+		flush();
 	}
 
 	return success;
@@ -91,8 +93,8 @@ void Device6015::closeDevice()
 bool Device6015::recieveTlg(int tout)
 {
 	int charNr = 0;
-	char ch;
 	bool validTlg = false;
+	char ch;
 
 	m_tlg = "";
 	startTimer(tout);
@@ -130,6 +132,14 @@ bool Device6015::sendTlg(const QString &tlg)
 	return writeBuffer(tlg.ascii(), tlg.length());
 }
 
+void Device6015::flush()
+{
+	char ch;
+
+	m_tlg = "";
+	while(getChar(ch)){}; // Flush buffer
+}
+
 bool Device6015::getChar(char &ch)
 {
 	int nRead;
@@ -155,7 +165,7 @@ bool Device6015::writeBuffer(const char *pBuff, int len)
 	return success;
 }
 
-bool Device6015::startTimer(int tout)
+void Device6015::startTimer(int tout)
 {
 	struct timeb tb;
 
