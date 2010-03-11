@@ -66,6 +66,7 @@ bool Protocol6015::trackListReq()
 	QString tlg = "ACT_20_00\r\n";
 	bool success;
 
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
@@ -95,6 +96,7 @@ bool Protocol6015::trackReq(int trackNr)
 	bool success;
 
 	tlg.sprintf("ACT_21_%02x\r\n", trackNr);
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
@@ -119,6 +121,7 @@ bool Protocol6015::wpListReq()
 	bool success;
 
 	tlg.sprintf("ACT_31_00\r\n");
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
@@ -148,6 +151,7 @@ bool Protocol6015::wpSnd(const WayPoint &wp)
 	bool success = false;
 
 	tlg = "ACT_32_00\r\n";
+	m_device.flush();
 	m_device.sendTlg(tlg);
 
 	// Waypoint telegram
@@ -169,6 +173,7 @@ bool Protocol6015::wpDelAll()
 	QString tlg = "ACT_30_00\r\n";
 	bool success = false;
 
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
@@ -180,6 +185,7 @@ bool Protocol6015::routeListReq()
 	bool success;
 
 	tlg.sprintf("ACT_41_00\r\n");
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
@@ -209,6 +215,7 @@ bool Protocol6015::routeSnd(const WayPoint &wp)
 	bool success = false;
 
 	tlg = "ACT_42_00\r\n";
+	m_device.flush();
 	m_device.sendTlg(tlg);
 
 	// Waypoint telegram
@@ -230,6 +237,7 @@ bool Protocol6015::routeDel()
 	QString tlg = "ACT_40_00\r\n";
 	bool success = false;
 
+	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
