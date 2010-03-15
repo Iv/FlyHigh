@@ -39,12 +39,139 @@ bool Protocol6015::open(const std::string &dev, int baud)
 
 	success = m_device.openDevice(dev, baud);
 
+int value = readFaInt(0x08);
+
 	return success;
 }
 
 void Protocol6015::close()
 {
 	m_device.closeDevice();
+}
+
+QString Protocol6015::readFaString(int par)
+{
+	QString tlg;
+	Tokenizer tokenizer;
+	QString token;
+	QString value = "";
+	int byteNr;
+	int byte;
+	bool ok;
+
+	reqFa(par);
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+
+		if(tlg != "No Par\r\n")
+		{
+			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
+			tokenizer.getNextToken(tlg, '_', token);
+		}
+
+		if(token.toInt(&ok, 16) == par)
+		{
+			tokenizer.getNextToken(tlg, '\r', token);
+
+			if(token.length() >= 2)
+			{
+				for(byteNr=0; byteNr<token.length(); byteNr+=2)
+				{
+					byte = token.mid(byteNr, 2).toInt(&ok, 16);
+					value += (char)byte;
+				}
+
+				value = ftString2qString(value);
+			}
+		}
+	}
+
+	return value;
+}
+
+char Protocol6015::readFaChar(int par)
+{
+	QString tlg;
+	Tokenizer tokenizer;
+	QString token;
+	char value = 0;
+	int byteNr;
+	int byte;
+	bool ok;
+
+	reqFa(par);
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+
+		if(tlg != "No Par\r\n")
+		{
+			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
+			tokenizer.getNextToken(tlg, '_', token);
+		}
+
+		if(token.toInt(&ok, 16) == par)
+		{
+			tokenizer.getNextToken(tlg, '\r', token);
+
+			if(token.length() == 2)
+			{
+				byte = token.toInt(&ok, 16);
+				value = (char)byte;
+			}
+		}
+	}
+
+	return value;
+}
+
+int Protocol6015::readFaInt(int par)
+{
+	QString tlg;
+	Tokenizer tokenizer;
+	QString token;
+	int value = 0;
+	int byteNr;
+	int byte;
+	bool ok;
+
+	reqFa(par);
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+
+		if(tlg != "No Par\r\n")
+		{
+			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
+			tokenizer.getNextToken(tlg, '_', token);
+		}
+
+		if(token.toInt(&ok, 16) == par)
+		{
+			tokenizer.getNextToken(tlg, '\r', token);
+
+			if(token.length() == 4)
+			{
+				for(byteNr=0; byteNr<token.length(); byteNr+=2)
+				{
+					byte = token.mid(byteNr, 2).toInt(&ok, 16);
+					value <<= 8;
+					value += (char)byte;
+				}
+			}
+		}
+	}
+
+	return value;
+}
+
+uint Protocol6015::readFaUInt(int par)
+{
+	(uint)readFaInt(par);
 }
 
 bool Protocol6015::recieveDone()
@@ -476,3 +603,13 @@ QString Protocol6015::ftString2qString(const QString &ftString)
 	return ftString.left(cpyLength);
 }
 
+bool Protocol6015::reqFa(int par)
+{
+	QString tlg;
+	bool success;
+
+	tlg.sprintf("RFA_%02x\r\n", par);
+	success = m_device.sendTlg(tlg);
+
+	return success;
+}

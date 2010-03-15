@@ -20,6 +20,7 @@
 #ifndef Protocol6015_h
 #define Protocol6015_h
 
+#include <qvariant.h>
 #include "Device6015.h"
 #include "Flight.h"
 
@@ -33,6 +34,8 @@ class WayPoint;
 class Protocol6015
 {
 	public:
+		typedef enum DataType{String, UInt16, UChar, UInt32, Int16}DataType;
+
 		Protocol6015();
 
 		~Protocol6015();
@@ -40,6 +43,15 @@ class Protocol6015
 		bool open(const std::string &dev, int baud);
 
 		void close();
+
+		/** Configuration FA */
+		QString readFaString(int par);
+
+		char readFaChar(int par);
+
+		int readFaInt(int par);
+
+		uint readFaUInt(int par);
 
 		/**
 			Tries to recieve a " Done\r\n". Waits 100ms until returns.
@@ -97,6 +109,8 @@ class Protocol6015
 		QString qString2ftString(const QString &qString, uint length);
 
 		QString ftString2qString(const QString &ftString);
+
+		bool reqFa(int par);
 };
 
 #endif
