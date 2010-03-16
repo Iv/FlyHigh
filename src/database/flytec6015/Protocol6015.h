@@ -51,17 +51,25 @@ class Protocol6015
 
 		QString readFaString(int par);
 
-		bool writeFaChar(int par, char value);
+		bool writeFaUInt8(int par, char value);
 
-		char readFaChar(int par);
+		char readFaUInt8(int par);
 
-		bool writeFaInt(int par, int value);
+		bool writeFaInt16(int par, int value);
 
-		int readFaInt(int par);
+		int readFaInt16(int par);
 
-		bool writeFaUInt(int par, uint value);
+		bool writeFaUInt16(int par, uint value);
 
-		uint readFaUInt(int par);
+		uint readFaUInt16(int par);
+
+		bool writeFaInt32(int par, int value);
+
+		int readFaInt32(int par);
+
+		bool writeFaUInt32(int par, uint value);
+
+		uint readFaUInt32(int par);
 
 		/**
 			Tries to recieve a " Done\r\n". Waits 100ms until returns.
