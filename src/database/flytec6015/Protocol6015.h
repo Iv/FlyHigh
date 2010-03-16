@@ -45,11 +45,21 @@ class Protocol6015
 		void close();
 
 		/** Configuration FA */
+		bool writeEnableFa();
+
+		bool writeFaString(int par, const QString &value);
+
 		QString readFaString(int par);
+
+		bool writeFaChar(int par, char value);
 
 		char readFaChar(int par);
 
+		bool writeFaInt(int par, int value);
+
 		int readFaInt(int par);
+
+		bool writeFaUInt(int par, uint value);
 
 		uint readFaUInt(int par);
 
@@ -111,6 +121,8 @@ class Protocol6015
 		QString ftString2qString(const QString &ftString);
 
 		bool reqFa(int par);
+
+		bool writeFa(int par, const QString &value);
 };
 
 #endif
