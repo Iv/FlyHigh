@@ -127,7 +127,7 @@ QString Protocol6015::readFaString(int par)
 	return value;
 }
 
-bool Protocol6015::writeFaUInt8(int par, char value)
+bool Protocol6015::writeFaInt8(int par, char value)
 {
 	QString tlg;
 	bool success = false;
@@ -136,11 +136,6 @@ bool Protocol6015::writeFaUInt8(int par, char value)
 	success = writeFa(par, tlg);
 
 	return success;
-}
-
-char Protocol6015::readFaUInt8(int par)
-{
-	return (char)readFaInt32(par);
 }
 
 bool Protocol6015::writeFaInt16(int par, int value)
@@ -152,21 +147,6 @@ bool Protocol6015::writeFaInt16(int par, int value)
 	success = writeFa(par, tlg);
 
 	return success;
-}
-
-int Protocol6015::readFaInt16(int par)
-{
-	return readFaInt32(par);
-}
-
-bool Protocol6015::writeFaUInt16(int par, uint value)
-{
-	return writeFaInt16(par, (int)value);
-}
-
-uint Protocol6015::readFaUInt16(int par)
-{
-	return (uint)readFaInt32(par);
 }
 
 bool Protocol6015::writeFaInt32(int par, int value)
@@ -208,16 +188,6 @@ int Protocol6015::readFaInt32(int par)
 	}
 
 	return value;
-}
-
-bool Protocol6015::writeFaUInt32(int par, uint value)
-{
-	return writeFaUInt32(par, (int)value);
-}
-
-uint Protocol6015::readFaUInt32(int par)
-{
-	return (uint)readFaInt32(par);
 }
 
 bool Protocol6015::recieveDone()
@@ -268,7 +238,7 @@ bool Protocol6015::trackReq(int trackNr)
 	QString tlg;
 	bool success;
 
-	tlg.sprintf("ACT_21_%02x\r\n", trackNr);
+	tlg.sprintf("ACT_21_%02X\r\n", trackNr);
 	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
@@ -654,7 +624,7 @@ bool Protocol6015::reqFa(int par)
 	QString tlg;
 	bool success;
 
-	tlg.sprintf("RFA_%02x\r\n", par);
+	tlg.sprintf("RFA_%02X\r\n", par);
 	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
@@ -667,7 +637,7 @@ bool Protocol6015::writeFa(int par, const QString &value)
 	QString resp;
 	bool success = false;
 
-	tlg.sprintf("WFA_%02x_", par);
+	tlg.sprintf("WFA_%02X_", par);
 	tlg += value;
 	tlg += "\r\n";
 
