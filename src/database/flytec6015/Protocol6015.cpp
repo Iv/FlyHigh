@@ -39,16 +39,6 @@ bool Protocol6015::open(const std::string &dev, int baud)
 
 	success = m_device.openDevice(dev, baud);
 
-//writeEnableFa();
-//writeFaString(0x01, "Avax XC 2");
-//QString value = readFaString(0x01);
-
-//writeFaInt(0x0c, 6396);
-//int value = readFaInt(0x0c);
-
-//writeFaUInt(0x08, 8195);
-//uint value = readFaUInt(0x08);
-
 	return success;
 }
 
@@ -137,7 +127,7 @@ QString Protocol6015::readFaString(int par)
 	return value;
 }
 
-bool Protocol6015::writeFaChar(int par, char value)
+bool Protocol6015::writeFaUInt8(int par, char value)
 {
 	QString tlg;
 	bool success = false;
@@ -148,43 +138,12 @@ bool Protocol6015::writeFaChar(int par, char value)
 	return success;
 }
 
-char Protocol6015::readFaChar(int par)
+char Protocol6015::readFaUInt8(int par)
 {
-	QString tlg;
-	Tokenizer tokenizer;
-	QString token;
-	char value = 0;
-	int byte;
-	bool ok;
-
-	reqFa(par);
-
-	if(m_device.recieveTlg(100))
-	{
-		tlg = m_device.getTlg();
-
-		if(tlg != "No Par\r\n")
-		{
-			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
-			tokenizer.getNextToken(tlg, '_', token);
-		}
-
-		if(token.toInt(&ok, 16) == par)
-		{
-			tokenizer.getNextToken(tlg, '\r', token);
-
-			if(token.length() == 2)
-			{
-				byte = token.toInt(&ok, 16);
-				value = (char)byte;
-			}
-		}
-	}
-
-	return value;
+	return (char)readFaInt32(par);
 }
 
-bool Protocol6015::writeFaInt(int par, int value)
+bool Protocol6015::writeFaInt16(int par, int value)
 {
 	QString tlg;
 	bool success = false;
@@ -195,7 +154,33 @@ bool Protocol6015::writeFaInt(int par, int value)
 	return success;
 }
 
-int Protocol6015::readFaInt(int par)
+int Protocol6015::readFaInt16(int par)
+{
+	return readFaInt32(par);
+}
+
+bool Protocol6015::writeFaUInt16(int par, uint value)
+{
+	return writeFaInt16(par, (int)value);
+}
+
+uint Protocol6015::readFaUInt16(int par)
+{
+	return (uint)readFaInt32(par);
+}
+
+bool Protocol6015::writeFaInt32(int par, int value)
+{
+	QString tlg;
+	bool success = false;
+
+	tlg.sprintf("%08X", value);
+	success = writeFa(par, tlg);
+
+	return success;
+}
+
+int Protocol6015::readFaInt32(int par)
 {
 	QString tlg;
 	Tokenizer tokenizer;
@@ -218,21 +203,21 @@ int Protocol6015::readFaInt(int par)
 		if(token.toInt(&ok, 16) == par)
 		{
 			tokenizer.getNextToken(tlg, '\r', token);
-			value = token.toInt(&ok, 16);
+			value = (int)token.toLongLong(&ok, 16);
 		}
 	}
 
 	return value;
 }
 
-bool Protocol6015::writeFaUInt(int par, uint value)
+bool Protocol6015::writeFaUInt32(int par, uint value)
 {
-	return writeFaInt(par, (int)value);
+	return writeFaUInt32(par, (int)value);
 }
 
-uint Protocol6015::readFaUInt(int par)
+uint Protocol6015::readFaUInt32(int par)
 {
-	return (uint)readFaInt(par);
+	return (uint)readFaInt32(par);
 }
 
 bool Protocol6015::recieveDone()
