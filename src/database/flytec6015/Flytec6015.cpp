@@ -39,6 +39,9 @@ void Flytec6015::open()
 
 	success = m_protocol->open(IFlyHighRC::pInstance()->deviceLine(), IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
 	Error::verify(success, Error::FLYTEC_OPEN);
+
+//writeFaUInt16(0x1a, 420);
+int value = readFaUInt16(0x1a);
 }
 
 void Flytec6015::close()
@@ -51,11 +54,70 @@ void Flytec6015::cancel()
 	m_cancel = true;
 }
 
-/*
-		bool memoryRead(QByteArray &arr);
+bool Flytec6015::writeEnableFa()
+{
+	return m_protocol->writeEnableFa();
+}
 
-		bool memoryWrite(QByteArray &arr);
-*/
+bool Flytec6015::writeFaString(int par, const QString &value)
+{
+	return m_protocol->writeFaString(par, value);
+}
+
+QString Flytec6015::readFaString(int par)
+{
+	return m_protocol->readFaString(par);
+}
+
+bool Flytec6015::writeFaInt8(int par, char value)
+{
+	return m_protocol->writeFaInt8(par, value);
+}
+
+char Flytec6015::readFaInt8(int par)
+{
+	return (char)m_protocol->readFaInt32(par);
+}
+
+bool Flytec6015::writeFaInt16(int par, int value)
+{
+	return m_protocol->writeFaInt16(par, value);
+}
+
+int Flytec6015::readFaInt16(int par)
+{
+	return m_protocol->readFaInt32(par);
+}
+
+bool Flytec6015::writeFaUInt16(int par, uint value)
+{
+	return m_protocol->writeFaInt16(par, (int)value);
+}
+
+uint Flytec6015::readFaUInt16(int par)
+{
+	return (uint)m_protocol->readFaInt32(par);
+}
+
+bool Flytec6015::writeFaInt32(int par, int value)
+{
+	return m_protocol->writeFaInt32(par, value);
+}
+
+int Flytec6015::readFaInt32(int par)
+{
+	return m_protocol->readFaInt32(par);
+}
+
+bool Flytec6015::writeFaUInt32(int par, uint value)
+{
+	return m_protocol->writeFaInt32(par, (int)value);
+}
+
+uint Flytec6015::readFaUInt32(int par)
+{
+	return (uint)m_protocol->readFaInt32(par);
+}
 
 bool Flytec6015::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {

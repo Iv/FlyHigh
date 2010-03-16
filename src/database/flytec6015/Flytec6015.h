@@ -44,11 +44,31 @@ class Flytec6015: public IGPSDevice
 
 		void cancel();
 
-/*
-		bool memoryRead(QByteArray &arr);
+		bool writeEnableFa();
 
-		bool memoryWrite(QByteArray &arr);
-*/
+		bool writeFaString(int par, const QString &value);
+
+		QString readFaString(int par);
+
+		bool writeFaInt8(int par, char value);
+
+		char readFaInt8(int par);
+
+		bool writeFaInt16(int par, int value);
+
+		int readFaInt16(int par);
+
+		bool writeFaUInt16(int par, uint value);
+
+		uint readFaUInt16(int par);
+
+		bool writeFaInt32(int par, int value);
+
+		int readFaInt32(int par);
+
+		bool writeFaUInt32(int par, uint value);
+
+		uint readFaUInt32(int par);
 
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
