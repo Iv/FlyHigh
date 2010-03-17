@@ -21,6 +21,7 @@
 #define Protocol6015_h
 
 #include <qvariant.h>
+#include "Defs6015.h"
 #include "Device6015.h"
 #include "Flight.h"
 
@@ -34,30 +35,18 @@ class WayPoint;
 class Protocol6015
 {
 	public:
-		typedef enum DataType{String, UInt16, UChar, UInt32, Int16}DataType;
-
 		Protocol6015();
 
 		~Protocol6015();
 
-		bool open(const std::string &dev, int baud);
+		bool open(const QString &dev, int baud);
 
 		void close();
 
-		/** Configuration FA */
-		bool writeEnableFa();
-
-		bool writeFaString(int par, const QString &value);
-
-		QString readFaString(int par);
-
-		bool writeFaInt8(int par, char value);
-
-		bool writeFaInt16(int par, int value);
-
-		bool writeFaInt32(int par, int value);
-
-		int readFaInt32(int par);
+		/** Settings */
+		bool memoryWrite(MemType memType, int par, DataType dataType, const QVariant &value);
+		
+		QVariant memoryRead(MemType memType, int par, DataType dataType);
 
 		/**
 			Tries to recieve a " Done\r\n". Waits 100ms until returns.
@@ -116,9 +105,17 @@ class Protocol6015
 
 		QString ftString2qString(const QString &ftString);
 
-		bool reqFa(int par);
+		bool writeEnableFa();
 
 		bool writeFa(int par, const QString &value);
+		
+		bool writeFaString(int par, const QString &value);
+		
+		bool reqFa(int par);
+		
+		int readFaInt(int par);
+		
+		QString readFaString(int par);
 };
 
 #endif

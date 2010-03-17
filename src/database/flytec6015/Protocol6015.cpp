@@ -33,7 +33,7 @@ Protocol6015::~Protocol6015()
 	close();
 }
 
-bool Protocol6015::open(const std::string &dev, int baud)
+bool Protocol6015::open(const QString &dev, int baud)
 {
 	bool success;
 
@@ -47,144 +47,65 @@ void Protocol6015::close()
 	m_device.closeDevice();
 }
 
-bool Protocol6015::writeEnableFa()
+bool Protocol6015::memoryWrite(MemType memType, int par, DataType dataType, const QVariant &value)
 {
-	QString tlg = "ACT_82_00\r\n";
-	bool success;
+	QString tlgValue;
+	bool success = false;
 
-	m_device.flush();
-	m_device.sendTlg(tlg);
-
-	if(m_device.recieveTlg(100))
+	switch(memType)
 	{
-		tlg = m_device.getTlg();
-		success = (tlg == "ACT_82_00 Done\r\n");
-	}
-
-	return success;
-}
-
-bool Protocol6015::writeFaString(int par, const QString &value)
-{
-	QString byte;
-	QString tlg;
-	QString ftString;
-	uint byteNr;
-	bool success;
-
-	ftString = qString2ftString(value, 16);
-
-	for(byteNr=0; byteNr<ftString.length(); byteNr++)
-	{
-		byte.setNum(ftString.at(byteNr).latin1(), 16);
-		tlg += byte.upper();
-	}
-
-	success = writeFa(par, tlg);
-
-	return success;
-}
-
-QString Protocol6015::readFaString(int par)
-{
-	QString tlg;
-	Tokenizer tokenizer;
-	QString token;
-	QString value = "";
-	uint byteNr;
-	int byte;
-	bool ok;
-
-	reqFa(par);
-
-	if(m_device.recieveTlg(100))
-	{
-		tlg = m_device.getTlg();
-
-		if(tlg != "No Par\r\n")
-		{
-			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
-			tokenizer.getNextToken(tlg, '_', token);
-		}
-
-		if(token.toInt(&ok, 16) == par)
-		{
-			tokenizer.getNextToken(tlg, '\r', token);
-
-			if(token.length() >= 2)
+		case MemFa:
+			switch(dataType)
 			{
-				for(byteNr=0; byteNr<token.length(); byteNr+=2)
-				{
-					byte = token.mid(byteNr, 2).toInt(&ok, 16);
-					value += (char)byte;
-				}
-
-				value = ftString2qString(value);
+				case UInt8:
+					writeEnableFa();
+					tlgValue.sprintf("%02X", value.toUInt());
+					success = writeFa(par, tlgValue);
+				break;
+				case UInt16: case Int16:
+					writeEnableFa();
+					tlgValue.sprintf("%04X", value.toUInt());
+					success = writeFa(par, tlgValue);
+				break;
+				case Int32:
+					writeEnableFa();
+					tlgValue.sprintf("%08X", value.toUInt());
+					success = writeFa(par, tlgValue);
+				break;
+				case String:
+					writeEnableFa();
+					success = writeFaString(par, value.toString());
+				break;
 			}
-		}
+		break;
+		case MemPa:
+		break;
 	}
 
-	return value;
-}
-
-bool Protocol6015::writeFaInt8(int par, char value)
-{
-	QString tlg;
-	bool success = false;
-
-	tlg.sprintf("%02X", value);
-	success = writeFa(par, tlg);
-
 	return success;
 }
 
-bool Protocol6015::writeFaInt16(int par, int value)
+QVariant Protocol6015::memoryRead(MemType memType, int par, DataType dataType)
 {
-	QString tlg;
-	bool success = false;
+	QVariant value;
 
-	tlg.sprintf("%04X", value);
-	success = writeFa(par, tlg);
-
-	return success;
-}
-
-bool Protocol6015::writeFaInt32(int par, int value)
-{
-	QString tlg;
-	bool success = false;
-
-	tlg.sprintf("%08X", value);
-	success = writeFa(par, tlg);
-
-	return success;
-}
-
-int Protocol6015::readFaInt32(int par)
-{
-	QString tlg;
-	Tokenizer tokenizer;
-	QString token;
-	int value = 0;
-	bool ok;
-
-	reqFa(par);
-
-	if(m_device.recieveTlg(100))
+	switch(memType)
 	{
-		tlg = m_device.getTlg();
+		case MemFa:
+			reqFa(par);
 
-		if(tlg != "No Par\r\n")
-		{
-			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
-			tokenizer.getNextToken(tlg, '_', token);
-		}
-
-		if(token.toInt(&ok, 16) == par)
-		{
-			tokenizer.getNextToken(tlg, '\r', token);
-			value = (int)token.toLongLong(&ok, 16);
-		}
+			switch(dataType)
+			{
+				case UInt8: case Int16: case UInt16: case Int32:
+					value = readFaInt(par);
+				break;
+				case String:
+					value = readFaString(par);
+				break;
+			}
+		break;
+		case MemPa:
+		break;
 	}
 
 	return value;
@@ -619,14 +540,19 @@ QString Protocol6015::ftString2qString(const QString &ftString)
 	return ftString.left(cpyLength);
 }
 
-bool Protocol6015::reqFa(int par)
+bool Protocol6015::writeEnableFa()
 {
-	QString tlg;
+	QString tlg = "ACT_82_00\r\n";
 	bool success;
 
-	tlg.sprintf("RFA_%02X\r\n", par);
 	m_device.flush();
-	success = m_device.sendTlg(tlg);
+	m_device.sendTlg(tlg);
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+		success = (tlg == "ACT_82_00 Done\r\n");
+	}
 
 	return success;
 }
@@ -651,4 +577,105 @@ bool Protocol6015::writeFa(int par, const QString &value)
 	}
 
 	return success;
+}
+
+bool Protocol6015::writeFaString(int par, const QString &value)
+{
+	QString byte;
+	QString tlg;
+	QString ftString;
+	uint byteNr;
+	bool success;
+
+	ftString = qString2ftString(value, 16);
+
+	for(byteNr=0; byteNr<ftString.length(); byteNr++)
+	{
+		byte.setNum(ftString.at(byteNr).latin1(), 16);
+		tlg += byte.upper();
+	}
+
+	success = writeFa(par, tlg);
+
+	return success;
+}
+
+bool Protocol6015::reqFa(int par)
+{
+	QString tlg;
+	bool success;
+
+	tlg.sprintf("RFA_%02X\r\n", par);
+	m_device.flush();
+	success = m_device.sendTlg(tlg);
+
+	return success;
+}
+
+int Protocol6015::readFaInt(int par)
+{
+	QString tlg;
+	Tokenizer tokenizer;
+	QString token;
+	int value = 0;
+	bool ok;
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+
+		if(tlg != "No Par\r\n")
+		{
+			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
+			tokenizer.getNextToken(tlg, '_', token);
+		}
+
+		if(token.toInt(&ok, 16) == par)
+		{
+			tokenizer.getNextToken(tlg, '\r', token);
+			value = (int)token.toLongLong(&ok, 16);
+		}
+	}
+
+	return value;
+}
+
+QString Protocol6015::readFaString(int par)
+{
+	QString tlg;
+	Tokenizer tokenizer;
+	QString token;
+	QString value = "";
+	uint byteNr;
+	int byte;
+	bool ok;
+
+	if(m_device.recieveTlg(100))
+	{
+		tlg = m_device.getTlg();
+
+		if(tlg != "No Par\r\n")
+		{
+			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
+			tokenizer.getNextToken(tlg, '_', token);
+		}
+
+		if(token.toInt(&ok, 16) == par)
+		{
+			tokenizer.getNextToken(tlg, '\r', token);
+
+			if(token.length() >= 2)
+			{
+				for(byteNr=0; byteNr<token.length(); byteNr+=2)
+				{
+					byte = token.mid(byteNr, 2).toInt(&ok, 16);
+					value += (char)byte;
+				}
+
+				value = ftString2qString(value);
+			}
+		}
+	}
+
+	return value;
 }
