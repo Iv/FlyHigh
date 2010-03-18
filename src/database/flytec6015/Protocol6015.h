@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
+ *   Copyright (C) 2010 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -111,11 +111,11 @@ class Protocol6015
 		
 		bool writeFaString(int par, const QString &value);
 		
-		bool reqFa(int par);
+		bool requestPar(MemType memType, int par);
 		
-		int readFaInt(int par);
+		int readParInt(MemType memType, int par, DataType dataType);
 		
-		QString readFaString(int par);
+		QString readParString(MemType memType, int par);
 };
 
 #endif
