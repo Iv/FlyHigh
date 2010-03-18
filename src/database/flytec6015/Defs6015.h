@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
+ *   Copyright (C) 2010 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,9 +23,9 @@
 
 typedef enum MemType{MemFa, MemPa}MemType;
 
-typedef enum DataType{UInt8, Int16, UInt16, Int32, String}DataType;
+typedef enum DataType{UInt8, Int16, UInt16, UInt32, Int32, String}DataType;
 
-// FA Settings
+// FA settings
 #define OWNER            0x00
 #define AC_TYPE          0x01
 #define AC_ID            0x02
@@ -52,7 +52,7 @@ typedef enum DataType{UInt8, Int16, UInt16, Int32, String}DataType;
 #define STALL_SPEED      0x1a
 #define WIND_WHEEL_GAIN  0x1c
 
-// PA Settings
+// PA settings
 #define DEVICE_NR        0x00
 #define DEVICE_TYPE      0x01
 #define SW_VERS          0x02
