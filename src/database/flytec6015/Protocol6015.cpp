@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
+ *   Copyright (C) 2010 by Alex Graf                                     *
  *   grafal@sourceforge.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <math.h>
+#include <byteswap.h>
 #include "Protocol6015.h"
 #include "Tokenizer.h"
 #include "WayPoint.h"
@@ -38,6 +39,15 @@ bool Protocol6015::open(const QString &dev, int baud)
 	bool success;
 
 	success = m_device.openDevice(dev, baud);
+
+//int value = memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
+//int value = memoryRead(MemPa, SW_VERS, UInt16).toUInt();
+//int value = memoryRead(MemPa, ALT_DIFF_FLA, UInt32).toUInt();
+//QString value = memoryRead(MemFa, AC_TYPE, String).toString();
+//int value = memoryRead(MemFa, AUDIO_RISE, UInt16).toUInt();
+//memoryWrite(MemFa, PRESS_OFFSET, Int32, -1000);
+//int value = memoryRead(MemFa, PRESS_OFFSET, Int32).toUInt();
+
 
 	return success;
 }
@@ -59,17 +69,17 @@ bool Protocol6015::memoryWrite(MemType memType, int par, DataType dataType, cons
 			{
 				case UInt8:
 					writeEnableFa();
-					tlgValue.sprintf("%02X", value.toUInt());
+					tlgValue.sprintf("%02X", (char)value.toUInt());
 					success = writeFa(par, tlgValue);
 				break;
 				case UInt16: case Int16:
 					writeEnableFa();
-					tlgValue.sprintf("%04X", value.toUInt());
+					tlgValue.sprintf("%04X", bswap_16(value.toUInt()));
 					success = writeFa(par, tlgValue);
 				break;
-				case Int32:
+				case UInt32: case Int32:
 					writeEnableFa();
-					tlgValue.sprintf("%08X", value.toUInt());
+					tlgValue.sprintf("%08X", bswap_32(value.toUInt()));
 					success = writeFa(par, tlgValue);
 				break;
 				case String:
@@ -89,22 +99,15 @@ QVariant Protocol6015::memoryRead(MemType memType, int par, DataType dataType)
 {
 	QVariant value;
 
-	switch(memType)
-	{
-		case MemFa:
-			reqFa(par);
+	requestPar(memType, par);
 
-			switch(dataType)
-			{
-				case UInt8: case Int16: case UInt16: case Int32:
-					value = readFaInt(par);
-				break;
-				case String:
-					value = readFaString(par);
-				break;
-			}
+	switch(dataType)
+	{
+		case UInt8: case UInt16: case Int16: case UInt32: case Int32:
+			value = readParInt(memType, par, dataType);
 		break;
-		case MemPa:
+		case String:
+			value = readParString(memType, par);
 		break;
 	}
 
@@ -159,7 +162,7 @@ bool Protocol6015::trackReq(int trackNr)
 	QString tlg;
 	bool success;
 
-	tlg.sprintf("ACT_21_%02X\r\n", trackNr);
+	tlg.sprintf("ACT_21_%02x\r\n", trackNr);
 	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
@@ -563,7 +566,7 @@ bool Protocol6015::writeFa(int par, const QString &value)
 	QString resp;
 	bool success = false;
 
-	tlg.sprintf("WFA_%02X_", par);
+	tlg.sprintf("WFA_%02x_", par);
 	tlg += value;
 	tlg += "\r\n";
 
@@ -600,47 +603,83 @@ bool Protocol6015::writeFaString(int par, const QString &value)
 	return success;
 }
 
-bool Protocol6015::reqFa(int par)
+bool Protocol6015::requestPar(MemType memType, int par)
 {
 	QString tlg;
 	bool success;
 
-	tlg.sprintf("RFA_%02X\r\n", par);
+	switch(memType)
+	{
+		case MemFa:
+			tlg.sprintf("RFA_%02x\r\n", par);
+		break;
+		case MemPa:
+			tlg.sprintf("RPA_%02x\r\n", par);
+		break;
+	}
+
 	m_device.flush();
 	success = m_device.sendTlg(tlg);
 
 	return success;
 }
 
-int Protocol6015::readFaInt(int par)
+int Protocol6015::readParInt(MemType memType, int par, DataType dataType)
 {
 	QString tlg;
 	Tokenizer tokenizer;
 	QString token;
 	int value = 0;
 	bool ok;
+	bool success;
 
 	if(m_device.recieveTlg(100))
 	{
 		tlg = m_device.getTlg();
+		success = (tlg != "No Par\r\n");
 
-		if(tlg != "No Par\r\n")
+		if(success)
 		{
-			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
-			tokenizer.getNextToken(tlg, '_', token);
+			tokenizer.getFirstToken(tlg, '_', token); // memory
+
+			switch(memType)
+			{
+				case MemFa:
+					success = (token == "RFA");
+				break;
+				case MemPa:
+					success = (token == "RPA");
+				break;
+			}
+
+			tokenizer.getNextToken(tlg, '_', token); // parameter
 		}
 
-		if(token.toInt(&ok, 16) == par)
+		if(success && (token.toInt(&ok, 16) == par))
 		{
 			tokenizer.getNextToken(tlg, '\r', token);
-			value = (int)token.toLongLong(&ok, 16);
+
+			switch(dataType)
+			{
+				case UInt8:
+					value = token.toInt();
+				break;
+				case Int16: case UInt16:
+					value = bswap_16(token.toInt(&ok, 16));
+				break;
+				case Int32: case UInt32:
+					value = bswap_32(token.toLongLong(&ok, 16));
+				break;
+				default:
+				break;
+			}
 		}
 	}
 
 	return value;
 }
 
-QString Protocol6015::readFaString(int par)
+QString Protocol6015::readParString(MemType memType, int par)
 {
 	QString tlg;
 	Tokenizer tokenizer;
@@ -649,18 +688,31 @@ QString Protocol6015::readFaString(int par)
 	uint byteNr;
 	int byte;
 	bool ok;
+	bool success;
 
 	if(m_device.recieveTlg(100))
 	{
 		tlg = m_device.getTlg();
+		success = (tlg != "No Par\r\n");
 
-		if(tlg != "No Par\r\n")
+		if(success)
 		{
-			tokenizer.getFirstToken(tlg, '_', token); // skip RPA
-			tokenizer.getNextToken(tlg, '_', token);
+			tokenizer.getFirstToken(tlg, '_', token); // memory
+
+			switch(memType)
+			{
+				case MemFa:
+					success = (token == "RFA");
+				break;
+				case MemPa:
+					success = (token == "RPA");
+				break;
+			}
+
+			tokenizer.getNextToken(tlg, '_', token); // parameter
 		}
 
-		if(token.toInt(&ok, 16) == par)
+		if(success && (token.toInt(&ok, 16) == par))
 		{
 			tokenizer.getNextToken(tlg, '\r', token);
 
