@@ -43,10 +43,12 @@ bool Protocol6015::open(const QString &dev, int baud)
 //int value = memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
 //int value = memoryRead(MemPa, SW_VERS, UInt16).toUInt();
 //int value = memoryRead(MemPa, ALT_DIFF_FLA, UInt32).toUInt();
+//memoryWrite(MemFa, AC_TYPE, String, QString("AVAX XC 2"));
 //QString value = memoryRead(MemFa, AC_TYPE, String).toString();
 //int value = memoryRead(MemFa, AUDIO_RISE, UInt16).toUInt();
 //memoryWrite(MemFa, PRESS_OFFSET, Int32, -1000);
 //int value = memoryRead(MemFa, PRESS_OFFSET, Int32).toUInt();
+//QByteArray value = memoryRead(MemPa, BATT_LEVEL_1, Array).toByteArray();
 
 
 	return success;
@@ -70,21 +72,25 @@ bool Protocol6015::memoryWrite(MemType memType, int par, DataType dataType, cons
 				case UInt8:
 					writeEnableFa();
 					tlgValue.sprintf("%02X", (char)value.toUInt());
-					success = writeFa(par, tlgValue);
+					success = writePar(memType, par, tlgValue);
 				break;
 				case UInt16: case Int16:
 					writeEnableFa();
 					tlgValue.sprintf("%04X", bswap_16(value.toUInt()));
-					success = writeFa(par, tlgValue);
+					success = writePar(memType, par, tlgValue);
 				break;
 				case UInt32: case Int32:
 					writeEnableFa();
 					tlgValue.sprintf("%08X", bswap_32(value.toUInt()));
-					success = writeFa(par, tlgValue);
+					success = writePar(memType, par, tlgValue);
 				break;
 				case String:
 					writeEnableFa();
-					success = writeFaString(par, value.toString());
+					success = writeParString(memType, par, value.toString());
+				break;
+				case Array:
+					writeEnableFa();
+					success = writeParArray(memType, par, value.toByteArray());
 				break;
 			}
 		break;
@@ -108,6 +114,9 @@ QVariant Protocol6015::memoryRead(MemType memType, int par, DataType dataType)
 		break;
 		case String:
 			value = readParString(memType, par);
+		break;
+		case Array:
+			value = readParArray(memType, par);
 		break;
 	}
 
@@ -560,13 +569,21 @@ bool Protocol6015::writeEnableFa()
 	return success;
 }
 
-bool Protocol6015::writeFa(int par, const QString &value)
+bool Protocol6015::writePar(MemType memType, int par, const QString &value)
 {
 	QString tlg;
 	QString resp;
 	bool success = false;
 
-	tlg.sprintf("WFA_%02x_", par);
+	switch(memType)
+	{
+		case MemFa:
+			tlg.sprintf("WFA_%02x_", par);
+		break;
+		case MemPa:
+		break;
+	}
+
 	tlg += value;
 	tlg += "\r\n";
 
@@ -582,23 +599,34 @@ bool Protocol6015::writeFa(int par, const QString &value)
 	return success;
 }
 
-bool Protocol6015::writeFaString(int par, const QString &value)
+bool Protocol6015::writeParString(MemType memType, int par, const QString &value)
 {
-	QString byte;
-	QString tlg;
 	QString ftString;
-	uint byteNr;
+	QByteArray arrValue;
 	bool success;
 
 	ftString = qString2ftString(value, 16);
+	arrValue.setRawData(ftString.ascii(), ftString.length());
+	success = writeParArray(memType, par, arrValue);
+	arrValue.resetRawData(ftString.ascii(), ftString.length());
 
-	for(byteNr=0; byteNr<ftString.length(); byteNr++)
+	return success;
+}
+
+bool Protocol6015::writeParArray(MemType memType, int par, const QByteArray &value)
+{
+	QString byte;
+	QString tlg;
+	uint byteNr;
+	bool success;
+
+	for(byteNr=0; byteNr<value.size(); byteNr++)
 	{
-		byte.setNum(ftString.at(byteNr).latin1(), 16);
+		byte.setNum(value.at(byteNr), 16);
 		tlg += byte.upper();
 	}
 
-	success = writeFa(par, tlg);
+	success = writePar(memType, par, tlg);
 
 	return success;
 }
@@ -681,11 +709,22 @@ int Protocol6015::readParInt(MemType memType, int par, DataType dataType)
 
 QString Protocol6015::readParString(MemType memType, int par)
 {
+	QString value = "";
+
+	value += readParArray(memType, par);
+	value = ftString2qString(value);
+
+	return value;
+}
+
+QByteArray Protocol6015::readParArray(MemType memType, int par)
+{
 	QString tlg;
 	Tokenizer tokenizer;
 	QString token;
-	QString value = "";
+	QByteArray value;
 	uint byteNr;
+	uint elemNr;
 	int byte;
 	bool ok;
 	bool success;
@@ -718,13 +757,15 @@ QString Protocol6015::readParString(MemType memType, int par)
 
 			if(token.length() >= 2)
 			{
+				value.resize(token.length() / 2);
+				elemNr = 0;
+
 				for(byteNr=0; byteNr<token.length(); byteNr+=2)
 				{
 					byte = token.mid(byteNr, 2).toInt(&ok, 16);
-					value += (char)byte;
+					value[elemNr] = (char)byte;
+					elemNr++;
 				}
-
-				value = ftString2qString(value);
 			}
 		}
 	}

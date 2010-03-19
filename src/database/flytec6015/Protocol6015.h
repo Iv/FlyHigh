@@ -107,15 +107,19 @@ class Protocol6015
 
 		bool writeEnableFa();
 
-		bool writeFa(int par, const QString &value);
+		bool writePar(MemType memType, int par, const QString &value);
 		
-		bool writeFaString(int par, const QString &value);
+		bool writeParString(MemType memType, int par, const QString &value);
+
+		bool writeParArray(MemType memType, int par, const QByteArray &value);
 		
 		bool requestPar(MemType memType, int par);
 		
 		int readParInt(MemType memType, int par, DataType dataType);
 		
 		QString readParString(MemType memType, int par);
+
+		QByteArray readParArray(MemType memType, int par);
 };
 
 #endif
