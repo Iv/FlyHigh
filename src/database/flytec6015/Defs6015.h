@@ -23,7 +23,7 @@
 
 typedef enum MemType{MemFa, MemPa}MemType;
 
-typedef enum DataType{UInt8, Int16, UInt16, UInt32, Int32, String}DataType;
+typedef enum DataType{UInt8, Int16, UInt16, UInt32, Int32, String, Array}DataType;
 
 // FA settings
 #define OWNER            0x00
