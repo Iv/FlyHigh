@@ -413,7 +413,7 @@ void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 	char dir;
 
 	// Name
-	tlg = qString2ftString(wp.name(), 16);
+	tlg = qString2ftString(wp.name(), StringSize);
 	tlg += ';';
 
 	// lat
@@ -605,7 +605,7 @@ bool Protocol6015::writeParString(MemType memType, int par, const QString &value
 	QByteArray arrValue;
 	bool success;
 
-	ftString = qString2ftString(value, 16);
+	ftString = qString2ftString(value, StringSize);
 	arrValue.setRawData(ftString.ascii(), ftString.length());
 	success = writeParArray(memType, par, arrValue);
 	arrValue.resetRawData(ftString.ascii(), ftString.length());
