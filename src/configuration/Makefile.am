@@ -1,3 +1,3 @@
 INCLUDES = $(all_includes)
 METASOURCES = AUTO
-SUBDIRS = flytec interface database
+SUBDIRS = database flytec flytec6015 interface
