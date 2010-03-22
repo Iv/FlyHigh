@@ -31,6 +31,8 @@
 class IFlyHighRC
 {
 	public:
+		enum {DevFlytec5020 = 0, DevFlytec6015 = 1};
+
 		static IFlyHighRC* pInstance();
 		
 		void loadRC();
