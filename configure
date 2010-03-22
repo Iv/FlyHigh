@@ -31542,6 +31542,8 @@ ac_config_files="$ac_config_files src/configuration/database/Makefile"
 
 ac_config_files="$ac_config_files src/configuration/flytec/Makefile"
 
+ac_config_files="$ac_config_files src/configuration/flytec6015/Makefile"
+
 ac_config_files="$ac_config_files src/configuration/interface/Makefile"
 
 ac_config_files="$ac_config_files src/database/Makefile"
@@ -32149,6 +32151,7 @@ do
     "src/configuration/Makefile") CONFIG_FILES="$CONFIG_FILES src/configuration/Makefile" ;;
     "src/configuration/database/Makefile") CONFIG_FILES="$CONFIG_FILES src/configuration/database/Makefile" ;;
     "src/configuration/flytec/Makefile") CONFIG_FILES="$CONFIG_FILES src/configuration/flytec/Makefile" ;;
+    "src/configuration/flytec6015/Makefile") CONFIG_FILES="$CONFIG_FILES src/configuration/flytec6015/Makefile" ;;
     "src/configuration/interface/Makefile") CONFIG_FILES="$CONFIG_FILES src/configuration/interface/Makefile" ;;
     "src/database/Makefile") CONFIG_FILES="$CONFIG_FILES src/database/Makefile" ;;
     "src/database/flytec/Makefile") CONFIG_FILES="$CONFIG_FILES src/database/flytec/Makefile" ;;
