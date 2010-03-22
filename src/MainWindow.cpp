@@ -31,6 +31,7 @@
 #include "GliderWindow.h"
 #include "IFlyHighRC.h"
 #include "IFlytecConfig.h"
+#include "IFlytec6015Config.h"
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IPortFrame.h"
@@ -251,7 +252,7 @@ void MainWindow::airspaces_fromFile()
 void MainWindow::help_about()
 {
 	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
-			"Copyright (c): 2004-2009 by Alex Graf, <grafal@sf.net>\n"
+			"Copyright (c): 2004-2010 by Alex Graf, <grafal@sf.net>\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL). Visit www.gnu.org for more information.");
 }
@@ -439,15 +440,17 @@ void MainWindow::settings_port()
 void MainWindow::settings_configure_device()
 {
 	IFlytecConfig *pFrame;
+	IFlytec6015Config *pConfig6015;
 	
 	switch(IFlyHighRC::pInstance()->deviceName())
 	{
-		case 0:
+		case IFlyHighRC::DevFlytec5020:
 			pFrame = new IFlytecConfig();
 			pFrame->show();
 		break;
-		case 1:
-			
+		case IFlyHighRC::DevFlytec6015:
+			pConfig6015 = new IFlytec6015Config();
+			pConfig6015->show();
 		break;
 			/*
 			handle here other devices
