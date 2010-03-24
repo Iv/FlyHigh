@@ -32,6 +32,7 @@
 DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
 : DisplayFrame6015(parent,name,fl)
 {
+/*
 	// not supported by 5020
 	comboBox_Font->setEnabled(false);
 	
@@ -52,6 +53,7 @@ DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, WF
 	insertItems(comboBox_UserField_2_0);
 	insertItems(comboBox_UserField_2_1);
 	insertItems(comboBox_UserField_2_2);
+*/
 }
 
 DisplayFrame6015Impl::~DisplayFrame6015Impl()
