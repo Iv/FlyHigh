@@ -43,7 +43,7 @@ bool Protocol6015::open(const QString &dev, int baud)
 //int value = memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
 //int value = memoryRead(MemPa, SW_VERS, UInt16).toUInt();
 //int value = memoryRead(MemPa, ALT_DIFF_FLA, UInt32).toUInt();
-//memoryWrite(MemFa, AC_TYPE, String, QString("AVAX XC 2"));
+//memoryWrite(MemFa, AC_TYPE, String, QString("Avax XC 2"));
 //QString value = memoryRead(MemFa, AC_TYPE, String).toString();
 //int value = memoryRead(MemFa, AUDIO_RISE, UInt16).toUInt();
 //memoryWrite(MemFa, PRESS_OFFSET, Int32, -1000);
