@@ -9,26 +9,61 @@
             <x>0</x>
             <y>0</y>
             <width>425</width>
-            <height>387</height>
+            <height>490</height>
         </rect>
     </property>
     <property name="caption">
         <string>Unit</string>
     </property>
-    <widget class="QLabel">
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>m/s</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>ft/min*100</string>
+            </property>
+        </item>
         <property name="name">
-            <cstring>textLabel_Distance</cstring>
+            <cstring>comboBox_Velocity1</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>40</x>
-                <y>40</y>
-                <width>134</width>
-                <height>20</height>
+                <x>220</x>
+                <y>140</y>
+                <width>98</width>
+                <height>28</height>
             </rect>
         </property>
-        <property name="text">
-            <string>Distance</string>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>km/h</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>kts</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>mph</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_Velocity2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>190</y>
+                <width>98</width>
+                <height>28</height>
+            </rect>
         </property>
     </widget>
     <widget class="QComboBox">
@@ -43,7 +78,7 @@
             </property>
         </item>
         <property name="name">
-            <cstring>comboBox_Distance</cstring>
+            <cstring>comboBox_Distance1</cstring>
         </property>
         <property name="geometry">
             <rect>
@@ -57,24 +92,56 @@
     <widget class="QComboBox">
         <item>
             <property name="text">
-                <string>m/s</string>
+                <string>km</string>
             </property>
         </item>
         <item>
             <property name="text">
-                <string>fpm</string>
+                <string>miles</string>
             </property>
         </item>
         <property name="name">
-            <cstring>comboBox_Velocity1</cstring>
+            <cstring>comboBox_Distance2</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>86</y>
+                <y>90</y>
                 <width>98</width>
                 <height>28</height>
             </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Distance2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>94</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Distance</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Distance1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>40</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Distance</string>
         </property>
     </widget>
     <widget class="QLabel">
@@ -84,41 +151,13 @@
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>90</y>
+                <y>144</y>
                 <width>134</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
             <string>Velocity</string>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>km/h</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>mph</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>kn</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Velocity2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>136</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
         </property>
     </widget>
     <widget class="QLabel">
@@ -128,7 +167,7 @@
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>140</y>
+                <y>194</y>
                 <width>134</width>
                 <height>20</height>
             </rect>
@@ -144,7 +183,7 @@
         <property name="geometry">
             <rect>
                 <x>40</x>
-                <y>190</y>
+                <y>244</y>
                 <width>134</width>
                 <height>20</height>
             </rect>
@@ -170,7 +209,85 @@
         <property name="geometry">
             <rect>
                 <x>220</x>
-                <y>186</y>
+                <y>240</y>
+                <width>98</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_Press</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>294</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Pressure</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>hPa</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>lnHg</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_Press</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>290</y>
+                <width>98</width>
+                <height>28</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_TimeFormat</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>344</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Time Format</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>24h</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>12h</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_TimeFormat</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>220</x>
+                <y>340</y>
                 <width>98</width>
                 <height>28</height>
             </rect>
