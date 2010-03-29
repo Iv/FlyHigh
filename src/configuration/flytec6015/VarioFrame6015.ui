@@ -15,13 +15,102 @@
     <property name="caption">
         <string>Variometer</string>
     </property>
-    <widget class="QSpinBox">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>spinBox_ITime</cstring>
+            <cstring>textLabel_FiltTimeMinMax</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
+                <x>30</x>
+                <y>190</y>
+                <width>146</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Min/Max Filter Time</string>
+        </property>
+    </widget>
+    <widget class="QSlider">
+        <property name="name">
+            <cstring>slider1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>240</x>
+                <y>90</y>
+                <width>140</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>3</number>
+        </property>
+        <property name="pageStep">
+            <number>1</number>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+        <property name="toolTip" stdset="0">
+            <string>0=fast filter settings</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_ITimeUnit_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>360</x>
+                <y>190</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[s]</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_RespDelay</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>90</y>
+                <width>150</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Response delay</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_FiltTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>140</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Digital Filter Time</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_FiltTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>240</x>
                 <y>140</y>
                 <width>100</width>
                 <height>20</height>
@@ -36,18 +125,60 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_RespDelayUnit</cstring>
+            <cstring>textLabel_Variomode</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>340</x>
+                <x>30</x>
                 <y>40</y>
+                <width>134</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Rise Pitch</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_ITimeUnit_2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>360</x>
+                <y>240</y>
                 <width>67</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>[ms]</string>
+            <string>[s]</string>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>Linear</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>Exponential</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>comboBox_RisePitch</cstring>
+        </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>234</x>
+                <y>34</y>
+                <width>151</width>
+                <height>28</height>
+            </rect>
         </property>
     </widget>
     <widget class="QLabel">
@@ -56,7 +187,7 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>340</x>
+                <x>360</x>
                 <y>140</y>
                 <width>67</width>
                 <height>20</height>
@@ -66,156 +197,64 @@
             <string>[s]</string>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TECUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>190</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[%]</string>
-        </property>
-    </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_RespDelay</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
+            <cstring>spinBox_FiltTimeMinMax</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
-                <y>40</y>
+                <x>240</x>
+                <y>190</y>
                 <width>100</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="maxValue">
-            <number>8000</number>
+            <number>30</number>
         </property>
         <property name="minValue">
-            <number>1200</number>
-        </property>
-        <property name="lineStep">
-            <number>200</number>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>integrating</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>netto</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>integrating/netto</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Variomode</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>214</x>
-                <y>84</y>
-                <width>151</width>
-                <height>28</height>
-            </rect>
+            <number>1</number>
         </property>
     </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_TEC</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
+            <cstring>spinBox_TimeRiseRej</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>220</x>
-                <y>190</y>
+                <x>240</x>
+                <y>240</y>
                 <width>100</width>
                 <height>20</height>
             </rect>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TEC</cstring>
+        <property name="maxValue">
+            <number>3600</number>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>190</y>
-                <width>203</width>
-                <height>20</height>
-            </rect>
+        <property name="minValue">
+            <number>0</number>
         </property>
-        <property name="text">
-            <string>Total Energy Compensation</string>
+        <property name="value">
+            <number>0</number>
+        </property>
+        <property name="toolTip" stdset="0">
+            <string>Time to reject the min/max calculation after flight recognition (for towing).</string>
         </property>
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel_ITime</cstring>
+            <cstring>textLabel_FiltTimeMinMax_2</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>10</x>
-                <y>140</y>
-                <width>134</width>
+                <x>30</x>
+                <y>240</y>
+                <width>146</width>
                 <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string>Integration Time</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Variomode</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>90</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Variomode</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_RespDelay</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Response delay</string>
+            <string>Min/Max Rise Rejection</string>
         </property>
     </widget>
 </widget>
