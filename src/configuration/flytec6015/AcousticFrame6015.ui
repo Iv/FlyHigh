@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>486</width>
-            <height>496</height>
+            <height>611</height>
         </rect>
     </property>
     <property name="caption">
@@ -65,7 +65,7 @@
                 <x>30</x>
                 <y>40</y>
                 <width>381</width>
-                <height>220</height>
+                <height>260</height>
             </rect>
         </property>
         <property name="title">
@@ -152,22 +152,6 @@
             </property>
             <property name="text">
                 <string>[cm/s]</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_Pitch</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>180</y>
-                    <width>150</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Pitch Gain</string>
             </property>
         </widget>
         <widget class="QLabel">
@@ -285,7 +269,7 @@
         </widget>
         <widget class="QSpinBox">
             <property name="name">
-                <cstring>spinBox_Threshold</cstring>
+                <cstring>spinBox_ThresUp</cstring>
             </property>
             <property name="geometry">
                 <rect>
@@ -302,6 +286,64 @@
                 <number>0</number>
             </property>
         </widget>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>Linear</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Exponential</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>comboBox_RisePitch</cstring>
+            </property>
+            <property name="enabled">
+                <bool>true</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>220</y>
+                    <width>160</width>
+                    <height>28</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_Pitch</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>180</y>
+                    <width>150</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Pitch Gain</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_Variomode</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>225</y>
+                    <width>134</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Rise Pitch</string>
+            </property>
+        </widget>
     </widget>
     <widget class="QGroupBox">
         <property name="name">
@@ -310,49 +352,14 @@
         <property name="geometry">
             <rect>
                 <x>30</x>
-                <y>280</y>
+                <y>330</y>
                 <width>380</width>
-                <height>180</height>
+                <height>220</height>
             </rect>
         </property>
         <property name="title">
             <string>Down</string>
         </property>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>checkBox_SinkAcoustic</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>190</x>
-                    <y>20</y>
-                    <width>16</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-            <property name="checked">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_Sink_En</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>134</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Enabled</string>
-            </property>
-        </widget>
         <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel_Sink</cstring>
@@ -360,105 +367,13 @@
             <property name="geometry">
                 <rect>
                     <x>10</x>
-                    <y>60</y>
+                    <y>100</y>
                     <width>134</width>
                     <height>20</height>
                 </rect>
             </property>
             <property name="text">
                 <string>Threshold</string>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>spinBox_Sink</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>190</x>
-                    <y>60</y>
-                    <width>100</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="prefix">
-                <string></string>
-            </property>
-            <property name="maxValue">
-                <number>-10</number>
-            </property>
-            <property name="minValue">
-                <number>-2000</number>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_SinkUnit</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>310</x>
-                    <y>60</y>
-                    <width>50</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>[cm/s]</string>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>spinBox_SinkAlarm</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>190</x>
-                    <y>100</y>
-                    <width>100</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="prefix">
-                <string></string>
-            </property>
-            <property name="maxValue">
-                <number>-10</number>
-            </property>
-            <property name="minValue">
-                <number>-9990</number>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_SinkUnit_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>310</x>
-                    <y>100</y>
-                    <width>50</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>[cm/s]</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel_DownFreqUnit</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>310</x>
-                    <y>140</y>
-                    <width>33</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>[Hz]</string>
             </property>
         </widget>
         <widget class="QLabel">
@@ -468,7 +383,7 @@
             <property name="geometry">
                 <rect>
                     <x>10</x>
-                    <y>140</y>
+                    <y>180</y>
                     <width>150</width>
                     <height>20</height>
                 </rect>
@@ -479,18 +394,18 @@
         </widget>
         <widget class="QLabel">
             <property name="name">
-                <cstring>textLabel_Sink_2</cstring>
+                <cstring>textLabel_SinkUnit</cstring>
             </property>
             <property name="geometry">
                 <rect>
-                    <x>10</x>
+                    <x>310</x>
                     <y>100</y>
-                    <width>156</width>
+                    <width>50</width>
                     <height>20</height>
                 </rect>
             </property>
             <property name="text">
-                <string>Threshold Sink Alarm</string>
+                <string>[cm/s]</string>
             </property>
         </widget>
         <widget class="QSpinBox">
@@ -500,7 +415,7 @@
             <property name="geometry">
                 <rect>
                     <x>190</x>
-                    <y>140</y>
+                    <y>180</y>
                     <width>100</width>
                     <height>20</height>
                 </rect>
@@ -518,18 +433,175 @@
                 <number>300</number>
             </property>
         </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_SinkUnit_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>310</x>
+                    <y>140</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>[cm/s]</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_DownFreqUnit</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>310</x>
+                    <y>180</y>
+                    <width>33</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>[Hz]</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_Sink_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>140</y>
+                    <width>156</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Threshold Sink Alarm</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_StallAlarm</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>60</y>
+                    <width>134</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stall Alarm</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel_SinkAlarm</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>134</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Sink Alarm</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBox_StallAlarm</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>60</y>
+                    <width>16</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBox_SinkAlarm</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>20</y>
+                    <width>16</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>spinBox_ThresDown</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>100</y>
+                    <width>100</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="prefix">
+                <string></string>
+            </property>
+            <property name="maxValue">
+                <number>-10</number>
+            </property>
+            <property name="minValue">
+                <number>-2000</number>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>spinBox_ThresSinkAlarm</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>190</x>
+                    <y>140</y>
+                    <width>100</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="prefix">
+                <string></string>
+            </property>
+            <property name="maxValue">
+                <number>-10</number>
+            </property>
+            <property name="minValue">
+                <number>-9990</number>
+            </property>
+        </widget>
     </widget>
 </widget>
-<connections>
-    <connection>
-        <sender>checkBox_SinkAcoustic</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>AcousticFrame6015</receiver>
-        <slot>sinkAcousticToggled(bool)</slot>
-    </connection>
-</connections>
+<includes>
+    <include location="local" impldecl="in implementation">AcousticFrame6015.ui.h</include>
+</includes>
 <slots>
-    <slot>sinkAcousticToggled(bool)</slot>
+    <slot>sinkAcousticToggled( bool )</slot>
 </slots>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
