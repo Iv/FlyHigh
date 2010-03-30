@@ -19,10 +19,12 @@
  ***************************************************************************/
 
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qslider.h>
 #include <qspinbox.h>
 
 #include "AcousticFrame6015Impl.h"
+#include "Flytec6015.h"
 
 AcousticFrame6015Impl::AcousticFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
 : AcousticFrame6015(parent,name,fl)
@@ -33,15 +35,53 @@ AcousticFrame6015Impl::~AcousticFrame6015Impl()
 {
 }
 
-void AcousticFrame6015Impl::sinkAcousticToggled(bool b)
-{
-	checkBox_SinkAcoustic->setChecked(b);
-	spinBox_Sink->setEnabled(b);
-	spinBox_DownFreq->setEnabled(b);
-}
-
 void AcousticFrame6015Impl::update(QByteArray &arr)
 {
+	Flytec6015 *pDev;
+	uint uiValue;
+	int iValue;
+
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// Volume
+	uiValue = pDev->memoryRead(MemFa, AUDIO_VOLUME, UInt8).toUInt();
+	slider_Volume->setValue(uiValue);
+
+	// Rise acoustic, sink alarm, stall alarm, rise pitch
+	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	checkBox_SinkAlarm->setChecked(uiValue & MASK_SINK_ALARM);
+	checkBox_RiseAcoustic->setChecked(uiValue & MASK_RISE_ACC);
+	checkBox_StallAlarm->setChecked(uiValue & MASK_STALL_ALARM);
+	comboBox_RisePitch->setCurrentItem((uiValue & MASK_RISE_PITCH) >> 1);
+
+	// Frequency gain
+	uiValue = pDev->memoryRead(MemFa, FREQ_GAIN, UInt8).toUInt();
+	slider_FreqGain->setValue(uiValue);
+
+	// Pitch gain
+	uiValue = pDev->memoryRead(MemFa, PITCH_GAIN, UInt8).toUInt();
+	slider_PitchGain->setValue(uiValue);
+
+	// Rise frequency
+	uiValue = pDev->memoryRead(MemFa, B_FREQ_RISE, UInt16).toUInt();
+	spinBox_UpFreq->setValue(uiValue);
+
+	// Sink frequency
+	uiValue = pDev->memoryRead(MemFa, B_FREQ_SINK, UInt16).toUInt();
+	spinBox_DownFreq->setValue(uiValue);
+
+	// Rise threshold
+	iValue = pDev->memoryRead(MemFa, AUDIO_RISE, Int16).toInt();
+	spinBox_ThresUp->setValue(iValue);
+
+// Sink threshold
+iValue = pDev->memoryRead(MemFa, AUDIO_SINK, Int16).toInt();
+spinBox_ThresDown->setValue(iValue);
+
+	// Sink alarm threshold
+	iValue = pDev->memoryRead(MemFa, SINK_ALARM, Int16).toInt();
+	spinBox_ThresSinkAlarm->setValue(iValue);
+
 /*
 	u_char c8value;
 	int8_t i8value;

@@ -34,9 +34,6 @@ class AcousticFrame6015Impl: public AcousticFrame6015, public Frame6015
 
 		void update(QByteArray &arr);
 		void store(QByteArray &arr);
-
-	protected:
-		void sinkAcousticToggled(bool b);
 };
 
 #endif
