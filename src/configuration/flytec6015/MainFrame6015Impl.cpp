@@ -70,47 +70,47 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	pCorrFrame6015 = new CorrFrame6015Impl(widgetStack);
 	addPage(pCorrFrame6015, &pos);
 	pCorrFrame6015->setEnabled(true);
-	m_Frame6015List.push_back(pCorrFrame6015);
+	m_frameList.push_back(pCorrFrame6015);
 	
 	// Vario
 	pVarioFrame6015 = new VarioFrame6015Impl(widgetStack);
 	addPage(pVarioFrame6015, &pos);
-	m_Frame6015List.push_back(pVarioFrame6015);
+	m_frameList.push_back(pVarioFrame6015);
 
 	// Acoustic
 	pAcousticFrame6015 = new AcousticFrame6015Impl(widgetStack);
 	addPage(pAcousticFrame6015, &pos);
-	m_Frame6015List.push_back(pAcousticFrame6015);
+	m_frameList.push_back(pAcousticFrame6015);
 	
 	// Velocity
 	pVelocityFrame6015 = new VelocityFrame6015Impl(widgetStack);
 	addPage(pVelocityFrame6015, &pos);
-	m_Frame6015List.push_back(pVelocityFrame6015);
+	m_frameList.push_back(pVelocityFrame6015);
 	
 	// GPS
 	pGPSFrame6015 = new GPSFrame6015Impl(widgetStack);
 	addPage(pGPSFrame6015, &pos);
-	m_Frame6015List.push_back(pGPSFrame6015);
+	m_frameList.push_back(pGPSFrame6015);
 
 	// Device
 	pDeviceFrame6015 = new DeviceFrame6015Impl(widgetStack);
 	addPage(pDeviceFrame6015, &pos);
-	m_Frame6015List.push_back(pDeviceFrame6015);
+	m_frameList.push_back(pDeviceFrame6015);
 	
 	// Memory
 	pMemoryFrame6015 = new MemoryFrame6015Impl(widgetStack);
 	addPage(pMemoryFrame6015, &pos);
-	m_Frame6015List.push_back(pMemoryFrame6015);
+	m_frameList.push_back(pMemoryFrame6015);
 	
 	// Display
 	pDisplayFrame6015 = new DisplayFrame6015Impl(widgetStack);
 	addPage(pDisplayFrame6015, &pos);
-	m_Frame6015List.push_back(pDisplayFrame6015);
+	m_frameList.push_back(pDisplayFrame6015);
 	
 	// Unit
 	pUnitFrame6015 = new UnitFrame6015Impl(widgetStack);
 	addPage(pUnitFrame6015, &pos);
-	m_Frame6015List.push_back(pUnitFrame6015);
+	m_frameList.push_back(pUnitFrame6015);
 	
 /*	m_pProgressBar = new QProgressBar(statusBar());
 	m_pProgressBar->setProgress(0, ft_MemSize/ft_PageSize);
@@ -146,7 +146,7 @@ void MainFrame6015Impl::open()
 		
 		if(file.open(IO_WriteOnly))
 		{
-			storeFrame6015s();
+			storeFrames();
 			file.writeBlock(m_flytecMem);
 			file.close();
 		}
@@ -170,7 +170,7 @@ void MainFrame6015Impl::save()
 	
 		if(file.open(IO_WriteOnly))
 		{
-			storeFrame6015s();
+			storeFrames();
 			file.writeBlock(m_flytecMem);
 			file.close();
 		}
@@ -183,10 +183,7 @@ void MainFrame6015Impl::read()
 	
 	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
 
-	if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
-	{
-		updateFrame6015s();
-	}
+	updateFrames();
 	
 	dlg.endProgress();
 }
@@ -198,30 +195,30 @@ void MainFrame6015Impl::write()
 	if(QMessageBox::question(this, tr("write configuration"), 
 		tr("Write current configuration to the device?"), 1, 2) == 1)
 	{
-		storeFrame6015s();
+		storeFrames();
 		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
 		dlg.endProgress();
 	}
 }
 
-void MainFrame6015Impl::storeFrame6015s()
+void MainFrame6015Impl::storeFrames()
 {
-	Frame6015ListType::iterator it;
+	FrameListType::iterator it;
 	
-	// update Frame6015s
-	for(it=m_Frame6015List.begin(); it!=m_Frame6015List.end(); it++)
+	// update Frames
+	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
 		(*it)->store(m_flytecMem);
 	}
 }
 
-void MainFrame6015Impl::updateFrame6015s()
+void MainFrame6015Impl::updateFrames()
 {
-	Frame6015ListType::iterator it;
+	FrameListType::iterator it;
 	
-	// update Frame6015s
-	for(it=m_Frame6015List.begin(); it!=m_Frame6015List.end(); it++)
+	// update Frames
+	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
 		(*it)->update(m_flytecMem);
 	}
