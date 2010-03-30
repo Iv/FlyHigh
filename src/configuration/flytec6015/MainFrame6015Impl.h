@@ -46,18 +46,18 @@ class MainFrame6015Impl: public MainFrame6015
 		void write();
 
 	private:
-		typedef std::vector<Frame6015*> Frame6015ListType;
+		typedef std::vector<Frame6015*> FrameListType;
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
 		QByteArray m_flytecMem;
-		Frame6015ListType m_Frame6015List;
+		FrameListType m_frameList;
 		QProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
 
 		void execThreadCmd(CmdType cmd);
-		void updateFrame6015s();
-		void storeFrame6015s();
+		void updateFrames();
+		void storeFrames();
 };
 
 #endif
