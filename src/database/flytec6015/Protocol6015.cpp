@@ -692,7 +692,10 @@ int Protocol6015::readParInt(MemType memType, int par, DataType dataType)
 				case UInt8:
 					value = token.toInt();
 				break;
-				case Int16: case UInt16:
+				case Int16:
+					value = (short)bswap_16(token.toInt(&ok, 16));
+				break;
+				case UInt16:
 					value = bswap_16(token.toInt(&ok, 16));
 				break;
 				case Int32: case UInt32:
