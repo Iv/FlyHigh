@@ -71,4 +71,15 @@ enum {StringSize = 16};
 #define VARIO_FLA        0x0d
 #define SPEED_FLA        0x0e
 
+#define MASK_AUTO_POWER_OFF 0x0001
+#define MASK_RISE_PITCH     0x0002
+#define MASK_SINK_ALARM     0x0004
+#define MASK_ALT_DISP       0x0010
+#define MASK_LINE4_DISP     0x0020
+#define MASK_ALT2_MODE      0x00C0
+#define MASK_RISE_ACC       0x0100
+#define MASK_ALT3_MODE      0x0200
+#define MASK_FLIGHT_END     0x0400
+#define MASK_STALL_ALARM    0x0800
+
 #endif
