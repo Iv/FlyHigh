@@ -38,16 +38,16 @@ class Flytec6015: public IGPSDevice
 
 		~Flytec6015();
 
+		bool memoryWrite(MemType memType, int par, DataType dataType, const QVariant &value);
+		
+		QVariant memoryRead(MemType memType, int par, DataType dataType);
+
 	protected:
 		void open();
 
 		void close();
 
 		void cancel();
-
-		bool memoryWrite(MemType memType, int par, DataType dataType, const QVariant &value);
-		
-		QVariant memoryRead(MemType memType, int par, DataType dataType);
 
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
