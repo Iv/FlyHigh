@@ -286,7 +286,7 @@ bool FlytecDevice::wayPointList(WayPoint::WayPointListType &wpList)
 		}
 	}
 	
-	Error::verify((wpList.size() > 0), Error::FLYTEC_CMD);
+	Error::verify(success, Error::FLYTEC_CMD);
 	
 	return success;
 }
