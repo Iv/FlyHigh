@@ -23,7 +23,7 @@
 
 typedef enum MemType{MemFa, MemPa}MemType;
 
-typedef enum DataType{UInt8, Int16, UInt16, UInt32, Int32, String, Array}DataType;
+typedef enum DataType{Int8, UInt8, Int16, UInt16, UInt32, Int32, String, Array}DataType;
 
 enum {StringSize = 16};
 
@@ -31,7 +31,7 @@ enum {StringSize = 16};
 #define OWNER            0x00
 #define AC_TYPE          0x01
 #define AC_ID            0x02
-#define UNITS            0x03
+#define UNIT_FLAGS       0x03
 #define DIV_FLAGS        0x04
 #define FILT_TYPE        0x05
 #define ALT1_DIFF        0x06
@@ -81,5 +81,14 @@ enum {StringSize = 16};
 #define MASK_ALT3_MODE      0x0200
 #define MASK_FLIGHT_END     0x0400
 #define MASK_STALL_ALARM    0x0800
+
+#define MASK_UNIT_DIST      0x0001
+#define MASK_UNIT_DEG       0x0004
+#define MASK_UNIT_PRESS     0x0010
+#define MASK_UNIT_SPEED     0x0020
+#define MASK_UNIT_SPEED2    0x00C0
+#define MASK_UNIT_TIME      0x0100
+#define MASK_UNIT_GRID      0x0600
+#define MASK_UNIT_DIST2     0x0800
 
 #endif
