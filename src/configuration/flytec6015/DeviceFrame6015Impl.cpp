@@ -19,13 +19,15 @@
  ***************************************************************************/
 
 #include <qcombobox.h>
+#include <qcheckbox.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
-#include "IFlyHighRC.h"
+#include <qspinbox.h>
+#include "Flytec6015.h"
 #include "Glider.h"
+#include "IFlyHighRC.h"
 #include "IGliderForm.h"
 #include "ISql.h"
-
 #include "DeviceFrame6015Impl.h"
 
 DeviceFrame6015Impl::DeviceFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
@@ -52,6 +54,97 @@ void DeviceFrame6015Impl::newGlider()
 
 void DeviceFrame6015Impl::update(QByteArray &arr)
 {
+	Flytec6015 *pDev;
+	Pilot dbPilot;
+	QString dbPilotName;
+	QString dbGlider;
+	QString pilotName;
+	QString callsign;
+	QString glider;
+	int syncRes;
+	uint uiValue;
+
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// device nr
+	uiValue = pDev->memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
+	lineEdit_SerialNr->setText(QString("%1").arg(uiValue));
+
+	// device type
+	uiValue = pDev->memoryRead(MemPa, DEVICE_TYPE, UInt8).toUInt();
+
+	switch(uiValue)
+	{
+		case 0:
+			lineEdit_DeviceIdent->setText("Flytec 6015");
+		break;
+		case 1:
+			lineEdit_DeviceIdent->setText("IQ Basic GPS");
+		break;
+	}
+
+	// sw version
+	uiValue = pDev->memoryRead(MemPa, SW_VERS, UInt16).toUInt();
+	lineEdit_SwVersion->setText(QString("%1").arg(uiValue));
+
+	// pilot name
+	pilotName = pDev->memoryRead(MemFa, OWNER, String).toString();
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
+	dbPilot.fullName(dbPilotName);
+
+	if(pilotName != dbPilotName.left(pilotName.length()))
+	{
+		syncRes = QMessageBox::question(this, "Different pilots", "Pilot on GPS differ from pilot in database. Set pilot?",
+			 	"DB to GPS", "Ignore");
+		
+		switch(syncRes)
+		{
+			case 0: // From database
+				pilotName = dbPilotName;
+			break;
+			default:
+			break;
+		}
+	}
+	
+	lineEdit_PilotName->setText(pilotName);
+
+	// glider
+	glider = pDev->memoryRead(MemFa, AC_TYPE, String).toString();
+	dbGlider = m_gliderList.at(comboBoxModel->currentItem()).model();
+	
+	if(glider != dbGlider)
+	{
+		syncRes = QMessageBox::question(this, "Different gliders",
+				"Glider on GPS differ from glider in database. Set glider?",
+				"DB to Dialog", "Ignore");
+		
+		switch(syncRes)
+		{
+			case 0: // From Pilot
+				dbPilot.glider().fullName(dbGlider);
+				selectGlider(dbGlider);
+			break;
+			default:
+			break;
+		}
+	}
+
+	// power off time
+	uiValue = pDev->memoryRead(MemPa, POWER_OFF_TIME, UInt8).toUInt();
+	spinBox_PowerOffTime->setValue(uiValue);
+
+	// auto off
+	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	checkBox_AutoOff->setChecked(uiValue & MASK_AUTO_POWER_OFF);
+/**
+
+QPushButton* pushButtonGlider;
+QComboBox* comboBox_BattType;
+QSpinBox* spinBox_PowerOffTime;
+QCheckBox* checkBox_AutoOff;
+*/
+
 /*
 	Pilot dbPilot;
 	QString dbPilotName;
