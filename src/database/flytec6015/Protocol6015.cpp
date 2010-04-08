@@ -69,7 +69,7 @@ bool Protocol6015::memoryWrite(MemType memType, int par, DataType dataType, cons
 		case MemFa:
 			switch(dataType)
 			{
-				case UInt8:
+				case UInt8: case Int8:
 					writeEnableFa();
 					tlgValue.sprintf("%02X", (char)value.toUInt());
 					success = writePar(memType, par, tlgValue);
@@ -109,7 +109,7 @@ QVariant Protocol6015::memoryRead(MemType memType, int par, DataType dataType)
 
 	switch(dataType)
 	{
-		case UInt8: case UInt16: case Int16: case UInt32: case Int32:
+		case UInt8: case Int8: case UInt16: case Int16: case UInt32: case Int32:
 			value = readParInt(memType, par, dataType);
 		break;
 		case String:
@@ -689,6 +689,9 @@ int Protocol6015::readParInt(MemType memType, int par, DataType dataType)
 
 			switch(dataType)
 			{
+				case Int8:
+					value = (char)token.toInt();
+				break;
 				case UInt8:
 					value = token.toInt();
 				break;
