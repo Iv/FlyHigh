@@ -21,9 +21,9 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include "IFlyHighRC.h"
-
+#include "Flytec6015.h"
 #include "GPSFrame6015Impl.h"
+#include "IFlyHighRC.h"
 
 GPSFrame6015Impl::GPSFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
 : GPSFrame6015(parent,name,fl)
@@ -36,21 +36,19 @@ GPSFrame6015Impl::~GPSFrame6015Impl()
 
 void GPSFrame6015Impl::update(QByteArray &arr)
 {
-/*
-	char i8value;
+	Flytec6015 *pDev;
+	uint uiValue;
+	int iValue;
 
-	// Grid System
-	comboBox_GridSys->setCurrentItem(arr[GRID_SYS_POS]);
-	
-	// UTC Offset
-	i8value = arr[UTC_OFFSET_POS];
-	spinBox_UTCoffset->setValue(i8value);
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	// Half UTC offset
-	i8value = arr[UTC_HALF_OFFSET_POS];
-	checkBox_UTChalfOffset->setChecked(i8value);
-*/
-//	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
+	// utc offset
+	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
+	spinBox_UTCoffset->setValue(iValue);
+
+	// grid system
+	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
+	comboBox_GridSys->setCurrentItem((uiValue & MASK_UNIT_GRID) >> 9);
 }
 
 void GPSFrame6015Impl::store(QByteArray &arr)

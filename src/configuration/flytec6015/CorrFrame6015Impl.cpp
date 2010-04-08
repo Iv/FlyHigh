@@ -21,6 +21,7 @@
 #include <qspinbox.h>
 
 #include "CorrFrame6015Impl.h"
+#include "Flytec6015.h"
 
 CorrFrame6015Impl::CorrFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
 	:CorrFrame6015(parent,name,fl)
@@ -31,27 +32,20 @@ CorrFrame6015Impl::~CorrFrame6015Impl()
 {
 }
 
-
 void CorrFrame6015Impl::update(QByteArray &arr)
 {
-/*
-	int16_t i16value;
-	
-	// correction of A1
-	i16value = arr[QNH_CORR_A1_POS] << 8;
-	i16value += arr[QNH_CORR_A1_POS+1];
-	spinBox_QNHCorrA1->setValue(i16value);
+	Flytec6015 *pDev;
+	int iValue;
 
-	// correction of A2
-	i16value = arr[QNH_CORR_A2_POS] << 8;
-	i16value += arr[QNH_CORR_A2_POS+1];
-	spinBox_QNHCorrA2->setValue(i16value);
-*/
-/*
-	// temprature correction
-	i8value = (char)arr[TMP_CORR_POS];
-	spinBox_TempCorr->setValue(i8value);
-*/
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// Alt1 diff to QNH
+	iValue = pDev->memoryRead(MemFa, ALT1_DIFF, Int32).toInt() / 100;
+	spinBox_QNHCorrA1->setValue(iValue);
+
+	// Offset pressure sensor
+	iValue = pDev->memoryRead(MemFa, PRESS_OFFSET, Int32).toInt();
+	spinBox_OffsetPress->setValue(iValue);
 }
 
 void CorrFrame6015Impl::store(QByteArray &arr)

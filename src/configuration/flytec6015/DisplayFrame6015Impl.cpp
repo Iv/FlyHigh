@@ -25,35 +25,13 @@
 #include <qimage.h>
 #include <qpixmap.h>
 #include <qslider.h>
-
 #include "DisplayFrame6015Impl.h"
+#include "Flytec6015.h"
 #include "Images.h"
 
 DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
 : DisplayFrame6015(parent,name,fl)
 {
-/*
-	// not supported by 5020
-	comboBox_Font->setEnabled(false);
-	
-	// Screen 1
-	pixmapLabel_Display->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
-	insertItems(comboBox_UserField_0_0);
-	insertItems(comboBox_UserField_0_1);
-	insertItems(comboBox_UserField_0_2);
-	
-	// Screen 2
-	pixmapLabel_Display_2->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
-	insertItems(comboBox_UserField_1_0);
-	insertItems(comboBox_UserField_1_1);
-	insertItems(comboBox_UserField_1_2);
-	
-	// Screen 3
-	pixmapLabel_Display_3->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
-	insertItems(comboBox_UserField_2_0);
-	insertItems(comboBox_UserField_2_1);
-	insertItems(comboBox_UserField_2_2);
-*/
 }
 
 DisplayFrame6015Impl::~DisplayFrame6015Impl()
@@ -62,25 +40,17 @@ DisplayFrame6015Impl::~DisplayFrame6015Impl()
 
 void DisplayFrame6015Impl::update(QByteArray &arr)
 {
-/*
-	int16_t i16value;
+	Flytec6015 *pDev;
+	uint uiValue;
 
-	i16value = arr[LCD_CONTRAST_POS] << 8;
-	i16value += arr[LCD_CONTRAST_POS+1];
-	slider_Contrast->setValue(i16value);
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	comboBox_UserField_0_0->setCurrentItem(arr[USERFIELD_0_POS]);
-	comboBox_UserField_0_1->setCurrentItem(arr[USERFIELD_0_POS+1]);
-	comboBox_UserField_0_2->setCurrentItem(arr[USERFIELD_0_POS+2]);
-
-	comboBox_UserField_1_0->setCurrentItem(arr[USERFIELD_1_POS]);
-	comboBox_UserField_1_1->setCurrentItem(arr[USERFIELD_1_POS+1]);
-	comboBox_UserField_1_2->setCurrentItem(arr[USERFIELD_1_POS+2]);
-	
-	comboBox_UserField_2_0->setCurrentItem(arr[USERFIELD_2_POS]);
-	comboBox_UserField_2_1->setCurrentItem(arr[USERFIELD_2_POS+1]);
-	comboBox_UserField_2_2->setCurrentItem(arr[USERFIELD_2_POS+2]);
-*/
+	// Alti, Line 4, Alt2, Alt3
+	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	comboBox_AltDisp->setCurrentItem((uiValue & MASK_ALT_DISP) >> 4);
+	comboBox_Line4->setCurrentItem((uiValue & MASK_LINE4_DISP) >> 5);
+	comboBox_Alt2Mode->setCurrentItem((uiValue & MASK_ALT2_MODE) >> 6);
+	comboBox_Alt3Mode->setCurrentItem((uiValue & MASK_ALT3_MODE) >> 9);
 }
 
 void DisplayFrame6015Impl::store(QByteArray &arr)
