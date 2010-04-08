@@ -312,6 +312,22 @@
             <string>Power Off Time</string>
         </property>
     </widget>
+    <widget class="QCheckBox">
+        <property name="name">
+            <cstring>checkBox_AutoOff</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>190</x>
+                <y>368</y>
+                <width>20</width>
+                <height>23</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
     <widget class="QSpinBox">
         <property name="name">
             <cstring>spinBox_PowerOffTime</cstring>
@@ -331,20 +347,20 @@
             <number>10</number>
         </property>
     </widget>
-    <widget class="QCheckBox">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>checkBox_AutoOff</cstring>
+            <cstring>textLabel_PowerOffTimeUnit</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>190</x>
-                <y>368</y>
-                <width>20</width>
-                <height>23</height>
+                <x>370</x>
+                <y>410</y>
+                <width>41</width>
+                <height>20</height>
             </rect>
         </property>
         <property name="text">
-            <string></string>
+            <string>[min]</string>
         </property>
     </widget>
 </widget>
