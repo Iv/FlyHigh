@@ -42,13 +42,13 @@ void GPSFrame6015Impl::update(QByteArray &arr)
 
 	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	// utc offset
-	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
-	spinBox_UTCoffset->setValue(iValue);
-
 	// grid system
 	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
 	comboBox_GridSys->setCurrentItem((uiValue & MASK_UNIT_GRID) >> 9);
+
+	// utc offset
+	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
+	spinBox_UTCoffset->setValue(iValue);
 }
 
 void GPSFrame6015Impl::store(QByteArray &arr)

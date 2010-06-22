@@ -52,7 +52,7 @@ void AcousticFrame6015Impl::update(QByteArray &arr)
 	checkBox_SinkAlarm->setChecked(uiValue & MASK_SINK_ALARM);
 	checkBox_RiseAcoustic->setChecked(uiValue & MASK_RISE_ACC);
 	checkBox_StallAlarm->setChecked(uiValue & MASK_STALL_ALARM);
-	comboBox_RisePitch->setCurrentItem((uiValue & MASK_RISE_PITCH) >> 1);
+	comboBox_RisePitch->setCurrentItem((uiValue & MASK_RISE_PITCH) >> POS_RISE_PITCH);
 
 	// Frequency gain
 	uiValue = pDev->memoryRead(MemFa, FREQ_GAIN, UInt8).toUInt();

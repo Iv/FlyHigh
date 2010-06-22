@@ -138,25 +138,6 @@
     </widget>
     <widget class="QSpinBox">
         <property name="name">
-            <cstring>spinBox_FiltTime</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>240</x>
-                <y>70</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>30</number>
-        </property>
-        <property name="minValue">
-            <number>1</number>
-        </property>
-    </widget>
-    <widget class="QSpinBox">
-        <property name="name">
             <cstring>spinBox_FiltTimeMinMax</cstring>
         </property>
         <property name="geometry">
@@ -174,9 +155,44 @@
             <number>1</number>
         </property>
     </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel_ITimeUnit_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>360</x>
+                <y>120</y>
+                <width>67</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>[s]</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>spinBox_FiltTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>240</x>
+                <y>70</y>
+                <width>100</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="maxValue">
+            <number>30</number>
+        </property>
+        <property name="minValue">
+            <number>1</number>
+        </property>
+    </widget>
     <widget class="QSlider">
         <property name="name">
-            <cstring>slider1</cstring>
+            <cstring>slider_RespDelay</cstring>
         </property>
         <property name="geometry">
             <rect>
@@ -197,22 +213,6 @@
         </property>
         <property name="toolTip" stdset="0">
             <string>0=fast filter settings</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_ITimeUnit_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>360</x>
-                <y>120</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[s]</string>
         </property>
     </widget>
 </widget>

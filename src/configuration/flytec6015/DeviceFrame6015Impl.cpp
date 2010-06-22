@@ -66,27 +66,6 @@ void DeviceFrame6015Impl::update(QByteArray &arr)
 
 	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	// device nr
-	uiValue = pDev->memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
-	lineEdit_SerialNr->setText(QString("%1").arg(uiValue));
-
-	// device type
-	uiValue = pDev->memoryRead(MemPa, DEVICE_TYPE, UInt8).toUInt();
-
-	switch(uiValue)
-	{
-		case 0:
-			lineEdit_DeviceIdent->setText("Flytec 6015");
-		break;
-		case 1:
-			lineEdit_DeviceIdent->setText("IQ Basic GPS");
-		break;
-	}
-
-	// sw version
-	uiValue = pDev->memoryRead(MemPa, SW_VERS, UInt16).toUInt();
-	lineEdit_SwVersion->setText(QString("%1").arg(uiValue));
-
 	// pilot name
 	pilotName = pDev->memoryRead(MemFa, OWNER, String).toString();
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
@@ -130,20 +109,52 @@ void DeviceFrame6015Impl::update(QByteArray &arr)
 		}
 	}
 
-	// power off time
-	uiValue = pDev->memoryRead(MemPa, POWER_OFF_TIME, UInt8).toUInt();
-	spinBox_PowerOffTime->setValue(uiValue);
+	// callsign
+	callsign = pDev->memoryRead(MemFa, AC_ID, String).toString();
+	
+	if(callsign != dbPilot.callSign().left(callsign.length()))
+	{
+		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign on GPS differ from callsign in database. Set callsign?",
+				"DB to GPS", "Ignore");
+		
+		switch(syncRes)
+		{
+			case 0: // From database
+				callsign = dbPilot.callSign();
+			break;
+			default:
+			break;
+		}
+	}
+
+	// serial nr
+	uiValue = pDev->memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
+	lineEdit_SerialNr->setText(QString("%1").arg(uiValue));
+
+	// device identifier
+	uiValue = pDev->memoryRead(MemPa, DEVICE_TYPE, UInt8).toUInt();
+
+	switch(uiValue)
+	{
+		case 0:
+			lineEdit_DeviceIdent->setText("Flytec 6015");
+		break;
+		case 1:
+			lineEdit_DeviceIdent->setText("IQ Basic GPS");
+		break;
+	}
+
+	// sw version
+	uiValue = pDev->memoryRead(MemPa, SW_VERS, UInt16).toUInt();
+	lineEdit_SwVersion->setText(QString("%1").arg(uiValue));
 
 	// auto off
 	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
 	checkBox_AutoOff->setChecked(uiValue & MASK_AUTO_POWER_OFF);
-/**
 
-QPushButton* pushButtonGlider;
-QComboBox* comboBox_BattType;
-QSpinBox* spinBox_PowerOffTime;
-QCheckBox* checkBox_AutoOff;
-*/
+	// power off time
+	uiValue = pDev->memoryRead(MemPa, POWER_OFF_TIME, UInt8).toUInt();
+	spinBox_PowerOffTime->setValue(uiValue);
 
 /*
 	Pilot dbPilot;
