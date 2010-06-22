@@ -82,13 +82,25 @@ enum {StringSize = 16};
 #define MASK_FLIGHT_END     0x0400
 #define MASK_STALL_ALARM    0x0800
 
-#define MASK_UNIT_DIST      0x0001
+#define POS_RISE_PITCH  1
+#define POS_FLIGHT_END  10
+
+#define MASK_UNIT_DIST1     0x0001
 #define MASK_UNIT_DEG       0x0004
 #define MASK_UNIT_PRESS     0x0010
-#define MASK_UNIT_SPEED     0x0020
+#define MASK_UNIT_SPEED1    0x0020
 #define MASK_UNIT_SPEED2    0x00C0
 #define MASK_UNIT_TIME      0x0100
 #define MASK_UNIT_GRID      0x0600
 #define MASK_UNIT_DIST2     0x0800
+
+#define POS_UNIT_DIST1   0
+#define POS_UNIT_DEG     3
+#define POS_UNIT_PRESS   4
+#define POS_UNIT_SPEED1  5
+#define POS_UNIT_SPEED2  6
+#define POS_UNIT_TIME    8
+#define POS_UNIT_GRID    9
+#define POS_UNIT_DIST2  11
 
 #endif
