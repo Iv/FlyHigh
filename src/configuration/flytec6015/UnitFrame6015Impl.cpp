@@ -20,6 +20,7 @@
 
 #include <qcombobox.h>
 
+#include "Flytec6015.h"
 #include "UnitFrame6015Impl.h"
 
 UnitFrame6015Impl::UnitFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
@@ -33,31 +34,32 @@ UnitFrame6015Impl::~UnitFrame6015Impl()
 
 void UnitFrame6015Impl::update(QByteArray &arr)
 {
-/*
-	u_char ch;
-	int index;
-	
-	ch = arr[UNITS_POS];
-	
-	// Distance
-	index = (ch & 0x01);
-	comboBox_Distance->setCurrentItem(index);
+	Flytec6015 *pDev;
+	uint uiValue;
 
-	// Velocity 1
-	ch >>= 1;
-	index = (ch & 0x01);
-	comboBox_Velocity1->setCurrentItem(index);
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
 
-	// Velocity 2	
-	ch >>= 1;
-	index = (ch & 0x03);
-	comboBox_Velocity2->setCurrentItem(index);
-	
+	// Distance 1
+	comboBox_Distance1->setCurrentItem((uiValue & MASK_UNIT_DIST1) >> POS_UNIT_DIST1);
+
+	// Distance 2
+	comboBox_Distance2->setCurrentItem((uiValue & MASK_UNIT_DIST2) >> POS_UNIT_DIST2);
+
+	// Speed 1
+	comboBox_Velocity1->setCurrentItem((uiValue & MASK_UNIT_SPEED1) >> POS_UNIT_SPEED1);
+
+	// Speed 2
+	comboBox_Velocity2->setCurrentItem((uiValue & MASK_UNIT_SPEED2) >> POS_UNIT_SPEED2);
+
 	// Temperature
-	ch >>= 2;
-	index = (ch & 0x01);
-	comboBox_Temp->setCurrentItem(index);
-*/
+	comboBox_Temp->setCurrentItem((uiValue & MASK_UNIT_DEG) >> POS_UNIT_DEG);
+
+	// Pressure
+	comboBox_Press->setCurrentItem((uiValue & MASK_UNIT_PRESS) >> POS_UNIT_PRESS);
+
+	// Time Format
+	comboBox_TimeFormat->setCurrentItem((uiValue & MASK_UNIT_TIME) >> POS_UNIT_TIME);
 }
 
 void UnitFrame6015Impl::store(QByteArray &arr)
