@@ -96,7 +96,11 @@ void FlyHighRCFrameImpl::ok()
 	m_curPilot.setLastName(lineEdit_LastName->text());
 	m_curPilot.setBirthDate(dateEditDateOfBirth->date());
 	m_curPilot.setCallSign(lineEdit_GliderID->text());
-	m_curPilot.setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+
+	if(m_gliderList.size() > 0)
+	{
+		m_curPilot.setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+	}
 
 	if(m_curPilot.id() < 0)
 	{
