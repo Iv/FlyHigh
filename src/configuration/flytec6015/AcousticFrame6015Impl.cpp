@@ -81,85 +81,59 @@ spinBox_ThresDown->setValue(iValue);
 	// Sink alarm threshold
 	iValue = pDev->memoryRead(MemFa, SINK_ALARM, Int16).toInt();
 	spinBox_ThresSinkAlarm->setValue(iValue);
-
-/*
-	u_char c8value;
-	int8_t i8value;
-	u_int16_t c16value;
-		
-	// Base Volume
-	slider_Volume->setValue(arr[BASE_VOL_BEEP_POS]);
-	
-	// Vario Offset
-	spinBox_Threshold->setValue(arr[ACOUSTIC_LIFT_THR_POS]);
-
-	// Up Base Frequency
-	c16value = arr[UP_BASE_FRQ_POS] << 8;
-	c16value += arr[UP_BASE_FRQ_POS+1] ;
-	spinBox_UpFreq->setValue(c16value);
-
-	// Frequency Modulation
-	slider_FreqMod->setValue(arr[FRQ_MODULATION_POS]);
-
-	// Acoustic Pitch
-	slider_Pitch->setValue(arr[ACOUSTIC_PITCH_POS]);
-
-	// Acoustic Integral
-	slider_Integration->setValue(arr[ACOUSTIC_I_POS]);
-	
-	// Sink Acoustic Enabled
-	c8value = arr[SINC_ACOUSTIC_EN_POS];
-	checkBox_SinkAcoustic->setChecked(c8value);
-	spinBox_Sink->setEnabled(c8value > 0);
-	spinBox_DownFreq->setEnabled(c8value > 0);
-
-	// Down Base Frequency
-	c16value =  arr[DOWN_BASE_FRQ_POS] << 8;
-	c16value += arr[DOWN_BASE_FRQ_POS+1];
-	spinBox_DownFreq->setValue(c16value);
-
-	// Sink
-	i8value = arr[ACOUSTIC_SINK_POS];
-	spinBox_Sink->setValue(i8value);
-*/
 }
 
 void AcousticFrame6015Impl::store(QByteArray &arr)
 {
-/*
-	u_int16_t c16value;
-		
-	// Base Volume
-	arr[BASE_VOL_BEEP_POS] = (u_char)slider_Volume->value();
-	
-	// Vario Offset
-	arr[ACOUSTIC_LIFT_THR_POS] = (u_char)spinBox_Threshold->value();
+	Flytec6015 *pDev;
+	uint uiValue;
+	int iValue;
 
-	// Up Base Frequency
-	c16value = spinBox_UpFreq->value();
-	arr[UP_BASE_FRQ_POS] = (u_char)(c16value >> 8);
-	arr[UP_BASE_FRQ_POS+1] = (u_char)(c16value & 0xFF);
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	// Frequency Modulation
-	arr[FRQ_MODULATION_POS] = (u_char)slider_FreqMod->value();
+	// Volume
+	uiValue = slider_Volume->value();
+	pDev->memoryWrite(MemFa, AUDIO_VOLUME, UInt8, uiValue);
 
-	// Acoustic Pitch
-	arr[ACOUSTIC_PITCH_POS] = (u_char)slider_Pitch->value();
+	// Rise acoustic, sink alarm, stall alarm, rise pitch
+	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
 
-	// Acoustic Integral
-	arr[ACOUSTIC_I_POS] = (u_char)slider_Integration->value();
-	
-	// Sink Acoustic Enabled
-	arr[SINC_ACOUSTIC_EN_POS] = (u_char)checkBox_SinkAcoustic->isChecked();
+	uiValue = (uiValue & ~MASK_SINK_ALARM) | (-checkBox_SinkAlarm->isChecked() & MASK_SINK_ALARM);
+	uiValue = (uiValue & ~MASK_RISE_ACC) | (-checkBox_RiseAcoustic->isChecked() & MASK_RISE_ACC);
+	uiValue = (uiValue & ~MASK_STALL_ALARM) | (-checkBox_StallAlarm->isChecked() & MASK_STALL_ALARM);
 
-	// Down Base Frequency
-	c16value = spinBox_DownFreq->value();
-	arr[DOWN_BASE_FRQ_POS] = (u_char)(c16value >> 8);
-	arr[DOWN_BASE_FRQ_POS+1] = (u_char)(c16value & 0xFF);
-	
-	// Sink
-	arr[ACOUSTIC_SINK_POS] = (int8_t)spinBox_Sink->value();
-*/
+	uiValue &= ~MASK_RISE_PITCH;
+	uiValue |= (comboBox_RisePitch->currentItem() << POS_RISE_PITCH);
+
+	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
+
+	// Frequency gain
+	uiValue = slider_FreqGain->value();
+	pDev->memoryWrite(MemFa, FREQ_GAIN, UInt8, uiValue);
+
+	// Pitch gain
+	uiValue = slider_PitchGain->value();
+	pDev->memoryWrite(MemFa, PITCH_GAIN, UInt8, uiValue);
+
+	// Rise frequency
+	uiValue = spinBox_UpFreq->value();
+	pDev->memoryWrite(MemFa, B_FREQ_RISE, UInt16, uiValue);
+
+	// Sink frequency
+	uiValue = spinBox_DownFreq->value();
+	pDev->memoryWrite(MemFa, B_FREQ_SINK, UInt16, uiValue);
+
+	// Rise threshold
+	iValue = spinBox_ThresUp->value();
+	pDev->memoryWrite(MemFa, AUDIO_RISE, Int16, iValue);
+
+// Sink threshold
+iValue = spinBox_ThresDown->value();
+pDev->memoryWrite(MemFa, AUDIO_SINK, Int16, iValue);
+
+	// Sink alarm threshold
+	iValue = spinBox_ThresSinkAlarm->value();
+	pDev->memoryWrite(MemFa, SINK_ALARM, Int16, iValue);
 }
 
 
