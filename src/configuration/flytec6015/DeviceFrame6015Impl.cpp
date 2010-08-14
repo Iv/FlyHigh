@@ -127,6 +127,8 @@ void DeviceFrame6015Impl::update(QByteArray &arr)
 		}
 	}
 
+	lineEdit_GliderID->setText(callsign);
+
 	// serial nr
 	uiValue = pDev->memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
 	lineEdit_SerialNr->setText(QString("%1").arg(uiValue));
@@ -153,123 +155,35 @@ void DeviceFrame6015Impl::update(QByteArray &arr)
 	checkBox_AutoOff->setChecked(uiValue & MASK_AUTO_POWER_OFF);
 
 	// power off time
-	uiValue = pDev->memoryRead(MemPa, POWER_OFF_TIME, UInt8).toUInt();
+	uiValue = pDev->memoryRead(MemFa, POWER_OFF_TIME, UInt8).toUInt();
 	spinBox_PowerOffTime->setValue(uiValue);
-
-/*
-	Pilot dbPilot;
-	QString dbPilotName;
-	QString dbGlider;
-	QString pilotName;
-	QString callsign;
-	QString glider;
-	DeviceInfoType devInfo;
-	char str[FT_STRING_SIZE];
-	int syncRes;
-	
-	if(ft_deviceInfoRead(&devInfo) == 0)
-	{
-		lineEdit_SerialNr->setText(QString("%1").arg(devInfo.serialNr));
-		lineEdit_SwVersion->setText(QString(devInfo.swVersion));
-		lineEdit_DeviceIdent->setText(QString(devInfo.deviceIdent));
-	}
-
-	// pilot name
-	ft_ftstring2string(str, (char*)&arr[PILOT_NAME_POS]);
-	pilotName = str;
-	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
-	dbPilot.fullName(dbPilotName);
-
-	if(pilotName != dbPilotName.left(pilotName.length()))
-	{
-		syncRes = QMessageBox::question(this, "Different pilots", "Pilot on GPS differ from pilot in database. Set pilot?",
-			 	"DB to GPS", "Ignore");
-		
-		switch(syncRes)
-		{
-			case 0: // From database
-				pilotName = dbPilotName;
-			break;
-			default:
-			break;
-		}
-	}
-	
-	lineEdit_PilotName->setText(pilotName);
-	
-	// glider
-	ft_ftstring2string(str, (char*)&arr[GLYDER_TYPE_POS]);
-	glider = str;
-	dbGlider = m_gliderList.at(comboBoxModel->currentItem()).model();
-//	dbGlider = dbPilot.glider().model();
-	
-	if(glider != dbGlider)
-	{
-		syncRes = QMessageBox::question(this, "Different gliders",
-				"Glider on GPS differ from glider in database. Set glider?",
-				"DB to Dialog", "Ignore");
-		
-		switch(syncRes)
-		{
-			case 0: // From Pilot
-				dbPilot.glider().fullName(dbGlider);
-				selectGlider(dbGlider);
-			break;
-			default:
-			break;
-		}
-	}
-	
-	// callsign
-	ft_ftstring2string(str, (char*)&arr[GLYDER_ID_POS]);
-	callsign = str;
-	
-	if(callsign != dbPilot.callSign().left(callsign.length()))
-	{
-		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign on GPS differ from callsign in database. Set callsign?",
-			 	"DB to GPS", "Ignore");
-		
-		switch(syncRes)
-		{
-			case 0: // From database
-				callsign = dbPilot.callSign();
-			break;
-			default:
-			break;
-		}
-	}
-	
-	// glider id
-	lineEdit_GliderID->setText(callsign);
-
-	// battery type
-	comboBox_BattType->setCurrentItem(arr[BATT_TYPE_POS]);
-*/
 }
 
 void DeviceFrame6015Impl::store(QByteArray &arr)
 {
-/*
+	Flytec6015 *pDev;
 	QString pilotName;
 	Pilot dbPilot;
 	QString dbPilotName;
-	QString dbGlider;
 	QString callsign;
 	QString rcCallsign;
+	QString dbGlider;
 	QString glider;
-	QString rcGlider;
+	uint uiValue;
 	int syncRes;
-	
-	// pilot
+
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// pilot name
 	pilotName = lineEdit_PilotName->text();
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
 	dbPilot.fullName(dbPilotName);
-	
+
 	if(pilotName != dbPilotName.left(pilotName.length()))
 	{
 		syncRes = QMessageBox::question(this, "Different pilots", "Pilot in database differ from pilot in dialog. Set pilot?",
 				"DB to GPS", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From database
@@ -281,18 +195,18 @@ void DeviceFrame6015Impl::store(QByteArray &arr)
 		}
 	}
 	
-	ft_string2ftstring(pilotName.ascii(), (char*)&arr[PILOT_NAME_POS]);
-	
+	pDev->memoryWrite(MemFa, OWNER, String, pilotName);
+
 	// glider
 	m_gliderList.at(comboBoxModel->currentItem()).fullName(glider);
 	dbPilot.glider().fullName(dbGlider);
-	
+
 	if(glider != dbGlider)
 	{
 		syncRes = QMessageBox::question(this, "Different gliders",
 				"Glider in database differ from glider in dialog. Set glider?",
 				"DB to GPS", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From Pilot
@@ -309,33 +223,37 @@ void DeviceFrame6015Impl::store(QByteArray &arr)
 		glider = m_gliderList.at(comboBoxModel->currentItem()).model();
 	}
 
-	ft_string2ftstring(glider.ascii(), (char*)&arr[GLYDER_TYPE_POS]);
+	pDev->memoryWrite(MemFa, AC_TYPE, String, glider);
 
 	// callsign
 	callsign = lineEdit_GliderID->text();
-	
+
 	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
 		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign in database differ from callsign in dialog. Set callsign?",
 				"DB to GPS", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From database
 				callsign = dbPilot.callSign();
-				lineEdit_PilotName->setText(callsign);
+				lineEdit_GliderID->setText(callsign);
 			break;
 			default:
 			break;
 		}
 	}
-	
-	// glider id
-	ft_string2ftstring(callsign.ascii(), (char*)&arr[GLYDER_ID_POS]);
 
-	// battery type
-	arr[BATT_TYPE_POS] = comboBox_BattType->currentItem();
-*/
+	pDev->memoryWrite(MemFa, AC_ID, String, callsign);
+
+	// auto off
+	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	uiValue = (uiValue & ~MASK_AUTO_POWER_OFF) | (-checkBox_AutoOff->isChecked() & MASK_AUTO_POWER_OFF);
+	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
+
+	// power off time
+	uiValue = spinBox_PowerOffTime->value();
+	uiValue = pDev->memoryWrite(MemFa, POWER_OFF_TIME, UInt8, uiValue);
 }
 
 void DeviceFrame6015Impl::updateGlider()
