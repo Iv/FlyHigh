@@ -36,7 +36,6 @@ class DisplayFrame6015Impl: public DisplayFrame6015, public Frame6015
 		void store(QByteArray &arr);
 
 	private:
-		void insertItems(QComboBox * pItem);
 };
 
 #endif
