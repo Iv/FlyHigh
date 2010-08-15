@@ -50,26 +50,18 @@ void VelocityFrame6015Impl::update(QByteArray &arr)
 
 void VelocityFrame6015Impl::store(QByteArray &arr)
 {
-/*
-	u_int16_t c16value;
+	Flytec6015 *pDev;
+	uint uiValue;
 
-	// best L/D
-	arr[BEST_LD_POS] = spinBox_BestLD->value();
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
 
-	// speed best L/D
-	arr[SPEED_BEST_LD_POS] = spinBox_SpeedBestLD->value();
+	// Speedgain Windweel
+	uiValue = spinBox_Windweel->value();
+	pDev->memoryWrite(MemFa, WIND_WHEEL_GAIN, UInt8, uiValue);
 
-	// Windweel Gain
-	arr[SPEED_GAIN_WHEEL_POS] = spinBox_Windweel->value();
-
-	// Stall Speed
-	arr[STALL_SPEED_POS] = spinBox_Stallspeed->value();
-
-	// Stall Altitude
-	c16value = spinBox_Stallaltitude->value();
-	arr[STALL_ALT_POS] = (u_char)(c16value >> 8);
-	arr[STALL_ALT_POS+1] = (u_char)(c16value & 0xFF);
-*/
+	// Stallspeed
+	uiValue = spinBox_Stallspeed->value();
+	pDev->memoryWrite(MemFa, STALL_SPEED, UInt16, uiValue);
 }
 
 #include "VelocityFrame6015Impl.moc"

@@ -58,19 +58,26 @@ void VarioFrame6015Impl::update(QByteArray &arr)
 
 void VarioFrame6015Impl::store(QByteArray &arr)
 {
-/*
-	// Response Delay
-//	arr[RESP_DELAY_POS] = spinBox_RespDelay->value() / 200;
-	
-	// Vario Mode
-//	arr[VARIOMODE_POS] = comboBox_Variomode->currentItem();
+	Flytec6015 *pDev;
+	uint uiValue;
 
-	// Integration Time
-	arr[I_TIME_POS] = spinBox_ITime->value();
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// Response Delay
+	uiValue = slider_RespDelay->value();
+	pDev->memoryWrite(MemFa, FILT_TYPE, UInt8, uiValue);
+
+	// Digital Filter Time
+	uiValue = spinBox_FiltTime->value();
+	pDev->memoryWrite(MemFa, VARIO_DIG_FK, UInt8, uiValue);
+
+	// Min/Max Filter Time
+	uiValue = spinBox_FiltTimeMinMax->value();
+	pDev->memoryWrite(MemFa, VARIO_MIN_MAX_FK, UInt8, uiValue);
 	
-	// Total Enery Compensation
-//	arr[TEC_POS] = spinBox_TEC->value();
-*/
+	// Min/Max Rise Reject
+	uiValue = spinBox_TimeRiseRej->value();
+	pDev->memoryWrite(MemFa, MAX_RISE_REJ, UInt16, uiValue);
 }
 
 #include "VarioFrame6015Impl.moc"

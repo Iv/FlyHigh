@@ -44,7 +44,7 @@ void GPSFrame6015Impl::update(QByteArray &arr)
 
 	// grid system
 	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
-	comboBox_GridSys->setCurrentItem((uiValue & MASK_UNIT_GRID) >> 9);
+	comboBox_GridSys->setCurrentItem((uiValue & MASK_UNIT_GRID) >> POS_UNIT_GRID);
 
 	// utc offset
 	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
@@ -53,21 +53,21 @@ void GPSFrame6015Impl::update(QByteArray &arr)
 
 void GPSFrame6015Impl::store(QByteArray &arr)
 {
-/*
-	// Grid System
-	arr[GRID_SYS_POS] = comboBox_GridSys->currentItem();
-	
-	// UTC offset
-	arr[UTC_OFFSET_POS] = spinBox_UTCoffset->value();
-	
-	// sync UTC offset with ressources
-	IFlyHighRC::pInstance()->setUtcOffset(spinBox_UTCoffset->value());
+	Flytec6015 *pDev;
+	uint uiValue;
+	int iValue;
 
-	// Half UTC offset
-	arr[UTC_HALF_OFFSET_POS] = checkBox_UTChalfOffset->isChecked();
-*/
-	// Geodic ID
-//	arr[GEO_ID_POS] = spinBox_GeoID->value();
+	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+
+	// grid system
+	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
+	uiValue &= ~MASK_UNIT_GRID;
+	uiValue |= (comboBox_GridSys->currentItem() << POS_UNIT_GRID);
+	pDev->memoryWrite(MemFa, UNIT_FLAGS, UInt16, uiValue);
+
+	// utc offset
+	iValue = spinBox_UTCoffset->value();
+	pDev->memoryWrite(MemFa, UTC_OFFSET, Int8, iValue);
 }
 
 #include "GPSFrame6015Impl.moc"
