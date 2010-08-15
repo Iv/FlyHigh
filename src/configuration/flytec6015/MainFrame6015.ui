@@ -102,9 +102,6 @@
         <cstring>qt_dead_widget_MenuBar</cstring>
     </property>
     <item text="File" name="File">
-        <action name="File_Open"/>
-        <action name="File_Save"/>
-        <separator/>
         <action name="File_Read"/>
         <action name="File_Write"/>
         <separator/>
