@@ -32,7 +32,7 @@ VelocityFrame6015Impl::~VelocityFrame6015Impl()
 {
 }
 
-void VelocityFrame6015Impl::update(QByteArray &arr)
+void VelocityFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -48,7 +48,7 @@ void VelocityFrame6015Impl::update(QByteArray &arr)
 	spinBox_Stallspeed->setValue(uiValue);
 }
 
-void VelocityFrame6015Impl::store(QByteArray &arr)
+void VelocityFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

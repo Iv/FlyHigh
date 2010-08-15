@@ -32,7 +32,7 @@ UnitFrame6015Impl::~UnitFrame6015Impl()
 {
 }
 
-void UnitFrame6015Impl::update(QByteArray &arr)
+void UnitFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -62,7 +62,7 @@ void UnitFrame6015Impl::update(QByteArray &arr)
 	comboBox_TimeFormat->setCurrentItem((uiValue & MASK_UNIT_TIME) >> POS_UNIT_TIME);
 }
 
-void UnitFrame6015Impl::store(QByteArray &arr)
+void UnitFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

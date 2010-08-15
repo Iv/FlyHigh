@@ -52,7 +52,7 @@ void DeviceFrame6015Impl::newGlider()
 	}
 }
 
-void DeviceFrame6015Impl::update(QByteArray &arr)
+void DeviceFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	Pilot dbPilot;
@@ -159,7 +159,7 @@ void DeviceFrame6015Impl::update(QByteArray &arr)
 	spinBox_PowerOffTime->setValue(uiValue);
 }
 
-void DeviceFrame6015Impl::store(QByteArray &arr)
+void DeviceFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	QString pilotName;

@@ -30,10 +30,12 @@ class DisplayFrame6015Impl: public DisplayFrame6015, public Frame6015
 
 	public:
 		DisplayFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+
 		~DisplayFrame6015Impl();
 
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
+		void update();
+
+		void store();
 
 	private:
 };

@@ -26,10 +26,12 @@ class  Frame6015
 {
 	public:
 		Frame6015();
+
 		virtual ~Frame6015();
 
-		virtual void update(QByteArray &arr);
-		virtual void store(QByteArray &arr);
+		virtual void update();
+
+		virtual void store();
 };
 
 #endif

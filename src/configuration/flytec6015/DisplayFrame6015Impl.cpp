@@ -38,7 +38,7 @@ DisplayFrame6015Impl::~DisplayFrame6015Impl()
 {
 }
 
-void DisplayFrame6015Impl::update(QByteArray &arr)
+void DisplayFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -53,7 +53,7 @@ void DisplayFrame6015Impl::update(QByteArray &arr)
 	comboBox_Alt3Mode->setCurrentItem((uiValue & MASK_ALT3_MODE) >> POS_ALT3_MODE);
 }
 
-void DisplayFrame6015Impl::store(QByteArray &arr)
+void DisplayFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

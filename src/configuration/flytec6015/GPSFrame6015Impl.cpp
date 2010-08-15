@@ -34,7 +34,7 @@ GPSFrame6015Impl::~GPSFrame6015Impl()
 {
 }
 
-void GPSFrame6015Impl::update(QByteArray &arr)
+void GPSFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -51,7 +51,7 @@ void GPSFrame6015Impl::update(QByteArray &arr)
 	spinBox_UTCoffset->setValue(iValue);
 }
 
-void GPSFrame6015Impl::store(QByteArray &arr)
+void GPSFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

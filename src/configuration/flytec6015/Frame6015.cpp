@@ -28,12 +28,10 @@ Frame6015::~Frame6015()
 {
 }
  
-void Frame6015::update(QByteArray &arr)
+void Frame6015::update()
 {
-	(void)arr;
 }
 
-void Frame6015::store(QByteArray &arr)
+void Frame6015::store()
 {
-	(void)arr;
 }
