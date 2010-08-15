@@ -83,6 +83,10 @@ enum {StringSize = 16};
 #define MASK_STALL_ALARM    0x0800
 
 #define POS_RISE_PITCH  1
+#define POS_ALT_DISP    4
+#define POS_LINE4_DISP  5
+#define POS_ALT2_MODE   6
+#define POS_ALT3_MODE   9
 #define POS_FLIGHT_END  10
 
 #define MASK_UNIT_DIST1     0x0001
