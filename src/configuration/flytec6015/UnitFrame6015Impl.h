@@ -30,10 +30,12 @@ class UnitFrame6015Impl: public UnitFrame6015, public Frame6015
 
 	public:
 		UnitFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+
 		~UnitFrame6015Impl();
 
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
+		void update();
+
+		void store();
 };
 
 #endif

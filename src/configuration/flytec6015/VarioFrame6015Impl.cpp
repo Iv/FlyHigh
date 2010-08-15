@@ -32,7 +32,7 @@ VarioFrame6015Impl::~VarioFrame6015Impl()
 {
 }
 
-void VarioFrame6015Impl::update(QByteArray &arr)
+void VarioFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -56,7 +56,7 @@ void VarioFrame6015Impl::update(QByteArray &arr)
 	spinBox_TimeRiseRej->setValue(uiValue);
 }
 
-void VarioFrame6015Impl::store(QByteArray &arr)
+void VarioFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

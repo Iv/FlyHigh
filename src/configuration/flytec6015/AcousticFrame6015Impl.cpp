@@ -35,7 +35,7 @@ AcousticFrame6015Impl::~AcousticFrame6015Impl()
 {
 }
 
-void AcousticFrame6015Impl::update(QByteArray &arr)
+void AcousticFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -83,7 +83,7 @@ spinBox_ThresDown->setValue(iValue);
 	spinBox_ThresSinkAlarm->setValue(iValue);
 }
 
-void AcousticFrame6015Impl::store(QByteArray &arr)
+void AcousticFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

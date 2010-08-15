@@ -32,7 +32,7 @@ MemoryFrame6015Impl::~MemoryFrame6015Impl()
 {
 }
 
-void MemoryFrame6015Impl::update(QByteArray &arr)
+void MemoryFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	uint uiValue;
@@ -48,7 +48,7 @@ void MemoryFrame6015Impl::update(QByteArray &arr)
 	comboBox_FlightEnd->setCurrentItem((uiValue & MASK_FLIGHT_END) >> POS_FLIGHT_END);
 }
 
-void MemoryFrame6015Impl::store(QByteArray &arr)
+void MemoryFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	uint uiValue;

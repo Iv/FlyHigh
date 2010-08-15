@@ -32,7 +32,7 @@ CorrFrame6015Impl::~CorrFrame6015Impl()
 {
 }
 
-void CorrFrame6015Impl::update(QByteArray &arr)
+void CorrFrame6015Impl::update()
 {
 	Flytec6015 *pDev;
 	int iValue;
@@ -48,7 +48,7 @@ void CorrFrame6015Impl::update(QByteArray &arr)
 	spinBox_OffsetPress->setValue(iValue);
 }
 
-void CorrFrame6015Impl::store(QByteArray &arr)
+void CorrFrame6015Impl::store()
 {
 	Flytec6015 *pDev;
 	int iValue;

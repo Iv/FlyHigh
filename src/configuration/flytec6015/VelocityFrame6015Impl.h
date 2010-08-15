@@ -30,10 +30,12 @@ class VelocityFrame6015Impl: public VelocityFrame6015, public Frame6015
 
 	public:
 		VelocityFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+
 		~VelocityFrame6015Impl();
 
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
+		void update();
+
+		void store();
 };
 
 #endif
