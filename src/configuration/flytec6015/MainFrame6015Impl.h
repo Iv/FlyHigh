@@ -40,8 +40,6 @@ class MainFrame6015Impl: public MainFrame6015
 		virtual void addPage(QWidget * pFrame6015, int * pPos);
 
 	protected:
-		void open();
-		void save();
 		void read();
 		void write();
 
@@ -49,7 +47,6 @@ class MainFrame6015Impl: public MainFrame6015
 		typedef std::vector<Frame6015*> FrameListType;
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
-		QByteArray m_flytecMem;
 		FrameListType m_frameList;
 		QProgressBar *m_pProgressBar;
 		QString m_fileName;

@@ -129,62 +129,12 @@ void MainFrame6015Impl::addPage( QWidget * pFrame6015, int * pPos)
 	toolBox->addItem(pWidget,  pFrame6015->caption());
 }
 
-void MainFrame6015Impl::open()
-{
-	QFile file;
-	const QDir *pDir;
-	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
-					"Flytec config file open", true);
-
-	if(fileDlg.exec() == QDialog::Accepted)
-	{
-		pDir = fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dir()->absPath());
-		delete pDir;
-		
-		file.setName(fileDlg.selectedFile());
-		
-		if(file.open(IO_WriteOnly))
-		{
-			storeFrames();
-			file.writeBlock(m_flytecMem);
-			file.close();
-		}
-	}
-}
-
-void MainFrame6015Impl::save()
-{
-	QFile file;
-	const QDir *pDir;
-	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
-					"Flytec config file open", true);
-
-	if(fileDlg.exec() == QDialog::Accepted)
-	{
-		pDir = fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
-		delete pDir;
-		
-		file.setName(fileDlg.selectedFile());
-	
-		if(file.open(IO_WriteOnly))
-		{
-			storeFrames();
-			file.writeBlock(m_flytecMem);
-			file.close();
-		}
-	}
-}
-
 void MainFrame6015Impl::read()
 {
 	ProgressDlg dlg(this);
 	
 	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
-
 	updateFrames();
-	
 	dlg.endProgress();
 }
 
@@ -192,12 +142,11 @@ void MainFrame6015Impl::write()
 {
 	ProgressDlg dlg(this);
 		
-	if(QMessageBox::question(this, tr("write configuration"), 
+	if(QMessageBox::question(this, tr("write configuration"),
 		tr("Write current configuration to the device?"), 1, 2) == 1)
 	{
-		storeFrames();
 		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
+		storeFrames();
 		dlg.endProgress();
 	}
 }
@@ -209,7 +158,7 @@ void MainFrame6015Impl::storeFrames()
 	// update Frames
 	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
-		(*it)->store(m_flytecMem);
+		(*it)->store();
 	}
 }
 
@@ -220,7 +169,7 @@ void MainFrame6015Impl::updateFrames()
 	// update Frames
 	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
-		(*it)->update(m_flytecMem);
+		(*it)->update();
 	}
 }
 
