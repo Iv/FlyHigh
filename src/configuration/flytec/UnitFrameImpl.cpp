@@ -26,9 +26,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-UnitFrameImpl::UnitFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: UnitFrame(parent,name,fl)
+UnitFrameImpl::UnitFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 UnitFrameImpl::~UnitFrameImpl()
@@ -44,22 +45,22 @@ void UnitFrameImpl::update(QByteArray &arr)
 	
 	// Distance
 	index = (ch & 0x01);
-	comboBox_Distance->setCurrentItem(index);
+        comboBox_Distance->setCurrentIndex(index);
 
 	// Velocity 1
 	ch >>= 1;
 	index = (ch & 0x01);
-	comboBox_Velocity1->setCurrentItem(index);
+        comboBox_Velocity1->setCurrentIndex(index);
 
 	// Velocity 2	
 	ch >>= 1;
 	index = (ch & 0x03);
-	comboBox_Velocity2->setCurrentItem(index);
+        comboBox_Velocity2->setCurrentIndex(index);
 	
 	// Temperature
 	ch >>= 2;
 	index = (ch & 0x01);
-	comboBox_Temp->setCurrentItem(index);
+        comboBox_Temp->setCurrentIndex(index);
 }
 
 void UnitFrameImpl::store(QByteArray &arr)
@@ -68,21 +69,21 @@ void UnitFrameImpl::store(QByteArray &arr)
 	int index;
 	
 	// Distance
-	index = comboBox_Distance->currentItem();
+        index = comboBox_Distance->currentIndex();
 	ch |= index;
 
 	// Velocity 1
-	index = comboBox_Velocity1->currentItem();
+        index = comboBox_Velocity1->currentIndex();
 	index <<= 1;
 	ch |= index;
 	
 	// Velocity 2
-	index = comboBox_Velocity2->currentItem();
+        index = comboBox_Velocity2->currentIndex();
 	index <<= 2;
 	ch |= index;
 	
 	// Temperature
-	index = comboBox_Temp->currentItem();
+        index = comboBox_Temp->currentIndex();
 	index <<= 4;
 	ch |= index;
 	
@@ -90,5 +91,5 @@ void UnitFrameImpl::store(QByteArray &arr)
 	arr[UNITS_POS] = ch;
 }
 
-#include "UnitFrameImpl.moc"
+#include "moc_UnitFrameImpl.cxx"
 

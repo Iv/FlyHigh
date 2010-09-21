@@ -26,7 +26,7 @@
 #include <qfile.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 class IFlyHighRC
 {
@@ -77,13 +77,13 @@ class IFlyHighRC
 		IFlyHighRC();
 		
 		void parseSerialLine(QBuffer &buff);
-		void saveSerialLine(QTextStream &stream);
+		void saveSerialLine(Q3TextStream &stream);
 		void parseDateTime(QBuffer &buff);
-		void saveDateTime(QTextStream &stream);
+		void saveDateTime(Q3TextStream &stream);
 		void parseDirectory(QBuffer &buff);
-		void saveDirectory(QTextStream &stream);
+		void saveDirectory(Q3TextStream &stream);
 		void parsePilot(QBuffer &buff);
-		void savePilot(QTextStream &stream);
+		void savePilot(Q3TextStream &stream);
 		void parseValue(char *line, QString &var, QString &val);
 };
 

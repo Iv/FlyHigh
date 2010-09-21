@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include "KmlWriter.h"
 
 KmlWriter::KmlWriter()
@@ -76,12 +76,12 @@ bool KmlWriter::save(const QString & name)
 	QString str;
 	bool success;
 	
-	file.setName(name);
-	success = file.open(IO_WriteOnly);
+        file.setFileName(name);
+	success = file.open(QIODevice::WriteOnly);
 	
 	if(success)
 	{
-		QTextStream s(&file);
+		Q3TextStream s(&file);
 	
 		s << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		s << "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n";
@@ -111,7 +111,7 @@ bool KmlWriter::save(const QString & name)
 	return success;
 }
 
-void KmlWriter::streamCoordinates(QTextStream& s)
+void KmlWriter::streamCoordinates(Q3TextStream& s)
 {
 	uint index;
 	uint lastIndex;
@@ -150,7 +150,7 @@ void KmlWriter::streamCoordinates(QTextStream& s)
 	s << " </Placemark>\n";
 }
 
-void KmlWriter::streamOLC(QTextStream& s)
+void KmlWriter::streamOLC(Q3TextStream& s)
 {
 	s << "   <Placemark>\n";
 	s << "     <name>IGC tracklog</name>\n";
@@ -204,7 +204,7 @@ void KmlWriter::streamOLC(QTextStream& s)
 	s << " </Placemark>\n";
 }
 
-void KmlWriter::streamStart(QTextStream& s)
+void KmlWriter::streamStart(Q3TextStream& s)
 {
 	s << "  <Placemark>\n";
 	s << "    <name>Start</name>\n";
@@ -227,7 +227,7 @@ void KmlWriter::streamStart(QTextStream& s)
 	s << "  </Placemark>\n";
 }
 
-void KmlWriter::streamLanding(QTextStream& s)
+void KmlWriter::streamLanding(Q3TextStream& s)
 {
 	s << "  <Placemark>\n";
 	s << "    <name>Landing</name>\n";

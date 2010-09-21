@@ -28,9 +28,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-AcousticFrameImpl::AcousticFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: AcousticFrame(parent,name,fl)
+AcousticFrameImpl::AcousticFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 AcousticFrameImpl::~AcousticFrameImpl()
@@ -123,5 +124,5 @@ void AcousticFrameImpl::store(QByteArray &arr)
 }
 
 
-#include "AcousticFrameImpl.moc"
+#include "moc_AcousticFrameImpl.cxx"
 

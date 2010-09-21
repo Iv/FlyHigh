@@ -27,11 +27,11 @@
 #include <qslider.h>
 #include "DisplayFrame6015Impl.h"
 #include "Flytec6015.h"
-#include "Images.h"
 
-DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: DisplayFrame6015(parent,name,fl)
+DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 DisplayFrame6015Impl::~DisplayFrame6015Impl()
@@ -47,10 +47,10 @@ void DisplayFrame6015Impl::update()
 
 	// Alti, Line 4, Alt2, Alt3
 	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
-	comboBox_AltDisp->setCurrentItem((uiValue & MASK_ALT_DISP) >> POS_ALT_DISP);
-	comboBox_Line4->setCurrentItem((uiValue & MASK_LINE4_DISP) >> POS_LINE4_DISP);
-	comboBox_Alt2Mode->setCurrentItem((uiValue & MASK_ALT2_MODE) >> POS_ALT2_MODE);
-	comboBox_Alt3Mode->setCurrentItem((uiValue & MASK_ALT3_MODE) >> POS_ALT3_MODE);
+        comboBox_AltDisp->setCurrentIndex((uiValue & MASK_ALT_DISP) >> POS_ALT_DISP);
+        comboBox_Line4->setCurrentIndex((uiValue & MASK_LINE4_DISP) >> POS_LINE4_DISP);
+        comboBox_Alt2Mode->setCurrentIndex((uiValue & MASK_ALT2_MODE) >> POS_ALT2_MODE);
+        comboBox_Alt3Mode->setCurrentIndex((uiValue & MASK_ALT3_MODE) >> POS_ALT3_MODE);
 }
 
 void DisplayFrame6015Impl::store()
@@ -63,12 +63,12 @@ void DisplayFrame6015Impl::store()
 	// Alti, Line 4, Alt2, Alt3
 	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
 	uiValue &= ~(MASK_ALT_DISP | MASK_LINE4_DISP | MASK_ALT2_MODE | MASK_ALT3_MODE);
-	uiValue |= (comboBox_AltDisp->currentItem() << POS_ALT_DISP);
-	uiValue |= (comboBox_Line4->currentItem() << POS_LINE4_DISP);
-	uiValue |= (comboBox_Alt2Mode->currentItem() << POS_ALT2_MODE);
-	uiValue |= (comboBox_Alt3Mode->currentItem() << POS_ALT3_MODE);
+        uiValue |= (comboBox_AltDisp->currentIndex() << POS_ALT_DISP);
+        uiValue |= (comboBox_Line4->currentIndex() << POS_LINE4_DISP);
+        uiValue |= (comboBox_Alt2Mode->currentIndex() << POS_ALT2_MODE);
+        uiValue |= (comboBox_Alt3Mode->currentIndex() << POS_ALT3_MODE);
 	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
 }
 
-#include "DisplayFrame6015Impl.moc"
+#include "moc_DisplayFrame6015Impl.cxx"
 

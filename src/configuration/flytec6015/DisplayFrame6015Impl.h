@@ -22,14 +22,14 @@
 #define DisplayFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "DisplayFrame6015.h"
+#include "ui_DisplayFrame6015.h"
 
-class DisplayFrame6015Impl: public DisplayFrame6015, public Frame6015
+class DisplayFrame6015Impl: public QWidget, public Ui::DisplayFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		DisplayFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		DisplayFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~DisplayFrame6015Impl();
 

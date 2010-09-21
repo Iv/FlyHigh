@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qslider.h>
+#include <qcombobox.h>
 #include <qspinbox.h>
 #include "Flytec6015.h"
 #include "VarioFrame6015Impl.h"
 
-VarioFrame6015Impl::VarioFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: VarioFrame6015(parent,name,fl)
+VarioFrame6015Impl::VarioFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 VarioFrame6015Impl::~VarioFrame6015Impl()
@@ -80,5 +81,5 @@ void VarioFrame6015Impl::store()
 	pDev->memoryWrite(MemFa, MAX_RISE_REJ, UInt16, uiValue);
 }
 
-#include "VarioFrame6015Impl.moc"
+#include "moc_VarioFrame6015Impl.cxx"
 

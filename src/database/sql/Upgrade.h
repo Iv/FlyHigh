@@ -25,7 +25,7 @@
 class Upgrade: public DataBaseSub
 {
 	public:
-		Upgrade(QSqlDatabase *pDB);
+		Upgrade(QSqlDatabase DB);
 
 		void upgrade();
 

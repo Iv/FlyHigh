@@ -21,25 +21,25 @@
 #define DataBaseSub_h
 
 #include <qstring.h>
+#include <qsqldatabase.h>
 
-class QSqlDatabase;
 class DataBase;
 
 class DataBaseSub
 {
 	public:
-		DataBaseSub(QSqlDatabase *pDB);
+		DataBaseSub(QSqlDatabase db);
 		virtual ~DataBaseSub();
 		
 		int lastModified(const QString &field);
 		
 	protected:
-		QSqlDatabase* db();
+		QSqlDatabase db();
 		int newId(const QString &table);
 		void setLastModified(const QString &field);
 			
 	private:
-		QSqlDatabase *m_pDB;
+		QSqlDatabase m_DB;
 };
 
 #endif

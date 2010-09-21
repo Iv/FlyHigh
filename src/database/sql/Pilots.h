@@ -29,7 +29,7 @@
 class Pilots: public DataBaseSub
 {
 	public:
-		Pilots(QSqlDatabase *pDB);
+		Pilots(QSqlDatabase DB);
 		~Pilots();
 
 		bool add(Pilot &pilot);

@@ -19,7 +19,7 @@
  ***************************************************************************/
  
 #include <qdatetime.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include "Error.h"
@@ -28,14 +28,14 @@
 #include "ISql.h"
 #include "Servicings.h"
 
-Servicings::Servicings(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+Servicings::Servicings(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
 bool Servicings::add(Servicing &servicing)
 {
-	QSqlCursor cur("Servicings");
+	Q3SqlCursor cur("Servicings");
 	QSqlRecord *pRec;
 
 	// insert record

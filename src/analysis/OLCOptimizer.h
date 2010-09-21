@@ -25,7 +25,7 @@
 #define OLCOptimizer_h
 
 #include <qobject.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include "IGCFileParser.h"
 
 #define FLIGHT_POINT_INDEX_LIST_SIZE 5

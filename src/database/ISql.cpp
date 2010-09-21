@@ -17,7 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <qsqldatabase.h>
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h" 
@@ -34,26 +33,28 @@ ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
 {
-	m_pDefaultDB = QSqlDatabase::addDatabase("QMYSQL3");
+	m_DefaultDB = QSqlDatabase::addDatabase("QMYSQL");
 	
 	setName("flyhigh_v2");
 	setUserName("flyhigh");
 	setPassword("flyhigh");
-	setHostName("localhost");
+        setHostName("localhost");
 	setPort(3306);
 	
-//	m_pAirSpaces = new AirSpaces(m_pDefaultDB);
-	m_pWayPoints = new WayPoints(m_pDefaultDB);
-	m_pGliders = new Gliders(m_pDefaultDB);
-	m_pFlights = new Flights(m_pDefaultDB);
-	m_pRoutes = new Routes(m_pDefaultDB);
-	m_pServicings = new Servicings(m_pDefaultDB);
-	m_pPilots = new Pilots(m_pDefaultDB);
+//	m_pAirSpaces = new AirSpaces(m_DefaultDB);
+	m_pWayPoints = new WayPoints(m_DefaultDB);
+	m_pGliders = new Gliders(m_DefaultDB);
+	m_pFlights = new Flights(m_DefaultDB);
+	m_pRoutes = new Routes(m_DefaultDB);
+	m_pServicings = new Servicings(m_DefaultDB);
+	m_pPilots = new Pilots(m_DefaultDB);
+
+        m_DefaultDB.open();
 }
 
 ISql::~ISql()
 {
-	m_pDefaultDB->close();
+	m_DefaultDB.close();
 	
 //	delete m_pAirSpaces;
 	delete m_pWayPoints;
@@ -66,34 +67,35 @@ ISql::~ISql()
 
 void ISql::setName(const QString &name)
 {
-	m_pDefaultDB->setDatabaseName(name);
+	m_DefaultDB.setDatabaseName(name);
 }
 
 void ISql::setUserName(const QString &userName)
 {
-	m_pDefaultDB->setUserName(userName);
+	m_DefaultDB.setUserName(userName);
 }
 
 void ISql::setPassword(const QString &passwd)
 {
-	m_pDefaultDB->setPassword(passwd);
+	m_DefaultDB.setPassword(passwd);
 }
 
 void ISql::setHostName(const QString &hostName)
 {
-	m_pDefaultDB->setHostName(hostName);
+	m_DefaultDB.setHostName(hostName);
 }
 
 void ISql::setPort(int port)
 {
-	m_pDefaultDB->setPort(port);
+	m_DefaultDB.setPort(port);
 }
 
 bool ISql::open()
 {
 	bool success;
 	
-	success = m_pDefaultDB->open();
+ //	success = m_DefaultDB.open();
+ success=true;
 	Error::verify(success, Error::SQL_OPEN);
 	setupTables();
 	
@@ -318,7 +320,7 @@ Pilots* ISql::pPilotTable()
 
 void ISql::setupTables()
 {
-	Upgrade upgrade(m_pDefaultDB);
+	Upgrade upgrade(m_DefaultDB);
 	
 	upgrade.upgrade();
 }

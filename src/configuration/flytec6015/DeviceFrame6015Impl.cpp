@@ -30,9 +30,10 @@
 #include "ISql.h"
 #include "DeviceFrame6015Impl.h"
 
-DeviceFrame6015Impl::DeviceFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: DeviceFrame6015(parent,name,fl)
+DeviceFrame6015Impl::DeviceFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 	updateGlider();
 }
 
@@ -90,7 +91,7 @@ void DeviceFrame6015Impl::update()
 
 	// glider
 	glider = pDev->memoryRead(MemFa, AC_TYPE, String).toString();
-	dbGlider = m_gliderList.at(comboBoxModel->currentItem()).model();
+        dbGlider = m_gliderList.at(comboBoxModel->currentIndex()).model();
 	
 	if(glider != dbGlider)
 	{
@@ -198,7 +199,7 @@ void DeviceFrame6015Impl::store()
 	pDev->memoryWrite(MemFa, OWNER, String, pilotName);
 
 	// glider
-	m_gliderList.at(comboBoxModel->currentItem()).fullName(glider);
+        m_gliderList.at(comboBoxModel->currentIndex()).fullName(glider);
 	dbPilot.glider().fullName(dbGlider);
 
 	if(glider != dbGlider)
@@ -214,13 +215,13 @@ void DeviceFrame6015Impl::store()
 				glider = dbPilot.glider().model();
 			break;
 			default:
-				glider = m_gliderList.at(comboBoxModel->currentItem()).model();
+                                glider = m_gliderList.at(comboBoxModel->currentIndex()).model();
 			break;
 		}
 	}
 	else
 	{
-		glider = m_gliderList.at(comboBoxModel->currentItem()).model();
+                glider = m_gliderList.at(comboBoxModel->currentIndex()).model();
 	}
 
 	pDev->memoryWrite(MemFa, AC_TYPE, String, glider);
@@ -270,7 +271,7 @@ void DeviceFrame6015Impl::updateGlider()
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderName);
-		comboBoxModel->insertItem(gliderName);
+                comboBoxModel->addItem(gliderName);
 	}
 
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
@@ -289,15 +290,15 @@ void DeviceFrame6015Impl::selectGlider(const QString &name)
 	
 	for(index=0; index<maxIndex; index++)
 	{
-		found = (comboBoxModel->text(index) == name);
+                found = (comboBoxModel->itemText(index) == name);
 		
 		if(found)
 		{
-			comboBoxModel->setCurrentItem(index);
+                        comboBoxModel->setCurrentIndex(index);
 			break;
 		}
 	}
 }
 
-#include "DeviceFrame6015Impl.moc"
+#include "moc_DeviceFrame6015Impl.cxx"
 

@@ -28,9 +28,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, WFlags fl)
-	:SmsFrame(parent, name, fl)
+SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+	:QWidget(parent)
 {
+  setupUi(this);
 }
 
 SmsFrameImpl::~SmsFrameImpl()
@@ -74,4 +75,4 @@ void SmsFrameImpl::store(QByteArray &arr)
 */
 }
 
-#include "SmsFrameImpl.moc"
+#include "moc_SmsFrameImpl.cxx"

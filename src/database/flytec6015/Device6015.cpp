@@ -30,7 +30,7 @@ bool Device6015::openDevice(const QString &dev, int baud)
 	uint bBaud;
 	bool success;
 
-	m_ttyFd = open(dev.ascii(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+        m_ttyFd = open(dev.toAscii().constData(), O_RDWR | O_NOCTTY | O_NONBLOCK);
 	success = (m_ttyFd > 0);
 
 	if(isatty(m_ttyFd))
@@ -129,7 +129,7 @@ const QString& Device6015::getTlg()
 
 bool Device6015::sendTlg(const QString &tlg)
 {
-	return writeBuffer(tlg.ascii(), tlg.length());
+        return writeBuffer(tlg.toAscii().constData(), tlg.length());
 }
 
 void Device6015::flush()

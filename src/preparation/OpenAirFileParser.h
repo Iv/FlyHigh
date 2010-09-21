@@ -21,7 +21,7 @@
 #ifndef OpenAirFileParser_h
 #define OpenAirFileParser_h
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include "AirSpace.h"
 
 class OpenAirFileParser

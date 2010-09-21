@@ -19,11 +19,15 @@
  ***************************************************************************/
  
 #include <qbrush.h>
-#include <qtable.h>
-#include <qheader.h>
+#include <q3table.h>
+#include <q3header.h>
 #include <qpainter.h>
-#include <qtable.h>
-#include <qtextedit.h>
+#include <q3table.h>
+#include <q3textedit.h>
+//Added by qt3to4:
+#include <Q3PointArray>
+#include <QCloseEvent>
+#include <QPaintEvent>
 #include "AirSpace.h"
 #include "AirSpaceFormImpl.h"
 
@@ -31,7 +35,7 @@ AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirS
 	:AirSpaceForm(parent, caption),
 	m_drawRect(290, 10, 350, 350)
 {
-	QHeader *pHeader;
+	Q3Header *pHeader;
 	
 	AirSpaceForm::setCaption(caption);
 	tableEdgePoints->setColumnWidth(Use, 20);
@@ -51,7 +55,7 @@ AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirS
 void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 {
 	QString str;
-	QCheckTableItem *pTabItem;
+	Q3CheckTableItem *pTabItem;
 	uint ptNr;
 	uint maxPts;
 
@@ -66,7 +70,7 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
 			tableEdgePoints->insertRows(ptNr);
-			pTabItem = new QCheckTableItem(tableEdgePoints, "");
+			pTabItem = new Q3CheckTableItem(tableEdgePoints, "");
 			pTabItem->setChecked(true);
 			tableEdgePoints->setItem(ptNr, Use, pTabItem);
 			
@@ -93,9 +97,9 @@ void AirSpaceFormImpl::closeEvent(QCloseEvent * e)
 void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 {
 	QPainter paint(this);
-	QPointArray edgePts;
+	Q3PointArray edgePts;
 	QRect boundRect;
-	QCheckTableItem *pTabItem;
+	Q3CheckTableItem *pTabItem;
 	uint ptNr;
 	uint maxPts;
 	uint nPts = 0;
@@ -114,7 +118,7 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 			
 		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
-			pTabItem = (QCheckTableItem*)tableEdgePoints->item(ptNr, Use);
+			pTabItem = (Q3CheckTableItem*)tableEdgePoints->item(ptNr, Use);
 		
 			if(pTabItem->isChecked())
 			{
@@ -147,7 +151,7 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	AirSpaceForm::paintEvent(pEvent);
 }
 
-void AirSpaceFormImpl::scaleEdgePts(QPointArray &edgePts, double sx, double sy)
+void AirSpaceFormImpl::scaleEdgePts(Q3PointArray &edgePts, double sx, double sy)
 {
 	uint ptNr;
 	uint maxPts;
@@ -170,4 +174,4 @@ void AirSpaceFormImpl::scaleEdgePts(QPointArray &edgePts, double sx, double sy)
 	}
 }
 
-#include "AirSpaceFormImpl.moc"
+#include "moc_AirSpaceFormImpl.cxx"

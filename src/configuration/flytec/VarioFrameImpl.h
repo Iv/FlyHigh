@@ -22,14 +22,14 @@
 #define VarioFrameImpl_h
 
 #include "Frame.h"
-#include "VarioFrame.h"
+#include "ui_VarioFrame.h"
 
-class VarioFrameImpl: public VarioFrame, public Frame
+class VarioFrameImpl: public QWidget, public Ui::VarioFrame, public Frame
 {
 	Q_OBJECT
 	
 	public:
-		VarioFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		VarioFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~VarioFrameImpl();
 
 		void update(QByteArray &arr);

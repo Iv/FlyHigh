@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <qdatetime.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <stdlib.h>
@@ -32,16 +32,16 @@
 #include "WayPoints.h"
 #include "ISql.h"
 
-Flights::Flights(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+Flights::Flights(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
 bool Flights::add(Flight &flight)
 {
-	QSqlCursor cur("Flights");
+	Q3SqlCursor cur("Flights");
 	QSqlRecord *pRec;
-	QSqlQuery query(db());
+        QSqlQuery query(db());
 	bool success;
 
 	// insert record
@@ -68,7 +68,7 @@ bool Flights::add(Flight &flight)
 
 bool Flights::delFlight(Flight &flight)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	bool success;
 
@@ -83,7 +83,7 @@ bool Flights::delFlight(Flight &flight)
 int Flights::newFlightNr(Pilot &pilot)
 {
 	QString sqls;
-	QSqlQuery query(db());
+        QSqlQuery query(db());
 	int newFlightNr = -1;
 	
 	sqls.sprintf("SELECT MAX(Number) FROM Flights WHERE PilotId = %i", pilot.id());
@@ -100,7 +100,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	Pilot flightPilot;
 	Flight flight;
-	QSqlQuery query(db());
+        QSqlQuery query(db());
 	QString sqls;
 	bool success;
 	Glider glider;
@@ -141,7 +141,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 
 bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	QDate now = QDate::currentDate();
 	FlightsPerYearType fpy;
@@ -187,7 +187,7 @@ bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 
 bool Flights::loadIGCFile(Flight &flight)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	bool success;
 
@@ -206,7 +206,7 @@ bool Flights::loadIGCFile(Flight &flight)
 
 bool Flights::setFlightStatistic(Glider &glider)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	uint airtime = 0;
 	uint flights = 0;
@@ -234,7 +234,7 @@ bool Flights::setFlightStatistic(Glider &glider)
 
 bool Flights::setId(Flight &flight)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	QString dbModel;
 	bool success;

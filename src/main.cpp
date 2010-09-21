@@ -19,25 +19,25 @@
  ***************************************************************************/
  
 #include <qapplication.h>
+#include <qicon.h>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
-#include "Images.h"
 #include "ISql.h"
 
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
+        Q_INIT_RESOURCE(images);
 	MainWindow* pMainWin;
 	int res;
 
 	IFlyHighRC::pInstance()->loadRC();
-	IGPSDevice::pInstance()->open();
+        IGPSDevice::pInstance()->open();
 	ISql::pInstance()->open();
 	
 	pMainWin = new MainWindow();
-	appl.setMainWidget(pMainWin);
-	pMainWin->setIcon(Images::pInstance()->getImage("flyhigh.png"));
+        pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
 	
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
@@ -47,6 +47,10 @@ int main( int argc, char ** argv )
 	// exit
 	IGPSDevice::pInstance()->close();
 	IFlyHighRC::pInstance()->saveRC();
+
+	delete IGPSDevice::pInstance();
+	delete IFlyHighRC::pInstance();
+	delete ISql::pInstance();
 	
 	return res;
 }

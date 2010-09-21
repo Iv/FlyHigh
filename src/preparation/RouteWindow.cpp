@@ -19,13 +19,11 @@
  ***************************************************************************/
  
 #include <qcursor.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qmenubar.h>
-#include <qpopupmenu.h>
 #include <qstring.h>
-#include <qtable.h>
+#include <q3table.h>
 #include "IGPSDevice.h"
-#include "Images.h"
 #include "ProgressDlg.h"
 #include "IRouteForm.h"
 #include "ISql.h"
@@ -33,46 +31,64 @@
 #include "RouteWindow.h"
 #include "WayPoint.h"
 
-RouteWindow::RouteWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
+RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
 	QString caption;
 	QStringList nameList;
-	QTable *pTable = TableWindow::getTable();
-	QPopupMenu *pMenu;
+	Q3Table *pTable = TableWindow::getTable();
 
-	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&File", pMenu);
-	
+        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+
 	switch(src)
 	{
 		case IDataBase::SqlDB:
+                {
 			m_pDb = ISql::pInstance();
 			caption = "Routes from DB";
-			pMenu->insertItem("&New...", this, SLOT(file_new()));
-			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGPS()));
-		break;
+
+                        QAction* pNewAct = new QAction(tr("&New..."), this);
+                        connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
+                        pFileMenu->addAction(pNewAct);
+                        QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
+                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+                        pFileMenu->addAction(pAddAct);
+                }
+                break;
 		case IDataBase::GPSdevice:
+                {
 			m_pDb = IGPSDevice::pInstance();
 			caption = "Routes from GPS";
-			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
+
+                        QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
+                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+                        pFileMenu->addAction(pAddAct);
+                }
 		break;
 		default:
 			Q_ASSERT(false);
 		break;
 	}
 	
-	pMenu->insertItem("&View...", this, SLOT(file_view()));
-	pMenu->insertItem("&Delete", this, SLOT(file_delete()));
-	pMenu->insertItem("&Update", this, SLOT(file_update()));
-	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
-	
-	TableWindow::setCaption(caption);
-	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
+        QAction* pViewAct = new QAction(tr("&View"), this);
+        connect(pViewAct,SIGNAL(triggered()), this, SLOT(file_view()));
+        pFileMenu->addAction(pViewAct);
+        QAction* pDelAct = new QAction(tr("&Delete"), this);
+        connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+        pFileMenu->addAction(pDelAct);
+        QAction* pUpdateAct = new QAction(tr("&Update"), this);
+        connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+        pFileMenu->addAction(pUpdateAct);
+        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+        pFileMenu->addAction(pExpAllAct);
+
+        TableWindow::setWindowTitle(caption);
+        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
-	pTable->setSelectionMode(QTable::SingleRow);
+	pTable->setSelectionMode(Q3Table::SingleRow);
 
 	// header
 	nameList += "Name";
@@ -115,7 +131,7 @@ void RouteWindow::file_delete()
 void RouteWindow::file_update()
 {
 	ProgressDlg progDlg(this);
-	QTable *pTable = TableWindow::getTable();
+	Q3Table *pTable = TableWindow::getTable();
 	uint routeNr;
 	uint maxRouteNr;
 
@@ -227,7 +243,7 @@ void RouteWindow::file_AddToSqlDB()
 
 void RouteWindow::setRouteToRow(uint row, Route &route)
 {
-	QTable *pTable = TableWindow::getTable();
+	Q3Table *pTable = TableWindow::getTable();
 	
 	pTable->setText(row, Name, route.name());
 }

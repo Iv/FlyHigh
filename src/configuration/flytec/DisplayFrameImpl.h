@@ -22,14 +22,14 @@
 #define DisplayFrameImpl_h
 
 #include "Frame.h"
-#include "DisplayFrame.h"
+#include "ui_DisplayFrame.h"
 
-class DisplayFrameImpl: public DisplayFrame, public Frame
+class DisplayFrameImpl: public QWidget, public Ui::DisplayFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		DisplayFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		DisplayFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~DisplayFrameImpl();
 
 		void update(QByteArray &arr);

@@ -22,14 +22,14 @@
 #define AcousticFrame6015_h
 
 #include "Frame6015.h"
-#include "AcousticFrame6015.h"
+#include "ui_AcousticFrame6015.h"
 
-class AcousticFrame6015Impl: public AcousticFrame6015, public Frame6015
+class AcousticFrame6015Impl: public QWidget, public Ui::AcousticFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		AcousticFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		AcousticFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~AcousticFrame6015Impl();
 

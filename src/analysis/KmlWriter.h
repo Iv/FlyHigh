@@ -23,6 +23,8 @@
 #include "FlightPointList.h"
 #include "Flight.h"
 #include "WayPoint.h"
+//Added by qt3to4:
+#include <Q3TextStream>
 
 /**
 @author Alex Graf
@@ -55,13 +57,13 @@ class KmlWriter
 		FlightPointList m_flightPointList;
 		bool m_triangle;
 
-		void streamCoordinates(QTextStream& s);
+		void streamCoordinates(Q3TextStream& s);
 
-		void streamOLC(QTextStream& s);
+		void streamOLC(Q3TextStream& s);
 
-		void streamStart(QTextStream& s);
+		void streamStart(Q3TextStream& s);
 
-		void streamLanding(QTextStream& s);
+		void streamLanding(Q3TextStream& s);
 };
 
 #endif

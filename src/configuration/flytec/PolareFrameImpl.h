@@ -22,14 +22,14 @@
 #define PolareFrameImpl_h
 
 #include "Frame.h"
-#include "PolareFrame.h"
+#include "ui_PolareFrame.h"
 
-class PolareFrameImpl: public PolareFrame, public Frame
+class PolareFrameImpl: public QWidget, public Ui::PolareFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		PolareFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		PolareFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~PolareFrameImpl();
   
 		void update(QByteArray &arr);

@@ -22,14 +22,14 @@
 #define VarioFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "VarioFrame6015.h"
+#include "ui_VarioFrame6015.h"
 
-class VarioFrame6015Impl: public VarioFrame6015, public Frame6015
+class VarioFrame6015Impl: public QWidget, public Ui::VarioFrame6015, public Frame6015
 {
 	Q_OBJECT
 	
 	public:
-		VarioFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		VarioFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~VarioFrame6015Impl();
 

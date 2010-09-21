@@ -17,8 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "IFlytec6015Config.h"
+
 #include "MainFrame6015Impl.h"
+#include "IFlytec6015Config.h"
 
 IFlytec6015Config::IFlytec6015Config()
 {

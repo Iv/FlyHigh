@@ -22,6 +22,10 @@
 #define AirSpaceFormImpl_h
 
 #include "AirSpaceForm.h"
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QCloseEvent>
+#include <Q3PointArray>
 
 class AirSpace;
 
@@ -47,7 +51,7 @@ class AirSpaceFormImpl: public AirSpaceForm
 		QRect m_drawRect;
 		AirSpace *m_pAirSpace;
 		
-		void scaleEdgePts(QPointArray &edgePts, double sx, double sy);
+		void scaleEdgePts(Q3PointArray &edgePts, double sx, double sy);
 };
 
 #endif

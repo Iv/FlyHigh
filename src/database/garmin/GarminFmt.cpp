@@ -37,8 +37,8 @@ void GarminFmt::GPS_Fmt_Print_Track(GPS_PTrack *trk, int32 n, Flight::FlightList
 	switch(gps_trk_transfer)
 	{
 		case pA300: case pA301:
-			igcDataBuff.setBuffer(flight.igcData());
-			igcDataBuff.open(IO_WriteOnly);
+			igcDataBuff.setBuffer(const_cast<QByteArray*>(&flight.igcData()));
+			igcDataBuff.open(QIODevice::WriteOnly);
 			
 			for(i=0; i<n; ++i)
 			{
@@ -63,11 +63,11 @@ void GarminFmt::GPS_Fmt_Print_Track(GPS_PTrack *trk, int32 n, Flight::FlightList
 					case pD300:
 						trk[i]->alt = 0;
 						setBrecord(trk[i], bRecord);
-						igcDataBuff.writeBlock(bRecord.ascii(), bRecord.length());
+                                                igcDataBuff.write(bRecord.toAscii(), bRecord.length());
 					break;
 					case pD301:
 						setBrecord(trk[i], bRecord);
-						igcDataBuff.writeBlock(bRecord.ascii(), bRecord.length());
+                                                igcDataBuff.write(bRecord.toAscii(), bRecord.length());
 					break;
 					default:
 					break;

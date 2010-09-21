@@ -20,16 +20,16 @@
 #ifndef FlyHighRCFrameImpl_h
 #define FlyHighRCFrameImpl_h
 
-#include "FlyHighRCFrame.h"
+#include "ui_FlyHighRCFrame.h"
 #include "Glider.h"
 #include "Pilot.h"
 
-class FlyHighRCFrameImpl: public FlyHighRCFrame
+class FlyHighRCFrameImpl: public QDialog, public Ui::FlyHighRCFrame
 {
 	Q_OBJECT
 	
 	public:
-		FlyHighRCFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		FlyHighRCFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		
 		void updateGlider();
 		void selectGlider(Glider &glider);

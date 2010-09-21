@@ -12,14 +12,14 @@
 #include "MDIWindow.h"
 
 class QStringList;
-class QTable;
+class Q3Table;
 
 class TableWindow: public MDIWindow
 {
 	Q_OBJECT
 	
 	public:
-		TableWindow(QWidget* parent, const char* name, int wflags);
+          TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 		virtual ~TableWindow();
 
 		void tableAsHTML(QDomDocument &doc);
@@ -30,11 +30,11 @@ class TableWindow: public MDIWindow
 		virtual void selectionChanged();
 		
 	protected:
-		QTable* getTable();
+		Q3Table* getTable();
 		void setupHeader(const QStringList &colNameList);
 
 private:
-	QTable* m_pTable;
+	Q3Table* m_pTable;
 };
 
 #endif

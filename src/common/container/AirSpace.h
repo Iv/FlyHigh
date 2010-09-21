@@ -21,8 +21,8 @@
 #define AirSpace_h
 
 #include <qstring.h>
-#include <qptrlist.h>
-#include <qsortedlist.h>
+#include <q3ptrlist.h>
+#include <q3sortedlist.h>
 #include "AirSpaceItem.h"
 #include "BoundBox.h"
 #include "WayPoint.h"
@@ -31,7 +31,7 @@ class AirSpace
 {
 	public:
 		enum {MaxNameSize=17};
-		typedef QSortedList<AirSpace> AirSpaceListType;
+		typedef Q3SortedList<AirSpace> AirSpaceListType;
 
 		AirSpace();
 

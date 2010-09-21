@@ -21,6 +21,11 @@
 #define AirSpaceView_h
 
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QCloseEvent>
 
 class AirSpace;
 

@@ -27,9 +27,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: VelocityFrame(parent,name,fl)
+VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 VelocityFrameImpl::~VelocityFrameImpl()
@@ -80,5 +81,5 @@ void VelocityFrameImpl::store(QByteArray &arr)
 	arr[STALL_ALT_POS+1] = (u_char)(c16value & 0xFF);
 }
 
-#include "VelocityFrameImpl.moc"
+#include "moc_VelocityFrameImpl.cxx"
 

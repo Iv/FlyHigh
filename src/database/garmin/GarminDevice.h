@@ -21,7 +21,7 @@
 #define GarminDevice_h
 
 #include <stdlib.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include "IGPSDevice.h"
 #include "Flight.h"
 #include "Route.h"

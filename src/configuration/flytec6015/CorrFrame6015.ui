@@ -1,123 +1,118 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>CorrFrame6015</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>CorrFrame6015</cstring>
-    </property>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" stdsetdef="1">
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>CorrFrame6015</class>
+  <widget class="QWidget" name="CorrFrame6015">
     <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>423</width>
+        <height>390</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Correction</string>
+    </property>
+    <widget class="QLabel" name="textLabel_QNHCorrA1Unit">
+      <property name="geometry">
         <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>423</width>
-            <height>390</height>
+          <x>340</x>
+          <y>40</y>
+          <width>67</width>
+          <height>20</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Correction</string>
-    </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA1Unit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>40</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[m]</string>
-        </property>
+      </property>
+      <property name="text">
+        <string>[m]</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>40</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>QNH Correction of A1</string>
-        </property>
+    <widget class="QLabel" name="textLabel_QNHCorrA1">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>40</y>
+          <width>160</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>QNH Correction of A1</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_QNHCorrA1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>40</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>900</number>
-        </property>
-        <property name="minValue">
-            <number>-900</number>
-        </property>
+    <widget class="QSpinBox" name="spinBox_QNHCorrA1">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>40</y>
+          <width>100</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="maximum">
+        <number>900</number>
+      </property>
+      <property name="minimum">
+        <number>-900</number>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>90</y>
-                <width>172</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Offset Pressure Sensor</string>
-        </property>
+    <widget class="QLabel" name="textLabel_QNHCorrA2">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>90</y>
+          <width>172</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Offset Pressure Sensor</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_QNHCorrA2Unit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>90</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>[mPa]</string>
-        </property>
+    <widget class="QLabel" name="textLabel_QNHCorrA2Unit">
+      <property name="geometry">
+        <rect>
+          <x>340</x>
+          <y>90</y>
+          <width>67</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>[mPa]</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_OffsetPress</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>90</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>1000000</number>
-        </property>
-        <property name="minValue">
-            <number>-1000000</number>
-        </property>
+    <widget class="QSpinBox" name="spinBox_OffsetPress">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>90</y>
+          <width>100</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="maximum">
+        <number>1000000</number>
+      </property>
+      <property name="minimum">
+        <number>-1000000</number>
+      </property>
     </widget>
-</widget>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+</ui>

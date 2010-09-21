@@ -21,14 +21,15 @@
 
 #include "PortFrameImpl.h"
 
-PortFrameImpl::PortFrameImpl(QWidget* parent, const char* name, WFlags fl)
-	:PortFrame(parent,name,fl)
+PortFrameImpl::PortFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+	:QDialog(parent)
 {
+  setupUi(this);
 }
 
 PortFrameImpl::~PortFrameImpl()
 {
 }
 
-#include "PortFrameImpl.moc"
+#include "moc_PortFrameImpl.cxx"
 

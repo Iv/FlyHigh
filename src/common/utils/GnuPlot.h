@@ -24,7 +24,7 @@
 #define GnuPlot_h
 
 #include <qfile.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qdatetime.h>
@@ -32,8 +32,8 @@
 class GnuPlot
 {
 	public:
-		typedef QValueVector<double> PlotVectorType;
-		typedef QValueVector<QTime> TimeVectorType;
+		typedef Q3ValueVector<double> PlotVectorType;
+		typedef Q3ValueVector<QTime> TimeVectorType;
 		
 		GnuPlot();
 		~GnuPlot();

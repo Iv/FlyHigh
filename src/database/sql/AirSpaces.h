@@ -29,7 +29,7 @@ class QSqlDatabase;
 class AirSpaces: public DataBaseSub
 {
 	public:
-		AirSpaces(QSqlDatabase *pDB);
+		AirSpaces(QSqlDatabase DB);
 
 		bool add(AirSpace &airspace);
 		bool delAirSpace(const QString &name);

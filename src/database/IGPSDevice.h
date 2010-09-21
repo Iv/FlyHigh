@@ -21,9 +21,9 @@
 #ifndef IGPSDevice_h
 #define IGPSDevice_h
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qdatetime.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include "IDataBase.h"
 
 class IGPSDevice: public IDataBase

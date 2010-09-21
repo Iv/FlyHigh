@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QKeyEvent>
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                         *
@@ -24,15 +26,15 @@
 class Map;
 
 #include <vector>
-#include <qscrollview.h>
+#include <q3scrollview.h>
 #include <qpixmap.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include "WayPoint.h"
 
-class MapView: public QScrollView
+class MapView: public Q3ScrollView
 {
 	public:
-		MapView(QWidget *parent=0, const char *name=0, int wFlags=0);
+          MapView(QWidget *parent=0, const char *name=0, Qt::WindowFlags wFlags=0);
 		virtual ~MapView();
 
 		void shwoWayPointList(WayPoint::WayPointListType &wpList);
@@ -44,7 +46,7 @@ class MapView: public QScrollView
 	private:
 		Map *m_pMap;
 		WayPoint::WayPointListType m_wpList;
-		QPointArray m_wayPoints;
+		Q3PointArray m_wayPoints;
 		int m_maxAlt;
 		int m_minAlt;
 

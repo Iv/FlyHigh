@@ -21,12 +21,10 @@
 #include <qcursor.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qdatetime.h>
 #include <qmenubar.h>
-#include <qpopupmenu.h>
 #include "IDataBase.h"
-#include "Images.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
 #include "ProgressDlg.h"
@@ -34,53 +32,72 @@
 #include "WayPointWindow.h"
 #include "WayPoint.h"
 
-WayPointWindow::WayPointWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src)
+WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
 	QString caption;
 	QStringList nameList;
-	QTable *pTable = TableWindow::getTable();
-	QPopupMenu *pMenu;
+	Q3Table *pTable = TableWindow::getTable();
 
-	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&File", pMenu);
-	pMenu->insertItem("&Update", this, SLOT(file_update()));
-	
+        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+
+        QAction* pUpdateAct = new QAction(tr("&Update"), this);
+        connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+        pFileMenu->addAction(pUpdateAct);
+
 	switch(src)
 	{
 		case IDataBase::SqlDB:
+                {
 			m_pDb = ISql::pInstance();
 			caption = "WayPoints from DB";
-			pMenu->insertItem("&Add to GPS...", this, SLOT(file_AddToGps()));
-		break;
+
+                        QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
+                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGps()));
+                        pFileMenu->addAction(pAddAct);
+                }
+                break;
 		case IDataBase::GPSdevice:
+                {
 			m_pDb = IGPSDevice::pInstance();
 			caption = "WayPoints from GPS";
-			pMenu->insertItem("&Add to DB...", this, SLOT(file_AddToSqlDB()));
+
+                        QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
+                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+                        pFileMenu->addAction(pAddAct);
+                }
 		break;
 		default:
 			Q_ASSERT(false);
 		break;
 	}
 	
-	pMenu->insertItem("New Waypoint", this, SLOT(file_addNewWp()));
-	pMenu->insertItem("Delete", this, SLOT(file_delete()));
-	pMenu->insertItem("Delete all", this, SLOT(file_deleteAll()));
-	pMenu->insertItem("Export all...", this, SLOT(exportTable()));
-	
-	TableWindow::setCaption(caption);
-	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
+        QAction* pNewAct = new QAction(tr("&New Waypoint..."), this);
+        connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_addNewWp()));
+        pFileMenu->addAction(pNewAct);
+        QAction* pDelAct = new QAction(tr("&Delete"), this);
+        connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+        pFileMenu->addAction(pDelAct);
+        QAction* pDelAllAct = new QAction(tr("De&lete all"), this);
+        connect(pDelAllAct,SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+        pFileMenu->addAction(pDelAllAct);
+        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+        pFileMenu->addAction(pExpAllAct);
+
+        TableWindow::setWindowTitle(caption);
+        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
-	pTable->setSelectionMode(QTable::SingleRow);
+	pTable->setSelectionMode(Q3Table::SingleRow);
 
 	// header
 	nameList += "Name";
 	nameList += "Country";
 	nameList += "Spot";
-	nameList += "Longitude\n[°,min]";
-	nameList += "Latitude\n[°,min]";
+        nameList += "Longitude\n[Deg,min]";
+        nameList += "Latitude\n[Deg,min]";
 	nameList += "Altitude\n[m]";
 	nameList += "Description";
 	setupHeader(nameList);
@@ -114,7 +131,7 @@ bool WayPointWindow::periodicalUpdate()
 void WayPointWindow::file_update()
 {
 	WayPoint wp;
-	QTable *pTable = TableWindow::getTable();
+	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint wpNr;
 	uint maxWpNr;
@@ -199,7 +216,7 @@ void WayPointWindow::file_AddToSqlDB()
 void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
 {
 	QString str;
-	QTable *pTable = TableWindow::getTable();
+	Q3Table *pTable = TableWindow::getTable();
 
 	pTable->setText(row, Country, wp.country());
 	pTable->setText(row, Spot, wp.spot());

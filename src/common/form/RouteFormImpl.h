@@ -21,15 +21,15 @@
 #ifndef RouteFormImpl_h
 #define RouteFormImpl_h
 
-#include <qptrlist.h>
-#include "RouteForm.h"
+#include <q3ptrlist.h>
+#include "ui_RouteForm.h"
 #include "WayPoint.h"
 
 class QWidget;
 class QString;
 class Route;
 
-class RouteFormImpl: public RouteForm
+class RouteFormImpl: public QDialog, public Ui_RouteForm
 {
 	Q_OBJECT
 
@@ -49,7 +49,7 @@ class RouteFormImpl: public RouteForm
 		bool m_readOnly;
 		Route *m_pRoute;
 		WayPoint::WayPointListType m_wpDbList;
-		QPtrList<WayPoint> m_wpRouteList;
+		Q3PtrList<WayPoint> m_wpRouteList;
 
 		void showWpRoute();
 };

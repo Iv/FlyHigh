@@ -21,11 +21,11 @@
 #ifndef GliderFormImpl_h
 #define GliderFormImpl_h
 
-#include "GliderForm.h"
+#include "ui_GliderForm.h"
 
 class Glider;
 
-class GliderFormImpl : public GliderForm
+class GliderFormImpl : public QDialog, public Ui::GliderForm
 {
 	Q_OBJECT
 

@@ -22,14 +22,14 @@
 #define MemoryFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "MemoryFrame6015.h"
+#include "ui_MemoryFrame6015.h"
 
-class MemoryFrame6015Impl: public MemoryFrame6015, public Frame6015
+class MemoryFrame6015Impl: public QWidget, public Ui::MemoryFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		MemoryFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		MemoryFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~MemoryFrame6015Impl();
 

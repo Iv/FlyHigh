@@ -22,14 +22,14 @@
 #define VelocityFrameImpl_h
 
 #include "Frame.h"
-#include "VelocityFrame.h"
+#include "ui_VelocityFrame.h"
 
-class VelocityFrameImpl: public VelocityFrame, public Frame
+class VelocityFrameImpl: public QWidget, public Ui::VelocityFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~VelocityFrameImpl();
 
 		void update(QByteArray &arr);

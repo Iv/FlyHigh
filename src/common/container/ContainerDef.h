@@ -22,7 +22,7 @@
 #define Container_h
 
 #include <qdatetime.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
  
 typedef struct
 {
@@ -31,6 +31,6 @@ typedef struct
 	uint airTimeSecs;
 }FlightsPerYearType;
 
-typedef QValueList<FlightsPerYearType> FlightsPerYearListType;
+typedef Q3ValueList<FlightsPerYearType> FlightsPerYearListType;
 		
 #endif

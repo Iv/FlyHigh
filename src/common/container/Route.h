@@ -22,13 +22,13 @@
 #define Route_h
 
 #include <qstringlist.h> 
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 #include "WayPoint.h"
 
 class Route
 {
 	public:
-		typedef QValueVector<Route> RouteListType;
+		typedef Q3ValueVector<Route> RouteListType;
 		
 		Route();
 

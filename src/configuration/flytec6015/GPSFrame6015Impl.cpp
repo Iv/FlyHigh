@@ -25,9 +25,10 @@
 #include "GPSFrame6015Impl.h"
 #include "IFlyHighRC.h"
 
-GPSFrame6015Impl::GPSFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: GPSFrame6015(parent,name,fl)
+GPSFrame6015Impl::GPSFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 GPSFrame6015Impl::~GPSFrame6015Impl()
@@ -44,7 +45,7 @@ void GPSFrame6015Impl::update()
 
 	// grid system
 	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
-	comboBox_GridSys->setCurrentItem((uiValue & MASK_UNIT_GRID) >> POS_UNIT_GRID);
+        comboBox_GridSys->setCurrentIndex((uiValue & MASK_UNIT_GRID) >> POS_UNIT_GRID);
 
 	// utc offset
 	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
@@ -62,7 +63,7 @@ void GPSFrame6015Impl::store()
 	// grid system
 	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
 	uiValue &= ~MASK_UNIT_GRID;
-	uiValue |= (comboBox_GridSys->currentItem() << POS_UNIT_GRID);
+        uiValue |= (comboBox_GridSys->currentIndex() << POS_UNIT_GRID);
 	pDev->memoryWrite(MemFa, UNIT_FLAGS, UInt16, uiValue);
 
 	// utc offset
@@ -70,5 +71,5 @@ void GPSFrame6015Impl::store()
 	pDev->memoryWrite(MemFa, UTC_OFFSET, Int8, iValue);
 }
 
-#include "GPSFrame6015Impl.moc"
+#include "moc_GPSFrame6015Impl.cxx"
 

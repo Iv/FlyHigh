@@ -22,14 +22,14 @@
 #define GPSFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "GPSFrame6015.h"
+#include "ui_GPSFrame6015.h"
 
-class GPSFrame6015Impl: public GPSFrame6015, public Frame6015
+class GPSFrame6015Impl: public QWidget, public Ui::GPSFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		GPSFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		GPSFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~GPSFrame6015Impl();
 

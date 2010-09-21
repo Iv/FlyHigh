@@ -26,9 +26,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-CorrFrameImpl::CorrFrameImpl(QWidget* parent, const char* name, WFlags fl)
-	:CorrFrame(parent,name,fl)
+CorrFrameImpl::CorrFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+	:QWidget(parent)
 {
+  setupUi(this);
 }
 
 CorrFrameImpl::~CorrFrameImpl()
@@ -77,4 +78,4 @@ void CorrFrameImpl::store(QByteArray &arr)
 */
 }
 
-#include "CorrFrameImpl.moc"
+#include "moc_CorrFrameImpl.cxx"

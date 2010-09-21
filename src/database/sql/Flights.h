@@ -29,7 +29,7 @@
 class Flights: public DataBaseSub
 {
 	public:
-		Flights(QSqlDatabase *pDB);
+		Flights(QSqlDatabase DB);
 
 		bool add(Flight &flight);
 		bool delFlight(Flight &flight);

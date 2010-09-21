@@ -21,16 +21,16 @@
 #ifndef DeviceFrame6015Impl_h
 #define DeviceFrame6015Impl_h
 
-#include "DeviceFrame6015.h"
+#include "ui_DeviceFrame6015.h"
 #include "Frame6015.h"
 #include "Glider.h"
 
-class DeviceFrame6015Impl: public DeviceFrame6015, public Frame6015
+class DeviceFrame6015Impl: public QWidget, public Ui::DeviceFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		DeviceFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		DeviceFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~DeviceFrame6015Impl();
 		

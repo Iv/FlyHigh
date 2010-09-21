@@ -21,14 +21,14 @@
 #ifndef PORTFRAMEIMPL_H
 #define PORTFRAMEIMPL_H
 
-#include "PortFrame.h"
+#include "ui_PortFrame.h"
 
-class PortFrameImpl : public PortFrame
+class PortFrameImpl : public QDialog, public Ui::PortFrame
 {
 	Q_OBJECT
 	
 	public:
-		PortFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+		PortFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
 		~PortFrameImpl();
 };
 

@@ -19,11 +19,11 @@
  ***************************************************************************/
 
 #include <qpushbutton.h>
-#include <qdatetimeedit.h>
+#include <q3datetimeedit.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qstringlist.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include "Glider.h"
 #include "IGliderForm.h"
 #include "ISql.h"
@@ -31,9 +31,11 @@
 #include "ServicingFormImpl.h"
 
 ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Servicing *pServicing)
-	:ServicingForm(parent, caption, true)
+	:QDialog(parent)
 {
-	ServicingForm::setCaption(caption);
+        setupUi(this);
+        setWindowTitle(caption);
+        Q_CHECK_PTR(pServicing);
 	setServicing(pServicing);
 	updateGlider();
 }
@@ -41,7 +43,7 @@ ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Se
 void ServicingFormImpl::accept()
 {
 	m_pServicing->setDate(dateEditDate->date());
-	m_pServicing->setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+        m_pServicing->setGlider(m_gliderList.at(comboBoxModel->currentIndex()));
 	m_pServicing->setResponsibility(lineEditRespons->text());
 	m_pServicing->setComment(textEditComment->text());
 
@@ -73,7 +75,7 @@ void ServicingFormImpl::updateGlider()
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
-		comboBoxModel->insertItem(gliderModel);
+                comboBoxModel->addItem(gliderModel);
 	}
 }
 
@@ -87,4 +89,4 @@ void ServicingFormImpl::setServicing(Servicing *pServicing)
 	}
 }
 
-#include "ServicingFormImpl.moc"
+#include "moc_ServicingFormImpl.cxx"

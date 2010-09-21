@@ -18,20 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include "Error.h"
 #include "WayPoints.h"
 
-WayPoints::WayPoints(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+WayPoints::WayPoints(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
 bool WayPoints::add(WayPoint &wp)
 {
-	QSqlCursor cur("WayPoints");
+	Q3SqlCursor cur("WayPoints");
 	QSqlRecord *pRec;
 	
 	// insert record
@@ -192,10 +192,10 @@ bool WayPoints::setId(WayPoint &wp)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM WayPoints WHERE "
-		"Name = '%s' AND "
-		"Spot = '%s' AND "
-		"Country = '%s'", wp.name().ascii(), wp.spot().ascii(), wp.country().ascii());
+        sqls = QString("SELECT * FROM WayPoints WHERE "
+                "Name = '%1' AND "
+                "Spot = '%2' AND "
+                "Country = '%3'").arg(wp.name(),wp.spot(),wp.country());
 
 	success = (query.exec(sqls) && query.first());
 

@@ -29,7 +29,7 @@ class QSqlDatabase;
 class Routes: public DataBaseSub
 {
 	public:
-		Routes(QSqlDatabase *pDB);
+		Routes(QSqlDatabase DB);
 		
 		bool add(Route &route);
 		bool delRoute(Route &route);

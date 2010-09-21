@@ -23,23 +23,23 @@
 
 #include <vector>
 #include <qthread.h>
-#include <qcstring.h>
-#include "MainFrame.h"
+#include <q3cstring.h>
+#include "ui_MainFrame.h"
 
-class QProgressBar;
+class Q3ProgressBar;
 class Frame;
 
-class MainFrameImpl: public MainFrame
+class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 {
 	Q_OBJECT
 
 	public:
-		MainFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		MainFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 	public slots:
 		virtual void addPage(QWidget * pFrame, int * pPos);
 
-	protected:
+	protected slots:
 		void open();
 		void save();
 		void read();
@@ -51,7 +51,7 @@ class MainFrameImpl: public MainFrame
 
 		QByteArray m_flytecMem;
 		FrameListType m_FrameList;
-		QProgressBar *m_pProgressBar;
+		Q3ProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
 

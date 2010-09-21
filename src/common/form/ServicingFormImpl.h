@@ -21,12 +21,12 @@
 #ifndef ServicingFormImpl_h
 #define ServicingFormImpl_h
 
-#include "ServicingForm.h"
+#include "ui_ServicingForm.h"
 #include "Glider.h"
 
 class Servicing;
 
-class ServicingFormImpl: public ServicingForm
+class ServicingFormImpl: public QDialog, public Ui::ServicingForm
 {
 	Q_OBJECT
 

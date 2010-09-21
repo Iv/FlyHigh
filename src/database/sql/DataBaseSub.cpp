@@ -19,28 +19,29 @@
  ***************************************************************************/
 
 #include <qdatetime.h>
-#include <qsqlcursor.h>
-#include <qsqldatabase.h>
+#include <q3sqlcursor.h>
+//Added by qt3to4:
+#include <QSqlQuery>
 #include "DataBaseSub.h"
 
-DataBaseSub::DataBaseSub(QSqlDatabase *pDB)
+DataBaseSub::DataBaseSub(QSqlDatabase db)
 {
-	m_pDB = pDB;
+	m_DB = db;
 }
 
 DataBaseSub::~DataBaseSub()
 {
 }
 
-QSqlDatabase* DataBaseSub::db()
+QSqlDatabase DataBaseSub::db()
 {
-	return m_pDB;
+	return m_DB;
 }
 
 int DataBaseSub::newId(const QString &table)
 {
 	QString sqls = "SELECT MAX(Id) FROM " + table;
-	QSqlQuery query(db());
+        QSqlQuery query(m_DB);
 	int newid = -1;
 	
 	if(query.exec(sqls) &&
@@ -56,20 +57,18 @@ void DataBaseSub::setLastModified(const QString &field)
 {
 	QString sqls;
 	QString date;
-	QSqlQuery query(db());
+	QSqlQuery query(m_DB);
 	
 	date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
 	
 	if(lastModified(field) > 1)
 	{
-		sqls.sprintf("UPDATE LastModified SET Time = '%s' WHERE Name = '%s'", 
-										date.ascii(), field.ascii());
+                sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = '%2'").arg(date,field);
 		query.exec(sqls);
 	}
 	else
 	{
-		sqls.sprintf("INSERT INTO LastModified (Name, Time) VALUES ('%s', '%s')", 
-										field.ascii(), date.ascii());
+                sqls = QString("INSERT INTO LastModified (Name, Time) VALUES ('%1', '%2')").arg(field,date);
 		query.exec(sqls);
 	}
 }
@@ -78,10 +77,10 @@ int DataBaseSub::lastModified(const QString &field)
 {
 	QString sqls;
 	QString date;
-	QSqlQuery query(db());
+        QSqlQuery query(m_DB);
 	int time = 1;
 	
-	sqls.sprintf("SELECT Time FROM LastModified WHERE Name = '%s'", field.ascii());
+        sqls = QString("SELECT Time FROM LastModified WHERE Name = '%1'").arg(field);
 	
 	if(query.exec(sqls) && query.first())
 	{

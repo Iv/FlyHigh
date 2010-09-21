@@ -22,14 +22,14 @@
 #define FlyCalcFrameImpl_h
 
 #include "Frame.h"
-#include "FlyCalcFrame.h"
+#include "ui_FlyCalcFrame.h"
 
-class FlyCalcFrameImpl: public FlyCalcFrame, public Frame
+class FlyCalcFrameImpl: public QWidget, public Ui::FlyCalcFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		FlyCalcFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		FlyCalcFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~FlyCalcFrameImpl();
 };
 

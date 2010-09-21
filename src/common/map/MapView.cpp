@@ -21,13 +21,15 @@
 #include "MapView.h"
 #include <qpainter.h>
 #include <qpoint.h>
+//Added by qt3to4:
+#include <QKeyEvent>
 #include "SwissMap100.h"
 #include "Map.h"
 #include "MapTile.h"
 #include "ProgressDlg.h"
 
-MapView::MapView(QWidget *parent, const char *name, int wFlags)
-	:QScrollView(parent, name, wFlags)
+MapView::MapView(QWidget *parent, const char *name, Qt::WindowFlags wFlags)
+	:Q3ScrollView(parent, name, wFlags)
 {
 	m_pMap = NULL;
 	m_maxAlt = 0;
