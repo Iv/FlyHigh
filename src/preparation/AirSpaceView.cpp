@@ -18,6 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QWheelEvent>
+#include <Q3PointArray>
+#include <QMouseEvent>
+#include <QCloseEvent>
+#include <QPaintEvent>
 #include "AirSpace.h"
 #include "AirSpaceView.h"
 
@@ -69,7 +75,7 @@ void AirSpaceView::closeEvent(QCloseEvent *pEvent)
 
 void AirSpaceView::mousePressEvent(QMouseEvent *pEvent)
 {
-	if(pEvent->button() == LeftButton)
+	if(pEvent->button() == Qt::LeftButton)
 	{
 		m_mouseDown = true;
 		m_prevPos = pEvent->pos();
@@ -78,7 +84,7 @@ void AirSpaceView::mousePressEvent(QMouseEvent *pEvent)
 
 void AirSpaceView::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-	if(pEvent->button() == LeftButton)
+	if(pEvent->button() == Qt::LeftButton)
 	{
 		m_mouseDown = false;
 	}
@@ -88,7 +94,7 @@ void AirSpaceView::mouseMoveEvent(QMouseEvent *pEvent)
 {
 	QPoint prevOff;
 
-	if(m_mouseDown && (pEvent->state() & LeftButton))
+        if(m_mouseDown && (pEvent->buttons() & Qt::LeftButton))
 	{
 		prevOff = m_offset;
 		calcOffset(pEvent->pos());
@@ -129,7 +135,7 @@ void AirSpaceView::drawAirspace()
 	enum {Border = 5, MinSize = 50};
 	QPainter paint(this);
 	QRect viewRect;
-	QPointArray pointList;
+	Q3PointArray pointList;
 	BoundBox bbox;
 	WayPoint::WayPointListType::const_iterator it;
 	AirSpace *pAirSpace;
@@ -183,7 +189,7 @@ void AirSpaceView::drawAirspace()
 		// offset, scale and color
 		paint.translate(m_offset.x() * paint.window().width() / viewRect.width(), m_offset.y() * paint.window().height() / viewRect.height());
 		paint.scale(m_scale, m_scale);
-		paint.setPen(colorGroup().foreground());
+                paint.setPen(palette().windowText().color());
 
 
 

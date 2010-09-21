@@ -22,12 +22,12 @@
 #define Glider_h
 
 #include <qstring.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 
 class Glider
 {
 	public:
-		typedef QValueVector<Glider> GliderListType;
+		typedef Q3ValueVector<Glider> GliderListType;
 		
 		Glider();
 		

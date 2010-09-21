@@ -23,7 +23,7 @@
 
 #include <qdatetime.h>
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include "WayPoint.h"
 #include "Glider.h"
 #include "Pilot.h"
@@ -31,7 +31,7 @@
 class Flight
 {
 	public:
-		typedef QValueList<Flight> FlightListType;
+		typedef Q3ValueList<Flight> FlightListType;
 		
 		Flight();
 		

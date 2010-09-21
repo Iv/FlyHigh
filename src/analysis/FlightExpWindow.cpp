@@ -20,33 +20,33 @@
 
 #include <qcursor.h>
 #include <qmenubar.h>
-#include <qpopupmenu.h>
 #include <qstringlist.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qwidget.h>
 #include "ContainerDef.h"
 #include "FlightExpWindow.h"
 #include "IDataBase.h"
 #include "IFlyHighRC.h"
-#include "Images.h"
 #include "ISql.h"
 
-FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, int wflags)
+FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	QTable *pTable = TableWindow::getTable();
-	QPopupMenu *pMenu;
+	Q3Table *pTable = TableWindow::getTable();
 
-	pMenu = new QPopupMenu(this);
-	menuBar()->insertItem("&File", pMenu);
-	pMenu->insertItem("&Export all...", this, SLOT(exportTable()));
-	TableWindow::setCaption("Flight experience");
-	TableWindow::setIcon(Images::pInstance()->getImage("document.xpm"));
+        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+
+        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+        pFileMenu->addAction(pExpAllAct);
+
+        TableWindow::setWindowTitle("Flight experience");
+        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
-	pTable->setSelectionMode(QTable::SingleRow);
+	pTable->setSelectionMode(Q3Table::SingleRow);
 	m_pDb = ISql::pInstance();
 	
 	// header
@@ -82,7 +82,7 @@ void FlightExpWindow::file_update()
 {
 	FlightsPerYearListType fpyList;
 	Pilot pilot;
-	QTable *pTable = TableWindow::getTable();
+	Q3Table *pTable = TableWindow::getTable();
 	QString str;
 	uint yearNr;
 	uint maxYearNr;
@@ -134,3 +134,5 @@ void FlightExpWindow::file_update()
 	
 	TableWindow::unsetCursor();
 }
+
+//#include "moc_FlightExpWindow.cxx"

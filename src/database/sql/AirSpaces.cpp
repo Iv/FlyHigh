@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include "Error.h"
 #include "AirSpaces.h"
 
-AirSpaces::AirSpaces(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+AirSpaces::AirSpaces(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
@@ -112,7 +112,7 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 					break;
 				}
 				
-				pos = strEdgePt.find(';');
+                                pos = strEdgePt.indexOf(';');
 				lon = strEdgePt.left(pos).toDouble();
 				lat = strEdgePt.right(strEdgePt.length() - pos - 1).toDouble();
 				
@@ -166,7 +166,7 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 					break;
 				}
 				
-				pos = strEdgePt.find(';');
+                                pos = strEdgePt.indexOf(';');
 				lon = strEdgePt.left(pos).toDouble();
 				lat = strEdgePt.right(strEdgePt.length() - pos - 1).toDouble();
 				

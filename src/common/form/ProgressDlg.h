@@ -23,7 +23,7 @@
 
 #include <qobject.h>
 
-class QProgressDialog;
+class Q3ProgressDialog;
 class QWidget;
 
 /* 
@@ -47,7 +47,7 @@ class ProgressDlg: public QObject
 		
 	private:
 		QWidget *m_pCreator;
-		QProgressDialog *m_pProgDlg;
+		Q3ProgressDialog *m_pProgDlg;
 		
 	private slots:
 		void progress(int percent);

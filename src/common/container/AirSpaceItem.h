@@ -20,13 +20,13 @@
 #ifndef AirSpaceItem_h
 #define AirSpaceItem_h
 
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 #include "WayPoint.h"
 
 class AirSpaceItem
 {
 	public:
-		typedef QValueVector<AirSpaceItem*> AirSpaceItemListType;
+		typedef Q3ValueVector<AirSpaceItem*> AirSpaceItemListType;
 		typedef enum ItemType{Point, Circle, Center, StartSegment, StopSegment}ItemType;
 
 		AirSpaceItem();

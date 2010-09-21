@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <qdatetime.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <stdlib.h>
@@ -31,8 +31,8 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime(0, 0)); // equal version_0_5_0
 
 
-Upgrade::Upgrade(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+Upgrade::Upgrade(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
@@ -40,7 +40,7 @@ void Upgrade::upgrade()
 {
 	if(dataBaseVersion() < DataBaseVersion_0_5_0)
 	{
-		ASSERT(false);
+		Q_ASSERT(false);       
 	}
 }
 
@@ -66,8 +66,7 @@ void Upgrade::setDataBaseVersion(const DataBaseVersion &tabVers)
 	QString version;
 	QSqlQuery query(db());
 	
-	version = tabVers.toString("yyyy-MM-dd hh:mm:ss").ascii();
-	sqls.sprintf("UPDATE LastModified SET Time = '%s' WHERE Name = 'DataBaseVersion'",
-				version.ascii());
+        version = tabVers.toString("yyyy-MM-dd hh:mm:ss");
+        sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = 'DataBaseVersion'").arg(version);
 	query.exec(sqls);
 }

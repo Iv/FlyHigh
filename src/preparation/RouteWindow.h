@@ -31,7 +31,7 @@ class RouteWindow : public TableWindow
 	Q_OBJECT
 	
 	public:
-		RouteWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
+          RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	protected:
 		bool periodicalUpdate();

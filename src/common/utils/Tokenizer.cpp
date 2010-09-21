@@ -42,7 +42,7 @@ bool Tokenizer::getNextToken(const QString &tlg, char delim, QString &token)
 	bool found;
 
 	token = "";
-	end = tlg.find(delim, m_pos);
+        end = tlg.indexOf(delim, m_pos);
 	found = (end > 0);
 
 	if(found)

@@ -21,9 +21,9 @@
 #ifndef FlightPointList_h
 #define FlightPointList_h
 
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qdatetime.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 #include "WayPoint.h"
 
 class FlightPointList
@@ -55,7 +55,7 @@ class FlightPointList
 		FlightPointType& at(int index);
 
 	private:
-		QValueVector<FlightPointType> m_flightPointList;
+		Q3ValueVector<FlightPointType> m_flightPointList;
 };
 
 #endif

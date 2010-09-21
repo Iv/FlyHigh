@@ -30,7 +30,7 @@ class QSqlDatabase;
 class Gliders: public DataBaseSub
 {
 	public:
-		Gliders(QSqlDatabase *pDB);
+		Gliders(QSqlDatabase DB);
 
 		bool add(Glider &glider);
 		bool delGlider(Glider &glider);

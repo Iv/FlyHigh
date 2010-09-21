@@ -22,20 +22,20 @@
 #define AcousticFrame_h
 
 #include "Frame.h"
-#include "AcousticFrame.h"
+#include "ui_AcousticFrame.h"
 
-class AcousticFrameImpl: public AcousticFrame, public Frame
+class AcousticFrameImpl: public QWidget, public Ui::AcousticFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		AcousticFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		AcousticFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~AcousticFrameImpl();
 
 		void update(QByteArray &arr);
 		void store(QByteArray &arr);
 
-	protected:
+	protected slots:
 		void sinkAcousticToggled(bool b);
 };
 

@@ -30,7 +30,7 @@ class ServicingWindow: public TableWindow
 	Q_OBJECT
 
 	public:
-		ServicingWindow(QWidget* parent, const char* name, int wflags);
+          ServicingWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 		
 	protected:
 		bool periodicalUpdate();

@@ -1,229 +1,303 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>MainFrame</class>
-<widget class="QMainWindow">
-    <property name="name">
-        <cstring>MainFrame</cstring>
+<ui version="4.0" >
+ <class>MainFrame</class>
+ <widget class="QMainWindow" name="MainFrame" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>585</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>21</width>
+    <height>91</height>
+   </size>
+  </property>
+  <property name="baseSize" >
+   <size>
+    <width>500</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>Flytec</string>
+  </property>
+  <widget class="QWidget" name="widget" >
+   <widget class="QToolBox" name="toolBox" >
+    <property name="geometry" >
+     <rect>
+      <x>0</x>
+      <y>6</y>
+      <width>141</width>
+      <height>380</height>
+     </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>585</width>
-            <height>500</height>
-        </rect>
+    <property name="frameShape" >
+     <enum>QFrame::NoFrame</enum>
     </property>
-    <property name="minimumSize">
-        <size>
-            <width>21</width>
-            <height>91</height>
-        </size>
+    <property name="frameShadow" >
+     <enum>QFrame::Plain</enum>
     </property>
-    <property name="baseSize">
-        <size>
-            <width>500</width>
-            <height>0</height>
-        </size>
+    <property name="currentIndex" >
+     <number>0</number>
     </property>
-    <property name="backgroundMode">
-        <enum>PaletteBackground</enum>
-    </property>
-    <property name="caption">
-        <string>Flytec</string>
-    </property>
-    <widget class="QToolBox">
-        <property name="name">
-            <cstring>toolBox</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>6</y>
-                <width>141</width>
-                <height>380</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Plain</enum>
-        </property>
-        <property name="currentIndex">
-            <number>0</number>
-        </property>
-        <widget class="QWidget">
-            <property name="name">
-                <cstring>page1</cstring>
-            </property>
-            <property name="backgroundMode">
-                <enum>PaletteBackground</enum>
-            </property>
-            <attribute name="label">
-                <string>Page 1</string>
-            </attribute>
-        </widget>
+    <widget class="QWidget" name="page1" >
+     <property name="geometry" >
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>141</width>
+       <height>350</height>
+      </rect>
+     </property>
+     <attribute name="label" >
+      <string>Page 1</string>
+     </attribute>
     </widget>
-    <widget class="QWidgetStack">
-        <property name="name">
-            <cstring>widgetStack</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>140</x>
-                <y>10</y>
-                <width>440</width>
-                <height>420</height>
-            </rect>
-        </property>
-        <property name="minimumSize">
-            <size>
-                <width>440</width>
-                <height>420</height>
-            </size>
-        </property>
-        <property name="maximumSize">
-            <size>
-                <width>440</width>
-                <height>420</height>
-            </size>
-        </property>
-        <widget class="QWidget">
-            <property name="name">
-                <cstring>WStackPage</cstring>
-            </property>
-            <attribute name="id">
-                <number>0</number>
-            </attribute>
-        </widget>
-    </widget>
-</widget>
-<menubar>
-    <property name="name">
-        <cstring>qt_dead_widget_MenuBar</cstring>
+   </widget>
+   <widget class="Q3WidgetStack" name="widgetStack" >
+    <property name="geometry" >
+     <rect>
+      <x>140</x>
+      <y>10</y>
+      <width>440</width>
+      <height>420</height>
+     </rect>
     </property>
-    <item text="File" name="File">
-        <action name="File_Open"/>
-        <action name="File_Save"/>
-        <separator/>
-        <action name="File_Read"/>
-        <action name="File_Write"/>
-        <separator/>
-        <action name="fileCloseAction"/>
-    </item>
-</menubar>
-<toolbars>
-</toolbars>
-<actions>
-    <action>
-        <property name="name">
-            <cstring>File_Read</cstring>
-        </property>
-        <property name="text">
-            <string>Read</string>
-        </property>
-        <property name="menuText">
-            <string>Read</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>File_Write</cstring>
-        </property>
-        <property name="text">
-            <string>Write</string>
-        </property>
-        <property name="menuText">
-            <string>Write</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>File_Open</cstring>
-        </property>
-        <property name="text">
-            <string>Open...</string>
-        </property>
-        <property name="menuText">
-            <string>Open...</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>File_Save</cstring>
-        </property>
-        <property name="text">
-            <string>Save...</string>
-        </property>
-        <property name="menuText">
-            <string>Save...</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileCloseAction</cstring>
-        </property>
-        <property name="text">
-            <string>Close</string>
-        </property>
-        <property name="menuText">
-            <string>Close</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>Action</cstring>
-        </property>
-        <property name="text">
-            <string>Unnamed</string>
-        </property>
-    </action>
-</actions>
-<connections>
-    <connection>
-        <sender>toolBox</sender>
-        <signal>currentChanged(int)</signal>
-        <receiver>widgetStack</receiver>
-        <slot>raiseWidget(int)</slot>
-    </connection>
-    <connection>
-        <sender>File_Read</sender>
-        <signal>activated()</signal>
-        <receiver>MainFrame</receiver>
-        <slot>read()</slot>
-    </connection>
-    <connection>
-        <sender>File_Save</sender>
-        <signal>activated()</signal>
-        <receiver>MainFrame</receiver>
-        <slot>save()</slot>
-    </connection>
-    <connection>
-        <sender>File_Open</sender>
-        <signal>activated()</signal>
-        <receiver>MainFrame</receiver>
-        <slot>open()</slot>
-    </connection>
-    <connection>
-        <sender>fileCloseAction</sender>
-        <signal>activated()</signal>
-        <receiver>MainFrame</receiver>
-        <slot>close()</slot>
-    </connection>
-    <connection>
-        <sender>File_Write</sender>
-        <signal>activated()</signal>
-        <receiver>MainFrame</receiver>
-        <slot>write()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot>addPage( QWidget * pFrame, int * pPos )</slot>
-    <slot>toolBoxChanged( int i )</slot>
-    <slot>read()</slot>
-    <slot>save()</slot>
-    <slot>open()</slot>
-    <slot>write()</slot>
-</slots>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+    <property name="minimumSize" >
+     <size>
+      <width>440</width>
+      <height>420</height>
+     </size>
+    </property>
+    <property name="maximumSize" >
+     <size>
+      <width>440</width>
+      <height>420</height>
+     </size>
+    </property>
+    <widget class="QWidget" name="WStackPage" >
+     <property name="geometry" >
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>440</width>
+       <height>420</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="qt_dead_widget_MenuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>585</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="File" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="File_Open" />
+    <addaction name="File_Save" />
+    <addaction name="separator" />
+    <addaction name="File_Read" />
+    <addaction name="File_Write" />
+    <addaction name="separator" />
+    <addaction name="fileCloseAction" />
+   </widget>
+   <addaction name="File" />
+  </widget>
+  <action name="File_Read" >
+   <property name="text" >
+    <string>Read</string>
+   </property>
+   <property name="iconText" >
+    <string>Read</string>
+   </property>
+   <property name="name" stdset="0" >
+    <cstring>File_Read</cstring>
+   </property>
+  </action>
+  <action name="File_Write" >
+   <property name="text" >
+    <string>Write</string>
+   </property>
+   <property name="iconText" >
+    <string>Write</string>
+   </property>
+   <property name="name" stdset="0" >
+    <cstring>File_Write</cstring>
+   </property>
+  </action>
+  <action name="File_Open" >
+   <property name="text" >
+    <string>Open...</string>
+   </property>
+   <property name="iconText" >
+    <string>Open...</string>
+   </property>
+   <property name="name" stdset="0" >
+    <cstring>File_Open</cstring>
+   </property>
+  </action>
+  <action name="File_Save" >
+   <property name="text" >
+    <string>Save...</string>
+   </property>
+   <property name="iconText" >
+    <string>Save...</string>
+   </property>
+   <property name="name" stdset="0" >
+    <cstring>File_Save</cstring>
+   </property>
+  </action>
+  <action name="fileCloseAction" >
+   <property name="text" >
+    <string>Close</string>
+   </property>
+   <property name="iconText" >
+    <string>Close</string>
+   </property>
+   <property name="name" stdset="0" >
+    <cstring>fileCloseAction</cstring>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3WidgetStack</class>
+   <extends>Q3WidgetStack</extends>
+   <header>q3widgetstack.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>toolBox</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>widgetStack</receiver>
+   <slot>raiseWidget(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Read</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>read()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Save</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>save()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Open</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>open()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileCloseAction</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Write</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>write()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRead</sender>
+   <signal>activated()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>read()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>292</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>read()</slot>
+  <slot>save()</slot>
+  <slot>open()</slot>
+  <slot>write()</slot>
+ </slots>
+</ui>

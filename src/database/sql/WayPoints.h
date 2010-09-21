@@ -30,7 +30,7 @@ class QSqlDatabase;
 class WayPoints: public DataBaseSub
 {
 	public:
-		WayPoints(QSqlDatabase *pDB);
+		WayPoints(QSqlDatabase DB);
 
 		bool add(WayPoint &wp);
 		bool delWayPoint(WayPoint &wp);

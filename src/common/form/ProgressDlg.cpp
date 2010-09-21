@@ -20,8 +20,9 @@
  
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include "ProgressDlg.h"
+#include <QtGui/qapplication.h>
 
 ProgressDlg::ProgressDlg(QWidget *pCreator)
 {
@@ -38,7 +39,7 @@ void ProgressDlg::beginProgress(const QString &label, QObject *pProgObj)
 {
 	endProgress();
 	
-	m_pProgDlg = new QProgressDialog(label, "Cancel", 100, m_pCreator, "progress", true);
+	m_pProgDlg = new Q3ProgressDialog(label, "Cancel", 100, m_pCreator, "progress", true);
 	
 	connect(pProgObj, SIGNAL(progress(int)), this, SLOT(progress(int)));
 	connect(m_pProgDlg, SIGNAL(canceled()), pProgObj, SLOT(cancel()));
@@ -59,5 +60,5 @@ void ProgressDlg::endProgress()
 void ProgressDlg::progress(int percent)
 {
 	m_pProgDlg->setProgress(percent);
-	QApplication::eventLoop()->processEvents(QEventLoop::AllEvents);
+	QApplication::processEvents(QEventLoop::AllEvents);
 }

@@ -22,7 +22,7 @@
 #define Error_h
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 class Error
 {

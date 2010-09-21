@@ -1,190 +1,179 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>DisplayFrame6015</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>DisplayFrame6015</cstring>
-    </property>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" stdsetdef="1">
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>DisplayFrame6015</class>
+  <widget class="QWidget" name="DisplayFrame6015">
     <property name="enabled">
-        <bool>true</bool>
+      <bool>true</bool>
     </property>
     <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>497</width>
+        <height>514</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Display</string>
+    </property>
+    <widget class="QLabel" name="textLabelModel">
+      <property name="geometry">
         <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>497</width>
-            <height>514</height>
+          <x>30</x>
+          <y>30</y>
+          <width>108</width>
+          <height>20</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Display</string>
-    </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>30</y>
-                <width>108</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </property>
+      <property name="text">
+        <string>Alt Display</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_AltDisp">
+      <property name="geometry">
+        <rect>
+          <x>190</x>
+          <y>24</y>
+          <width>160</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
         <property name="text">
-            <string>Alt Display</string>
+          <string>Alt 1</string>
         </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>Alt 1</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Alt 2</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_AltDisp</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>24</y>
-                <width>160</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>80</y>
-                <width>108</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Line 4 Display</string>
+          <string>Alt 2</string>
         </property>
+      </item>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel_2_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>130</y>
-                <width>108</width>
-                <height>20</height>
-            </rect>
-        </property>
+    <widget class="QLabel" name="textLabelModel_2">
+      <property name="geometry">
+        <rect>
+          <x>30</x>
+          <y>80</y>
+          <width>108</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Line 4 Display</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabelModel_2_2">
+      <property name="geometry">
+        <rect>
+          <x>30</x>
+          <y>130</y>
+          <width>108</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Alt 2 Mode</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabelModel_2_2_2">
+      <property name="geometry">
+        <rect>
+          <x>30</x>
+          <y>180</y>
+          <width>108</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Alt 3 Mode</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Line4">
+      <property name="geometry">
+        <rect>
+          <x>190</x>
+          <y>75</y>
+          <width>160</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
         <property name="text">
-            <string>Alt 2 Mode</string>
+          <string>Alt 3</string>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabelModel_2_2_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>180</y>
-                <width>108</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Alt 3 Mode</string>
+          <string>Time</string>
         </property>
+      </item>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>Alt 3</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Time</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Line4</cstring>
+    <widget class="QComboBox" name="comboBox_Alt2Mode">
+      <property name="geometry">
+        <rect>
+          <x>189</x>
+          <y>125</y>
+          <width>160</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>GPS</string>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>75</y>
-                <width>160</width>
-                <height>28</height>
-            </rect>
+      </item>
+      <item>
+        <property name="text">
+          <string>Flight Level</string>
         </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>Alt 1 other unit</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>Alt2 relative</string>
+        </property>
+      </item>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>GPS</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Flight Level</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Alt 1 other unit</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Alt2 relative</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Alt2Mode</cstring>
+    <widget class="QComboBox" name="comboBox_Alt3Mode">
+      <property name="geometry">
+        <rect>
+          <x>190</x>
+          <y>175</y>
+          <width>160</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>Alt 3</string>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>189</x>
-                <y>125</y>
-                <width>160</width>
-                <height>28</height>
-            </rect>
+      </item>
+      <item>
+        <property name="text">
+          <string>QNH</string>
         </property>
+      </item>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>Alt 3</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>QNH</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Alt3Mode</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>175</y>
-                <width>160</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-</widget>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+</ui>

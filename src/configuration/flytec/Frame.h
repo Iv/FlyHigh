@@ -20,7 +20,7 @@
 #ifndef  Frame_h
 #define Frame_h
 
-#include <qcstring.h>
+#include <q3cstring.h>
 
 class  Frame
 {

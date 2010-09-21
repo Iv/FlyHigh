@@ -29,7 +29,7 @@ class QSqlDatabase;
 class Servicings: public DataBaseSub
 {
 	public:
-		Servicings(QSqlDatabase *pDB);
+		Servicings(QSqlDatabase DB);
 		
 		bool add(Servicing &servicing);
 		bool delServicing(Servicing &servicing);

@@ -21,7 +21,7 @@
 #define FlytecDevice_h
 
 #include <stdlib.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include "AirSpace.h"
 #include "IGPSDevice.h"
 #include "Flight.h"

@@ -22,11 +22,12 @@
 #define _MainWindow_h_
 
 #include <qmainwindow.h>
+//Added by qt3to4:
+#include <QCloseEvent>
 
-class QPopupMenu;
-class QWorkspace;
+class QMdiArea;
+class QSignalMapper;
 class MDIWindow;
-
 class TrackWindow;
 
 class MainWindow: public QMainWindow
@@ -55,22 +56,27 @@ class MainWindow: public QMainWindow
 		void windows_tile_horizontally();
 		void windows_activated(int id);
 		void settings_port();
-		void settings_device(int id);
+		void settings_device();
 		void settings_configure_device();
 		void settings_pilotInfo();
 		void help_about();
 		void aboutToShow();
+		void setActiveSubWindow(QWidget *window);
 		
 	private:
-		QWorkspace* m_pWorkSpace;
-		QPopupMenu* m_pWindowsMenu;
-		QPopupMenu* m_pDevicesMenu;
-		QPopupMenu* m_pSpecialMenu;
+		QMdiArea* m_pMdiArea;
+		QSignalMapper* m_pWinMapper;
+		QMenu* m_pWindowsMenu;
+		QMenu* m_pDevicesMenu;
 		MDIWindow* m_pActiveWin;
-		int m_specialMenuId;
+		QAction* m_pCascade;
+		QAction* m_pTile;
+		QAction* m_pTileHor;
+		QAction* m_pWinSeparator;
 
 		void showWindow(QMainWindow *pWin);
-		void setCurrentDevice(int id);
+
+		MDIWindow* activeMdiChild();
 };
 
 #endif

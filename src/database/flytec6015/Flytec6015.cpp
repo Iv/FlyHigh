@@ -101,12 +101,12 @@ bool Flytec6015::loadIGCFile(Flight &flight)
 	bool success = false;
 	int prog = 0;
 
-	buff.setBuffer(track);
+	buff.setBuffer(&track);
 	m_cancel = false;
 
 	if(m_protocol->trackReq(flight.number()))
 	{
-		buff.open(IO_WriteOnly);
+		buff.open(QIODevice::WriteOnly);
 	
 		while(m_protocol->trackRec(line))
 		{
@@ -118,7 +118,7 @@ bool Flytec6015::loadIGCFile(Flight &flight)
 				return false;
 			}
 
-			buff.writeBlock(line.ascii(), line.length());
+                        buff.write(line.toAscii(), line.length());
 			success = true;
 		}
 

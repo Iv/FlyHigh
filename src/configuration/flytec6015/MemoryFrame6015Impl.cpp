@@ -23,9 +23,10 @@
 #include "Flytec6015.h"
 #include "MemoryFrame6015Impl.h"
 
-MemoryFrame6015Impl::MemoryFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: MemoryFrame6015(parent,name,fl)
+MemoryFrame6015Impl::MemoryFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 MemoryFrame6015Impl::~MemoryFrame6015Impl()
@@ -45,7 +46,7 @@ void MemoryFrame6015Impl::update()
 
 	// flight end detection
 	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
-	comboBox_FlightEnd->setCurrentItem((uiValue & MASK_FLIGHT_END) >> POS_FLIGHT_END);
+        comboBox_FlightEnd->setCurrentIndex((uiValue & MASK_FLIGHT_END) >> POS_FLIGHT_END);
 }
 
 void MemoryFrame6015Impl::store()
@@ -62,9 +63,9 @@ void MemoryFrame6015Impl::store()
 	// flight end detection
 	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
 	uiValue &= ~MASK_FLIGHT_END;
-	uiValue |= (comboBox_FlightEnd->currentItem() << POS_FLIGHT_END);
+        uiValue |= (comboBox_FlightEnd->currentIndex() << POS_FLIGHT_END);
 	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
 }
 
-#include "MemoryFrame6015Impl.moc"
+#include "moc_MemoryFrame6015Impl.cxx"
 

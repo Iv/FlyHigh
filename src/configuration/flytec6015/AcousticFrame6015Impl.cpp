@@ -26,9 +26,10 @@
 #include "AcousticFrame6015Impl.h"
 #include "Flytec6015.h"
 
-AcousticFrame6015Impl::AcousticFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: AcousticFrame6015(parent,name,fl)
+AcousticFrame6015Impl::AcousticFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 AcousticFrame6015Impl::~AcousticFrame6015Impl()
@@ -52,7 +53,7 @@ void AcousticFrame6015Impl::update()
 	checkBox_SinkAlarm->setChecked(uiValue & MASK_SINK_ALARM);
 	checkBox_RiseAcoustic->setChecked(uiValue & MASK_RISE_ACC);
 	checkBox_StallAlarm->setChecked(uiValue & MASK_STALL_ALARM);
-	comboBox_RisePitch->setCurrentItem((uiValue & MASK_RISE_PITCH) >> POS_RISE_PITCH);
+        comboBox_RisePitch->setCurrentIndex((uiValue & MASK_RISE_PITCH) >> POS_RISE_PITCH);
 
 	// Frequency gain
 	uiValue = pDev->memoryRead(MemFa, FREQ_GAIN, UInt8).toUInt();
@@ -103,7 +104,7 @@ void AcousticFrame6015Impl::store()
 	uiValue = (uiValue & ~MASK_STALL_ALARM) | (-checkBox_StallAlarm->isChecked() & MASK_STALL_ALARM);
 
 	uiValue &= ~MASK_RISE_PITCH;
-	uiValue |= (comboBox_RisePitch->currentItem() << POS_RISE_PITCH);
+        uiValue |= (comboBox_RisePitch->currentIndex() << POS_RISE_PITCH);
 
 	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
 
@@ -137,5 +138,5 @@ pDev->memoryWrite(MemFa, AUDIO_SINK, Int16, iValue);
 }
 
 
-#include "AcousticFrame6015Impl.moc"
+#include "moc_AcousticFrame6015Impl.cxx"
 

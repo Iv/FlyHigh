@@ -21,14 +21,15 @@
 
 #include "FlyCalcFrameImpl.h"
 
-FlyCalcFrameImpl::FlyCalcFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: FlyCalcFrame(parent,name,fl)
+FlyCalcFrameImpl::FlyCalcFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 FlyCalcFrameImpl::~FlyCalcFrameImpl()
 {
 }
 
-#include "FlyCalcFrameImpl.moc"
+#include "moc_FlyCalcFrameImpl.cxx"
 

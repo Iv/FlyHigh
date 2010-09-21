@@ -22,10 +22,10 @@
 #define WayPointFormImpl_h
 
 #include <qstring.h>
-#include "WayPointForm.h"
+#include "ui_WayPointForm.h"
 #include "WayPoint.h"
 
-class WayPointFormImpl: public WayPointForm
+class WayPointFormImpl: public QDialog, public Ui::WayPointForm
 {
 	Q_OBJECT
 

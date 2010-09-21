@@ -21,7 +21,8 @@
 #define ISql_h
 
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
+#include <qsqldatabase.h>
 #include "AirSpace.h"
 #include "ContainerDef.h"
 #include "IDataBase.h"
@@ -32,7 +33,6 @@
 #include "Pilot.h"
 #include "Servicing.h"
 
-class QSqlDatabase;
 //class AirSpaces;
 class WayPoints;
 class Gliders;
@@ -118,7 +118,7 @@ class ISql: public IDataBase
 		Routes* m_pRoutes;
 		Servicings* m_pServicings;
 		Pilots* m_pPilots;
-		QSqlDatabase* m_pDefaultDB;
+		QSqlDatabase m_DefaultDB;
 
 		ISql();
 

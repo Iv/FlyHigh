@@ -21,14 +21,14 @@
 #ifndef FlightFormImpl_h
 #define FlightFormImpl_h
 
-#include <qthread.h>
-#include "FlightForm.h"
+//#include <qthread.h>
+#include "ui_FlightForm.h"
 #include "Glider.h"
 #include "WayPoint.h"
 
 class Flight;
 
-class FlightFormImpl : public FlightForm
+class FlightFormImpl : public QDialog, public Ui::FlightForm
 {
 	Q_OBJECT
 

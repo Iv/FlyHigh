@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>document.xpm</file>
+     <file>flyhigh.png</file>
+     <file>ft_5020.png</file>
+     <file>polare.png</file>
+ </qresource>
+ </RCC>

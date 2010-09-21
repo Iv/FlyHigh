@@ -21,16 +21,16 @@
 #ifndef DeviceFrameImpl_h
 #define DeviceFrameImpl_h
 
-#include "DeviceFrame.h"
+#include "ui_DeviceFrame.h"
 #include "Frame.h"
 #include "Glider.h"
 
-class DeviceFrameImpl: public DeviceFrame, public Frame
+class DeviceFrameImpl: public QWidget, public Ui::DeviceFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~DeviceFrameImpl();
 		
 		void update(QByteArray &arr);

@@ -20,8 +20,10 @@
 #ifndef FlightWindow_h
 #define FlightWindow_h
 
-#include <qprocess.h>
-#include <qprogressdialog.h>
+#include <q3process.h>
+#include <q3progressdialog.h>
+//Added by qt3to4:
+#include <QTimerEvent>
 #include <TableWindow.h>
 #include "FlightPointList.h"
 #include "IDataBase.h"
@@ -35,7 +37,7 @@ class FlightWindow : public TableWindow
 {
 	Q_OBJECT
 	public:
-		FlightWindow(QWidget* parent, const char* name, int wflags, IDataBase::SourceType src);
+          FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 	
 	protected:
 		bool periodicalUpdate();
@@ -61,7 +63,7 @@ class FlightWindow : public TableWindow
 		IDataBase *m_pDb;
 		QString m_fileName;
 		GnuPlot m_plotter;
-		QProcess m_gpligc;
+		Q3Process m_gpligc;
 		QTimer *m_pUpdateTimer;
 		Flight::FlightListType m_flightList;
 

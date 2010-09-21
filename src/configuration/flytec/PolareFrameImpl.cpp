@@ -25,21 +25,21 @@
 #include <qpixmap.h>
 
 #include "PolareFrameImpl.h"
-#include "Images.h"
 extern "C"
 {
 	#include "flytec_al.h"
 }
 
-PolareFrameImpl::PolareFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: PolareFrame(parent,name,fl)
+PolareFrameImpl::PolareFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+        setupUi(this);
 	// these are not supportet by 5020
-	tabWidget->page(1)->setEnabled(false);
+        tabWidget->widget(1)->setEnabled(false);
 	spinBox_Altitude1->setEnabled(false);
 
-	pixmapLabel_Polare1->setPixmap(Images::pInstance()->getImage("polare.png"));
-	pixmapLabel_Polare2->setPixmap(Images::pInstance()->getImage("polare.png"));
+        pixmapLabel_Polare1->setPixmap(QPixmap(":/polare.png"));
+        pixmapLabel_Polare2->setPixmap(QPixmap(":/polare.png"));
 }
 
 PolareFrameImpl::~PolareFrameImpl()
@@ -74,5 +74,5 @@ void PolareFrameImpl::store(QByteArray &arr)
 */
 }
 
-#include "PolareFrameImpl.moc"
+#include "moc_PolareFrameImpl.cxx"
 

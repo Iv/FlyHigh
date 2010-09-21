@@ -22,11 +22,11 @@
 #include <qmessagebox.h>
 #include <qtoolbox.h>
 #include <qwidget.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 #include <qstatusbar.h>
-#include <qprogressbar.h>
+#include <q3progressbar.h>
 #include <qfile.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 
 #include "CorrFrame6015Impl.h"
 #include "VarioFrame6015Impl.h"
@@ -40,12 +40,13 @@
 #include "ProgressDlg.h"
 #include "UnitFrame6015Impl.h"
 #include "Frame6015.h"
-#include "MainFrame6015Impl.h"
 #include "IGPSDevice.h"
+#include "MainFrame6015Impl.h"
 
-MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-	:MainFrame6015(parent,name,fl)
+MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+:QMainWindow(parent)
 {
+  setupUi(this);
 	QWidget *pWidget;
 	VelocityFrame6015Impl *pVelocityFrame6015;
 	AcousticFrame6015Impl *pAcousticFrame6015;
@@ -61,8 +62,8 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	m_fileName = "";
 	
 	// make a clean table
-	pWidget = toolBox->item(0);
-	toolBox->removeItem(pWidget);
+        pWidget = toolBox->widget(0);
+        toolBox->removeItem(toolBox->indexOf(pWidget));
 	pWidget = widgetStack->widget(0);
 	widgetStack->removeWidget(pWidget);
 	
@@ -74,7 +75,7 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	
 	// Vario
 	pVarioFrame6015 = new VarioFrame6015Impl(widgetStack);
-	addPage(pVarioFrame6015, &pos);
+	addPage((QWidget*)pVarioFrame6015, &pos);
 	m_frameList.push_back(pVarioFrame6015);
 
 	// Acoustic
@@ -84,7 +85,7 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	
 	// Velocity
 	pVelocityFrame6015 = new VelocityFrame6015Impl(widgetStack);
-	addPage(pVelocityFrame6015, &pos);
+        addPage((QWidget*)pVelocityFrame6015, &pos);
 	m_frameList.push_back(pVelocityFrame6015);
 	
 	// GPS
@@ -99,7 +100,7 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	
 	// Memory
 	pMemoryFrame6015 = new MemoryFrame6015Impl(widgetStack);
-	addPage(pMemoryFrame6015, &pos);
+        addPage((QWidget*)pMemoryFrame6015, &pos);
 	m_frameList.push_back(pMemoryFrame6015);
 	
 	// Display
@@ -109,7 +110,7 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, WFlags f
 	
 	// Unit
 	pUnitFrame6015 = new UnitFrame6015Impl(widgetStack);
-	addPage(pUnitFrame6015, &pos);
+        addPage((QWidget*)pUnitFrame6015, &pos);
 	m_frameList.push_back(pUnitFrame6015);
 	
 /*	m_pProgressBar = new QProgressBar(statusBar());
@@ -124,9 +125,8 @@ void MainFrame6015Impl::addPage( QWidget * pFrame6015, int * pPos)
 	
 	widgetStack->addWidget(pFrame6015, *pPos);
 	(*pPos)++;
-	pWidget = new QWidget(toolBox,  pFrame6015->caption());
-	pWidget->setBackgroundMode(QWidget::PaletteBackground);
-	toolBox->addItem(pWidget,  pFrame6015->caption());
+        pWidget = new QWidget(toolBox);
+        toolBox->addItem(pWidget,  pFrame6015->windowTitle());
 }
 
 void MainFrame6015Impl::read()
@@ -173,4 +173,4 @@ void MainFrame6015Impl::updateFrames()
 	}
 }
 
-#include "MainFrame6015Impl.moc"
+#include "moc_MainFrame6015Impl.cxx"

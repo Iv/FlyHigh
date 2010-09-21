@@ -23,9 +23,10 @@
 #include "Flytec6015.h"
 #include "VelocityFrame6015Impl.h"
 
-VelocityFrame6015Impl::VelocityFrame6015Impl(QWidget* parent, const char* name, WFlags fl)
-: VelocityFrame6015(parent,name,fl)
+VelocityFrame6015Impl::VelocityFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 }
 
 VelocityFrame6015Impl::~VelocityFrame6015Impl()
@@ -64,5 +65,5 @@ void VelocityFrame6015Impl::store()
 	pDev->memoryWrite(MemFa, STALL_SPEED, UInt16, uiValue);
 }
 
-#include "VelocityFrame6015Impl.moc"
+#include "moc_VelocityFrame6015Impl.cxx"
 

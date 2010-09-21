@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <qlineedit.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
 #include <qstring.h>
@@ -29,8 +29,9 @@
 #include "WayPoint.h"
 
 RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRoute)
-	:RouteForm(parent, caption, true)
+	:QDialog(parent)
 {
+        setupUi(this);
 	WayPoint *pWp;
 	QString fullName;
 	uint nItems;
@@ -40,7 +41,7 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 	m_pRoute = pRoute;
 	m_readOnly = false;
 	
-	RouteForm::setCaption(caption);
+        setWindowTitle(caption);
 
 	// database waypoints
 	ISql::pInstance()->wayPointList(m_wpDbList);
@@ -187,4 +188,4 @@ void RouteFormImpl::showWpRoute()
 }
 
 
-#include "RouteFormImpl.moc"
+#include "moc_RouteFormImpl.cxx"

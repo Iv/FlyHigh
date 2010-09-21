@@ -30,7 +30,7 @@ class GliderWindow: public TableWindow
 {
 	Q_OBJECT
 	public:
-		GliderWindow(QWidget* parent, const char* name, int wflags);
+          GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 	
 	protected:
 		bool periodicalUpdate();

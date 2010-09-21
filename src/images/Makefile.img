@@ -1,7 +1,0 @@
-IMAGES = ft_5020.png \
-	polare.png \
-	document.xpm \
-	flyhigh.png
-
-all:
-	uic -embed images $(IMAGES) -o ImgCollection.cpp

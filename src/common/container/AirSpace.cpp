@@ -45,7 +45,7 @@ void AirSpace::setName(const QString &name)
 	QString locName = name;
 	
 	locName.remove('#');
-	m_name = locName.stripWhiteSpace();
+	m_name = locName.trimmed();
 }
 
 const QString& AirSpace::high()
@@ -264,7 +264,7 @@ bool AirSpace::isInside(const WayPoint &wp) const
 		}
   }
 
-	return (cross) && (wp.altitude() >= m_low) && (wp.altitude() <= m_high);
+	return (cross) && (wp.altitude() >= m_low.toInt()) && (wp.altitude() <= m_high.toInt());
 }
 
 bool AirSpace::operator<(const AirSpace &airspace)

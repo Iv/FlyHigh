@@ -18,16 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
+//Added by qt3to4:
+#include <QSqlQuery>
 #include "ISql.h"
 #include "Error.h"
 #include "Routes.h"
 #include "WayPoint.h"
 #include "WayPoints.h"
 
-Routes::Routes(QSqlDatabase *pDB)
-	:DataBaseSub(pDB)
+Routes::Routes(QSqlDatabase DB)
+	:DataBaseSub(DB)
 {
 }
 
@@ -41,7 +43,7 @@ bool Routes::add(Route &route)
 	bool success;
 	
 	// insert route name
-	sqls.sprintf("INSERT INTO Routes(Id, Name) VALUES(NULL, '%s');", route.name().ascii());
+        sqls = QString("INSERT INTO Routes(Id, Name) VALUES(NULL, '%1');").arg(route.name());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
@@ -147,7 +149,7 @@ bool Routes::setId(Route &route)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM Routes WHERE Name = '%s';", route.name().ascii());
+        sqls = QString("SELECT * FROM Routes WHERE Name = '%1';").arg(route.name());
 	success = (query.exec(sqls) && query.first());
 
 	if(success)

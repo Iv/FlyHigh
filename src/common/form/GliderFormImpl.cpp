@@ -18,13 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qlineedit.h>
+//#include <qlineedit.h>
 #include "GliderFormImpl.h"
 #include "Glider.h"
 
 GliderFormImpl::GliderFormImpl(QWidget* parent, const QString &caption, Glider *pGlider)
-	:GliderForm(parent, caption, true)
+: QDialog(parent)
 {
+        setupUi(this);
+        setWindowTitle(caption);
 	Q_CHECK_PTR(pGlider);
 	m_pGlider = pGlider;
 }
@@ -38,4 +40,4 @@ void GliderFormImpl::accept()
   QDialog::accept();
 }
 
-#include "GliderFormImpl.moc"
+#include "moc_GliderFormImpl.cxx"

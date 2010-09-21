@@ -22,14 +22,14 @@
 #define SMSFRAMEIMPL_H
 
 #include "Frame.h"
-#include "SmsFrame.h"
+#include "ui_SmsFrame.h"
 
-class SmsFrameImpl: public SmsFrame, public Frame
+class SmsFrameImpl: public QWidget, public Ui::SmsFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		SmsFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+		SmsFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
 		~SmsFrameImpl();
 
 		void update(QByteArray &arr);

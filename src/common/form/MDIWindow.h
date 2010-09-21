@@ -8,9 +8,11 @@
 #define _MDIWindow_h_
 
 #include <qmainwindow.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
-class QPopupMenu;
-class QProgressDialog;
+class Q3PopupMenu;
+class Q3ProgressDialog;
 class QWidget;
 class QString;
 class QTimer;
@@ -19,7 +21,7 @@ class MDIWindow: public QMainWindow
 {
 	Q_OBJECT
 	public:
-		MDIWindow(QWidget* parent, const char* name, int wflags);
+		MDIWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 		
 	signals:
 		void message(const QString&, int);

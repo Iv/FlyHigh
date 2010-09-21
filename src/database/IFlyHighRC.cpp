@@ -20,7 +20,7 @@
 
 #include <qdir.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <stdlib.h>
 #include "IFlyHighRC.h"
 
@@ -52,7 +52,7 @@ IFlyHighRC* IFlyHighRC::pInstance()
 
 IFlyHighRC::IFlyHighRC()
 {
-	m_deviceNameList = "Flytec5020";
+	m_deviceNameList += "Flytec5020";
 	m_deviceNameList += "Flytec6015";
 //	m_deviceNameList += "Garmin";
 
@@ -65,12 +65,12 @@ IFlyHighRC::IFlyHighRC()
 	m_deviceLine = "/dev/ttyS0";
 	m_deviceSpeed = 0;
 	m_utcOffset = 0;
-	m_lastDir = QDir::homeDirPath();
+	m_lastDir = QDir::homePath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.6.0";
+	m_versionInfo = "FlyHigh Version 0.7.0";
 
-	m_rcFile.setName(QDir::homeDirPath() + "/.flyhighrc");
+        m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
 }
 
 uint IFlyHighRC::deviceName()
@@ -175,12 +175,12 @@ void IFlyHighRC::loadRC()
 	QBuffer buff;
 	char line[MAX_LINE_SIZE];
 	
-	if(m_rcFile.open(IO_ReadOnly))
+	if(m_rcFile.open(QIODevice::ReadOnly))
 	{
 		rcFileData = m_rcFile.readAll();
 		m_rcFile.close();
-		buff.setBuffer(rcFileData);
-		buff.open(IO_ReadOnly);
+		buff.setBuffer(&rcFileData);
+		buff.open(QIODevice::ReadOnly);
 		
 		while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 		{
@@ -207,9 +207,9 @@ void IFlyHighRC::loadRC()
 
 void IFlyHighRC::saveRC()
 {
-	if(m_rcFile.open(IO_WriteOnly | IO_Truncate))
+	if(m_rcFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		QTextStream stream(&m_rcFile);
+		Q3TextStream stream(&m_rcFile);
 		
 		saveSerialLine(stream);
 		saveDateTime(stream);
@@ -230,17 +230,17 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-		if(DeviceLineVar.find(var) == 0)
+                if(DeviceLineVar.indexOf(var) == 0)
 		{
 			setDeviceLine(val);
 		}
-		else if(DeviceSpeedVar.find(var) == 0)
+                else if(DeviceSpeedVar.indexOf(var) == 0)
 		{
-			setDeviceSpeed(m_deviceSpeedList.findIndex(val));
+                        setDeviceSpeed(m_deviceSpeedList.indexOf(val));
 		}
-		else if(DeviceNameVar.find(var) == 0)
+                else if(DeviceNameVar.indexOf(var) == 0)
 		{
-			setDeviceName(m_deviceNameList.findIndex(val));
+                        setDeviceName(m_deviceNameList.indexOf(val));
 		}
 		else
 		{
@@ -249,7 +249,7 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveSerialLine(QTextStream &stream)
+void IFlyHighRC::saveSerialLine(Q3TextStream &stream)
 {
 	QString str;
 	
@@ -272,9 +272,9 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-		if(DateTimeUtcVar.find(var) == 0)
+                if(DateTimeUtcVar.indexOf(var) == 0)
 		{
-			setUtcOffset(atoi(val));
+                        setUtcOffset(val.toInt());
 		}
 		else
 		{
@@ -283,7 +283,7 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDateTime(QTextStream &stream)
+void IFlyHighRC::saveDateTime(Q3TextStream &stream)
 {
 	QString str;
 	
@@ -303,7 +303,7 @@ void IFlyHighRC::parseDirectory(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-		if(DirectoryLastVar.find(var) == 0)
+                if(DirectoryLastVar.indexOf(var) == 0)
 		{
 			m_lastDir = val;
 		}
@@ -314,7 +314,7 @@ void IFlyHighRC::parseDirectory(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDirectory(QTextStream &stream)
+void IFlyHighRC::saveDirectory(Q3TextStream &stream)
 {
 	stream << DirectoryTag;
 	stream << DirectoryLastVar << m_lastDir << "\n";
@@ -331,9 +331,9 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-		if(PilotId.find(var) == 0)
+                if(PilotId.indexOf(var) == 0)
 		{
-			setPilotId(atoi(val));
+                        setPilotId(val.toInt());
 		}
 		else
 		{
@@ -342,7 +342,7 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::savePilot(QTextStream &stream)
+void IFlyHighRC::savePilot(Q3TextStream &stream)
 {
 	stream << PilotTag;
 	stream << PilotId << m_pilotId << "\n";
@@ -355,8 +355,8 @@ void IFlyHighRC::parseValue(char *line, QString &var, QString &val)
 	int valEnd;
 	int varEnd;
 	
-	varEnd = str.find('=');
-	valEnd = str.find('\n');
+        varEnd = str.indexOf('=');
+        valEnd = str.indexOf('\n');
 	var = str.left(varEnd);
 	val = str.mid(varEnd + 1, valEnd -  varEnd - 1);
 }

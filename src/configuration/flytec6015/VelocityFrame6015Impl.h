@@ -22,14 +22,14 @@
 #define VelocityFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "VelocityFrame6015.h"
+#include "ui_VelocityFrame6015.h"
 
-class VelocityFrame6015Impl: public VelocityFrame6015, public Frame6015
+class VelocityFrame6015Impl: public QWidget, public Ui::VelocityFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		VelocityFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		VelocityFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~VelocityFrame6015Impl();
 

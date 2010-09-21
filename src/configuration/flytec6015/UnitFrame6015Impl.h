@@ -22,14 +22,14 @@
 #define UnitFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "UnitFrame6015.h"
+#include "ui_UnitFrame6015.h"
 
-class UnitFrame6015Impl: public UnitFrame6015, public Frame6015
+class UnitFrame6015Impl: public QWidget, public Ui::UnitFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		UnitFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		UnitFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~UnitFrame6015Impl();
 

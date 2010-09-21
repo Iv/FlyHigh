@@ -27,32 +27,32 @@
 #include <qslider.h>
 
 #include "DisplayFrameImpl.h"
-#include "Images.h"
 extern "C"
 {
 	#include "flytec_al.h"
 }
 
-DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: DisplayFrame(parent,name,fl)
+DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget(parent)
 {
+  setupUi(this);
 	// not supported by 5020
 	comboBox_Font->setEnabled(false);
 	
 	// Screen 1
-	pixmapLabel_Display->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
+        pixmapLabel_Display->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_0_0);
 	insertItems(comboBox_UserField_0_1);
 	insertItems(comboBox_UserField_0_2);
 	
 	// Screen 2
-	pixmapLabel_Display_2->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
+        pixmapLabel_Display_2->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_1_0);
 	insertItems(comboBox_UserField_1_1);
 	insertItems(comboBox_UserField_1_2);
 	
 	// Screen 3
-	pixmapLabel_Display_3->setPixmap(Images::pInstance()->getImage("ft_5020.png"));
+        pixmapLabel_Display_3->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_2_0);
 	insertItems(comboBox_UserField_2_1);
 	insertItems(comboBox_UserField_2_2);
@@ -70,17 +70,17 @@ void DisplayFrameImpl::update(QByteArray &arr)
 	i16value += arr[LCD_CONTRAST_POS+1];
 	slider_Contrast->setValue(i16value);
 
-	comboBox_UserField_0_0->setCurrentItem(arr[USERFIELD_0_POS]);
-	comboBox_UserField_0_1->setCurrentItem(arr[USERFIELD_0_POS+1]);
-	comboBox_UserField_0_2->setCurrentItem(arr[USERFIELD_0_POS+2]);
+        comboBox_UserField_0_0->setCurrentIndex(arr[USERFIELD_0_POS]);
+        comboBox_UserField_0_1->setCurrentIndex(arr[USERFIELD_0_POS+1]);
+        comboBox_UserField_0_2->setCurrentIndex(arr[USERFIELD_0_POS+2]);
 
-	comboBox_UserField_1_0->setCurrentItem(arr[USERFIELD_1_POS]);
-	comboBox_UserField_1_1->setCurrentItem(arr[USERFIELD_1_POS+1]);
-	comboBox_UserField_1_2->setCurrentItem(arr[USERFIELD_1_POS+2]);
+        comboBox_UserField_1_0->setCurrentIndex(arr[USERFIELD_1_POS]);
+        comboBox_UserField_1_1->setCurrentIndex(arr[USERFIELD_1_POS+1]);
+        comboBox_UserField_1_2->setCurrentIndex(arr[USERFIELD_1_POS+2]);
 	
-	comboBox_UserField_2_0->setCurrentItem(arr[USERFIELD_2_POS]);
-	comboBox_UserField_2_1->setCurrentItem(arr[USERFIELD_2_POS+1]);
-	comboBox_UserField_2_2->setCurrentItem(arr[USERFIELD_2_POS+2]);
+        comboBox_UserField_2_0->setCurrentIndex(arr[USERFIELD_2_POS]);
+        comboBox_UserField_2_1->setCurrentIndex(arr[USERFIELD_2_POS+1]);
+        comboBox_UserField_2_2->setCurrentIndex(arr[USERFIELD_2_POS+2]);
 }
 
 void DisplayFrameImpl::store(QByteArray &arr)
@@ -93,56 +93,56 @@ void DisplayFrameImpl::store(QByteArray &arr)
 	arr[LCD_CONTRAST_POS+1] = (u_char)(i16value & 0xFF);
 	
 	// User Field 0
-	arr[USERFIELD_0_POS] = comboBox_UserField_0_0->currentItem();
-	arr[USERFIELD_0_POS+1] = comboBox_UserField_0_1->currentItem();
-	arr[USERFIELD_0_POS+2] = comboBox_UserField_0_2->currentItem();
+        arr[USERFIELD_0_POS] = comboBox_UserField_0_0->currentIndex();
+        arr[USERFIELD_0_POS+1] = comboBox_UserField_0_1->currentIndex();
+        arr[USERFIELD_0_POS+2] = comboBox_UserField_0_2->currentIndex();
 	
 	// User Field 1
-	arr[USERFIELD_1_POS] = comboBox_UserField_1_0->currentItem();
-	arr[USERFIELD_1_POS+1] = comboBox_UserField_1_1->currentItem();
-	arr[USERFIELD_1_POS+2] = comboBox_UserField_1_2->currentItem();
+        arr[USERFIELD_1_POS] = comboBox_UserField_1_0->currentIndex();
+        arr[USERFIELD_1_POS+1] = comboBox_UserField_1_1->currentIndex();
+        arr[USERFIELD_1_POS+2] = comboBox_UserField_1_2->currentIndex();
 
 	// User Field 2
-	arr[USERFIELD_2_POS] = comboBox_UserField_2_0->currentItem();
-	arr[USERFIELD_2_POS+1] = comboBox_UserField_2_1->currentItem();
-	arr[USERFIELD_2_POS+2] = comboBox_UserField_2_2->currentItem();
+        arr[USERFIELD_2_POS] = comboBox_UserField_2_0->currentIndex();
+        arr[USERFIELD_2_POS+1] = comboBox_UserField_2_1->currentIndex();
+        arr[USERFIELD_2_POS+2] = comboBox_UserField_2_2->currentIndex();
 }
 
 void DisplayFrameImpl::insertItems( QComboBox * pItem )
 {
 	pItem->clear();
-	pItem->insertItem( tr( "Wind spd" ) );
-	pItem->insertItem( tr( "Time" ) );
-	pItem->insertItem( tr( "Fl.Time" ) );
-	pItem->insertItem( tr( "Gnd spd" ) );
-	pItem->insertItem( tr( "Speed diff" ) );
-	pItem->insertItem( tr( "Dist WP" ) );
-	pItem->insertItem( tr( "Bearing" ) );
-	pItem->insertItem( tr( "Track" ) );
-	pItem->insertItem( tr( "Temp" ) );
-	pItem->insertItem( tr( "Alt 2" ) );
-	pItem->insertItem( tr( "Alt 3" ) );
-	pItem->insertItem( tr( "QNH hPa" ) );
-	pItem->insertItem( tr( "L/D Gnd" ) );
-	pItem->insertItem( tr( "L/D air" ) );
-	pItem->insertItem( tr( "L/D Req" ) );
-	pItem->insertItem( tr( "Dist to ^" ) );
-	pItem->insertItem( QString::null );
-	pItem->insertItem( tr( "Alt @ BG" ) );
-	pItem->insertItem( tr( "FL (ft)" ) );
-	pItem->insertItem( tr( "Air spd" ) );
-	pItem->insertItem( tr( "Alt @ goal" ) );
-	pItem->insertItem( tr( "Dist goal" ) );
-	pItem->insertItem( tr( "Vario" ) );
-	pItem->insertItem( tr( "Alt 1" ) );
-	pItem->insertItem( tr( "SMS p/t" ) );
-	pItem->insertItem( tr( "Dist toff" ) );
-	pItem->insertItem( tr( "Dist cyl" ) );
-	pItem->insertItem( tr( "L/D rel goal" ) );
-	pItem->insertItem( tr( "Race start" ) );
+        pItem->addItem( tr( "Wind spd" ) );
+        pItem->addItem( tr( "Time" ) );
+        pItem->addItem( tr( "Fl.Time" ) );
+        pItem->addItem( tr( "Gnd spd" ) );
+        pItem->addItem( tr( "Speed diff" ) );
+        pItem->addItem( tr( "Dist WP" ) );
+        pItem->addItem( tr( "Bearing" ) );
+        pItem->addItem( tr( "Track" ) );
+        pItem->addItem( tr( "Temp" ) );
+        pItem->addItem( tr( "Alt 2" ) );
+        pItem->addItem( tr( "Alt 3" ) );
+        pItem->addItem( tr( "QNH hPa" ) );
+        pItem->addItem( tr( "L/D Gnd" ) );
+        pItem->addItem( tr( "L/D air" ) );
+        pItem->addItem( tr( "L/D Req" ) );
+        pItem->addItem( tr( "Dist to ^" ) );
+        pItem->addItem( QString::null );
+        pItem->addItem( tr( "Alt @ BG" ) );
+        pItem->addItem( tr( "FL (ft)" ) );
+        pItem->addItem( tr( "Air spd" ) );
+        pItem->addItem( tr( "Alt @ goal" ) );
+        pItem->addItem( tr( "Dist goal" ) );
+        pItem->addItem( tr( "Vario" ) );
+        pItem->addItem( tr( "Alt 1" ) );
+        pItem->addItem( tr( "SMS p/t" ) );
+        pItem->addItem( tr( "Dist toff" ) );
+        pItem->addItem( tr( "Dist cyl" ) );
+        pItem->addItem( tr( "L/D rel goal" ) );
+        pItem->addItem( tr( "Race start" ) );
 }
 
 
 
-#include "DisplayFrameImpl.moc"
+#include "moc_DisplayFrameImpl.cxx"
 

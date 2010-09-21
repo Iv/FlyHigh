@@ -21,12 +21,12 @@
 #include <qbuffer.h>
 #include <qpushbutton.h>
 #include <qcursor.h>
-#include <qdatetimeedit.h>
+#include <q3datetimeedit.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qstringlist.h>
 #include <qspinbox.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include "FlightFormImpl.h"
 #include "ISql.h"
 #include "IGliderForm.h"
@@ -36,9 +36,10 @@
 #include "WayPoint.h"
 
 FlightFormImpl::FlightFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
- :FlightForm(parent, caption, true)
+: QDialog(parent)
 {
-	FlightForm::setCaption(caption);
+        setupUi(this);
+        setWindowTitle(caption);
 	setFlight(pFlight);
 }
 
@@ -55,8 +56,8 @@ void FlightFormImpl::updateWayPoints()
 	for(it=m_wpList.begin(); it!=m_wpList.end(); it++)
 	{
 		(*it).fullName(name);
-		comboBoxStart->insertItem(name);
-		comboBoxLand->insertItem(name);
+                comboBoxStart->addItem(name);
+                comboBoxLand->addItem(name);
 	}
 }
 
@@ -72,7 +73,7 @@ void FlightFormImpl::updateGlider()
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
-		comboBoxModel->insertItem(gliderModel);
+                comboBoxModel->addItem(gliderModel);
 	}
 }
 
@@ -126,13 +127,13 @@ void FlightFormImpl::accept()
 	m_pFlight->setDuration(timeEditDuration->time());
 	
 	// glider
-	m_pFlight->setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+        m_pFlight->setGlider(m_gliderList.at(comboBoxModel->currentIndex()));
 
 	// start
-	m_pFlight->setStartPt(m_wpList.at(comboBoxStart->currentItem()));
+        m_pFlight->setStartPt(m_wpList.at(comboBoxStart->currentIndex()));
 	
 	// land
-	m_pFlight->setLandPt(m_wpList.at(comboBoxLand->currentItem()));
+        m_pFlight->setLandPt(m_wpList.at(comboBoxLand->currentIndex()));
 	
 	// distance
 	m_pFlight->setDistance((uint)(lineEditDistance->text().toDouble()*1000.0));
@@ -158,7 +159,7 @@ void FlightFormImpl::selectStart()
 		
 		if(found)
 		{
-			comboBoxStart->setCurrentItem(index);
+                        comboBoxStart->setCurrentIndex(index);
 			break;
 		}
 	}
@@ -178,7 +179,7 @@ void FlightFormImpl::selectLand()
 		
 		if(found)
 		{
-			comboBoxLand->setCurrentItem(index);
+                        comboBoxLand->setCurrentIndex(index);
 			break;
 		}
 	}
@@ -198,7 +199,7 @@ void FlightFormImpl::selectGlider()
 		
 		if(found)
 		{
-			comboBoxModel->setCurrentItem(index);
+                        comboBoxModel->setCurrentIndex(index);
 			break;
 		}
 	}
@@ -248,5 +249,5 @@ void FlightFormImpl::limitDistance()
 	lineEditDistance->setText(text);
 }
 
-#include "FlightFormImpl.moc"
+#include "moc_FlightFormImpl.cxx"
 

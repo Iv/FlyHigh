@@ -58,7 +58,7 @@ void Error::show(ErrorIdType error)
 	msg = m_errorList[error].errorText + "\n";
 	msg += m_errorList[error].solution;
 	
-	QMessageBox::warning(NULL, "Error", msg, QMessageBox::Ok, QMessageBox::NoButton);
+	QMessageBox::warning(NULL, "Error", msg, QMessageBox::Ok, Qt::NoButton);
 }
 
 void Error::verify(bool expression, ErrorIdType error)

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <qdatetime.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include "Error.h"
@@ -26,8 +26,8 @@
 #include "Gliders.h"
 #include "Pilots.h"
 
-Pilots::Pilots(QSqlDatabase *pDB)
- :DataBaseSub(pDB)
+Pilots::Pilots(QSqlDatabase DB)
+ :DataBaseSub(DB)
 {
 }
 
@@ -37,9 +37,9 @@ Pilots::~Pilots()
 
 bool Pilots::add(Pilot &pilot)
 {
-	QSqlCursor cur("Pilots");
+	Q3SqlCursor cur("Pilots");
 	QSqlRecord *pRec;
-	QSqlQuery query(db());
+        QSqlQuery query(db());
 	bool success;
 
 	// insert record
@@ -60,15 +60,20 @@ bool Pilots::add(Pilot &pilot)
 
 bool Pilots::update(Pilot &pilot)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	bool success;
 	QString birthDate;
 
 	birthDate = pilot.birthDate().toString("yyyy-MM-dd");
 
-	sqls.sprintf("UPDATE Pilots SET FirstName= '%s', LastName = '%s', BirthDate = '%s', CallSign = '%s', GliderId = %i WHERE Id = %i",
-		pilot.firstName().ascii(), pilot.lastName().ascii(), birthDate.ascii(), pilot.callSign().ascii(), pilot.glider().id(), pilot.id());
+        sqls = QString("UPDATE Pilots SET FirstName= '%1', LastName = '%2', BirthDate = '%3', CallSign = '%4', GliderId = %5 WHERE Id = %6").arg(
+                pilot.firstName(),
+                pilot.lastName(),
+                birthDate,
+                pilot.callSign()).arg(
+                pilot.glider().id(),
+                pilot.id());
 	success = query.exec(sqls);
 	
 	Error::verify(success, Error::SQL_CMD);
@@ -108,17 +113,16 @@ bool Pilots::pilot(int id, Pilot &pilot)
 
 bool Pilots::setId(Pilot &pilot)
 {
-	QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	QString dbModel;
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM Pilots WHERE "
-		"FirstName = '%s' AND "
-		"LastName = '%s' AND "
-		"BirthDate = '%s'",
-		pilot.firstName().ascii(), pilot.lastName().ascii(), pilot.birthDate().toString("yyyy-MM-dd").ascii());
+        sqls = QString("SELECT * FROM Pilots WHERE "
+                "FirstName = '%1' AND "
+                "LastName = '%2' AND "
+                "BirthDate = '%3'").arg(pilot.firstName(), pilot.lastName(), pilot.birthDate().toString("yyyy-MM-dd"));
 
 	success = (query.exec(sqls) && query.first());
 

@@ -20,7 +20,7 @@
 #ifndef  Frame6015_h
 #define Frame6015_h
 
-#include <qcstring.h>
+#include <q3cstring.h>
 
 class  Frame6015
 {

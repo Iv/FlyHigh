@@ -27,9 +27,10 @@ extern "C"
 	#include "flytec_al.h"
 }
 
-VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, WFlags fl)
-: VarioFrame(parent,name,fl)
+VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+: QWidget()
 {
+  setupUi(this);
 }
 
 VarioFrameImpl::~VarioFrameImpl()
@@ -69,5 +70,5 @@ void VarioFrameImpl::store(QByteArray &arr)
 
 
 
-#include "VarioFrameImpl.moc"
+#include "moc_VarioFrameImpl.cxx"
 

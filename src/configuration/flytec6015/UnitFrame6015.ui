@@ -1,299 +1,279 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>UnitFrame6015</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>UnitFrame6015</cstring>
-    </property>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" stdsetdef="1">
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>UnitFrame6015</class>
+  <widget class="QWidget" name="UnitFrame6015">
     <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>425</width>
+        <height>490</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Unit</string>
+    </property>
+    <widget class="QComboBox" name="comboBox_Velocity1">
+      <property name="geometry">
         <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>425</width>
-            <height>490</height>
+          <x>220</x>
+          <y>140</y>
+          <width>98</width>
+          <height>28</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Unit</string>
-    </property>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>m/s</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>ft/min*100</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Velocity1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>140</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>km/h</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>kts</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>mph</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Velocity2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>190</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>m</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>ft</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Distance1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>36</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>km</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>miles</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Distance2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>90</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Temp</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>244</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </property>
+      <item>
         <property name="text">
-            <string>Temperature</string>
+          <string>m/s</string>
         </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>° C</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>° F</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Temp</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>240</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Press</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>294</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Pressure</string>
+          <string>ft/min*100</string>
         </property>
+      </item>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>hPa</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>lnHg</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Press</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>290</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TimeFormat</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>344</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+    <widget class="QComboBox" name="comboBox_Velocity2">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>190</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
         <property name="text">
-            <string>Time Format</string>
+          <string>km/h</string>
         </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>24h</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>12h</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_TimeFormat</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>340</y>
-                <width>98</width>
-                <height>28</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Distance1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>40</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Distance 1</string>
+          <string>kts</string>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Distance2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>94</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Distance 2</string>
+          <string>mph</string>
         </property>
+      </item>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Velocity1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>144</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+    <widget class="QComboBox" name="comboBox_Distance1">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>36</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
         <property name="text">
-            <string>Velocity 1</string>
+          <string>m</string>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Velocity2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>194</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>Velocity 2</string>
+          <string>ft</string>
         </property>
+      </item>
     </widget>
-</widget>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+    <widget class="QComboBox" name="comboBox_Distance2">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>90</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>km</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>miles</string>
+        </property>
+      </item>
+    </widget>
+    <widget class="QLabel" name="textLabel_Temp">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>244</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Temperature</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Temp">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>240</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>° C</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>° F</string>
+        </property>
+      </item>
+    </widget>
+    <widget class="QLabel" name="textLabel_Press">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>294</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Pressure</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Press">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>290</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>hPa</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>lnHg</string>
+        </property>
+      </item>
+    </widget>
+    <widget class="QLabel" name="textLabel_TimeFormat">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>344</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Time Format</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_TimeFormat">
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>340</y>
+          <width>98</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
+        <property name="text">
+          <string>24h</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>12h</string>
+        </property>
+      </item>
+    </widget>
+    <widget class="QLabel" name="textLabel_Distance1">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>40</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Distance 1</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Distance2">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>94</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Distance 2</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Velocity1">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>144</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Velocity 1</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Velocity2">
+      <property name="geometry">
+        <rect>
+          <x>40</x>
+          <y>194</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Velocity 2</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+</ui>

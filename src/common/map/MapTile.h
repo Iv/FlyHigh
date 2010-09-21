@@ -1,7 +1,7 @@
 #ifndef MapTile_h
 #define MapTile_h
 
-#include <qimage.h>
+#include <QImage>
 
 class MapTile
 {

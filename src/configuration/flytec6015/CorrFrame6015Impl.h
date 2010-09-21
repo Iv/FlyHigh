@@ -22,14 +22,14 @@
 #define CorrFrame6015Impl_h
 
 #include "Frame6015.h"
-#include "CorrFrame6015.h"
+#include "ui_CorrFrame6015.h"
 
-class CorrFrame6015Impl: public CorrFrame6015, public Frame6015
+class CorrFrame6015Impl: public QWidget, public Ui::CorrFrame6015, public Frame6015
 {
 	Q_OBJECT
 
 	public:
-		CorrFrame6015Impl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		CorrFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 		~CorrFrame6015Impl();
 

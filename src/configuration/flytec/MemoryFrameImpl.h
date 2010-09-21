@@ -22,14 +22,14 @@
 #define MemoryFrameImpl_h
 
 #include "Frame.h"
-#include "MemoryFrame.h"
+#include "ui_MemoryFrame.h"
 
-class MemoryFrameImpl: public MemoryFrame, public Frame
+class MemoryFrameImpl: public QWidget, public Ui::MemoryFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		MemoryFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		MemoryFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~MemoryFrameImpl();
 
 		void update(QByteArray &arr);

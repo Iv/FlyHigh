@@ -1,224 +1,213 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>VarioFrame</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>VarioFrame</cstring>
-    </property>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" stdsetdef="1">
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>VarioFrame</class>
+  <widget class="QWidget" name="VarioFrame">
     <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>419</width>
+        <height>387</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Variometer</string>
+    </property>
+    <widget class="QSpinBox" name="spinBox_ITime">
+      <property name="geometry">
         <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>419</width>
-            <height>387</height>
+          <x>220</x>
+          <y>140</y>
+          <width>100</width>
+          <height>20</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Variometer</string>
-    </property>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_ITime</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>140</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>30</number>
-        </property>
-        <property name="minValue">
-            <number>1</number>
-        </property>
+      </property>
+      <property name="maximum">
+        <number>30</number>
+      </property>
+      <property name="minimum">
+        <number>1</number>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_RespDelayUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>40</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
+    <widget class="QLabel" name="textLabel_RespDelayUnit">
+      <property name="geometry">
+        <rect>
+          <x>340</x>
+          <y>40</y>
+          <width>67</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>[ms]</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_ITimeUnit">
+      <property name="geometry">
+        <rect>
+          <x>340</x>
+          <y>140</y>
+          <width>67</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>[s]</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_TECUnit">
+      <property name="geometry">
+        <rect>
+          <x>340</x>
+          <y>190</y>
+          <width>67</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>[%]</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_RespDelay">
+      <property name="enabled">
+        <bool>false</bool>
+      </property>
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>40</y>
+          <width>100</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="maximum">
+        <number>8000</number>
+      </property>
+      <property name="minimum">
+        <number>1200</number>
+      </property>
+      <property name="singleStep">
+        <number>200</number>
+      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Variomode">
+      <property name="enabled">
+        <bool>false</bool>
+      </property>
+      <property name="geometry">
+        <rect>
+          <x>214</x>
+          <y>84</y>
+          <width>151</width>
+          <height>28</height>
+        </rect>
+      </property>
+      <item>
         <property name="text">
-            <string>[ms]</string>
+          <string>integrating</string>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_ITimeUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>140</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>[s]</string>
+          <string>netto</string>
         </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TECUnit</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>340</x>
-                <y>190</y>
-                <width>67</width>
-                <height>20</height>
-            </rect>
-        </property>
+      </item>
+      <item>
         <property name="text">
-            <string>[%]</string>
+          <string>integrating/netto</string>
         </property>
+      </item>
     </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_RespDelay</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>40</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="maxValue">
-            <number>8000</number>
-        </property>
-        <property name="minValue">
-            <number>1200</number>
-        </property>
-        <property name="lineStep">
-            <number>200</number>
-        </property>
+    <widget class="QSpinBox" name="spinBox_TEC">
+      <property name="enabled">
+        <bool>false</bool>
+      </property>
+      <property name="geometry">
+        <rect>
+          <x>220</x>
+          <y>190</y>
+          <width>100</width>
+          <height>20</height>
+        </rect>
+      </property>
     </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>integrating</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>netto</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>integrating/netto</string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>comboBox_Variomode</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>214</x>
-                <y>84</y>
-                <width>151</width>
-                <height>28</height>
-            </rect>
-        </property>
+    <widget class="QLabel" name="textLabel_TEC">
+      <property name="geometry">
+        <rect>
+          <x>10</x>
+          <y>190</y>
+          <width>203</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Total Energy Compensation</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QSpinBox">
-        <property name="name">
-            <cstring>spinBox_TEC</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>220</x>
-                <y>190</y>
-                <width>100</width>
-                <height>20</height>
-            </rect>
-        </property>
+    <widget class="QLabel" name="textLabel_ITime">
+      <property name="geometry">
+        <rect>
+          <x>10</x>
+          <y>140</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Integration Time</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_TEC</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>190</y>
-                <width>203</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Total Energy Compensation</string>
-        </property>
+    <widget class="QLabel" name="textLabel_Variomode">
+      <property name="geometry">
+        <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>134</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Variomode</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_ITime</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>140</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Integration Time</string>
-        </property>
+    <widget class="QLabel" name="textLabel_RespDelay">
+      <property name="geometry">
+        <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>150</width>
+          <height>20</height>
+        </rect>
+      </property>
+      <property name="text">
+        <string>Response delay</string>
+      </property>
+      <property name="wordWrap">
+        <bool>false</bool>
+      </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_Variomode</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>90</y>
-                <width>134</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Variomode</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel_RespDelay</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>150</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Response delay</string>
-        </property>
-    </widget>
-</widget>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+</ui>

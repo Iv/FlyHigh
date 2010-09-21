@@ -7,23 +7,23 @@
 #include <qmessagebox.h>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h>
-#include <qtable.h>
-#include <qheader.h>
+#include <q3filedialog.h>
+#include <q3table.h>
+#include <q3header.h>
 #include <qpainter.h>
-#include <qpaintdevicemetrics.h>
+#include <q3paintdevicemetrics.h>
 #include <qrect.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qstringlist.h>
 #include "IFlyHighRC.h"
 #include "TableWindow.h"
 
-TableWindow::TableWindow(QWidget* parent, const char* name, int wflags)
+TableWindow::TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
     :MDIWindow(parent, name, wflags)
 {
 	QStringList nameList;
 	
-	m_pTable = new QTable(this);
+	m_pTable = new Q3Table(this);
 	m_pTable->show();
 	setFocusProxy(m_pTable);
 	setCentralWidget(m_pTable);
@@ -35,14 +35,14 @@ TableWindow::~TableWindow()
 {
 }
 
-QTable* TableWindow::getTable()
+Q3Table* TableWindow::getTable()
 {
 	return m_pTable;
 }
 
 void TableWindow::setupHeader(const QStringList &colNameList)
 {
-	QHeader *pHeader;
+	Q3Header *pHeader;
 	uint colNr;
 	uint nofCols;
 	
@@ -68,7 +68,7 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	QDomElement bold;
 	QDomElement elem;
 	QDomText txt;
-	QHeader *pHeader;
+	Q3Header *pHeader;
 	int row;
 	int nrows;
 	int col;
@@ -87,7 +87,7 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	head = doc.createElement("head");
 	root.appendChild(head);
 	elem = doc.createElement("title");
-	txt = doc.createTextNode(caption());
+        txt = doc.createTextNode(windowTitle());
 	elem.appendChild(txt);
 	head.appendChild(elem);
 	body = doc.createElement("body");
@@ -139,24 +139,27 @@ void TableWindow::exportTable()
 	QString fileName;
 	QString string;
 	QDomDocument doc;
-	QFileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "HTML Files (html.*)", this,
+	Q3FileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "HTML Files (html.*)", this,
 					"HTML file export", true);
 
-	fileDlg.setMode(QFileDialog::AnyFile);
+	fileDlg.setMode(Q3FileDialog::AnyFile);
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
 		pDir =  fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(pDir->absPath());
+		IFlyHighRC::pInstance()->setLastDir(pDir->absolutePath());
 		delete pDir;
 		fileName = fileDlg.selectedFile();
-		file.setName(fileName + ".html");
+                file.setFileName(fileName + ".html");
 		
-		if(file.open(IO_WriteOnly))
+		if(file.open(QIODevice::WriteOnly))
 		{
+                  QDataStream out(&file);
+                  
 			tableAsHTML(doc);
 			string = doc.toString();
-			file.writeBlock(string,  string.length());
+                        out << string;
+			//file.write(string,  string.length());
 			file.close();
 		}
 	}

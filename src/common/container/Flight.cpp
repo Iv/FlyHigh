@@ -131,7 +131,7 @@ const QByteArray& Flight::igcData() const
 
 void Flight::setIgcData(const QByteArray &data)
 {
-	m_igcData = data.copy();
+	m_igcData = data;
 }
 
 const QString& Flight::comment()

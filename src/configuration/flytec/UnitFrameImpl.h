@@ -22,14 +22,14 @@
 #define UnitFrameImpl_h
 
 #include "Frame.h"
-#include "UnitFrame.h"
+#include "ui_UnitFrame.h"
 
-class UnitFrameImpl: public UnitFrame, public Frame
+class UnitFrameImpl: public QWidget, public Ui::UnitFrame, public Frame
 {
 	Q_OBJECT
 
 	public:
-		UnitFrameImpl(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+		UnitFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 		~UnitFrameImpl();
 
 		void update(QByteArray &arr);

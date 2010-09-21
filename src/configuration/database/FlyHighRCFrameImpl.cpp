@@ -19,16 +19,17 @@
  ***************************************************************************/
 
 #include <qcombobox.h>
-#include <qdatetimeedit.h>
+#include <q3datetimeedit.h>
 #include <qlineedit.h>
 #include "FlyHighRCFrameImpl.h"
 #include "IFlyHighRC.h"
 #include "IGliderForm.h"
 #include "ISql.h"
 
-FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, WFlags fl)
-	:FlyHighRCFrame(parent, name)
+FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+	:QDialog(parent)
 {
+        setupUi(this);
 	(void)fl;
 
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), m_curPilot);
@@ -67,7 +68,7 @@ void FlyHighRCFrameImpl::selectGlider(Glider &glider)
 		
 		if(found)
 		{
-			comboBoxModel->setCurrentItem(index);
+                        comboBoxModel->setCurrentIndex(index);
 			break;
 		}
 	}
@@ -86,7 +87,7 @@ void FlyHighRCFrameImpl::updateGlider()
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
-		comboBoxModel->insertItem(gliderModel);
+                comboBoxModel->addItem(gliderModel);
 	}
 }
 
@@ -99,7 +100,7 @@ void FlyHighRCFrameImpl::ok()
 
 	if(m_gliderList.size() > 0)
 	{
-		m_curPilot.setGlider(m_gliderList.at(comboBoxModel->currentItem()));
+                m_curPilot.setGlider(m_gliderList.at(comboBoxModel->currentIndex()));
 	}
 
 	if(m_curPilot.id() < 0)
@@ -121,4 +122,4 @@ void FlyHighRCFrameImpl::ok()
 	}
 }
 
-#include "FlyHighRCFrameImpl.moc"
+#include "moc_FlyHighRCFrameImpl.cxx"

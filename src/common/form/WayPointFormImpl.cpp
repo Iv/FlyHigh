@@ -24,14 +24,15 @@
 #include "WayPointFormImpl.h"
 
 WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayPoint *pWayPoint)
-	:WayPointForm(parent, caption, true)
+	:QDialog(parent)
 {
+        setupUi(this);
 	QString str;
 
 	Q_CHECK_PTR(pWayPoint);
 	m_pWayPoint = pWayPoint;
 
-	WayPointForm::setCaption(caption);
+        setWindowTitle(caption);
 		
 	// name
 	lineEditName->setText(pWayPoint->name());
@@ -122,5 +123,5 @@ void WayPointFormImpl::limitLongitude()
 	lineEditLon->setText(text);
 }
 
-#include "WayPointFormImpl.moc"
+#include "moc_WayPointFormImpl.cxx"
 
