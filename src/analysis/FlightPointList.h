@@ -21,7 +21,6 @@
 #ifndef FlightPointList_h
 #define FlightPointList_h
 
-#include <q3textstream.h>
 #include <qdatetime.h>
 #include <qvector.h>
 #include "WayPoint.h"

@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <qfile.h>
-#include <q3textstream.h>
 #include <math.h>
 #include "OLCWebForm.h"
 
@@ -68,7 +67,7 @@ bool OLCWebForm::save(const QString & name)
 	
 	if(success)
 	{
-		Q3TextStream s(&file);
+		QTextStream s(&file);
 	
 		s << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n";
 		s << "    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
@@ -103,6 +102,8 @@ bool OLCWebForm::save(const QString & name)
 		s << "		</form>\n";
 		s << "	</body>\n";
 		s << "</html>\n";
+
+		s.flush();
 		
 		file.close();
 	}
@@ -119,7 +120,7 @@ void OLCWebForm::olcFileName(QString &fileName)
 	fileName += "1";
 }
 
-void OLCWebForm::streamHead(Q3TextStream& s)
+void OLCWebForm::streamHead(QTextStream& s)
 {
 	s << "	<head>\n";
 	s << "		<title>HGPG Online-CONTEST International flight claim</title>\n";
@@ -127,7 +128,7 @@ void OLCWebForm::streamHead(Q3TextStream& s)
 	s << "	</head>\n";
 }
 
-void OLCWebForm::streamName(Q3TextStream& s)
+void OLCWebForm::streamName(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>First/Given name</td>\n";
@@ -143,7 +144,7 @@ void OLCWebForm::streamName(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamBirth(Q3TextStream& s)
+void OLCWebForm::streamBirth(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Date of birth</td>\n";
@@ -154,7 +155,7 @@ void OLCWebForm::streamBirth(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamTakeoffLoc(Q3TextStream& s)
+void OLCWebForm::streamTakeoffLoc(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Take-off location</td>\n";
@@ -165,7 +166,7 @@ void OLCWebForm::streamTakeoffLoc(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamCallsign(Q3TextStream& s)
+void OLCWebForm::streamCallsign(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Callsign</td>\n";
@@ -175,7 +176,7 @@ void OLCWebForm::streamCallsign(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamTrack(Q3TextStream& s)
+void OLCWebForm::streamTrack(QTextStream& s)
 {
 	QString str;
 	
@@ -190,7 +191,7 @@ void OLCWebForm::streamTrack(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamFlightDate(Q3TextStream& s)
+void OLCWebForm::streamFlightDate(QTextStream& s)
 {
 	QDate refDate(2005, 5, 1);  // <option value=147678 > 1 May 2005 551 &nbsp;OLC\n";
 	const int refDays = 147678;
@@ -210,7 +211,7 @@ void OLCWebForm::streamFlightDate(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamModel(Q3TextStream& s)
+void OLCWebForm::streamModel(QTextStream& s)
 {
 	QString model;
 
@@ -225,7 +226,7 @@ void OLCWebForm::streamModel(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamTakeOffTime(Q3TextStream& s)
+void OLCWebForm::streamTakeOffTime(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Take-off time</td>\n";
@@ -236,7 +237,7 @@ void OLCWebForm::streamTakeOffTime(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamDepartureTime(Q3TextStream& s)
+void OLCWebForm::streamDepartureTime(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Departure time</td>\n";
@@ -247,7 +248,7 @@ void OLCWebForm::streamDepartureTime(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamWayPoint(Q3TextStream& s, uint wpNr, WayPoint &wp)
+void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 {
 	double lat;
 	double lon;
@@ -355,7 +356,7 @@ void OLCWebForm::streamWayPoint(Q3TextStream& s, uint wpNr, WayPoint &wp)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamFinishTime(Q3TextStream& s)
+void OLCWebForm::streamFinishTime(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Finish time</td>\n";
@@ -366,7 +367,7 @@ void OLCWebForm::streamFinishTime(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamComment(Q3TextStream& s)
+void OLCWebForm::streamComment(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td>Comment Pilot</td>\n";
@@ -378,7 +379,7 @@ void OLCWebForm::streamComment(Q3TextStream& s)
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamSubmit(Q3TextStream& s)
+void OLCWebForm::streamSubmit(QTextStream& s)
 {
 	s << "				<tr>\n";
 	s << "					<td></td>\n";

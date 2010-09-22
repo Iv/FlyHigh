@@ -20,7 +20,6 @@
 
 #include <qdir.h>
 #include <qstringlist.h>
-#include <q3textstream.h>
 #include <stdlib.h>
 #include "IFlyHighRC.h"
 
@@ -209,12 +208,14 @@ void IFlyHighRC::saveRC()
 {
 	if(m_rcFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		Q3TextStream stream(&m_rcFile);
+		QTextStream stream(&m_rcFile);
 		
 		saveSerialLine(stream);
 		saveDateTime(stream);
 		saveDirectory(stream);
 		savePilot(stream);
+
+		stream.flush();
 		
 		m_rcFile.close();
 	}
@@ -249,7 +250,7 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveSerialLine(Q3TextStream &stream)
+void IFlyHighRC::saveSerialLine(QTextStream &stream)
 {
 	QString str;
 	
@@ -283,7 +284,7 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDateTime(Q3TextStream &stream)
+void IFlyHighRC::saveDateTime(QTextStream &stream)
 {
 	QString str;
 	
@@ -314,7 +315,7 @@ void IFlyHighRC::parseDirectory(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDirectory(Q3TextStream &stream)
+void IFlyHighRC::saveDirectory(QTextStream &stream)
 {
 	stream << DirectoryTag;
 	stream << DirectoryLastVar << m_lastDir << "\n";
@@ -342,7 +343,7 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::savePilot(Q3TextStream &stream)
+void IFlyHighRC::savePilot(QTextStream &stream)
 {
 	stream << PilotTag;
 	stream << PilotId << m_pilotId << "\n";

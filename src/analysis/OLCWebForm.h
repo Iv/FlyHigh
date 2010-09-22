@@ -23,8 +23,7 @@
 
 #include <qdatetime.h>
 #include <qstring.h>
-//Added by qt3to4:
-#include <Q3TextStream>
+#include <QTextStream>
 #include "FlightPointList.h"
 #include "Flight.h"
 #include "WayPoint.h"
@@ -52,20 +51,20 @@ class OLCWebForm
 		WayPoint m_3rdWayPoint;
 		FlightPointList::FlightPointType m_finish;
 		
-		void streamHead(Q3TextStream& s);
-		void streamName(Q3TextStream& s);
-		void streamBirth(Q3TextStream& s);
-		void streamTakeoffLoc(Q3TextStream& s);
-		void streamCallsign(Q3TextStream& s);
-		void streamTrack(Q3TextStream& s);
-		void streamFlightDate(Q3TextStream& s);
-		void streamModel(Q3TextStream& s);
-		void streamTakeOffTime(Q3TextStream& s);
-		void streamDepartureTime(Q3TextStream& s);
-		void streamWayPoint(Q3TextStream& s, uint wpNr, WayPoint &wp);
-		void streamFinishTime(Q3TextStream& s);
-		void streamComment(Q3TextStream& s);
-		void streamSubmit(Q3TextStream& s);
+		void streamHead(QTextStream& s);
+		void streamName(QTextStream& s);
+		void streamBirth(QTextStream& s);
+		void streamTakeoffLoc(QTextStream& s);
+		void streamCallsign(QTextStream& s);
+		void streamTrack(QTextStream& s);
+		void streamFlightDate(QTextStream& s);
+		void streamModel(QTextStream& s);
+		void streamTakeOffTime(QTextStream& s);
+		void streamDepartureTime(QTextStream& s);
+		void streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp);
+		void streamFinishTime(QTextStream& s);
+		void streamComment(QTextStream& s);
+		void streamSubmit(QTextStream& s);
 		
 		char getOLCchar(int value);
 };
