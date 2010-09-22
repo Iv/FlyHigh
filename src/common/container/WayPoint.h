@@ -22,7 +22,7 @@
 #define WayPoint_h
 
 #include <qstring.h>
-#include <q3valuevector.h>
+#include <qvector.h>
 
 /****************************************
 COMMON
@@ -32,8 +32,8 @@ distance in meters, arc in degrees
 class WayPoint
 {
 	public:
-		typedef Q3ValueVector<WayPoint> WayPointListType;
-		typedef Q3ValueVector<int> WayPointIdListType;
+		typedef QVector<WayPoint> WayPointListType;
+		typedef QVector<int> WayPointIdListType;
 		static const uint startLandRadius; // in meters
 		static const double earthRadius; // in meters
 		

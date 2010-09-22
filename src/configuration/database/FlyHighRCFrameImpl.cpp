@@ -64,11 +64,11 @@ void FlyHighRCFrameImpl::selectGlider(Glider &glider)
 	
 	for(index=0; index<maxIndex; index++)
 	{
-		found = (m_gliderList.at(index) == glider);
+		found = (m_gliderList[index] == glider);
 		
 		if(found)
 		{
-                        comboBoxModel->setCurrentIndex(index);
+			comboBoxModel->setCurrentIndex(index);
 			break;
 		}
 	}

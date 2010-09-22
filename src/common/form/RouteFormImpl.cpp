@@ -59,7 +59,7 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 	
 	for(curItem=0; curItem<nItems; curItem++)
 	{
-		pWp = &(m_pRoute->wayPointList().at(curItem));
+		pWp = &(m_pRoute->wayPointList()[curItem]);
 		m_wpRouteList.append(pWp);
 	}
 
@@ -142,7 +142,7 @@ void RouteFormImpl::toRight()
 
 	if(curItem < count)
 	{
-		pWp = &m_wpDbList.at(curItem);
+		pWp = &m_wpDbList[curItem];
 	
 		if(listBoxRouteWayPoints->count() > 0)
 		{

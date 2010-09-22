@@ -91,7 +91,7 @@ void DeviceFrame6015Impl::update()
 
 	// glider
 	glider = pDev->memoryRead(MemFa, AC_TYPE, String).toString();
-        dbGlider = m_gliderList.at(comboBoxModel->currentIndex()).model();
+	dbGlider = m_gliderList[comboBoxModel->currentIndex()].model();
 	
 	if(glider != dbGlider)
 	{
@@ -199,7 +199,7 @@ void DeviceFrame6015Impl::store()
 	pDev->memoryWrite(MemFa, OWNER, String, pilotName);
 
 	// glider
-        m_gliderList.at(comboBoxModel->currentIndex()).fullName(glider);
+	m_gliderList[comboBoxModel->currentIndex()].fullName(glider);
 	dbPilot.glider().fullName(dbGlider);
 
 	if(glider != dbGlider)
@@ -215,13 +215,13 @@ void DeviceFrame6015Impl::store()
 				glider = dbPilot.glider().model();
 			break;
 			default:
-                                glider = m_gliderList.at(comboBoxModel->currentIndex()).model();
+				glider = m_gliderList[comboBoxModel->currentIndex()].model();
 			break;
 		}
 	}
 	else
 	{
-                glider = m_gliderList.at(comboBoxModel->currentIndex()).model();
+		glider = m_gliderList[comboBoxModel->currentIndex()].model();
 	}
 
 	pDev->memoryWrite(MemFa, AC_TYPE, String, glider);

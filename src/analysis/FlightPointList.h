@@ -23,7 +23,7 @@
 
 #include <q3textstream.h>
 #include <qdatetime.h>
-#include <q3valuevector.h>
+#include <qvector.h>
 #include "WayPoint.h"
 
 class FlightPointList
@@ -55,7 +55,7 @@ class FlightPointList
 		FlightPointType& at(int index);
 
 	private:
-		Q3ValueVector<FlightPointType> m_flightPointList;
+		QVector<FlightPointType> m_flightPointList;
 };
 
 #endif
