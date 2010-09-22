@@ -43,7 +43,7 @@ ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Se
 void ServicingFormImpl::accept()
 {
 	m_pServicing->setDate(dateEditDate->date());
-        m_pServicing->setGlider(m_gliderList.at(comboBoxModel->currentIndex()));
+	m_pServicing->setGlider(m_gliderList[comboBoxModel->currentIndex()]);
 	m_pServicing->setResponsibility(lineEditRespons->text());
 	m_pServicing->setComment(textEditComment->text());
 

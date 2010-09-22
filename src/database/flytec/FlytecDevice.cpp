@@ -306,7 +306,7 @@ bool FlytecDevice::add(Route &route)
 	for(wpNr=0; wpNr<nofWp; wpNr++)
 	{
 		emit progress(wpNr*100/nofWp);
-		add(route.wayPointList().at(wpNr));
+		add(route.wayPointList()[wpNr]);
 	}
 
 	// now write the route
