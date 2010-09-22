@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <qthread.h>
-#include <q3cstring.h>
 #include "ui_MainFrame6015.h"
 
 class Q3ProgressBar;

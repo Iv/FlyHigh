@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <qlineedit.h>
-#include <q3listbox.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
 #include <qstring.h>

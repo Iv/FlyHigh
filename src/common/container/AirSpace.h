@@ -21,7 +21,6 @@
 #define AirSpace_h
 
 #include <qstring.h>
-#include <q3ptrlist.h>
 #include <q3sortedlist.h>
 #include "AirSpaceItem.h"
 #include "BoundBox.h"
