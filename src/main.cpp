@@ -28,16 +28,20 @@
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
-        Q_INIT_RESOURCE(images);
+	Q_INIT_RESOURCE(images);
 	MainWindow* pMainWin;
 	int res;
 
+	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+
 	IFlyHighRC::pInstance()->loadRC();
-        IGPSDevice::pInstance()->open();
+	IGPSDevice::pInstance()->open();
 	ISql::pInstance()->open();
 	
 	pMainWin = new MainWindow();
-        pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
+	pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
 	
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
