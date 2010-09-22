@@ -18,11 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
- #ifndef Error_h
+#ifndef Error_h
 #define Error_h
 
 #include <qstring.h>
-#include <q3valuelist.h>
 
 class Error
 {
