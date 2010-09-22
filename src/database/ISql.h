@@ -21,7 +21,6 @@
 #define ISql_h
 
 #include <qstring.h>
-#include <q3valuelist.h>
 #include <qsqldatabase.h>
 #include "AirSpace.h"
 #include "ContainerDef.h"

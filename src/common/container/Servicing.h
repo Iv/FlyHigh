@@ -23,13 +23,13 @@
 
 #include <qdatetime.h>
 #include <qstring.h>
-#include <q3valuelist.h>
+#include <qlist.h>
 #include "Glider.h"
 
 class Servicing
 {
 	public:
-		typedef Q3ValueList<Servicing> ServicingListType;
+		typedef QList<Servicing> ServicingListType;
 	
 		Servicing();
 

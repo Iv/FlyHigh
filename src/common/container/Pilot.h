@@ -20,7 +20,7 @@
 #ifndef Pilot_h
 #define Pilot_h
 
-#include <q3valuelist.h>
+#include <qlist.h>
 #include "qdatetime.h"
 #include "Glider.h"
 
@@ -30,7 +30,7 @@
 class Pilot
 {
 	public:
-		typedef Q3ValueList<Pilot> PilotListType;
+		typedef QList<Pilot> PilotListType;
 
 		Pilot();
 		~Pilot();
