@@ -1,5 +1,14 @@
 TARGET_DIR=./build
 BIN=flyhigh
+DIRS = \
+	usr/ \
+	usr/share/ \
+	usr/share/applications/ \
+	usr/share/doc/ \
+	usr/share/doc/flyhigh \
+	usr/share/flyhigh/ \
+	usr/share/man/ \
+	usr/bin/
 
 all:
 	[ -x  $(TARGET_DIR) ] || mkdir $(TARGET_DIR)
@@ -7,6 +16,19 @@ all:
 
 clean:
 	rm -rf $(TARGET_DIR)/*
+
+install:
+	@for directory in $(DIRS) ; \
+	do \
+		[ -x $(prefix)/$$directory ] || mkdir $(prefix)/$$directory ; \
+	done
+
+	cp $(TARGET_DIR)/src/$(BIN) $(prefix)/usr/bin/
+	strip $(prefix)/usr/bin/$(BIN)
+	cp ./src/flyhigh.desktop $(prefix)/usr/share/applications/
+	cp ./src/images/flyhigh.png $(prefix)/usr/share/flyhigh/
+	cp ./doc/sql/flyhigh.sql $(prefix)/usr/share/flyhigh/
+	cp ./doc/flyhigh $(prefix)/usr/share/doc/flyhigh/
 
 # Workaround, because KDevelop doesn't change to build directory
 %.o:
