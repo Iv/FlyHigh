@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <qcombobox.h>
-#include <q3datetimeedit.h>
 #include <qlineedit.h>
 #include "FlyHighRCFrameImpl.h"
 #include "IFlyHighRC.h"
