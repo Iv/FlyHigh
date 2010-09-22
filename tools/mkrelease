@@ -22,21 +22,15 @@ svn checkout https://flyhigh.svn.sourceforge.net/svnroot/flyhigh/tags/$svntag $w
 echo "removing .svn folders"
 rm -rf `find $workDir -name "*.svn"`
 
-# create configure
-echo "make --directory=$workDir -f Makefile.cvs"
-make --directory=$workDir -f Makefile.cvs
-
 # create source tar
 echo "tar -czf $project-$revision.tar.gz $project-$revision"
 tar -czf $project-$revision.tar.gz $project-$revision
 
-# configure and build
-mkdir $workDir/release
-cd $workDir/release
-$workDir/configure
+# build
+cd $workDir
 make
-echo "strip $workDir/release/src/$project"
-strip $workDir/release/src/$project
+echo "strip $workDir/build/src/$project"
+strip $workDir/build/src/$project
 
 # prepare debian archive
 mkdir -p $workDir/debian/usr/bin/
