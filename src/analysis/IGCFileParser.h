@@ -22,7 +22,6 @@
 #define IGCFileParser_h
 
 #include <vector>
-#include <q3cstring.h>
 #include <qstring.h>
 #include <qdatetime.h>
 #include "WayPoint.h"
