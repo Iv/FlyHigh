@@ -22,7 +22,6 @@
 #define MainFrameImpl_h
 
 #include <vector>
-#include <qthread.h>
 #include "ui_MainFrame.h"
 
 class Q3ProgressBar;
@@ -54,7 +53,7 @@ class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 		QString m_fileName;
 		CmdType m_cmd;
 
-		void execThreadCmd(CmdType cmd);
+//		void execThreadCmd(CmdType cmd);
 		void updateFrames();
 		void storeFrames();
 };

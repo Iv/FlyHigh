@@ -18,15 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qmessagebox.h>
-#include <qtoolbox.h>
-#include <qwidget.h>
-#include <q3widgetstack.h>
-#include <qstatusbar.h>
-#include <q3progressbar.h>
-#include <qfile.h>
-#include <q3filedialog.h>
+#include <QMessageBox>
 
 #include "CorrFrame6015Impl.h"
 #include "VarioFrame6015Impl.h"
@@ -125,8 +117,8 @@ void MainFrame6015Impl::addPage( QWidget * pFrame6015, int * pPos)
 	
 	widgetStack->addWidget(pFrame6015, *pPos);
 	(*pPos)++;
-        pWidget = new QWidget(toolBox);
-        toolBox->addItem(pWidget,  pFrame6015->windowTitle());
+	pWidget = new QWidget(toolBox);
+	toolBox->addItem(pWidget,  pFrame6015->windowTitle());
 }
 
 void MainFrame6015Impl::read()
@@ -142,8 +134,11 @@ void MainFrame6015Impl::write()
 {
 	ProgressDlg dlg(this);
 		
-	if(QMessageBox::question(this, tr("write configuration"),
-		tr("Write current configuration to the device?"), 1, 2) == 1)
+	if(QMessageBox::question(this,
+													 tr("write configuration"),
+													 tr("Write current configuration to the device?"),
+													 1,
+													 2) == 1)
 	{
 		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
 		storeFrames();

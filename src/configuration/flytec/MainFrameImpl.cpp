@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,15 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qmessagebox.h>
-#include <qtoolbox.h>
-#include <qwidget.h>
-#include <q3widgetstack.h>
-#include <qstatusbar.h>
-#include <q3progressbar.h>
-#include <qfile.h>
-#include <q3filedialog.h>
+#include <QMessageBox>
+#include <QFile>
+#include <QFileDialog>
 
 #include "CorrFrameImpl.h"
 #include "VarioFrameImpl.h"
@@ -68,8 +62,8 @@ MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 	m_fileName = "";
 	
 	// make a clean table
-        pWidget = toolBox->widget(0);
-        toolBox->removeItem(toolBox->indexOf(pWidget));
+	pWidget = toolBox->widget(0);
+	toolBox->removeItem(toolBox->indexOf(pWidget));
 	pWidget = widgetStack->widget(0);
 	widgetStack->removeWidget(pWidget);
 	
@@ -149,24 +143,33 @@ void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 	
 	widgetStack->addWidget(pFrame, *pPos);
 	(*pPos)++;
-        pWidget = new QWidget(toolBox);
-        toolBox->addItem(pWidget,  pFrame->windowTitle());
+	pWidget = new QWidget(toolBox);
+	toolBox->addItem(pWidget,  pFrame->windowTitle());
 }
 
 void MainFrameImpl::open()
 {
 	QFile file;
-	const QDir *pDir;
-	Q3FileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
-					"Flytec config file open", true);
+	QStringList files;
+	QString selected;
+
+	QFileDialog fileDlg(this,
+											tr("Open Flytec config file"),
+											IFlyHighRC::pInstance()->lastDir(),
+											"Flytec Config Files (*.flt)");
+	fileDlg.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDlg.setFileMode(QFileDialog::ExistingFile);
+	fileDlg.setDefaultSuffix("flt");
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		pDir = fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.dir()->absolutePath());
-		delete pDir;
-		
-                file.setFileName(fileDlg.selectedFile());
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
+		files = fileDlg.selectedFiles();
+		if (!files.isEmpty())
+		{
+			selected = files[0];
+		}
+		file.setFileName(selected);
 		
 		if(file.open(QIODevice::WriteOnly))
 		{
@@ -180,18 +183,32 @@ void MainFrameImpl::open()
 void MainFrameImpl::save()
 {
 	QFile file;
-	const QDir *pDir;
-	Q3FileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "Flytec Config Files (*.flt)", this,
-					"Flytec config file open", true);
+	QString fileName;
+	QStringList files;
+
+	QFileDialog fileDlg(this,
+											tr("Save Flytec config file"),
+											IFlyHighRC::pInstance()->lastDir(),
+											"Flytec Config Files (*.flt)");
+	fileDlg.setFileMode(QFileDialog::AnyFile);
+	fileDlg.setAcceptMode(QFileDialog::AcceptSave);
+	fileDlg.setDefaultSuffix("flt");
+
+	// suggest filename
+	fileName = windowTitle();
+	fileDlg.selectFile(fileName);
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		pDir = fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(pDir->absolutePath());
-		delete pDir;
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
 		
-                file.setFileName(fileDlg.selectedFile());
-	
+		files = fileDlg.selectedFiles();
+		if (!files.isEmpty())
+		{
+			fileName = files[0];
+		}
+		file.setFileName(fileName);
+
 		if(file.open(QIODevice::WriteOnly))
 		{
 			storeFrames();
@@ -219,8 +236,11 @@ void MainFrameImpl::write()
 {
 	ProgressDlg dlg(this);
 		
-	if(QMessageBox::question(this, tr("write configuration"), 
-		tr("Write current configuration to the device?"), 1, 2) == 1)
+	if(QMessageBox::question(this,
+													 tr("write configuration"),
+													 tr("Write current configuration to the device?"),
+													 1,
+													 2) == 1)
 	{
 		storeFrames();
 		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
