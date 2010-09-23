@@ -22,10 +22,8 @@
 #define MainFrame6015Impl_h
 
 #include <vector>
-#include <qthread.h>
 #include "ui_MainFrame6015.h"
 
-class Q3ProgressBar;
 class Frame6015;
 
 class MainFrame6015Impl: public QMainWindow, public Ui::MainFrame6015
@@ -47,11 +45,11 @@ class MainFrame6015Impl: public QMainWindow, public Ui::MainFrame6015
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
 		FrameListType m_frameList;
-		Q3ProgressBar *m_pProgressBar;
+//		Q3ProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
 
-		void execThreadCmd(CmdType cmd);
+//		void execThreadCmd(CmdType cmd);
 		void updateFrames();
 		void storeFrames();
 };

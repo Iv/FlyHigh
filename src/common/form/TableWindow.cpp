@@ -4,17 +4,13 @@
 	for more information.
 */
 
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qfile.h>
-#include <q3filedialog.h>
+#include <QDate>
+#include <QFile>
+#include <QRegExp>
+#include <QFileDialog>
 #include <q3table.h>
 #include <q3header.h>
-#include <qpainter.h>
-#include <q3paintdevicemetrics.h>
-#include <qrect.h>
-#include <q3simplerichtext.h>
-#include <qstringlist.h>
+#include <QStringList>
 #include "IFlyHighRC.h"
 #include "TableWindow.h"
 
@@ -134,31 +130,44 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 
 void TableWindow::exportTable()
 {
-	const QDir *pDir;
 	QFile file;
 	QString fileName;
+	QStringList files;
 	QString string;
 	QDomDocument doc;
-	Q3FileDialog fileDlg(IFlyHighRC::pInstance()->lastDir(), "HTML Files (html.*)", this,
-					"HTML file export", true);
 
-	fileDlg.setMode(Q3FileDialog::AnyFile);
+	QFileDialog fileDlg(this,
+											tr("HTML file export"),
+											IFlyHighRC::pInstance()->lastDir(),
+											"HTML Files (*.html *.htm)");
+	fileDlg.setFileMode(QFileDialog::AnyFile);
+	fileDlg.setAcceptMode(QFileDialog::AcceptSave);
+	fileDlg.setDefaultSuffix("html");
+
+	// suggest window title as filename, but replace uncommon characters
+	fileName = this->windowTitle().replace(QRegExp("[^a-zA-Z0-9-_]"), "_");
+	// and append date
+	fileName += QDate::currentDate().toString("_dd_MM_yyyy");
+
+	fileDlg.selectFile(fileName);
 
 	if(fileDlg.exec() == QDialog::Accepted)
 	{
-		pDir =  fileDlg.dir();
-		IFlyHighRC::pInstance()->setLastDir(pDir->absolutePath());
-		delete pDir;
-		fileName = fileDlg.selectedFile();
-                file.setFileName(fileName + ".html");
+		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
+		files = fileDlg.selectedFiles();
+		if (!files.isEmpty())
+		{
+			fileName = files[0];
+		}
+		file.setFileName(fileName);
 		
 		if(file.open(QIODevice::WriteOnly))
 		{
-                  QDataStream out(&file);
+			QDataStream out(&file);
                   
 			tableAsHTML(doc);
 			string = doc.toString();
-                        out << string;
+			out << string;
 			//file.write(string,  string.length());
 			file.close();
 		}
