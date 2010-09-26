@@ -17,8 +17,6 @@
 TableWindow::TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
     :MDIWindow(parent, name, wflags)
 {
-	QStringList nameList;
-	
 	m_pTable = new Q3Table(this);
 	m_pTable->show();
 	setFocusProxy(m_pTable);
@@ -63,6 +61,7 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	QDomElement cell;
 	QDomElement bold;
 	QDomElement elem;
+	QDomElement meta;
 	QDomText txt;
 	Q3Header *pHeader;
 	int row;
@@ -82,8 +81,11 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	doc.appendChild(root);
 	head = doc.createElement("head");
 	root.appendChild(head);
+	meta = doc.createElement("META");
+	meta.setAttribute("content","text/html; charset=UTF-8");
+	head.appendChild(meta);
 	elem = doc.createElement("title");
-        txt = doc.createTextNode(windowTitle());
+	txt = doc.createTextNode(windowTitle());
 	elem.appendChild(txt);
 	head.appendChild(elem);
 	body = doc.createElement("body");
@@ -152,14 +154,14 @@ void TableWindow::exportTable()
 	{
 		file.setFileName(selected);
 		
-		if(file.open(QIODevice::WriteOnly))
+		if(file.open(QFile::WriteOnly | QFile::Truncate))
 		{
-			QDataStream out(&file);
+			QTextStream out(&file);
                   
 			tableAsHTML(doc);
 			string = doc.toString();
-			out << string;
-			//file.write(string,  string.length());
+			out << string.toLocal8Bit();
+			out.flush();
 			file.close();
 		}
 	}
