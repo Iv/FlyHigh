@@ -21,7 +21,6 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
-#include <QStringList>
 #include <q3table.h>
 #include <QDateTime>
 #include <QMenuBar>
@@ -360,7 +359,6 @@ void FlightWindow::file_import()
 	Pilot pilot;
 	WayPoint wp;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
-	QStringList files;
 	QString selected;
 	QFile file;
 	int nr;
@@ -368,27 +366,19 @@ void FlightWindow::file_import()
 	int landPtId;
 	int duration;
 
-	QFileDialog fileDlg(this,
-											tr("IGC file import"),
-											IFlyHighRC::pInstance()->lastDir(),
-											tr("IGC Files (*.igc; *.IGC)"));
-	fileDlg.setAcceptMode(QFileDialog::AcceptOpen);
-	fileDlg.setDefaultSuffix("igc");
-	fileDlg.setFileMode(QFileDialog::ExistingFile);
+	selected = QFileDialog::getOpenFileName(this,
+																					tr("IGC file import"),
+																					IFlyHighRC::pInstance()->lastDir(),
+																					tr("IGC Files (*.igc; *.IGC)"));
+	file.setFileName(selected);
 
-	if(fileDlg.exec() == QDialog::Accepted)
+	if(selected!="" && file.exists())
 	{
 		// pilot info
 		ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-		files = fileDlg.selectedFiles();
-		if (!files.isEmpty())
-		{
-			selected = files[0];
-		}
-		file.setFileName(selected);
-		
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
+
 		if(file.open(QIODevice::ReadOnly))
 		{
 			flight.setIgcData(file.readAll());
@@ -488,9 +478,8 @@ void FlightWindow::file_import()
 void FlightWindow::file_exportIGC()
 {
 	QFile file;
-	QString fileName;
+	QString olcFileName;
 	QString selected;
-	QStringList files;
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
@@ -514,29 +503,36 @@ void FlightWindow::file_exportIGC()
 		{
 			// IGC file
 			igcParser.parse(m_flightList[row].igcData());
-			
-			QFileDialog fileDlg(this,
-													tr("IGC file export"),
-													IFlyHighRC::pInstance()->lastDir(),
-													"IGC Files (*.igc)");
-			fileDlg.setAcceptMode(QFileDialog::AcceptSave);
-			fileDlg.setDefaultSuffix("igc");
 
+			// fetch olc filename
 			olcWebForm.setFlight(m_flightList[row]);
-			olcWebForm.olcFileName(fileName);
-			fileDlg.selectFile(fileName);
-			fileDlg.setFileMode(QFileDialog::AnyFile);
+			olcWebForm.olcFileName(olcFileName);
 
-			if(fileDlg.exec() == QDialog::Accepted)
+			selected = QFileDialog::getSaveFileName(this,
+																							tr("IGC file export"),
+																							IFlyHighRC::pInstance()->lastDir() + QDir::separator()
+																																								 + olcFileName
+																																								 + ".igc",
+																							"IGC Files (*.igc)");
+
+			if(selected!="")
 			{
-				IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-				files = fileDlg.selectedFiles();
-				if (!files.isEmpty())
-				{
-					selected = files[0];
-				}
+				IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
+				
 				file.setFileName(selected);
 				
+				// assemble name for olc webform
+				// use the same basename as the user has chosen
+				if(selected.endsWith(".igc",Qt::CaseInsensitive))
+				{
+					olcFileName = selected.replace(".igc", ".html", Qt::CaseInsensitive);
+				}
+				else
+				{
+					// just append '.html'
+					olcFileName = selected + ".html";
+				}
+
 				if(file.open(QIODevice::WriteOnly))
 				{
 					file.write(m_flightList[row].igcData());
@@ -581,7 +577,7 @@ void FlightWindow::file_exportIGC()
 						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
 					}
 					
-					olcWebForm.save(fileName + ".html");
+					olcWebForm.save(olcFileName);
 				}
 				
 				progDlg.endProgress();
@@ -593,7 +589,7 @@ void FlightWindow::file_exportIGC()
 void FlightWindow::file_exportKML()
 {
 	QString fileName;
-	QStringList files;
+	QString selected;
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
@@ -618,27 +614,21 @@ void FlightWindow::file_exportKML()
 		{
 			// IGC file
 			igcParser.parse(m_flightList[row].igcData());
-			QFileDialog fileDlg(this,
-													tr("KML file export"),
-													IFlyHighRC::pInstance()->lastDir(),
-													"KML Files (*.kml)");
-			fileDlg.setAcceptMode(QFileDialog::AcceptSave);
-			fileDlg.setDefaultSuffix("kml");
 
+			// assemble suggestion
 			fileName = m_flightList[row].startPt().name();
 			fileName += m_flightList[row].date().toString("_dd_MM_yyyy");
-			fileDlg.selectFile(fileName);
-			fileDlg.setFileMode(QFileDialog::AnyFile);
 
-			if(fileDlg.exec() == QDialog::Accepted)
+			selected = QFileDialog::getSaveFileName(this,
+																							tr("KML file export"),
+																							IFlyHighRC::pInstance()->lastDir() + QDir::separator() +
+																																								 fileName +
+																																								 ".kml",
+																							"KML Files (*.kml)");
+
+			if(selected!="")
 			{
-				IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-				files = fileDlg.selectedFiles();
-				if (!files.isEmpty())
-				{
-					fileName = files[0];
-				}
-
+				IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
 
 				// OLC file
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
@@ -683,7 +673,7 @@ void FlightWindow::file_exportKML()
 
 					kmlWriter.setFlight(m_flightList[row]);
 					kmlWriter.setFlightPoints(igcParser.flightPointList());
-					kmlWriter.save(fileName);
+					kmlWriter.save(selected);
 				}
 				
 				progDlg.endProgress();

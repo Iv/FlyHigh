@@ -131,45 +131,37 @@ void AirSpaceWindow::file_open()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	QByteArray openAirData;
-	QStringList files;
 	QString selected;
 	QFile file;
 	OpenAirFileParser parser;
 	uint airspaceNr;
+	uint airspaceRow;
 	uint maxAirspaceNr;
 
-	QFileDialog fileDlg(this,
-											"Open OpenAir File",
-											IFlyHighRC::pInstance()->lastDir(),
-											"OpenAir Files (*.txt *.fas)");
-	fileDlg.setAcceptMode(QFileDialog::AcceptOpen);
-	fileDlg.setDefaultSuffix("txt");
-	fileDlg.setFileMode(QFileDialog::ExistingFile);
+	selected = QFileDialog::getOpenFileName(this,
+																					"Open OpenAir File",
+																					IFlyHighRC::pInstance()->lastDir(),
+																					"OpenAir Files (*.txt *.fas)");
 
-	if(fileDlg.exec() == QDialog::Accepted)
+	file.setFileName(selected);
+
+	if(selected!="" && file.exists())
 	{
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
+
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-
-		files = fileDlg.selectedFiles();
-		if (!files.isEmpty())
-		{
-			selected = files[0];
-		}
-		file.setFileName(selected);
-
-		if(file.open(QIODevice::ReadOnly))
+		if(file.open(IO_ReadOnly))
 		{
 			openAirData = file.readAll();
 			file.close();
-		
+
 			parser.parse(openAirData);
 			m_airSpaceList = parser.airspaceList();
 			m_airSpaceList.sort();
 			maxAirspaceNr = m_airSpaceList.count();
 			pTable->setNumRows(maxAirspaceNr);
-			
+
 			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 			{
 				setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
@@ -180,7 +172,7 @@ void AirSpaceWindow::file_open()
 			pTable->selectRow(0);
 			selectionChanged();
 		}
-		
+
 		TableWindow::unsetCursor();
 	}
 }

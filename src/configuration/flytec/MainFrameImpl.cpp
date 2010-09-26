@@ -150,27 +150,19 @@ void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 void MainFrameImpl::open()
 {
 	QFile file;
-	QStringList files;
 	QString selected;
 
-	QFileDialog fileDlg(this,
-											tr("Open Flytec config file"),
-											IFlyHighRC::pInstance()->lastDir(),
-											"Flytec Config Files (*.flt)");
-	fileDlg.setAcceptMode(QFileDialog::AcceptOpen);
-	fileDlg.setFileMode(QFileDialog::ExistingFile);
-	fileDlg.setDefaultSuffix("flt");
+	selected = QFileDialog::getOpenFileName(this,
+																					tr("Open Flytec config file"),
+																					IFlyHighRC::pInstance()->lastDir(),
+																					"Flytec Config Files (*.flt)");
 
-	if(fileDlg.exec() == QDialog::Accepted)
+	file.setFileName(selected);
+
+	if(selected!="" && file.exists())
 	{
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-		files = fileDlg.selectedFiles();
-		if (!files.isEmpty())
-		{
-			selected = files[0];
-		}
-		file.setFileName(selected);
-		
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
+
 		if(file.open(QIODevice::WriteOnly))
 		{
 			storeFrames();
@@ -184,30 +176,23 @@ void MainFrameImpl::save()
 {
 	QFile file;
 	QString fileName;
-	QStringList files;
-
-	QFileDialog fileDlg(this,
-											tr("Save Flytec config file"),
-											IFlyHighRC::pInstance()->lastDir(),
-											"Flytec Config Files (*.flt)");
-	fileDlg.setFileMode(QFileDialog::AnyFile);
-	fileDlg.setAcceptMode(QFileDialog::AcceptSave);
-	fileDlg.setDefaultSuffix("flt");
+	QString selected;
 
 	// suggest filename
 	fileName = windowTitle();
-	fileDlg.selectFile(fileName);
 
-	if(fileDlg.exec() == QDialog::Accepted)
+	selected = QFileDialog::getSaveFileName(this,
+																					tr("Save Flytec config file"),
+																					IFlyHighRC::pInstance()->lastDir() + QDir::separator()
+																																						 + fileName
+																																						 + ".flt",
+																					"Flytec Config Files (*.flt)");
+
+	file.setFileName(selected);
+
+	if(selected!="")
 	{
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-		
-		files = fileDlg.selectedFiles();
-		if (!files.isEmpty())
-		{
-			fileName = files[0];
-		}
-		file.setFileName(fileName);
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
 
 		if(file.open(QIODevice::WriteOnly))
 		{

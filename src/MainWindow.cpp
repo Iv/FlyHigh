@@ -218,7 +218,7 @@ void MainWindow::flights_fromSQL()
 {
         MDIWindow* pWin = new FlightWindow(m_pMdiArea,
                                            "Flights",
-                                           Qt::WDestructiveClose|Qt::Window,
+																					 Qt::WDestructiveClose|Qt::SubWindow,
                                            IDataBase::SqlDB);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
