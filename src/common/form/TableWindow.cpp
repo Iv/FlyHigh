@@ -132,34 +132,25 @@ void TableWindow::exportTable()
 {
 	QFile file;
 	QString fileName;
-	QStringList files;
+	QString selected;
 	QString string;
 	QDomDocument doc;
-
-	QFileDialog fileDlg(this,
-											tr("HTML file export"),
-											IFlyHighRC::pInstance()->lastDir(),
-											"HTML Files (*.html *.htm)");
-	fileDlg.setFileMode(QFileDialog::AnyFile);
-	fileDlg.setAcceptMode(QFileDialog::AcceptSave);
-	fileDlg.setDefaultSuffix("html");
 
 	// suggest window title as filename, but replace uncommon characters
 	fileName = this->windowTitle().replace(QRegExp("[^a-zA-Z0-9-_]"), "_");
 	// and append date
 	fileName += QDate::currentDate().toString("_dd_MM_yyyy");
 
-	fileDlg.selectFile(fileName);
+	selected = QFileDialog::getSaveFileName(this,
+																					tr("HTML file export"),
+																					IFlyHighRC::pInstance()->lastDir() + QDir::separator()
+																																						 + fileName
+																																						 + ".html",
+																					"HTML Files (*.html *.htm)");
 
-	if(fileDlg.exec() == QDialog::Accepted)
+	if(selected!="")
 	{
-		IFlyHighRC::pInstance()->setLastDir(fileDlg.directory().absolutePath());
-		files = fileDlg.selectedFiles();
-		if (!files.isEmpty())
-		{
-			fileName = files[0];
-		}
-		file.setFileName(fileName);
+		file.setFileName(selected);
 		
 		if(file.open(QIODevice::WriteOnly))
 		{
