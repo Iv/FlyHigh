@@ -163,11 +163,11 @@ void MainFrameImpl::open()
 	{
 		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
 
-		if(file.open(QIODevice::WriteOnly))
+		if(file.open(QIODevice::ReadOnly))
 		{
-			storeFrames();
-			file.write(m_flytecMem);
+			m_flytecMem = file.read(10000);
 			file.close();
+			updateFrames();
 		}
 	}
 }
