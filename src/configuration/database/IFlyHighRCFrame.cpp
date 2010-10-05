@@ -23,7 +23,7 @@
 
 IFlyHighRCFrame::IFlyHighRCFrame(QWidget* parent)
 {
-	m_pFrame = new FlyHighRCFrameImpl(parent, "", (Qt::WType_Dialog | Qt::WShowModal));
+	m_pFrame = new FlyHighRCFrameImpl(parent);
 }
 
 IFlyHighRCFrame::~IFlyHighRCFrame()

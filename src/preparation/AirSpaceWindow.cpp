@@ -151,7 +151,7 @@ void AirSpaceWindow::file_open()
 
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-		if(file.open(IO_ReadOnly))
+		if(file.open(QIODevice::ReadOnly))
 		{
 			openAirData = file.readAll();
 			file.close();

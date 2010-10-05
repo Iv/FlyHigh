@@ -40,7 +40,7 @@
 #include "SmsFrameImpl.h"
 #include "MainFrameImpl.h"
 
-MainFrameImpl::MainFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+MainFrameImpl::MainFrameImpl(QWidget* parent)
 :QMainWindow(parent)
 {
   setupUi(this);

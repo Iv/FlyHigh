@@ -23,7 +23,7 @@
 
 IFlytecConfig::IFlytecConfig()
 {
-	m_pFrame = new MainFrameImpl(NULL, "", Qt::WType_Modal);
+	m_pFrame = new MainFrameImpl(NULL);
 }
 
 IFlytecConfig::~IFlytecConfig()

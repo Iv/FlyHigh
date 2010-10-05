@@ -27,7 +27,7 @@
 
 IPortFrame::IPortFrame(QWidget* parent)
 {
-	m_pFrame = new PortFrameImpl(parent, "", (Qt::WType_Dialog | Qt::WShowModal));
+	m_pFrame = new PortFrameImpl(parent);
 	m_pFrame->lineEdit_Port->setText(IFlyHighRC::pInstance()->deviceLine());
         m_pFrame->comboBox_Baud->addItems(IFlyHighRC::pInstance()->deviceSpeedList());
 }
