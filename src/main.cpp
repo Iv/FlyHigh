@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <qapplication.h>
-#include <qicon.h>
+#include <QApplication>
+#include <QIcon>
+#include <QTextCodec>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
