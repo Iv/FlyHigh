@@ -28,7 +28,8 @@ class PortFrameImpl : public QDialog, public Ui::PortFrame
 	Q_OBJECT
 	
 	public:
-		PortFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
+		PortFrameImpl(QWidget* parent = 0);
+
 		~PortFrameImpl();
 };
 

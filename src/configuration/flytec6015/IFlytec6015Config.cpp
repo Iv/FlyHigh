@@ -23,7 +23,7 @@
 
 IFlytec6015Config::IFlytec6015Config()
 {
-	m_pFrame6015 = new MainFrame6015Impl(NULL, "", Qt::WType_Modal);
+	m_pFrame6015 = new MainFrame6015Impl(NULL);
 }
 
 IFlytec6015Config::~IFlytec6015Config()

@@ -25,11 +25,10 @@
 #include "IGliderForm.h"
 #include "ISql.h"
 
-FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent)
 	:QDialog(parent)
 {
-        setupUi(this);
-	(void)fl;
+	setupUi(this);
 
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), m_curPilot);
 	lineEdit_FirstName->setText(m_curPilot.firstName());

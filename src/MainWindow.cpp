@@ -48,7 +48,8 @@
 #include "WayPointWindow.h"
 
 MainWindow::MainWindow()
-        :QMainWindow(0, Qt::WDestructiveClose)
+//	:QMainWindow(0, Qt::WDestructiveClose)
+	:QMainWindow(0)
 {
 	QString devName;
 	int id;
@@ -207,7 +208,7 @@ void MainWindow::flights_fromGPS()
 {
         MDIWindow* pWin = new FlightWindow(m_pMdiArea,
                                            0,
-                                           Qt::WDestructiveClose|Qt::Window,
+                                           0, //Qt::WDestructiveClose|Qt::Window,
                                            IDataBase::GPSdevice);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
@@ -216,51 +217,43 @@ void MainWindow::flights_fromGPS()
 
 void MainWindow::flights_fromSQL()
 {
-        MDIWindow* pWin = new FlightWindow(m_pMdiArea,
-                                           "Flights",
-																					 Qt::WDestructiveClose|Qt::SubWindow,
-                                           IDataBase::SqlDB);
+	MDIWindow *pWin;
 
+	pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::SqlDB);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
 
 void MainWindow::flights_experience()
 {
-        MDIWindow* pWin = new FlightExpWindow(m_pMdiArea,
-                                              "Flight Experience",
-                                              Qt::WDestructiveClose|Qt::Window);
+	MDIWindow *pWin;
 
+	pWin = new FlightExpWindow(m_pMdiArea, "Flight Experience", 0);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
 
 void MainWindow::analysis_gliders()
 {
-        MDIWindow* pWin = new GliderWindow(m_pMdiArea,
-                                           "Glider",
-                                           Qt::WDestructiveClose|Qt::Window);
+	MDIWindow* pWin;
 
+	pWin = new GliderWindow(m_pMdiArea, "Glider", 0);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
 
 void MainWindow::analysis_servicing()
 {
-        MDIWindow* pWin = new ServicingWindow(m_pMdiArea,
-                                              "Servicing",
-                                              Qt::WDestructiveClose|Qt::Window);
+	MDIWindow* pWin;
 
+	pWin = new ServicingWindow(m_pMdiArea, "Servicing", 0);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
 
 void MainWindow::waypoints_fromSQL()
 {
-        MDIWindow* pWin = new WayPointWindow(m_pMdiArea,
-                                             "WayPoints from DB",
-                                             Qt::WDestructiveClose|Qt::Window,
-                                             IDataBase::SqlDB);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from DB", 0, IDataBase::SqlDB);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -268,10 +261,7 @@ void MainWindow::waypoints_fromSQL()
 
 void MainWindow::waypoints_fromGPS()
 {
-        MDIWindow* pWin = new WayPointWindow(m_pMdiArea,
-                                             "WayPoints from GPS",
-                                             Qt::WDestructiveClose|Qt::Window,
-                                             IDataBase::GPSdevice);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from GPS", 0, IDataBase::GPSdevice);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -279,10 +269,7 @@ void MainWindow::waypoints_fromGPS()
 
 void MainWindow::routes_fromSQL()
 {
-        MDIWindow* pWin = new RouteWindow(m_pMdiArea,
-                                          "Routes from DB",
-                                          Qt::WDestructiveClose|Qt::Window,
-                                          IDataBase::SqlDB);
+	MDIWindow* pWin = new RouteWindow(m_pMdiArea, "Routes from DB", 0, IDataBase::SqlDB);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -290,14 +277,12 @@ void MainWindow::routes_fromSQL()
 
 void MainWindow::routes_fromGPS()
 {
-        MDIWindow* pWin = new RouteWindow(m_pMdiArea,
-                                          "Routes from GPS",
-                                          Qt::WDestructiveClose|Qt::Window,
-                                          IDataBase::GPSdevice);
+	MDIWindow* pWin = new RouteWindow(m_pMdiArea, "Routes from GPS", 0, IDataBase::GPSdevice);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
+
 /*
 void MainWindow::airspaces_fromSQL()
 {
@@ -307,12 +292,10 @@ void MainWindow::airspaces_fromSQL()
 	showWindow(pWin);
 }
 */
+
 void MainWindow::airspaces_fromGPS()
 {
-        MDIWindow* pWin = new AirSpaceWindow(m_pMdiArea,
-                                             "Airspaces from GPS",
-                                             Qt::WDestructiveClose|Qt::Window,
-                                             IDataBase::GPSdevice);
+	MDIWindow* pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces from GPS", 0, IDataBase::GPSdevice);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -320,11 +303,9 @@ void MainWindow::airspaces_fromGPS()
 
 void MainWindow::airspaces_fromFile()
 {
-        MDIWindow* pWin = new AirSpaceWindow(m_pMdiArea,
-                                             "Airspaces from OpenAirTextFile",
-                                             Qt::WDestructiveClose|Qt::Window,
-                                             IDataBase::File);
+	MDIWindow* pWin;
 
+	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces from OpenAirTextFile", 0, IDataBase::File);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }

@@ -21,7 +21,7 @@
 
 #include "PortFrameImpl.h"
 
-PortFrameImpl::PortFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+PortFrameImpl::PortFrameImpl(QWidget* parent)
 	:QDialog(parent)
 {
   setupUi(this);

@@ -32,7 +32,7 @@ class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 	Q_OBJECT
 
 	public:
-		MainFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		MainFrameImpl(QWidget* parent = 0);
 
 	public slots:
 		virtual void addPage(QWidget * pFrame, int * pPos);
