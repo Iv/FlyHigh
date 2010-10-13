@@ -18,26 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <qbrush.h>
 #include <q3table.h>
 #include <q3header.h>
-#include <qpainter.h>
-#include <q3table.h>
 #include <q3textedit.h>
-//Added by qt3to4:
-#include <Q3PointArray>
+#include <QBrush>
+#include <QPainter>
 #include <QCloseEvent>
 #include <QPaintEvent>
 #include "AirSpace.h"
 #include "AirSpaceFormImpl.h"
 
 AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirSpace *pAirSpace)
-	:AirSpaceForm(parent, caption),
+	:QDialog(parent),
 	m_drawRect(290, 10, 350, 350)
 {
 	Q3Header *pHeader;
-	
-	AirSpaceForm::setCaption(caption);
+
+	setupUi(this);
+	setWindowTitle(caption);
+
 	tableEdgePoints->setColumnWidth(Use, 20);
 	tableEdgePoints->setColumnWidth(Longitude, 95);
 	tableEdgePoints->setColumnReadOnly(Longitude, true);
@@ -46,8 +45,8 @@ AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirS
 	
 	pHeader = tableEdgePoints->horizontalHeader();
 	pHeader->setLabel(Use, "");
-	pHeader->setLabel(Longitude, "Longitude\n[°,min]");
-	pHeader->setLabel(Latitude, "Latitude\n[°,min]");
+	pHeader->setLabel(Longitude, "Longitude\n[ï¿½,min]");
+	pHeader->setLabel(Latitude, "Latitude\n[ï¿½,min]");
 
 	setAirSpace(pAirSpace);
 }
@@ -64,8 +63,8 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 	
 	if(pAirSpace != NULL)
 	{
-		AirSpaceForm::setCaption(m_pAirSpace->name());
-		maxPts = m_pAirSpace->edgePointList().size();
+		setWindowTitle(m_pAirSpace->name());
+		maxPts = m_pAirSpace->pointList().size();
 		
 		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
@@ -74,10 +73,10 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 			pTabItem->setChecked(true);
 			tableEdgePoints->setItem(ptNr, Use, pTabItem);
 			
-			str.sprintf("%.5f", m_pAirSpace->edgePointList().at(ptNr).longitude());
+			str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).longitude());
 			tableEdgePoints->setText(ptNr, Longitude, str);
 			
-			str.sprintf("%.5f", m_pAirSpace->edgePointList().at(ptNr).latitude());
+			str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).latitude());
 			tableEdgePoints->setText(ptNr, Latitude, str);
 		}
 		repaint();
@@ -97,7 +96,7 @@ void AirSpaceFormImpl::closeEvent(QCloseEvent * e)
 void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 {
 	QPainter paint(this);
-	Q3PointArray edgePts;
+	PointArray edgePts;
 	QRect boundRect;
 	Q3CheckTableItem *pTabItem;
 	uint ptNr;
@@ -109,49 +108,80 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	int dy;
 	double sx;
 	double sy;
+	int minLat;
+	int minLon;
+	int maxLat;
+	int maxLon;
 	
 	if(m_pAirSpace != NULL)
 	{
 		// fill points to point array
-		maxPts = m_pAirSpace->edgePointList().size();
+		maxPts = m_pAirSpace->pointList().size();
 		edgePts.resize(maxPts);
-			
-		for(ptNr=0; ptNr<maxPts; ptNr++)
+
+		if(maxPts > 0)
 		{
-			pTabItem = (Q3CheckTableItem*)tableEdgePoints->item(ptNr, Use);
-		
-			if(pTabItem->isChecked())
+			minLat = m_pAirSpace->pointList().at(ptNr).latitude() * 1000;
+			minLon = m_pAirSpace->pointList().at(ptNr).longitude() * 1000;
+			maxLat = minLat;
+			maxLon = minLon;
+				
+			for(ptNr=0; ptNr<maxPts; ptNr++)
 			{
-				lat = (int)(m_pAirSpace->edgePointList().at(ptNr).longitude() * 1000);
-				lon = -(int)(m_pAirSpace->edgePointList().at(ptNr).latitude() * 1000); // y axis is inverse
-				edgePts.setPoint(nPts, lat, lon);
-				nPts++;
+				pTabItem = (Q3CheckTableItem*)tableEdgePoints->item(ptNr, Use);
+			
+				if(pTabItem->isChecked())
+				{
+					lat = (int)(m_pAirSpace->pointList().at(ptNr).longitude() * 1000);
+					lon = -(int)(m_pAirSpace->pointList().at(ptNr).latitude() * 1000); // y axis is inverse
+					edgePts[nPts] = QPoint(lat, lon);
+					nPts++;
+
+					minLat = qMin(lat, minLat);
+					maxLat = qMax(lat, minLat);
+					minLon = qMin(lon, minLon);
+					maxLon = qMax(lon, minLon);
+				}
 			}
+			
+			edgePts.resize(nPts);
+			
+			// calc translation and scale
+			boundRect = QRect(QPoint(maxLat, minLon), QPoint(minLat, maxLon)); // edgePts.boundingRect();
+			dx = boundRect.left() - m_drawRect.left();
+			dy = boundRect.top() - m_drawRect.top();
+			sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
+			sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
+			
+			// translate and scale to draw rect
+			translateEdgePts(edgePts, -boundRect.left(), -boundRect.top());
+			scaleEdgePts(edgePts, sx, sy);
+			translateEdgePts(edgePts, m_drawRect.left(), m_drawRect.top());
+			
+			// draw
+			paint.setPen(Qt::black);
+			paint.drawPolyline(edgePts);
 		}
-		
-		edgePts.resize(nPts);
-		
-		// calc translation and scale
-		boundRect = edgePts.boundingRect();
-		dx = boundRect.left() - m_drawRect.left();
-		dy = boundRect.top() - m_drawRect.top();
-		sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
-		sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
-		
-		// translate and scale to draw rect
-		edgePts.translate(-boundRect.left(), -boundRect.top());
-		scaleEdgePts(edgePts, sx, sy);
-		edgePts.translate(m_drawRect.left(), m_drawRect.top());
-		
-		// draw
-		paint.setPen(Qt::black);
-		paint.drawPolyline(edgePts);
 	}
 	
-	AirSpaceForm::paintEvent(pEvent);
+	QDialog::paintEvent(pEvent);
 }
 
-void AirSpaceFormImpl::scaleEdgePts(Q3PointArray &edgePts, double sx, double sy)
+void AirSpaceFormImpl::translateEdgePts(PointArray &edgePts, int dx, int dy)
+{
+	QPoint delta = QPoint(dx, dy);
+	int ptNr;
+	int maxPts;
+
+	maxPts = edgePts.size();
+
+	for(ptNr=0; ptNr<maxPts; ptNr++)
+	{
+		edgePts[ptNr] += delta;
+	}
+}
+
+void AirSpaceFormImpl::scaleEdgePts(PointArray &edgePts, double sx, double sy)
 {
 	uint ptNr;
 	uint maxPts;
@@ -173,5 +203,3 @@ void AirSpaceFormImpl::scaleEdgePts(Q3PointArray &edgePts, double sx, double sy)
 		edgePts[ptNr] /= scale;
 	}
 }
-
-#include "moc_AirSpaceFormImpl.cxx"
