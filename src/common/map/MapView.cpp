@@ -44,7 +44,7 @@ MapView::~MapView()
 	}
 }
 
-void MapView::shwoWayPointList(WayPoint::WayPointListType &wpList)
+void MapView::showWayPointList(WayPoint::WayPointListType &wpList)
 {
 	ProgressDlg progDlg(this);
 	QRect rect;
@@ -186,8 +186,6 @@ void MapView::drawContents(QPainter* p, int cx, int cy, int cw, int ch)
 
 	if(pts > 2)
 	{
-
- 
 		// start and end point
 		p->setPen(QPen(Qt::green, 10));
 		p->drawEllipse(m_wayPoints[0].x(), m_wayPoints[0].y(), 5, 5);
@@ -232,6 +230,6 @@ void MapView::recalcWayPoints()
 		lat = m_wpList[wpNr].latitude();
 		lon = m_wpList[wpNr].longitude();
 		m_pMap->LLtoPix(lat, lon, pt);
-		m_wayPoints.setPoint(wpNr, pt);
+		m_wayPoints[wpNr] = pt;
 	}
 }
