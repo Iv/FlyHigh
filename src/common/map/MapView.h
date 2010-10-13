@@ -25,28 +25,31 @@
 
 class Map;
 
-#include <vector>
 #include <q3scrollview.h>
-#include <qpixmap.h>
-#include <q3pointarray.h>
+#include <QPixmap>
+#include <QVector>
 #include "WayPoint.h"
 
 class MapView: public Q3ScrollView
 {
 	public:
-          MapView(QWidget *parent=0, const char *name=0, Qt::WindowFlags wFlags=0);
+		MapView(QWidget *parent=0, const char *name=0, Qt::WindowFlags wFlags=0);
+
 		virtual ~MapView();
 
-		void shwoWayPointList(WayPoint::WayPointListType &wpList);
+		void showWayPointList(WayPoint::WayPointListType &wpList);
 
 	protected:
 		void keyPressEvent(QKeyEvent * e);
+
 		void drawContents(QPainter* p, int cx, int cy, int cw, int ch);
 
 	private:
+		typedef QVector<QPoint> PointArray;
+
 		Map *m_pMap;
 		WayPoint::WayPointListType m_wpList;
-		Q3PointArray m_wayPoints;
+		PointArray m_wayPoints;
 		int m_maxAlt;
 		int m_minAlt;
 
