@@ -7,7 +7,8 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR})
 
-set(form_SRCS FlightFormImpl.cpp
+set(form_SRCS AirSpaceFormImpl.cpp
+              FlightFormImpl.cpp
               GliderFormImpl.cpp
               MDIWindow.cpp
               TableWindow.cpp
