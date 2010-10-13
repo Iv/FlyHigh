@@ -995,7 +995,7 @@ void FlightWindow::showOnMap()
 				}
 
 				pView = new MapView();
-				pView->shwoWayPointList(wpList);
+				pView->showWayPointList(wpList);
 				pView->showMaximized();
 			}
 		}
