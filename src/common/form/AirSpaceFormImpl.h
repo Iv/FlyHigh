@@ -21,15 +21,16 @@
 #ifndef AirSpaceFormImpl_h
 #define AirSpaceFormImpl_h
 
-#include "AirSpaceForm.h"
-//Added by qt3to4:
-#include <QPaintEvent>
-#include <QCloseEvent>
-#include <Q3PointArray>
+#include <QDialog>
+#include <QPoint>
+#include <QVector>
+#include "ui_AirSpaceForm.h"
 
+class QCloseEvent;
+class QPaintEvent;
 class AirSpace;
 
-class AirSpaceFormImpl: public AirSpaceForm
+class AirSpaceFormImpl: public QDialog, public Ui::AirSpaceForm
 {
 	Q_OBJECT
 	
@@ -43,15 +44,20 @@ class AirSpaceFormImpl: public AirSpaceForm
 
 	protected:
 		void closeEvent(QCloseEvent * e);
+
 		void paintEvent(QPaintEvent *pEvent);
 	
 	private:
+		typedef QVector<QPoint> PointArray;
+
 		enum Fields{Use, Longitude, Latitude};
 		
 		QRect m_drawRect;
 		AirSpace *m_pAirSpace;
-		
-		void scaleEdgePts(Q3PointArray &edgePts, double sx, double sy);
+
+		void translateEdgePts(PointArray &edgePts, int dx, int dy);
+
+		void scaleEdgePts(PointArray &edgePts, double sx, double sy);
 };
 
 #endif
