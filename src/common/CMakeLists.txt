@@ -9,6 +9,7 @@ add_subdirectory(form)
 add_subdirectory(container)
 add_subdirectory(utils)
 add_subdirectory(map)
+add_subdirectory(webmap)
 
 
 ########### install files ###############
