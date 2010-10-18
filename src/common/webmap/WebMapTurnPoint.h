@@ -22,21 +22,21 @@
 #define _WebMapTurnPoint_h
 
 #include <QObject>
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 
 class QGraphicsSceneMouseEvent;
 class WebMapTurnPoint;
 
 typedef QList<WebMapTurnPoint*> WebMapTurnPointList;
 
-class WebMapTurnPoint: public QObject, public WebMapOverlayItem
+class WebMapTurnPoint: public QObject, public WebMapItem
 {
 	Q_OBJECT
 
 	public:
 		WebMapTurnPoint();
 	
-		void addItem(WebMapOverlayItem *pItem);
+		void addItem(WebMapItem *pItem);
 
 		void setLatLon(qreal lat, qreal lon);
 
@@ -73,7 +73,7 @@ class WebMapTurnPoint: public QObject, public WebMapOverlayItem
 	private:
 		enum {Border = 5, NeedleLen = 13, Radius = 10};
 
-		WebMapOverlayItemList m_itemList;
+		WebMapItemList m_itemList;
 		qreal m_lat;
 		qreal m_lon;
 		qreal m_radiusMeter;

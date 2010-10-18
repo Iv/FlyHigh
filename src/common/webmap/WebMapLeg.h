@@ -22,14 +22,14 @@
 #define _WebMapLeg_h
 
 #include <QList>
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 
 class WebMapTurnPoint;
 class WebMapLeg;
 
 typedef QList<WebMapLeg*> WebMapLegList;
 
-class WebMapLeg: public WebMapOverlayItem
+class WebMapLeg: public WebMapItem
 {
 	public:
 		WebMapLeg(WebMapTurnPoint *pSrcTp, WebMapTurnPoint *pDstTp);

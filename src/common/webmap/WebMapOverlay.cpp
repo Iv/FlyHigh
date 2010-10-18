@@ -21,7 +21,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
 #include "WebMapOverlay.h"
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 #include "WebMapScene.h"
 
 WebMapOverlay::WebMapOverlay(QWidget *pParent)
@@ -46,12 +46,12 @@ WebMapOverlay::~WebMapOverlay()
 {
 }
 
-void WebMapOverlay::addItem(WebMapOverlayItem *pItem)
+void WebMapOverlay::addItem(WebMapItem *pItem)
 {
 	scene()->addItem(pItem);
 }
 
-void WebMapOverlay::removeItem(WebMapOverlayItem *pItem)
+void WebMapOverlay::removeItem(WebMapItem *pItem)
 {
 	scene()->removeItem(pItem);
 }

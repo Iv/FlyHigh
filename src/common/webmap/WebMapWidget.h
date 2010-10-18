@@ -25,7 +25,7 @@
 
 class WebMap;
 class WebMapOverlay;
-class WebMapOverlayItem;
+class WebMapItem;
 
 class WebMapWidget: public QWidget
 {
@@ -34,9 +34,9 @@ class WebMapWidget: public QWidget
 
 		~WebMapWidget();
 
-		void addItem(WebMapOverlayItem *pItem);
+		void addItem(WebMapItem *pItem);
 
-		void removeItem(WebMapOverlayItem *pItem);
+		void removeItem(WebMapItem *pItem);
 
 		void clear();
 

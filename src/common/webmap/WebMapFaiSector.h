@@ -22,14 +22,14 @@
 #define _WebMapFaiSector_h
 
 #include <QList>
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 
 class WebMapTurnPoint;
 class WebMapFaiSector;
 
 typedef QList<WebMapFaiSector*> WebMapFaiSectorList;
 
-class WebMapFaiSector: public WebMapOverlayItem
+class WebMapFaiSector: public WebMapItem
 {
 	public:
 		WebMapFaiSector(WebMapTurnPoint *pTp1, WebMapTurnPoint *pTp2, WebMapTurnPoint *pTp3);
