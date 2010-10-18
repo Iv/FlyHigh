@@ -48,7 +48,7 @@ target_link_libraries(flyhigh ${QT_LIBRARIES}
                  map
                  webmap
                  utils
-                 images )
+                 res )
 
 
 ########### install files ###############
