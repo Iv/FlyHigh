@@ -21,7 +21,7 @@
 #include "WebMap.h"
 #include "WebMapOverlay.h"
 #include "WebMapOverlayItem.h"
-#include "WebMapOverlayScene.h"
+#include "WebMapScene.h"
 #include "WebMapWidget.h"
 
 WebMapWidget::WebMapWidget(QWidget *pParent)

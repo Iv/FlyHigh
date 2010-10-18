@@ -8,12 +8,12 @@ set(webmap_SRCS WebMapFaiSector.cpp
              WebMap.cpp
              WebMapOverlay.cpp
              WebMapOverlayItem.cpp
-             WebMapOverlayScene.cpp
+             WebMapScene.cpp
              WebMapWidget.cpp
              WebMapTurnPoint.cpp)
 
 set(webmap_HDRS WebMap.h
-             WebMapOverlayScene.h
+             WebMapScene.h
              WebMapTurnPoint.h)
 
 QT4_WRAP_CPP(webmap_SRCS ${webmap_HDRS})

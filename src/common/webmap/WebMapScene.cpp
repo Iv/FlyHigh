@@ -18,20 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QGraphicsSceneMouseEvent>
-#include "WebMapOverlayScene.h"
+#include "WebMapScene.h"
 #include "WebMapOverlayItem.h"
 
-WebMapOverlayScene::WebMapOverlayScene(QObject *pParent)
+WebMapScene::WebMapScene(QObject *pParent)
 	:QGraphicsScene(pParent)
 {
 	m_dragMap = false;
 }
 
-WebMapOverlayScene::~WebMapOverlayScene()
+WebMapScene::~WebMapScene()
 {
 }
 
-void WebMapOverlayScene::mouseMoveEvent(QGraphicsSceneMouseEvent *pEvent)
+void WebMapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *pEvent)
 {
 	QPointF diff;
 	QRectF rect;
@@ -62,7 +62,7 @@ void WebMapOverlayScene::mouseMoveEvent(QGraphicsSceneMouseEvent *pEvent)
 	}
 }
 
-void WebMapOverlayScene::mousePressEvent(QGraphicsSceneMouseEvent *pEvent)
+void WebMapScene::mousePressEvent(QGraphicsSceneMouseEvent *pEvent)
 {
 	QGraphicsScene::mousePressEvent(pEvent);
 
@@ -76,7 +76,7 @@ void WebMapOverlayScene::mousePressEvent(QGraphicsSceneMouseEvent *pEvent)
 	}
 }
 
-void WebMapOverlayScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
+void WebMapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
 {
 	QGraphicsScene::mouseReleaseEvent(pEvent);
 
@@ -90,14 +90,14 @@ void WebMapOverlayScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
 	}
 }
 
-void WebMapOverlayScene::wheelEvent(QGraphicsSceneWheelEvent *pEvent)
+void WebMapScene::wheelEvent(QGraphicsSceneWheelEvent *pEvent)
 {
 	pEvent->accept();
 	emit wheelSignal(pEvent);
 	updateItemsPos();
 }
 
-void WebMapOverlayScene::updateItemsPos()
+void WebMapScene::updateItemsPos()
 {
 	typedef QList<QGraphicsItem*> GraphicItemList;
 
@@ -118,7 +118,7 @@ void WebMapOverlayScene::updateItemsPos()
 	}
 }
 
-void WebMapOverlayScene::itemsMoveBy(qreal dx, qreal dy)
+void WebMapScene::itemsMoveBy(qreal dx, qreal dy)
 {
 	typedef QList<QGraphicsItem*> GraphicItemList;
 

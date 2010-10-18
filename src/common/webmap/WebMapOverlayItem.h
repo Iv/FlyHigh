@@ -68,7 +68,7 @@ class WebMapOverlayItem: public QGraphicsItem
 
 		friend class WebMapWidget;
 		friend class WebMapTurnPoint;
-		friend class WebMapOverlayScene;
+		friend class WebMapScene;
 };
 
 #endif

@@ -23,7 +23,7 @@
 #include <QGraphicsView>
 
 class WebMapOverlayItem;
-class WebMapOverlayScene;
+class WebMapScene;
 class WebMapTurnPoint;
 
 /**
@@ -45,7 +45,7 @@ class WebMapOverlay: public QGraphicsView
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
-		WebMapOverlayScene* getScene();
+		WebMapScene* getScene();
 
 	private:
 		WebMapTurnPoint *m_pCenterTurnPoint;
