@@ -22,7 +22,7 @@
 
 #include <QGraphicsView>
 
-class WebMapOverlayItem;
+class WebMapItem;
 class WebMapScene;
 class WebMapTurnPoint;
 
@@ -36,9 +36,9 @@ class WebMapOverlay: public QGraphicsView
 
 		virtual ~WebMapOverlay();
 
-		void addItem(WebMapOverlayItem *pItem);
+		void addItem(WebMapItem *pItem);
 
-		void removeItem(WebMapOverlayItem *pItem);
+		void removeItem(WebMapItem *pItem);
 
 		void clear();
 

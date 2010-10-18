@@ -25,7 +25,7 @@
 #include "WebMapTurnPoint.h"
 
 WebMapLeg::WebMapLeg(WebMapTurnPoint *pSrcTp, WebMapTurnPoint *pDstTp)
-	:WebMapOverlayItem(WebMapLegType)
+	:WebMapItem(WebMapLegType)
 {
 	m_arrowSize = 10;
 	m_arrowEn = true;

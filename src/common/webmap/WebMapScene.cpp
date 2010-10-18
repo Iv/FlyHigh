@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include <QGraphicsSceneMouseEvent>
 #include "WebMapScene.h"
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 
 WebMapScene::WebMapScene(QObject *pParent)
 	:QGraphicsScene(pParent)
@@ -103,13 +103,13 @@ void WebMapScene::updateItemsPos()
 
 	GraphicItemList list;
 	GraphicItemList::iterator it;
-	WebMapOverlayItem *pItem;
+	WebMapItem *pItem;
 
 	list = QGraphicsScene::items();
 
 	for(it=list.begin(); it!=list.end(); it++)
 	{
-		pItem = dynamic_cast<WebMapOverlayItem*>(*it);
+		pItem = dynamic_cast<WebMapItem*>(*it);
 
 		if(pItem != NULL)
 		{
@@ -124,13 +124,13 @@ void WebMapScene::itemsMoveBy(qreal dx, qreal dy)
 
 	GraphicItemList list;
 	GraphicItemList::iterator it;
-	WebMapOverlayItem *pItem;
+	WebMapItem *pItem;
 
 	list = QGraphicsScene::items();
 
 	for(it=list.begin(); it!=list.end(); it++)
 	{
-		pItem = dynamic_cast<WebMapOverlayItem*>(*it);
+		pItem = dynamic_cast<WebMapItem*>(*it);
 
 		if(pItem != NULL)
 		{

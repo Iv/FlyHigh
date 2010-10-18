@@ -18,59 +18,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "WebMapOverlayItem.h"
+#ifndef WebMapItem_h
+#define WebMapItem_h
 
-WebMapOverlayItem::WebMapOverlayItem(ItemType type)
-{
-	m_type = type;
-	m_pMap = NULL;
-	m_pOverlay = NULL;
-}
+#include <QGraphicsItem>
 
-WebMapOverlayItem::~WebMapOverlayItem()
-{
-}
+class WebMap;
+class WebMapOverlay;
+class WebMapItem;
 
-int WebMapOverlayItem::type() const
-{
-	return m_type;
-}
+typedef QList<WebMapItem*> WebMapItemList;
 
-void WebMapOverlayItem::setColor(const QColor &color)
+/**
+	@author Alex Graf <grafal@sourceforge.net>
+*/
+class WebMapItem: public QGraphicsItem
 {
-	m_color = color;
-	update();
-}
+	public:
+		typedef enum ItemType{WebMapTurnPointType = UserType + 1, WebMapLegType, WebMapFaiSectorType}ItemType;
 
-const QColor& WebMapOverlayItem::getColor() const
-{
-	return m_color;
-}
+		WebMapItem(ItemType type);
 
-void WebMapOverlayItem::adjust()
-{
-}
+		virtual ~WebMapItem();
 
-void WebMapOverlayItem::updatePos()
-{
-}
+		int type() const;
 
-void WebMapOverlayItem::setMap(WebMap *pMap)
-{
-	m_pMap = pMap;
-}
+		void setColor(const QColor &color);
 
-WebMap* WebMapOverlayItem::getMap()
-{
-	return m_pMap;
-}
+		const QColor& getColor() const;
 
-void WebMapOverlayItem::setMapOverlay(WebMapOverlay *pOverlay)
-{
-	m_pOverlay = pOverlay;
-}
+	protected:
+		virtual void adjust();
 
-WebMapOverlay* WebMapOverlayItem::getMapOverlay()
-{
-	return m_pOverlay;
-}
+		virtual void updatePos();
+
+		void setMap(WebMap *pMap);
+
+		WebMap* getMap();
+
+		void setMapOverlay(WebMapOverlay *pOverlay);
+
+		WebMapOverlay* getMapOverlay();
+
+	private:
+		ItemType m_type;
+		QColor m_color;
+		WebMap *m_pMap;
+		WebMapOverlay *m_pOverlay;
+
+		friend class WebMapWidget;
+		friend class WebMapTurnPoint;
+		friend class WebMapScene;
+};
+
+#endif

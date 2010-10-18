@@ -24,7 +24,7 @@
 #include "WebMapTurnPoint.h"
 
 WebMapFaiSector::WebMapFaiSector(WebMapTurnPoint *pTp1, WebMapTurnPoint *pTp2, WebMapTurnPoint *pTp3)
-	:WebMapOverlayItem(WebMapFaiSectorType)
+	:WebMapItem(WebMapFaiSectorType)
 {
 	m_pTp1 = pTp1;
 	m_pTp2 = pTp2;

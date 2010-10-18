@@ -7,7 +7,7 @@ set(webmap_SRCS WebMapFaiSector.cpp
              WebMapLeg.cpp
              WebMap.cpp
              WebMapOverlay.cpp
-             WebMapOverlayItem.cpp
+             WebMapItem.cpp
              WebMapScene.cpp
              WebMapWidget.cpp
              WebMapTurnPoint.cpp)

@@ -20,7 +20,7 @@
 
 #include "WebMap.h"
 #include "WebMapOverlay.h"
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 #include "WebMapScene.h"
 #include "WebMapWidget.h"
 
@@ -39,14 +39,14 @@ WebMapWidget::~WebMapWidget()
 {
 }
 
-void WebMapWidget::addItem(WebMapOverlayItem *pItem)
+void WebMapWidget::addItem(WebMapItem *pItem)
 {
 	pItem->setMapOverlay(m_pOverlay);
 	pItem->setMap(m_pMap);
 	m_pOverlay->addItem(pItem);
 }
 
-void WebMapWidget::removeItem(WebMapOverlayItem *pItem)
+void WebMapWidget::removeItem(WebMapItem *pItem)
 {
 	pItem->setMapOverlay(NULL);
 	pItem->setMap(NULL);

@@ -24,11 +24,11 @@
 #include <QStyleOption>
 #include <math.h>
 #include "WebMapTurnPoint.h"
-#include "WebMapOverlayItem.h"
+#include "WebMapItem.h"
 #include "WebMap.h"
 
 WebMapTurnPoint::WebMapTurnPoint()
-	:WebMapOverlayItem(WebMapTurnPointType)
+	:WebMapItem(WebMapTurnPointType)
 {
 	m_lat = 0;
 	m_lon = 0;
@@ -41,7 +41,7 @@ WebMapTurnPoint::WebMapTurnPoint()
 	setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-void WebMapTurnPoint::addItem(WebMapOverlayItem *pItem)
+void WebMapTurnPoint::addItem(WebMapItem *pItem)
 {
 	m_itemList.push_back(pItem);
 }
@@ -211,7 +211,7 @@ void WebMapTurnPoint::updateLatLon()
 
 void WebMapTurnPoint::adjustItems()
 {
-	WebMapOverlayItemList::iterator it;
+	WebMapItemList::iterator it;
 
 	for(it=m_itemList.begin(); it!=m_itemList.end(); it++)
 	{
