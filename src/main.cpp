@@ -29,7 +29,7 @@
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
-	Q_INIT_RESOURCE(images);
+	Q_INIT_RESOURCE(res);
 	MainWindow* pMainWin;
 	int res;
 
