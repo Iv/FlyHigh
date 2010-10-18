@@ -6,12 +6,12 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/utils
+                    ${CMAKE_SOURCE_DIR}/src/common/webmap
                     ${CMAKE_SOURCE_DIR}/src/configuration/database
                     ${CMAKE_SOURCE_DIR}/src/configuration/flytec
                     ${CMAKE_SOURCE_DIR}/src/configuration/interface
                     ${CMAKE_SOURCE_DIR}/src/configuration/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/database
-                    ${CMAKE_SOURCE_DIR}/src/images
                     ${CMAKE_SOURCE_DIR}/src/preparation
                     ${QT_INCLUDES} )
 
