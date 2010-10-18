@@ -46,6 +46,7 @@
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
+#include "WebMapRouteWindow.h"
 
 MainWindow::MainWindow()
 //	:QMainWindow(0, Qt::WDestructiveClose)
@@ -116,6 +117,9 @@ MainWindow::MainWindow()
 	QAction* pRtDevAct = new QAction(tr("Routes (&GPS)"), this);
 	connect(pRtDevAct,SIGNAL(triggered()), this, SLOT(routes_fromGPS()));
 	pPrepMenu->addAction(pRtDevAct);
+	QAction* pWRtDBAct = new QAction(tr("&WRoutes (DB)"), this);
+	connect(pWRtDBAct,SIGNAL(triggered()), this, SLOT(wroute_fromSQL()));
+	pPrepMenu->addAction(pWRtDBAct);
 	pPrepMenu->addSeparator();
 	QAction* pAirDevAct = new QAction(tr("&Airspaces (GPS)"), this);
 	connect(pAirDevAct,SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
@@ -278,6 +282,14 @@ void MainWindow::routes_fromSQL()
 void MainWindow::routes_fromGPS()
 {
 	MDIWindow* pWin = new RouteWindow(m_pMdiArea, "Routes from GPS", 0, IDataBase::GPSdevice);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::wroute_fromSQL()
+{
+	MDIWindow* pWin = new WebMapRouteWindow(m_pMdiArea, "Route from DB", 0, IDataBase::SqlDB);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
