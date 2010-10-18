@@ -5,6 +5,7 @@ project(flyhigh)
 find_package(Qt4 REQUIRED)
 
 set(QT_USE_QT3SUPPORT TRUE)
+set(QT_USE_QTWEBKIT TRUE)
 
 #set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
