@@ -19,7 +19,7 @@ add_subdirectory(analysis)
 add_subdirectory(common)
 add_subdirectory(configuration)
 add_subdirectory(database)
-add_subdirectory(images)
+add_subdirectory(res)
 add_subdirectory(preparation)
 
 set(flyhigh_SRCS main.cpp

@@ -2,11 +2,11 @@ include(${QT_USE_FILE})
 
 include_directories( ${QT_INCLUDES} )
 
-set(images_RC images.qrc)
+set(res_RC res.qrc)
 
-qt4_add_resources( images_RC_SRCS ${images_RC} )
+qt4_add_resources( res_RC_SRCS ${res_RC} )
 
-add_library(images ${images_RC_SRCS})
+add_library(res ${res_RC_SRCS})
 
 ########### install files ###############
 
@@ -17,8 +17,8 @@ add_library(images ${images_RC_SRCS})
 
 #INCLUDES = $(all_includes)
 #METASOURCES = AUTO
-#lib_LIBRARIES =  libimages.a
+#lib_LIBRARIES =  libres.a
 #
 #
-#libimages_a_SOURCES = Images.cpp
+#libres_a_SOURCES = Images.cpp
 #noinst_HEADERS =  Images.h
