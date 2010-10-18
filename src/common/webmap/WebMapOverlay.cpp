@@ -22,14 +22,14 @@
 #include <QMouseEvent>
 #include "WebMapOverlay.h"
 #include "WebMapOverlayItem.h"
-#include "WebMapOverlayScene.h"
+#include "WebMapScene.h"
 
 WebMapOverlay::WebMapOverlay(QWidget *pParent)
 	:QGraphicsView(pParent)
 {
-	WebMapOverlayScene *pScene;
+	WebMapScene *pScene;
 
-	pScene = new WebMapOverlayScene(this);
+	pScene = new WebMapScene(this);
 	pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
 	setScene(pScene);
 
@@ -66,7 +66,7 @@ void WebMapOverlay::resizeEvent(QResizeEvent *pEvent)
 	scene()->setSceneRect(0, 0, width(), height());
 }
 
-WebMapOverlayScene* WebMapOverlay::getScene()
+WebMapScene* WebMapOverlay::getScene()
 {
-	return (WebMapOverlayScene*)scene();
+	return (WebMapScene*)scene();
 }

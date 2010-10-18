@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef WebMapOverlayScene_h
-#define WebMapOverlayScene_h
+#ifndef WebMapScene_h
+#define WebMapScene_h
 
 #include <QGraphicsScene>
 #include <QMouseEvent>
@@ -27,14 +27,14 @@
 /**
 	@author Alex Graf <grafal@sourceforge.net>
 */
-class WebMapOverlayScene: public QGraphicsScene
+class WebMapScene: public QGraphicsScene
 {
 	Q_OBJECT
 
 	public:
-		WebMapOverlayScene(QObject *pParent);
+		WebMapScene(QObject *pParent);
 
-		virtual ~WebMapOverlayScene();
+		virtual ~WebMapScene();
 
 	signals:
 		void mouseSignal(QGraphicsSceneMouseEvent *pEvent);
