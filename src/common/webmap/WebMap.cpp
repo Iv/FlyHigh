@@ -94,6 +94,15 @@ void WebMap::gotoLocation(const QString &local)
 	m_pNetMgr->get(QNetworkRequest(requestStr));
 }
 
+void WebMap::zoomTo(qreal north, qreal east, qreal south, qreal west)
+{
+	QString code = "zoomTo(%1, %2, %3, %4);";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(north).arg(east).arg(south).arg(west));
+}
+
 void WebMap::mouseSlot(QGraphicsSceneMouseEvent *pEvent)
 {
 	QPoint pos((int)pEvent->scenePos().x(), (int)pEvent->scenePos().y());
