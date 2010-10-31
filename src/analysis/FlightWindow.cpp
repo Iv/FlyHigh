@@ -42,6 +42,7 @@
 #include "OLCWebForm.h"
 #include "ProgressDlg.h"
 #include "MapView.h"
+#include "WebMapFlightView.h"
 
 FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -106,20 +107,23 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	QMenu* pPlotMenu = menuBar()->addMenu(tr("&Plot"));
 
 	QAction* pSpdTimeAct = new QAction("&Speed vs Time", this);
-	connect(pSpdTimeAct,SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
+	connect(pSpdTimeAct, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
 	pPlotMenu->addAction(pSpdTimeAct);
 	
 	QAction* pAltTimeAct = new QAction("&Alt vs Time", this);
-	connect(pAltTimeAct,SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
+	connect(pAltTimeAct, SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
 	pPlotMenu->addAction(pAltTimeAct);
 	QAction* pVarioTimeAct = new QAction("&Vario vs Time", this);
-	connect(pVarioTimeAct,SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
+	connect(pVarioTimeAct, SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
 	pPlotMenu->addAction(pVarioTimeAct);
 	QAction* pOLCAct = new QAction("&OLC", this);
-	connect(pOLCAct,SIGNAL(triggered()), this, SLOT(plot_OLC()));
+	connect(pOLCAct, SIGNAL(triggered()), this, SLOT(plot_OLC()));
 	pPlotMenu->addAction(pOLCAct);
+	QAction* pWebMapAct = new QAction("&Web Map View", this);
+	connect(pWebMapAct, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
+	pPlotMenu->addAction(pWebMapAct);
 	QAction* pMapAct = new QAction("&Map View", this);
-	connect(pMapAct,SIGNAL(triggered()), this, SLOT(showOnMap()));
+	connect(pMapAct, SIGNAL(triggered()), this, SLOT(showOnMap()));
 	pPlotMenu->addAction(pMapAct);
 
 	TableWindow::setWindowTitle(caption);
@@ -960,6 +964,45 @@ void FlightWindow::plotFlighPointList(FlightPointList &fpList, const QString& ti
 	}
 	
 	m_plotter.plotXYZ(x, y, z, title);
+}
+
+void FlightWindow::showOnWebMap()
+{
+	QString title;
+	IGCFileParser igcParser;
+	ProgressDlg progDlg(this);
+	int row;
+	bool success;
+	WebMapFlightView *pView;
+	WayPoint::WayPointListType wpList;
+	uint fpListSize;
+	uint fpNr;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		progDlg.beginProgress(tr("read igc file..."), m_pDb);
+		success = m_pDb->loadIGCFile(m_flightList[row]);
+		progDlg.endProgress();
+		
+		if(success)
+		{
+			igcParser.parse(m_flightList[row].igcData());
+			fpListSize = igcParser.flightPointList().size();
+
+			if(fpListSize > 0)
+			{
+				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				{
+					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
+				}
+
+				pView = new WebMapFlightView(this, tr("View Flight"), wpList);
+				pView->showMaximized();
+			}
+		}
+	}
 }
 
 void FlightWindow::showOnMap()
