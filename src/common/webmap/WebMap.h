@@ -46,6 +46,8 @@ class WebMap: public QWebView
 
 		void gotoLocation(const QString &local);
 
+		void zoomTo(qreal north, qreal east, qreal south, qreal west);
+
 	signals:
 		void mapReady();
 
