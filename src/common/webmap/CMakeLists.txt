@@ -10,7 +10,8 @@ set(webmap_SRCS WebMapFaiSector.cpp
              WebMapItem.cpp
              WebMapScene.cpp
              WebMapWidget.cpp
-             WebMapTurnPoint.cpp)
+             WebMapTurnPoint.cpp
+             WebMapTrack.cpp)
 
 set(webmap_HDRS WebMap.h
              WebMapScene.h
