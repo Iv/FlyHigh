@@ -74,3 +74,8 @@ WebMapOverlay* WebMapItem::getMapOverlay()
 {
 	return m_pOverlay;
 }
+
+qreal WebMapItem::getPenWidth() const
+{
+	return 1.0;
+}
