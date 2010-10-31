@@ -35,7 +35,13 @@ typedef QList<WebMapItem*> WebMapItemList;
 class WebMapItem: public QGraphicsItem
 {
 	public:
-		typedef enum ItemType{WebMapTurnPointType = UserType + 1, WebMapLegType, WebMapFaiSectorType}ItemType;
+		typedef enum ItemType
+		{
+			WebMapTurnPointType = UserType + 1,
+			WebMapLegType,
+			WebMapFaiSectorType,
+			WebMapTrackType
+		}ItemType;
 
 		WebMapItem(ItemType type);
 
@@ -59,6 +65,8 @@ class WebMapItem: public QGraphicsItem
 		void setMapOverlay(WebMapOverlay *pOverlay);
 
 		WebMapOverlay* getMapOverlay();
+
+		qreal getPenWidth() const;
 
 	private:
 		ItemType m_type;
