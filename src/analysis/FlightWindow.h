@@ -39,17 +39,30 @@ class FlightWindow : public TableWindow
 		
 	private slots:
 		void file_update();
+
 		void file_AddToSqlDB();
+
 		void file_new();
+
 		void file_delete();
+
 		void file_import();
+
 		void file_exportIGC();
+
 		void file_exportKML();
+
 		void plot_speedVsTime();
+
 		void plot_altVsTime();
+
 		void plot_varioVsTime();
+
 		void plot_OLC();
+
 		void showOnMap();
+
+		void showOnWebMap();
 		
 	private:
 		enum Fields{Nr, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
@@ -62,6 +75,7 @@ class FlightWindow : public TableWindow
 		Flight::FlightListType m_flightList;
 
 		void setFlightToRow(uint row, Flight &flight);
+
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 };
 
