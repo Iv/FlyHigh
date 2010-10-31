@@ -65,6 +65,14 @@
 				map.zoomOut();
 			}
 
+			function zoomTo(north, east, south, west)
+			{
+				var bounds;
+
+				bounds = new GLatLngBounds(new GLatLng(south, west), new GLatLng(north, east));
+				map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
+			}
+
 			function setSize(w, h)
 			{
 				var map_div;
