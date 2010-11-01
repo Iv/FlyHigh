@@ -38,6 +38,7 @@
 #include "WebMapFlightView.h"
 #include "WebMapTurnPoint.h"
 #include "WebMapTrack.h"
+#include "WebMap.h"
 
 WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name, const WayPoint::WayPointListType &wpList)
 	:QMainWindow(parent)
@@ -126,7 +127,9 @@ WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name, const W
 	retranslateUi();
 
 //	setRouteType(m_routeType);
-	m_pWebMapWidget->addItem(new WebMapTrack(wpList));
+	m_pTrack = new WebMapTrack(wpList);
+	m_pWebMapWidget->addItem(m_pTrack);
+	connect(m_pWebMapWidget->getMap(), SIGNAL(mapReady()), this, SLOT(mapReady()));
 }
 
 WebMapFlightView::~WebMapFlightView()
@@ -375,6 +378,13 @@ void WebMapFlightView::newLatLon(const WebMapTurnPoint *pTp)
 			m_distList[3].pWebMapLeg->enableGlow(isFai);
 		}
 	}
+}
+
+void WebMapFlightView::mapReady()
+{
+	m_pTrack->recalcWayPoints();
+	m_pWebMapWidget->getMap()->zoomTo(m_pTrack->getNorth(), m_pTrack->getEast(),
+				m_pTrack->getSouth(), m_pTrack->getWest());
 }
 
 int WebMapFlightView::findTpNr(const WebMapTurnPoint *pTp)

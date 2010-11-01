@@ -36,6 +36,7 @@ class QWidget;
 class WebMapLeg;
 class WebMapWidget;
 class WebMapTurnPoint;
+class WebMapTrack;
 
 /**
 	@author Alex Graf <alex@grafitation.ch>
@@ -87,6 +88,7 @@ class WebMapFlightView: public QMainWindow
 
 		QWidget *m_pCentralWidget;
 		WebMapWidget *m_pWebMapWidget;
+		WebMapTrack *m_pTrack;
 		QWidget *m_pDistanceWidget;
 		QHBoxLayout *m_pDistanceLayout;
 
@@ -142,13 +144,12 @@ class WebMapFlightView: public QMainWindow
 
 		bool isFaiTri() const;
 
-		private slots:
-			void changeRouteType(QAction *pAction);
+	private slots:
+		void changeRouteType(QAction *pAction);
 
-			void newLatLon(const WebMapTurnPoint *pTp);
+		void newLatLon(const WebMapTurnPoint *pTp);
 
-
-
+		void mapReady();
 };
 
 #endif
