@@ -58,6 +58,11 @@ void WebMapWidget::clear()
 	m_pOverlay->clear();
 }
 
+WebMap* WebMapWidget::getMap()
+{
+	return m_pMap;
+}
+
 void WebMapWidget::resizeEvent(QResizeEvent *pEvent)
 {
 	(void)pEvent;
