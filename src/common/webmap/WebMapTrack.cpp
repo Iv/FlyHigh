@@ -31,16 +31,35 @@ WebMapTrack::WebMapTrack(const WayPoint::WayPointListType &wpList)
 //	setFlag(ItemIsSelectable);
 //	setAcceptedMouseButtons(Qt::LeftButton);
 	m_wpList = wpList;
-	adjust();
 }
 
 WebMapTrack::~WebMapTrack()
 {
 }
 
+qreal WebMapTrack::getNorth() const
+{
+	return m_north;
+}
+
+qreal WebMapTrack::getEast() const
+{
+	return m_east;
+}
+
+qreal WebMapTrack::getSouth() const
+{
+	return m_south;
+}
+
+qreal WebMapTrack::getWest() const
+{
+	return m_west;
+}
+
 void WebMapTrack::adjust()
 {
-	if(m_wayPoints.size() == 0)
+	if(m_wpList.size() == 0)
 			return;
 
 	prepareGeometryChange();
@@ -195,10 +214,10 @@ void WebMapTrack::recalcWayPoints()
 	{
 		m_wayPoints.resize(listSize);
 
-		m_n = m_wpList[0].latitude();
-		m_e = m_wpList[0].longitude();
-		m_s = m_wpList[0].latitude();
-		m_w = m_wpList[0].longitude();
+		m_north = m_wpList[0].latitude();
+		m_east = m_wpList[0].longitude();
+		m_south = m_wpList[0].latitude();
+		m_west = m_wpList[0].longitude();
 	
 		for(wpNr=0; wpNr<listSize; wpNr++)
 		{
@@ -206,23 +225,23 @@ void WebMapTrack::recalcWayPoints()
 			lon = m_wpList[wpNr].longitude();
 
 			// latitude
-			if(lat > m_n)
+			if(lat > m_north)
 			{
-				m_n = lat;
+				m_north = lat;
 			}
-			else if(lat < m_s)
+			else if(lat < m_south)
 			{
-				m_s = lat;
+				m_south = lat;
 			}
 			
 			// longitude
-			if(lon > m_e)
+			if(lon > m_east)
 			{
-				m_e = lon;
+				m_east = lon;
 			}
-			else if(lon < m_w)
+			else if(lon < m_west)
 			{
-				m_w = lon;
+				m_west = lon;
 			}
 
 			getMap()->getPointFromLatLon(lat, lat, x, y);
