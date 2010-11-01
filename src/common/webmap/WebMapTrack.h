@@ -32,6 +32,16 @@ class WebMapTrack: public WebMapItem
 
 		~WebMapTrack();
 
+		void recalcWayPoints();
+
+		qreal getNorth() const;
+
+		qreal getEast() const;
+
+		qreal getSouth() const;
+
+		qreal getWest() const;
+
 	protected:
 		void adjust();
 
@@ -48,17 +58,15 @@ class WebMapTrack: public WebMapItem
 	private:
 		WayPoint::WayPointListType m_wpList;
 		QPolygonF m_wayPoints;
-		qreal m_n;
-		qreal m_e;
-		qreal m_s;
-		qreal m_w;
+		qreal m_north;
+		qreal m_east;
+		qreal m_south;
+		qreal m_west;
 
 /**
 		QPointF m_srcPoint;
 		QPointF m_dstPoint;
 */
-
-		void recalcWayPoints();
 };
 
 #endif
