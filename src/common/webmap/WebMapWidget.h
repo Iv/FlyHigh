@@ -40,6 +40,8 @@ class WebMapWidget: public QWidget
 
 		void clear();
 
+		WebMap* getMap();
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
