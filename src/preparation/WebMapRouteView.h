@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef WebMapRouteWindow_h
-#define WebMapRouteWindow_h
+#ifndef WebMapRouteView_h
+#define WebMapRouteView_h
 
 #include <QMainWindow>
 #include "IDataBase.h"
@@ -36,17 +36,14 @@ class WebMapLeg;
 class WebMapWidget;
 class WebMapTurnPoint;
 
-/**
-	@author Alex Graf <alex@grafitation.ch>
-*/
-class WebMapRouteWindow: public QMainWindow
+class WebMapRouteView: public QMainWindow
 {
 	Q_OBJECT
 
 	public:
-		WebMapRouteWindow(QWidget* parent, const QString &name, IDataBase::SourceType src);
+		WebMapRouteView(QWidget* parent, const QString &name, IDataBase::SourceType src);
 
-		~WebMapRouteWindow();
+		~WebMapRouteView();
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);

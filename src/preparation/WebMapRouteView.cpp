@@ -36,10 +36,10 @@
 #include "WebMapFaiSector.h"
 #include "WebMapLeg.h"
 #include "WebMapWidget.h"
-#include "WebMapRouteWindow.h"
+#include "WebMapRouteView.h"
 #include "WebMapTurnPoint.h"
 
-WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const QString &name, IDataBase::SourceType src)
+WebMapRouteView::WebMapRouteView(QWidget* parent, const QString &name, IDataBase::SourceType src)
 	:QMainWindow(parent)
 {
 	QFont font;
@@ -137,11 +137,11 @@ WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const QString &name, IData
 	setRouteType(m_routeType);
 }
 
-WebMapRouteWindow::~WebMapRouteWindow()
+WebMapRouteView::~WebMapRouteView()
 {
 }
 
-void WebMapRouteWindow::resizeEvent(QResizeEvent *pEvent)
+void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 {
 	int posX;
 
@@ -152,7 +152,7 @@ void WebMapRouteWindow::resizeEvent(QResizeEvent *pEvent)
 	}
 }
 
-void WebMapRouteWindow::retranslateUi()
+void WebMapRouteView::retranslateUi()
 {
 	QAction *pAction;
 	QString strLabel;
@@ -192,7 +192,7 @@ void WebMapRouteWindow::retranslateUi()
 	menu_FlightType->setTitle(QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
 }
 
-void WebMapRouteWindow::setRouteType(RouteType type)
+void WebMapRouteView::setRouteType(RouteType type)
 {
 	QColor tpColorList[] = {QColor(Qt::red), QColor(61, 143, 255), QColor(Qt::yellow)};
 	qreal tpInitList[] = {47.03, 8.47, 47.03, 8.53, 46.97, 8.53, 46.97, 8.47, 47.0, 8.5};
@@ -343,7 +343,7 @@ void WebMapRouteWindow::setRouteType(RouteType type)
 	m_pGridLayoutWidgetTps->show();
 }
 
-void WebMapRouteWindow::changeRouteType(QAction *pAction)
+void WebMapRouteView::changeRouteType(QAction *pAction)
 {
 	uint itemNr;
 
@@ -357,7 +357,7 @@ void WebMapRouteWindow::changeRouteType(QAction *pAction)
 	}
 }
 
-void WebMapRouteWindow::newLatLon(const WebMapTurnPoint *pTp)
+void WebMapRouteView::newLatLon(const WebMapTurnPoint *pTp)
 {
 	DistList::iterator it;
 	WebMapTurnPoint *pTp1;
@@ -387,12 +387,12 @@ void WebMapRouteWindow::newLatLon(const WebMapTurnPoint *pTp)
 	}
 }
 
-void WebMapRouteWindow::mapReady()
+void WebMapRouteView::mapReady()
 {
 	m_pWebMapWidget->getMap()->zoomTo(47.05, 8.53, 46.92, 8.47);
 }
 
-int WebMapRouteWindow::findTpNr(const WebMapTurnPoint *pTp)
+int WebMapRouteView::findTpNr(const WebMapTurnPoint *pTp)
 {
 	int itemNr;
 	int tpNr = -1;
@@ -409,7 +409,7 @@ int WebMapRouteWindow::findTpNr(const WebMapTurnPoint *pTp)
 	return tpNr;
 }
 
-qreal WebMapRouteWindow::getTpDist(const WebMapTurnPoint *pTp1, const WebMapTurnPoint *pTp2)
+qreal WebMapRouteView::getTpDist(const WebMapTurnPoint *pTp1, const WebMapTurnPoint *pTp2)
 {
 	const qreal EarthRadius = 6371000.0;
 	qreal dist;
@@ -433,7 +433,7 @@ qreal WebMapRouteWindow::getTpDist(const WebMapTurnPoint *pTp1, const WebMapTurn
 	return dist;
 }
 
-WebMapRouteWindow::TpListItem WebMapRouteWindow::createTpListItem(WebMapTurnPoint *pTp)
+WebMapRouteView::TpListItem WebMapRouteView::createTpListItem(WebMapTurnPoint *pTp)
 {
 	TpListItem item;
 	QLabel *pLabel;
@@ -465,7 +465,7 @@ pLabel->setText("Lon");
 	return item;
 }
 
-void WebMapRouteWindow::addTpListItem(TpListItem &item)
+void WebMapRouteView::addTpListItem(TpListItem &item)
 {
 	uint row;
 
@@ -476,7 +476,7 @@ void WebMapRouteWindow::addTpListItem(TpListItem &item)
 	m_pGridLayoutTps->addWidget(item.pLon, row, 2);
 }
 
-WebMapRouteWindow::DistListItem WebMapRouteWindow::createDistListItem(WebMapTurnPoint *pTp1, WebMapTurnPoint *pTp2, WebMapLeg *pWebMapLeg)
+WebMapRouteView::DistListItem WebMapRouteView::createDistListItem(WebMapTurnPoint *pTp1, WebMapTurnPoint *pTp2, WebMapLeg *pWebMapLeg)
 {
 	DistListItem item;
 	QLabel *pLabel;
@@ -513,7 +513,7 @@ pLabel->setText("Perc");
 	return item;
 }
 
-void WebMapRouteWindow::addDistListItem(DistListItem &item, uint row)
+void WebMapRouteView::addDistListItem(DistListItem &item, uint row)
 {
 	m_distList.insert(row, item);
 	m_pGridLayoutDists->addWidget(item.pLabel, row, 0);
@@ -521,7 +521,7 @@ void WebMapRouteWindow::addDistListItem(DistListItem &item, uint row)
 //	m_pGridLayoutDists->addWidget(item.pDistPerc, row, 2);
 }
 
-void WebMapRouteWindow::updateDistValues(const WebMapTurnPoint *pTp)
+void WebMapRouteView::updateDistValues(const WebMapTurnPoint *pTp)
 {
 	DistList::iterator it;
 	WebMapTurnPoint *pTp1;
@@ -564,7 +564,7 @@ void WebMapRouteWindow::updateDistValues(const WebMapTurnPoint *pTp)
 	label_Distance_Value->setText(QString("%1 km").arg(dist / 1000, 0, 'f', 3));
 }
 
-bool WebMapRouteWindow::isFaiTri() const
+bool WebMapRouteView::isFaiTri() const
 {
 	qreal minDist;
 	qreal dist;
