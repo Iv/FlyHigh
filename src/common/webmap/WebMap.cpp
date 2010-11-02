@@ -188,6 +188,7 @@ void WebMap::setSize(uint width, uint height)
 
 void WebMap::loadFinished(bool ok)
 {
+	setSize(width(), height());
 	emit mapReady();
 	m_pProgress->hide();
 }
@@ -203,81 +204,3 @@ void WebMap::replyFinished(QNetworkReply *pReply)
 		emit mapReady();
 	}
 }
-
-#if 0
-void WebMap::emitBounds()
-{
-	typedef QWebMap<QString, QVariant> BoundsWebMap;
-
-	enum {NofBounds = 4};
-
-	QWebFrame *pFrame;
-	QVariant ret;
-	BoundsWebMap mapNeSw;
-	BoundsWebMap mapLatLon;
-	BoundsWebMap::iterator itNeSw;
-	BoundsWebMap::iterator itLatLon;
-	qreal bounds[NofBounds];
-	uint boundNr = 0;
-
-	pFrame = page()->mainFrame();
-	ret = pFrame->evaluateJavaScript("map.getBounds();");
-	mapNeSw = ret.toWebMap();
-
-	for(itNeSw=mapNeSw.begin(); itNeSw!=mapNeSw.end(); itNeSw++)
-	{
-		if(boundNr >= NofBounds)
-		{
-			break;
-		}
-
-		mapLatLon = (*itNeSw).toWebMap();
-
-		for(itLatLon=mapLatLon.begin(); itLatLon!=mapLatLon.end(); itLatLon++)
-		{
-			bounds[boundNr] = (*itLatLon).toDouble() * 180 / M_PI;
-			boundNr++;
-		}
-	}
-
-	emit newBounds(bounds[0], bounds[1], bounds[2], bounds[3]);
-}
-
-void WebMap::getBounds()
-{
-	QWebFrame *pFrame;
-	QVariant ret;
-	QString str = "hello";
-
-	pFrame = page()->mainFrame();
-
-/*
-ret = pFrame->evaluateJavaScript("test()");
-str = ret.toString();
-printf("return %s\n", str.toAscii().data());
-*/
-
-/*
-	ret = pFrame->evaluateJavaScript("test2();");
-
-	foreach (QVariant value, map)
-	{
-		printf("return %f\n", value.toDouble());
-	}
-*/
-
-	ret = pFrame->evaluateJavaScript("map.getBounds();");
-
-	QWebMap<QString, QVariant> mapNESW = ret.toWebMap();
-
-	foreach(QVariant value, mapNESW)
-	{
-		QWebMap<QString, QVariant> mapLatLon = value.toWebMap();
-
-		foreach(QVariant latLon, mapLatLon)
-		{
-			printf("return %f\n", latLon.toDouble() * 180 / M_PI);
-		}
-	}
-}
-#endif
