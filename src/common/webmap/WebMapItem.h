@@ -66,6 +66,8 @@ class WebMapItem: public QGraphicsItem
 
 		WebMapOverlay* getMapOverlay();
 
+		void setPenWidth(qreal width);
+
 		qreal getPenWidth() const;
 
 	private:
@@ -73,6 +75,7 @@ class WebMapItem: public QGraphicsItem
 		QColor m_color;
 		WebMap *m_pMap;
 		WebMapOverlay *m_pOverlay;
+		qreal m_penWidth;
 
 		friend class WebMapWidget;
 		friend class WebMapTurnPoint;

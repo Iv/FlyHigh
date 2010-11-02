@@ -25,6 +25,7 @@ WebMapItem::WebMapItem(ItemType type)
 	m_type = type;
 	m_pMap = NULL;
 	m_pOverlay = NULL;
+	m_penWidth = 1.0;
 }
 
 WebMapItem::~WebMapItem()
@@ -75,7 +76,12 @@ WebMapOverlay* WebMapItem::getMapOverlay()
 	return m_pOverlay;
 }
 
+void WebMapItem::setPenWidth(qreal width)
+{
+	m_penWidth = width;
+}
+
 qreal WebMapItem::getPenWidth() const
 {
-	return 1.0;
+	return m_penWidth;
 }
