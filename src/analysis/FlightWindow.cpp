@@ -999,7 +999,7 @@ void FlightWindow::showOnWebMap()
 				}
 
 				pView = new WebMapFlightView(this, tr("View Flight"), wpList);
-				pView->showMaximized();
+				pView->show();
 			}
 		}
 	}
