@@ -30,6 +30,7 @@
 #include "Route.h"
 #include "RouteWindow.h"
 #include "WayPoint.h"
+#include "WebMapRouteView.h"
 
 RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -38,53 +39,56 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
-        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
 	switch(src)
 	{
 		case IDataBase::SqlDB:
-                {
+		{
 			m_pDb = ISql::pInstance();
 			caption = "Routes from DB";
 
-                        QAction* pNewAct = new QAction(tr("&New..."), this);
-                        connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
-                        pFileMenu->addAction(pNewAct);
-                        QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
-                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-                        pFileMenu->addAction(pAddAct);
-                }
-                break;
+			QAction* pNewAct = new QAction(tr("&New..."), this);
+			connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_new()));
+			pFileMenu->addAction(pNewAct);
+			QAction* pNewWebMapAct = new QAction(tr("New &Web Map..."), this);
+			connect(pNewWebMapAct, SIGNAL(triggered()), this, SLOT(file_newWebMap()));
+			pFileMenu->addAction(pNewWebMapAct);
+			QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
+			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+			pFileMenu->addAction(pAddAct);
+		}
+		break;
 		case IDataBase::GPSdevice:
-                {
+		{
 			m_pDb = IGPSDevice::pInstance();
 			caption = "Routes from GPS";
 
-                        QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-                        pFileMenu->addAction(pAddAct);
-                }
+			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
+			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			pFileMenu->addAction(pAddAct);
+		}
 		break;
 		default:
 			Q_ASSERT(false);
 		break;
 	}
 	
-        QAction* pViewAct = new QAction(tr("&View"), this);
-        connect(pViewAct,SIGNAL(triggered()), this, SLOT(file_view()));
-        pFileMenu->addAction(pViewAct);
-        QAction* pDelAct = new QAction(tr("&Delete"), this);
-        connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-        pFileMenu->addAction(pDelAct);
-        QAction* pUpdateAct = new QAction(tr("&Update"), this);
-        connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-        pFileMenu->addAction(pUpdateAct);
-        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-        pFileMenu->addAction(pExpAllAct);
+	QAction* pViewAct = new QAction(tr("&View"), this);
+	connect(pViewAct,SIGNAL(triggered()), this, SLOT(file_view()));
+	pFileMenu->addAction(pViewAct);
+	QAction* pDelAct = new QAction(tr("&Delete"), this);
+	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+	pFileMenu->addAction(pDelAct);
+	QAction* pUpdateAct = new QAction(tr("&Update"), this);
+	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+	pFileMenu->addAction(pUpdateAct);
+	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+	connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+	pFileMenu->addAction(pExpAllAct);
 
-        TableWindow::setWindowTitle(caption);
-        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
+	TableWindow::setWindowTitle(caption);
+	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
@@ -162,6 +166,14 @@ void RouteWindow::file_new()
 		ISql::pInstance()->add(route);
 		TableWindow::unsetCursor();
 	}
+}
+
+void RouteWindow::file_newWebMap()
+{
+	WebMapRouteView *pView;
+
+	pView = new WebMapRouteView(this, tr("Route from DB"), IDataBase::SqlDB);
+	pView->show();
 }
 
 void RouteWindow::file_view()
