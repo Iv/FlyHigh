@@ -148,8 +148,7 @@ class WebMapRouteWindow: public MDIWindow
 
 			void newLatLon(const WebMapTurnPoint *pTp);
 
-
-
+			void mapReady();
 };
 
 #endif
