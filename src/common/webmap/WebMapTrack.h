@@ -32,7 +32,9 @@ class WebMapTrack: public WebMapItem
 
 		~WebMapTrack();
 
-		void recalcWayPoints();
+		void calcWayPoints();
+
+		void calcBounds();
 
 		qreal getNorth() const;
 
@@ -55,6 +57,8 @@ class WebMapTrack: public WebMapItem
 	
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent);
 
+		void updatePos();
+
 	private:
 		WayPoint::WayPointListType m_wpList;
 		QPolygonF m_wayPoints;
@@ -62,11 +66,6 @@ class WebMapTrack: public WebMapItem
 		qreal m_east;
 		qreal m_south;
 		qreal m_west;
-
-/**
-		QPointF m_srcPoint;
-		QPointF m_dstPoint;
-*/
 };
 
 #endif

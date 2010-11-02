@@ -31,10 +31,80 @@ WebMapTrack::WebMapTrack(const WayPoint::WayPointListType &wpList)
 //	setFlag(ItemIsSelectable);
 //	setAcceptedMouseButtons(Qt::LeftButton);
 	m_wpList = wpList;
+	setPenWidth(3.0);
 }
 
 WebMapTrack::~WebMapTrack()
 {
+}
+
+void WebMapTrack::calcWayPoints()
+{
+	int listSize;
+	int wpNr;
+	double lat;
+	double lon;
+	int x;
+	int y;
+
+	listSize = m_wpList.size();
+
+	if(listSize > 1)
+	{
+		m_wayPoints.resize(listSize);
+	
+		for(wpNr=0; wpNr<listSize; wpNr++)
+		{
+			lat = m_wpList[wpNr].latitude();
+			lon = m_wpList[wpNr].longitude();
+			getMap()->getPointFromLatLon(lat, lon, x, y);
+			m_wayPoints[wpNr] = QPointF(x, y);
+		}
+	}
+}
+
+void WebMapTrack::calcBounds()
+{
+	int listSize;
+	int wpNr;
+	double lat;
+	double lon;
+
+	listSize = m_wpList.size();
+
+	if(listSize > 1)
+	{
+		m_north = m_wpList[0].latitude();
+		m_east = m_wpList[0].longitude();
+		m_south = m_wpList[0].latitude();
+		m_west = m_wpList[0].longitude();
+	
+		for(wpNr=0; wpNr<listSize; wpNr++)
+		{
+			lat = m_wpList[wpNr].latitude();
+			lon = m_wpList[wpNr].longitude();
+
+			// latitude
+			if(lat > m_north)
+			{
+				m_north = lat;
+			}
+			else if(lat < m_south)
+			{
+				m_south = lat;
+			}
+			
+			// longitude
+			if(lon > m_east)
+			{
+				m_east = lon;
+			}
+			else if(lon < m_west)
+			{
+				m_west = lon;
+			}
+		}
+	}
 }
 
 qreal WebMapTrack::getNorth() const
@@ -63,7 +133,7 @@ void WebMapTrack::adjust()
 			return;
 
 	prepareGeometryChange();
-	recalcWayPoints();
+	calcWayPoints();
 	update();
 
 /**
@@ -137,54 +207,7 @@ void WebMapTrack::paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOpt
 			return;
 
 	pPainter->setPen(QPen(QColor(255, 170, 0), getPenWidth(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-//	pPainter->setBrush(Qt::black);
-	pPainter->drawPolygon(m_wayPoints);
-
-/**
-	QPointF arrowP1;
-	QPointF arrowP2;
-	double angle;
-
-	if(!m_pSrcTp || !m_pDstTp)
-			return;
-
-	// Draw the line itself
-	QLineF line(m_srcPoint, m_dstPoint);
-
-	if(pOption->state & QStyle::State_Sunken)
-	{
-		pPainter->setPen(QPen(Qt::white, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	}
-	else if(m_glowEn)
-	{
-		pPainter->setPen(QPen(Qt::yellow, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	}
-	else
-	{
-		pPainter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	}
-
-	pPainter->drawLine(line);
-
-	// Draw the arrows if there's enough room
-	if(m_arrowEn)
-	{
-		angle = ::acos(line.dx() / line.length());
-	
-		if(line.dy() >= 0)
-		{
-			angle = 2.0 * M_PI - angle;
-		}
-	
-		arrowP1 = m_dstPoint + QPointF(sin(angle - M_PI / 3) * m_arrowSize,
-									cos(angle - M_PI / 3) * m_arrowSize);
-		arrowP2 = m_dstPoint + QPointF(sin(angle - M_PI + M_PI / 3) * m_arrowSize,
-									cos(angle - M_PI + M_PI / 3) * m_arrowSize);
-	
-		pPainter->setBrush(Qt::black);
-		pPainter->drawPolygon(QPolygonF() << line.p2() << arrowP1 << arrowP2);
-	}
-*/
+	pPainter->drawPolyline(m_wayPoints);
 }
 
 void WebMapTrack::mousePressEvent(QGraphicsSceneMouseEvent *pEvent)
@@ -199,53 +222,8 @@ void WebMapTrack::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
 	QGraphicsItem::mouseReleaseEvent(pEvent);
 }
 
-void WebMapTrack::recalcWayPoints()
+void WebMapTrack::updatePos()
 {
-	int listSize;
-	int wpNr;
-	double lat;
-	double lon;
-	int x;
-	int y;
-
-	listSize = m_wpList.size();
-
-	if(listSize > 1)
-	{
-		m_wayPoints.resize(listSize);
-
-		m_north = m_wpList[0].latitude();
-		m_east = m_wpList[0].longitude();
-		m_south = m_wpList[0].latitude();
-		m_west = m_wpList[0].longitude();
-	
-		for(wpNr=0; wpNr<listSize; wpNr++)
-		{
-			lat = m_wpList[wpNr].latitude();
-			lon = m_wpList[wpNr].longitude();
-
-			// latitude
-			if(lat > m_north)
-			{
-				m_north = lat;
-			}
-			else if(lat < m_south)
-			{
-				m_south = lat;
-			}
-			
-			// longitude
-			if(lon > m_east)
-			{
-				m_east = lon;
-			}
-			else if(lon < m_west)
-			{
-				m_west = lon;
-			}
-
-			getMap()->getPointFromLatLon(lat, lat, x, y);
-			m_wayPoints[wpNr] = QPointF(x, y);
-		}
-	}
+	calcWayPoints();
+	update();
 }
