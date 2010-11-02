@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QWidget>
+#include "WebMap.h"
 #include "WebMapFaiSector.h"
 #include "WebMapLeg.h"
 #include "WebMapWidget.h"
@@ -125,6 +126,7 @@ WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const char* name, Qt::Wind
 	}
 
 	connect(alignmentGroup, SIGNAL(triggered(QAction*)), this, SLOT(changeRouteType(QAction*)));
+	connect(m_pWebMapWidget->getMap(), SIGNAL(mapReady()), this, SLOT(mapReady()));
 
 	setMenuBar(menubar);
 
@@ -381,6 +383,11 @@ void WebMapRouteWindow::newLatLon(const WebMapTurnPoint *pTp)
 			m_distList[3].pWebMapLeg->enableGlow(isFai);
 		}
 	}
+}
+
+void WebMapRouteWindow::mapReady()
+{
+	m_pWebMapWidget->getMap()->zoomTo(47.05, 8.53, 46.92, 8.47);
 }
 
 int WebMapRouteWindow::findTpNr(const WebMapTurnPoint *pTp)
