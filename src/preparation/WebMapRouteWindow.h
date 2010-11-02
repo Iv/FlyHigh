@@ -22,7 +22,6 @@
 
 #include <QMainWindow>
 #include "IDataBase.h"
-#include "MDIWindow.h"
 
 class QAction;
 class QActionGroup;
@@ -40,12 +39,12 @@ class WebMapTurnPoint;
 /**
 	@author Alex Graf <alex@grafitation.ch>
 */
-class WebMapRouteWindow: public MDIWindow
+class WebMapRouteWindow: public QMainWindow
 {
 	Q_OBJECT
 
 	public:
-		WebMapRouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		WebMapRouteWindow(QWidget* parent, const QString &name, IDataBase::SourceType src);
 
 		~WebMapRouteWindow();
 
