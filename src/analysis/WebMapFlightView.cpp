@@ -61,7 +61,7 @@ WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name, const W
 	m_pCentralWidget = new QWidget(this);
 
 	font.setPointSize(16);
-	resize(800, 600);
+	resize(1000, 800);
 
 	// Routentyp Actions
 	for(itemNr=0; itemNr<NofRouteType; itemNr++)
@@ -382,9 +382,10 @@ void WebMapFlightView::newLatLon(const WebMapTurnPoint *pTp)
 
 void WebMapFlightView::mapReady()
 {
-	m_pTrack->recalcWayPoints();
+	m_pTrack->calcBounds();
 	m_pWebMapWidget->getMap()->zoomTo(m_pTrack->getNorth(), m_pTrack->getEast(),
 				m_pTrack->getSouth(), m_pTrack->getWest());
+	m_pTrack->calcWayPoints();
 }
 
 int WebMapFlightView::findTpNr(const WebMapTurnPoint *pTp)
