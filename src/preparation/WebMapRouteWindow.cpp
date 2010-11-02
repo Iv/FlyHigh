@@ -39,8 +39,8 @@
 #include "WebMapRouteWindow.h"
 #include "WebMapTurnPoint.h"
 
-WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
-	:MDIWindow(parent, name, wflags)
+WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const QString &name, IDataBase::SourceType src)
+	:QMainWindow(parent)
 {
 	QFont font;
 	QLabel *pLabel;
@@ -51,6 +51,8 @@ WebMapRouteWindow::WebMapRouteWindow(QWidget* parent, const char* name, Qt::Wind
 	QAction *pAction;
 	uint itemNr;
 	int posX;
+
+	QWidget::setWindowTitle(name);
 
 	m_pGridLayoutWidgetDists = NULL;
 	m_pGridLayoutWidgetTps = NULL;
