@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <math.h>
+#include <stdio.h>
 #include "WebMapTurnPoint.h"
 #include "WebMapItem.h"
 #include "WebMap.h"
