@@ -11,7 +11,8 @@ set(webmap_SRCS WebMapFaiSector.cpp
              WebMapScene.cpp
              WebMapWidget.cpp
              WebMapTurnPoint.cpp
-             WebMapTrack.cpp)
+             WebMapTrack.cpp
+             PolyLineEncoder.cpp)
 
 set(webmap_HDRS WebMap.h
              WebMapScene.h
