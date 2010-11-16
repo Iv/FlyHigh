@@ -26,11 +26,11 @@
 class PolyLineEncoder
 {
 	public:
-		PolyLineEncoder(const WayPoint::WayPointListType &wpList);
+		PolyLineEncoder();
 
 		~PolyLineEncoder();
 
-		void dpEncode(const WayPoint::WayPointListType &points);
+		void dpEncode(const WayPoint::WayPointListType &points, QString &encPoints, QString &encLevels);
 
 	private:
 		typedef std::vector<double> ZoomLevelBreakType;
@@ -45,23 +45,21 @@ class PolyLineEncoder
 
 		static const double undefined;
 
-		WayPoint::WayPointListType m_wpList;
-
 		ZoomLevelBreakType m_zoomLevelBreaks;
 		uint m_numLevels;
 		uint m_zoomFactor;
 		double m_verySmall;
 		bool m_forceEndpoints;
 
-		std::string createEncodings(const WayPoint::WayPointListType &points, DistsType &dists);
+		QString createEncodings(const WayPoint::WayPointListType &points, DistsType &dists);
 
-		std::string encodeLevels(const WayPoint::WayPointListType &points, DistsType &dists, double absMaxDist);
+		QString encodeLevels(const WayPoint::WayPointListType &points, DistsType &dists, double absMaxDist);
 
 		uint computeLevel(double dd);
 
-		std::string encodeSignedNumber(int num);
+		QString encodeSignedNumber(int num);
 
-		std::string encodeNumber(uint num);
+		QString encodeNumber(uint num);
 
 		double distance(const WayPoint &p0, const WayPoint &p1, const WayPoint &p2, double segLength);
 };
