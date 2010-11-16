@@ -48,6 +48,8 @@ class WebMap: public QWebView
 
 		void zoomTo(qreal north, qreal east, qreal south, qreal west);
 
+		void setPolyLine(const QString &encPoints, const QString &encLevels);
+
 	signals:
 		void mapReady();
 
