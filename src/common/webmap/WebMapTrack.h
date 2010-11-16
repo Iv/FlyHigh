@@ -57,6 +57,8 @@ class WebMapTrack: public WebMapItem
 	
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent);
 
+		QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 		void updatePos();
 
 	private:

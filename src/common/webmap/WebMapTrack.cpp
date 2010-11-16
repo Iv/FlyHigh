@@ -21,6 +21,7 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <math.h>
+#include "PolyLineEncoder.h"
 #include "WebMap.h"
 #include "WebMapTrack.h"
 #include "WebMapTurnPoint.h"
@@ -32,6 +33,7 @@ WebMapTrack::WebMapTrack(const WayPoint::WayPointListType &wpList)
 //	setAcceptedMouseButtons(Qt::LeftButton);
 	m_wpList = wpList;
 	setPenWidth(3.0);
+	setPos(0, 0);
 }
 
 WebMapTrack::~WebMapTrack()
@@ -51,6 +53,7 @@ void WebMapTrack::calcWayPoints()
 
 	if(listSize > 1)
 	{
+/**
 		m_wayPoints.resize(listSize);
 	
 		for(wpNr=0; wpNr<listSize; wpNr++)
@@ -60,6 +63,13 @@ void WebMapTrack::calcWayPoints()
 			getMap()->getPointFromLatLon(lat, lon, x, y);
 			m_wayPoints[wpNr] = QPointF(x, y);
 		}
+*/
+		PolyLineEncoder encoder;
+		QString encPoints;
+		QString encLevels;
+
+		encoder.dpEncode(m_wpList, encPoints, encLevels);
+		getMap()->setPolyLine(encPoints, encLevels);
 	}
 }
 
@@ -222,8 +232,26 @@ void WebMapTrack::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
 	QGraphicsItem::mouseReleaseEvent(pEvent);
 }
 
+QVariant WebMapTrack::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+	if(change == QGraphicsItem::ItemPositionChange)
+	{
+//		calcWayPoints();
+
+printf("pos = %i, %i\n", scenePos().x(), scenePos().y());
+	}
+
+	return QGraphicsItem::itemChange(change, value);
+}
+
 void WebMapTrack::updatePos()
 {
+/**
+printf("begin calcWayPoints()\n");
 	calcWayPoints();
+printf("end calcWayPoints()\n");
+	setPos(0, 0);
+
 	update();
+*/
 }
