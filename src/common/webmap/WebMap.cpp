@@ -103,6 +103,15 @@ void WebMap::zoomTo(qreal north, qreal east, qreal south, qreal west)
 	pFrame->evaluateJavaScript(code.arg(north).arg(east).arg(south).arg(west));
 }
 
+void WebMap::setPolyLine(const QString &encPoints, const QString &encLevels)
+{
+	QString code = "setPolyLine('%1', '%2');";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels));
+}
+
 void WebMap::mouseSlot(QGraphicsSceneMouseEvent *pEvent)
 {
 	QPoint pos((int)pEvent->scenePos().x(), (int)pEvent->scenePos().y());
