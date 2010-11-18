@@ -90,6 +90,21 @@
 				map.addOverlay(encPolyLine);
 			}
 
+			function setMarker(lat, lon, image)
+			{
+				var latLng;
+				var marker;
+				var icon;
+				var markerOpts;
+
+				icon = new GIcon(G_DEFAULT_ICON);
+				icon.image = image;
+				latLng = new GLatLng(lat, lon);
+				markerOpts = {icon: icon};
+				marker = new GMarker(latLng, markerOpts);
+				map.addOverlay(marker);
+			}
+
 			function setSize(w, h)
 			{
 				var map_div;
