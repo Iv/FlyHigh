@@ -112,6 +112,32 @@ void WebMap::setPolyLine(const QString &encPoints, const QString &encLevels)
 	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels));
 }
 
+void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
+{
+	QString code = "setMarker(%1, %2, '%3');";
+	QWebFrame *pFrame;
+	QString image;
+
+	switch(type)
+	{
+		case MarkerStart:
+			image = "http://www.google.com/mapfiles/markerS.png";
+		break;
+		case MarkerEnd:
+			image = "http://www.google.com/mapfiles/markerE.png";
+		break;
+		case MarkerTp:
+			image = "http://www.google.com/mapfiles/markerT.png";
+		break;
+		default:
+			image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png";
+		break;
+	}
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(image));
+}
+
 void WebMap::mouseSlot(QGraphicsSceneMouseEvent *pEvent)
 {
 	QPoint pos((int)pEvent->scenePos().x(), (int)pEvent->scenePos().y());

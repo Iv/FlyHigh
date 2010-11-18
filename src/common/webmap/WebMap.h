@@ -36,6 +36,8 @@ class WebMap: public QWebView
 	Q_OBJECT
 
 	public:
+		typedef enum MarkerType{MarkerStart, MarkerEnd, MarkerTp, MarkerDefault}MarkerType;
+
 		WebMap(QWidget *pParent);
 
 		~WebMap();
@@ -49,6 +51,8 @@ class WebMap: public QWebView
 		void zoomTo(qreal north, qreal east, qreal south, qreal west);
 
 		void setPolyLine(const QString &encPoints, const QString &encLevels);
+
+		void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
 
 	signals:
 		void mapReady();
