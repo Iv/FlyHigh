@@ -26,12 +26,11 @@
 #include "WebMapTrack.h"
 #include "WebMapTurnPoint.h"
 
-WebMapTrack::WebMapTrack(const WayPoint::WayPointListType &wpList)
+WebMapTrack::WebMapTrack()
 	:WebMapItem(WebMapTrackType)
 {
 //	setFlag(ItemIsSelectable);
 //	setAcceptedMouseButtons(Qt::LeftButton);
-	m_wpList = wpList;
 	setPenWidth(3.0);
 	setPos(0, 0);
 }
@@ -40,14 +39,26 @@ WebMapTrack::~WebMapTrack()
 {
 }
 
+void WebMapTrack::setWayPointList(const WayPoint::WayPointListType &wpList)
+{
+	m_wpList = wpList;
+}
+
+void WebMapTrack::setTurnPtList(const FlightPointList &tpList)
+{
+	m_tpList = tpList;
+}
+
 void WebMapTrack::calcWayPoints()
 {
+	WayPoint::WayPointListType tpList;
 	int listSize;
 	int wpNr;
 	double lat;
 	double lon;
 	int x;
 	int y;
+	int tpNr;
 
 	listSize = m_wpList.size();
 
@@ -68,11 +79,27 @@ void WebMapTrack::calcWayPoints()
 		QString encPoints;
 		QString encLevels;
 
+		// Track
 		encoder.dpEncode(m_wpList, encPoints, encLevels);
-		getMap()->setPolyLine(encPoints, encLevels);
+		getMap()->setPolyLine(encPoints, encLevels, 3, "#FF0000");
 
-		getMap()->setMarker(m_wpList[0].latitude(), m_wpList[0].longitude(), WebMap::MarkerStart);
-		getMap()->setMarker(m_wpList[listSize - 1].latitude(), m_wpList[listSize - 1].longitude(), WebMap::MarkerLand);
+		// Marker
+		if(m_tpList.size() == 5)
+		{
+			getMap()->setMarker(m_tpList[0].wp.latitude(), m_tpList[0].wp.longitude(), WebMap::MarkerStart);
+			getMap()->setMarker(m_tpList[1].wp.latitude(), m_tpList[1].wp.longitude(), WebMap::MarkerTp1);
+			getMap()->setMarker(m_tpList[2].wp.latitude(), m_tpList[2].wp.longitude(), WebMap::MarkerTp2);
+			getMap()->setMarker(m_tpList[3].wp.latitude(), m_tpList[3].wp.longitude(), WebMap::MarkerTp3);
+			getMap()->setMarker(m_tpList[4].wp.latitude(), m_tpList[4].wp.longitude(), WebMap::MarkerLand);
+		}
+
+		for(tpNr=0; tpNr<m_tpList.size(); tpNr++)
+		{
+			tpList.push_back(m_tpList[tpNr].wp);
+		}
+
+		encoder.dpEncode(tpList, encPoints, encLevels);
+		getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
 	}
 }
 
