@@ -73,13 +73,13 @@
 				map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
 			}
 
-			function setPolyLine(encPoints, encLevels)
+			function setPolyLine(encPoints, encLevels, weight, color)
 			{
 				var encPolyLine;
 
 				encPolyLine = new GPolyline.fromEncoded({
-						color: "#FF0000",
-						weight: 3,
+						color: color,
+						weight: weight,
 						opacity: 1.0,
 						points: encPoints,
 						levels: encLevels,
