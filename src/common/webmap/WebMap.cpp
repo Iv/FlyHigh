@@ -103,13 +103,13 @@ void WebMap::zoomTo(qreal north, qreal east, qreal south, qreal west)
 	pFrame->evaluateJavaScript(code.arg(north).arg(east).arg(south).arg(west));
 }
 
-void WebMap::setPolyLine(const QString &encPoints, const QString &encLevels)
+void WebMap::setPolyLine(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
 {
-	QString code = "setPolyLine('%1', '%2');";
+	QString code = "setPolyLine('%1', '%2', %3, '%4');";
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels));
+	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels).arg(weight).arg(color));
 }
 
 void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)

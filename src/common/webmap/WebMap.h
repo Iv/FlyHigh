@@ -50,7 +50,7 @@ class WebMap: public QWebView
 
 		void zoomTo(qreal north, qreal east, qreal south, qreal west);
 
-		void setPolyLine(const QString &encPoints, const QString &encLevels);
+		void setPolyLine(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
 		void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
 
