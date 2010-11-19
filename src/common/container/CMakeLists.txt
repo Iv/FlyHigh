@@ -6,6 +6,7 @@ set(container_SRCS AirSpace.cpp
                    AirSpaceItem.cpp
                    BoundBox.cpp
                    Flight.cpp
+                   FlightPointList.cpp
                    Glider.cpp
                    Pilot.cpp
                    Route.cpp
