@@ -72,7 +72,7 @@ void WebMapTrack::calcWayPoints()
 		getMap()->setPolyLine(encPoints, encLevels);
 
 		getMap()->setMarker(m_wpList[0].latitude(), m_wpList[0].longitude(), WebMap::MarkerStart);
-		getMap()->setMarker(m_wpList[listSize - 1].latitude(), m_wpList[listSize - 1].longitude(), WebMap::MarkerEnd);
+		getMap()->setMarker(m_wpList[listSize - 1].latitude(), m_wpList[listSize - 1].longitude(), WebMap::MarkerLand);
 	}
 }
 
