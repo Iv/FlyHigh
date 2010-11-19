@@ -9,7 +9,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES} )
 
 set(analysis_SRCS FlightExpWindow.cpp
-                  FlightPointList.cpp
                   FlightWindow.cpp
                   GliderWindow.cpp
                   IGCFileParser.cpp
