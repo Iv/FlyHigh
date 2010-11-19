@@ -36,7 +36,7 @@ class WebMap: public QWebView
 	Q_OBJECT
 
 	public:
-		typedef enum MarkerType{MarkerStart, MarkerEnd, MarkerTp, MarkerDefault}MarkerType;
+		typedef enum MarkerType{MarkerStart, MarkerLand, MarkerTp1, MarkerTp2, MarkerTp3, MarkerDefault}MarkerType;
 
 		WebMap(QWidget *pParent);
 
