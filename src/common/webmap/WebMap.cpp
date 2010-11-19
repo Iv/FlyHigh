@@ -121,13 +121,19 @@ void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
 	switch(type)
 	{
 		case MarkerStart:
-			image = "http://www.google.com/mapfiles/markerS.png";
+			image = "MarkerS.png";
 		break;
-		case MarkerEnd:
-			image = "http://www.google.com/mapfiles/markerE.png";
+		case MarkerLand:
+			image = "MarkerL.png";
 		break;
-		case MarkerTp:
-			image = "http://www.google.com/mapfiles/markerT.png";
+		case MarkerTp1:
+			image = "MarkerTp1.png";
+		break;
+		case MarkerTp2:
+			image = "MarkerTp2.png";
+		break;
+		case MarkerTp3:
+			image = "MarkerTp3.png";
 		break;
 		default:
 			image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png";
