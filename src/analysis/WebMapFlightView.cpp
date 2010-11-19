@@ -40,7 +40,7 @@
 #include "WebMapTrack.h"
 #include "WebMap.h"
 
-WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name, const WayPoint::WayPointListType &wpList)
+WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name)
 	:QMainWindow(parent)
 {
 	QFont font;
@@ -127,13 +127,23 @@ WebMapFlightView::WebMapFlightView(QWidget* parent, const QString &name, const W
 	retranslateUi();
 
 //	setRouteType(m_routeType);
-	m_pTrack = new WebMapTrack(wpList);
+	m_pTrack = new WebMapTrack();
 	m_pWebMapWidget->addItem(m_pTrack);
 	connect(m_pWebMapWidget->getMap(), SIGNAL(mapReady()), this, SLOT(mapReady()));
 }
 
 WebMapFlightView::~WebMapFlightView()
 {
+}
+
+void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
+{
+	m_pTrack->setWayPointList(wpList);
+}
+
+void WebMapFlightView::setTurnPtList(const FlightPointList &tpList)
+{
+	m_pTrack->setTurnPtList(tpList);
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)

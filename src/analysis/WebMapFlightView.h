@@ -33,6 +33,7 @@ class QLabel;
 class QMenuBar;
 class QMenu;
 class QWidget;
+class FlightPointList;
 class WebMapLeg;
 class WebMapWidget;
 class WebMapTurnPoint;
@@ -46,9 +47,13 @@ class WebMapFlightView: public QMainWindow
 	Q_OBJECT
 
 	public:
-		WebMapFlightView(QWidget* parent, const QString &name, const WayPoint::WayPointListType &wpList);
+		WebMapFlightView(QWidget* parent, const QString &name);
 
 		~WebMapFlightView();
+
+		void setWayPointList(const WayPoint::WayPointListType &wpList);
+
+		void setTurnPtList(const FlightPointList &tpList);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
