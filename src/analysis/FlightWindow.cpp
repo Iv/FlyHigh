@@ -733,12 +733,12 @@ void FlightWindow::plot_speedVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList fpList;
+	FlightPointList tpList;
 	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
-	uint fpListSize;
+	uint tpListSize;
 	int row;
 	bool success;
 	
@@ -753,15 +753,15 @@ void FlightWindow::plot_speedVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size();
+			tpList = igcParser.flightPointList();
+			tpListSize = tpList.size();
 			
-			if(fpListSize > 0)
+			if(tpListSize > 0)
 			{
-				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(fpList[fpNr].time);
-					y.push_back(fpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
+					x.push_back(tpList[fpNr].time);
+					y.push_back(tpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
 				}
 			
 				m_plotter.clear();
@@ -779,12 +779,12 @@ void FlightWindow::plot_altVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList fpList;
+	FlightPointList tpList;
 	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	uint fpNr;
-	uint fpListSize;
+	uint tpListSize;
 	int row;
 	bool success;
 	
@@ -799,15 +799,15 @@ void FlightWindow::plot_altVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size();
+			tpList = igcParser.flightPointList();
+			tpListSize = tpList.size();
 			
-			if(fpListSize > 0)
+			if(tpListSize > 0)
 			{
-				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(fpList[fpNr].time);
-					y.push_back(fpList[fpNr].wp.altitude()); // in m
+					x.push_back(tpList[fpNr].time);
+					y.push_back(tpList[fpNr].wp.altitude()); // in m
 				}
 			
 				m_plotter.clear();
@@ -825,12 +825,12 @@ void FlightWindow::plot_varioVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList fpList;
+	FlightPointList tpList;
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	ProgressDlg progDlg(this);
 	uint fpNr;
-	uint fpListSize;
+	uint tpListSize;
 	int row;
 	bool success;
 	
@@ -845,15 +845,15 @@ void FlightWindow::plot_varioVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			fpList = igcParser.flightPointList();
-			fpListSize = fpList.size();
+			tpList = igcParser.flightPointList();
+			tpListSize = tpList.size();
 			
-			if(fpListSize > 0)
+			if(tpListSize > 0)
 			{
-				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(fpList[fpNr].time);
-					y.push_back(fpList.speedV(fpNr, fpNr+1)); // in m/s
+					x.push_back(tpList[fpNr].time);
+					y.push_back(tpList.speedV(fpNr, fpNr+1)); // in m/s
 				}
 			
 				m_plotter.clear();
@@ -873,7 +873,7 @@ void FlightWindow::plot_OLC()
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
-	FlightPointList fpList;
+	FlightPointList tpList;
 	ProgressDlg progDlg(this);
 	uint fpNr;
 	uint dist;
@@ -907,35 +907,35 @@ void FlightWindow::plot_OLC()
 				{
 					// fai triangle
 					dist = olcOptimizer.FAITriangle(fpIndexList);
-					fpList.clear();
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.clear();
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
 					title.sprintf("fai triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.4);
-					plotFlighPointList(fpList, title);
+					plotFlighPointList(tpList, title);
 					
 					// flat triangle
 					dist = olcOptimizer.flatTriangle(fpIndexList);
-					fpList.clear();
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-					fpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.clear();
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
+					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
 					title.sprintf("flat triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.2);
-					plotFlighPointList(fpList, title);
+					plotFlighPointList(tpList, title);
 					
 					// free distance
 					dist = olcOptimizer.freeDistance(fpIndexList);
-					fpList.clear();
+					tpList.clear();
 					
 					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 					{
-						fpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+						tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
 					}
 					
 					title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.0);
-					plotFlighPointList(fpList, title);
+					plotFlighPointList(tpList, title);
 				}
 
 				progDlg.endProgress();
@@ -946,21 +946,21 @@ void FlightWindow::plot_OLC()
 	}
 }
 
-void FlightWindow::plotFlighPointList(FlightPointList &fpList, const QString& title)
+void FlightWindow::plotFlighPointList(FlightPointList &tpList, const QString& title)
 {
 	GnuPlot::PlotVectorType x;
 	GnuPlot::PlotVectorType y;
 	GnuPlot::PlotVectorType z;
-	uint fpListSize;
+	uint tpListSize;
 	uint fpNr;
 	
-	fpListSize = fpList.size();
+	tpListSize = tpList.size();
 	
-	for(fpNr=0; fpNr<fpListSize; fpNr++)
+	for(fpNr=0; fpNr<tpListSize; fpNr++)
 	{
-		y.push_back(fpList[fpNr].wp.latitude());
-		x.push_back(fpList[fpNr].wp.longitude());
-		z.push_back(fpList[fpNr].wp.altitude());
+		y.push_back(tpList[fpNr].wp.latitude());
+		x.push_back(tpList[fpNr].wp.longitude());
+		z.push_back(tpList[fpNr].wp.altitude());
 	}
 	
 	m_plotter.plotXYZ(x, y, z, title);
@@ -970,13 +970,19 @@ void FlightWindow::showOnWebMap()
 {
 	QString title;
 	IGCFileParser igcParser;
+	OLCOptimizer olcOptimizer;
+	OLCOptimizer::FlightPointIndexListType fpIndexList;
 	ProgressDlg progDlg(this);
-	int row;
-	bool success;
 	WebMapFlightView *pView;
 	WayPoint::WayPointListType wpList;
-	uint fpListSize;
+	FlightPointList tpList;
+	uint tpListSize;
 	uint fpNr;
+	uint distFai;
+	uint distFlat;
+	uint distFree;
+	int row;
+	bool success;
 	
 	row = getTable()->currentRow();
 	
@@ -989,16 +995,65 @@ void FlightWindow::showOnWebMap()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			fpListSize = igcParser.flightPointList().size();
+			tpListSize = igcParser.flightPointList().size();
 
-			if(fpListSize > 0)
+			if(tpListSize > 0)
 			{
-				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				pView = new WebMapFlightView(this, tr("View Flight"));
+
+				// set waypoints
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
 					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
 				}
 
-				pView = new WebMapFlightView(this, tr("View Flight"), wpList);
+				pView->setWayPointList(wpList);
+
+				// optimize flight
+				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+				progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
+				
+				if(olcOptimizer.optimize())
+				{
+					// fai triangle
+					distFai = olcOptimizer.FAITriangle(fpIndexList);
+					tpList.clear();
+
+					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+					{
+						tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+					}
+
+					// flat triangle
+					distFlat = olcOptimizer.flatTriangle(fpIndexList);
+
+					if((distFai * 1.4) < (distFlat * 1.2))
+					{
+						tpList.clear();
+
+						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+						{
+							tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+						}
+					}
+
+					// free distance
+					distFree = olcOptimizer.freeDistance(fpIndexList);
+
+					if((distFlat * 1.2) < distFree)
+					{
+						tpList.clear();
+	
+						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+						{
+							tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+						}
+					}
+
+					pView->setTurnPtList(tpList);
+				}
+
+				progDlg.endProgress();
 				pView->show();
 			}
 		}
@@ -1014,7 +1069,7 @@ void FlightWindow::showOnMap()
 	bool success;
 	MapView *pView;
 	WayPoint::WayPointListType wpList;
-	uint fpListSize;
+	uint tpListSize;
 	uint fpNr;
 	
 	row = getTable()->currentRow();
@@ -1028,11 +1083,11 @@ void FlightWindow::showOnMap()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			fpListSize = igcParser.flightPointList().size();
+			tpListSize = igcParser.flightPointList().size();
 
-			if(fpListSize > 0)
+			if(tpListSize > 0)
 			{
-				for(fpNr=0; fpNr<fpListSize; fpNr++)
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
 					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
 				}
