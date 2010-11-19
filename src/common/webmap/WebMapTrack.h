@@ -22,15 +22,20 @@
 #define _WebMapTrack_h
 
 #include <QPolygonF>
+#include "FlightPointList.h"
 #include "WebMapItem.h"
 #include "WayPoint.h"
 
 class WebMapTrack: public WebMapItem
 {
 	public:
-		WebMapTrack(const WayPoint::WayPointListType &wpList);
+		WebMapTrack();
 
 		~WebMapTrack();
+
+		void setWayPointList(const WayPoint::WayPointListType &wpList);
+
+		void setTurnPtList(const FlightPointList &tpList);
 
 		void calcWayPoints();
 
@@ -63,6 +68,7 @@ class WebMapTrack: public WebMapItem
 
 	private:
 		WayPoint::WayPointListType m_wpList;
+		FlightPointList m_tpList;
 		QPolygonF m_wayPoints;
 		qreal m_north;
 		qreal m_east;
