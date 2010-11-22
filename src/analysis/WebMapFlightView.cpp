@@ -139,11 +139,12 @@ WebMapFlightView::~WebMapFlightView()
 void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
 {
 	m_pTrack->setWayPointList(wpList);
+	m_pWebMapWidget->loadMap();
 }
 
-void WebMapFlightView::setTurnPtList(const FlightPointList &tpList)
+void WebMapFlightView::setTurnPointList(const FlightPointList &tpList)
 {
-	m_pTrack->setTurnPtList(tpList);
+	m_pTrack->setTurnPointList(tpList);
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
@@ -392,10 +393,10 @@ void WebMapFlightView::newLatLon(const WebMapTurnPoint *pTp)
 
 void WebMapFlightView::mapReady()
 {
-	m_pTrack->calcBounds();
 	m_pWebMapWidget->getMap()->zoomTo(m_pTrack->getNorth(), m_pTrack->getEast(),
 				m_pTrack->getSouth(), m_pTrack->getWest());
-	m_pTrack->calcWayPoints();
+	m_pTrack->setWayPointListToMap();
+	m_pTrack->setTurnPointListToMap();
 }
 
 int WebMapFlightView::findTpNr(const WebMapTurnPoint *pTp)
