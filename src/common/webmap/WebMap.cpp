@@ -32,6 +32,7 @@ WebMap::WebMap(QWidget *pParent)
 {
 	QWebFrame *pFrame;
 
+	m_mapReady = false;
 	m_pNetMgr = new QNetworkAccessManager(this);
 	m_pProgress = new QProgressBar(this);
 	m_pProgress->setGeometry(0, 0, ProgressW, ProgressH);
@@ -48,6 +49,12 @@ WebMap::WebMap(QWidget *pParent)
 
 WebMap::~WebMap()
 {
+}
+
+void WebMap::loadMap()
+{
+	m_mapReady = false;
+	load(QUrl("qrc:/index.html"));
 }
 
 void WebMap::getPointFromLatLon(qreal lat, qreal lng, int &x, int &y)
@@ -144,6 +151,11 @@ void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
 	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(image));
 }
 
+bool WebMap::isMapReady() const
+{
+	return m_mapReady;
+}
+
 void WebMap::mouseSlot(QGraphicsSceneMouseEvent *pEvent)
 {
 	QPoint pos((int)pEvent->scenePos().x(), (int)pEvent->scenePos().y());
@@ -229,6 +241,7 @@ void WebMap::setSize(uint width, uint height)
 
 void WebMap::loadFinished(bool ok)
 {
+	m_mapReady = true;
 	setSize(width(), height());
 	emit mapReady();
 	m_pProgress->hide();
