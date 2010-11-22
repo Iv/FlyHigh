@@ -34,6 +34,8 @@ class WebMapWidget: public QWidget
 
 		~WebMapWidget();
 
+		void loadMap();
+
 		void addItem(WebMapItem *pItem);
 
 		void removeItem(WebMapItem *pItem);
