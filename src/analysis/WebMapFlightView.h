@@ -53,7 +53,7 @@ class WebMapFlightView: public QMainWindow
 
 		void setWayPointList(const WayPoint::WayPointListType &wpList);
 
-		void setTurnPtList(const FlightPointList &tpList);
+		void setTurnPointList(const FlightPointList &tpList);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
