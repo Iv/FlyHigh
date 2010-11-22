@@ -1050,7 +1050,7 @@ void FlightWindow::showOnWebMap()
 						}
 					}
 
-					pView->setTurnPtList(tpList);
+					pView->setTurnPointList(tpList);
 				}
 
 				progDlg.endProgress();
