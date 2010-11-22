@@ -28,7 +28,6 @@ WebMapWidget::WebMapWidget(QWidget *pParent)
 	:QWidget(pParent)
 {
 	m_pMap = new WebMap(this);
-	m_pMap->load(QUrl("qrc:/index.html"));
 	m_pOverlay = new WebMapOverlay(this);
 	connect(m_pOverlay->getScene(), SIGNAL(mouseSignal(QGraphicsSceneMouseEvent*)), m_pMap, SLOT(mouseSlot(QGraphicsSceneMouseEvent*)));
 	connect(m_pOverlay->getScene(), SIGNAL(wheelSignal(QGraphicsSceneWheelEvent*)), m_pMap, SLOT(wheelSlot(QGraphicsSceneWheelEvent*)));
@@ -37,6 +36,11 @@ WebMapWidget::WebMapWidget(QWidget *pParent)
 
 WebMapWidget::~WebMapWidget()
 {
+}
+
+void WebMapWidget::loadMap()
+{
+	m_pMap->loadMap();
 }
 
 void WebMapWidget::addItem(WebMapItem *pItem)
