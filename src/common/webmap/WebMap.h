@@ -42,6 +42,8 @@ class WebMap: public QWebView
 
 		~WebMap();
 
+		void loadMap();
+
 		void getPointFromLatLon(qreal lat, qreal lon, int &x, int &y);
 
 		void getLatLonFromPoint(int x, int y, qreal &lat, qreal &lon);
@@ -53,6 +55,8 @@ class WebMap: public QWebView
 		void setPolyLine(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
 		void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
+
+		bool isMapReady() const;
 
 	signals:
 		void mapReady();
@@ -70,6 +74,7 @@ class WebMap: public QWebView
 
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
+		bool m_mapReady;
 
 		void zoomIn();
 
