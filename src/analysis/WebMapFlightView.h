@@ -55,6 +55,8 @@ class WebMapFlightView: public QMainWindow
 
 		void setTurnPointList(const FlightPointList &tpList);
 
+		void loadMap();
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
