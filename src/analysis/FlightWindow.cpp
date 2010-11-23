@@ -1051,6 +1051,7 @@ void FlightWindow::showOnWebMap()
 					}
 
 					pView->setTurnPointList(tpList);
+					pView->loadMap();
 				}
 
 				progDlg.endProgress();
