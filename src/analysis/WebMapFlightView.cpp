@@ -139,12 +139,16 @@ WebMapFlightView::~WebMapFlightView()
 void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
 {
 	m_pTrack->setWayPointList(wpList);
-	m_pWebMapWidget->loadMap();
 }
 
 void WebMapFlightView::setTurnPointList(const FlightPointList &tpList)
 {
 	m_pTrack->setTurnPointList(tpList);
+}
+
+void WebMapFlightView::loadMap()
+{
+	m_pWebMapWidget->loadMap();
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
