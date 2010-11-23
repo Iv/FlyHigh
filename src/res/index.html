@@ -15,7 +15,7 @@
 				if(GBrowserIsCompatible())
 				{
 					map = new GMap2(document.getElementById("map"));
-//					map.setCenter(new GLatLng(47.0, 8.5), 13);
+					map.setCenter(new GLatLng(47.0, 8.5), 18);
 					map.setMapType(G_PHYSICAL_MAP);
 				}
 			}
@@ -67,33 +67,15 @@
 
 			function zoomTo(north, east, south, west)
 			{
-				map.setCenter(new GLatLng((north + south) / 2, (east + west)  / 2), 11);
-/*
-				var bounds;
-				var sw;
-				var ne;
-
-				sw = new GLatLng(46.8712, 9.62455);
-				ne = new GLatLng(47.029783, 9.974750);
-				bounds = new GLatLngBounds(sw, ne);
-				map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
-*/
-/*
 				var bounds;
 				var sw;
 				var ne;
 
 				sw = new GLatLng(south, west);
 				ne = new GLatLng(north, east);
-
 				bounds = new GLatLngBounds(sw, ne);
-
-//alert("zoomTo(" + bounds.getCenter().lat() + ", " + bounds.getCenter().lng() + ", " + map.getBoundsZoomLevel(bounds) +")\n");
-
-//				map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
-//map.setCenter(new GLatLng(47.0, 8.5), 13);
-map.setCenter(bounds.getCenter(), 7);
-*/
+				map.setCenter(new GLatLng(bounds.getCenter().lat(), bounds.getCenter().lng()),
+							map.getBoundsZoomLevel(bounds));
 			}
 
 			function setPolyLine(encPoints, encLevels, weight, color)
