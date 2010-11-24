@@ -35,7 +35,7 @@ class WebMapTrack: public WebMapItem
 
 		void setWayPointList(const WayPoint::WayPointListType &wpList);
 
-		void setTurnPointList(const FlightPointList &tpList);
+		void setTurnPointList(const FlightPointList &tpList, bool tri);
 
 		void setWayPointListToMap();
 
@@ -76,6 +76,7 @@ class WebMapTrack: public WebMapItem
 		qreal m_west;
 		bool m_trackToMap;
 		bool m_tpsToMap;
+		bool m_tri;
 
 		void calcBounds();
 };
