@@ -102,6 +102,10 @@ void PolyLineEncoder::dpEncode(const WayPoint::WayPointListType &points, QString
 			}
 		}
 	}
+	else
+	{
+		dists.resize(points.size(), undefined);
+	}
 
 	encPoints = createEncodings(points, dists);
 	encPoints.replace(QString("\\"), QString("\\\\"));
