@@ -983,6 +983,7 @@ void FlightWindow::showOnWebMap()
 	uint distFree;
 	int row;
 	bool success;
+	bool tri;
 	
 	row = getTable()->currentRow();
 	
@@ -1018,6 +1019,7 @@ void FlightWindow::showOnWebMap()
 					// fai triangle
 					distFai = olcOptimizer.FAITriangle(fpIndexList);
 					tpList.clear();
+					tri = true;
 
 					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 					{
@@ -1030,6 +1032,7 @@ void FlightWindow::showOnWebMap()
 					if((distFai * 1.4) < (distFlat * 1.2))
 					{
 						tpList.clear();
+						tri = true;
 
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{
@@ -1043,6 +1046,7 @@ void FlightWindow::showOnWebMap()
 					if((distFlat * 1.2) < distFree)
 					{
 						tpList.clear();
+						tri = false;
 	
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{
@@ -1050,7 +1054,7 @@ void FlightWindow::showOnWebMap()
 						}
 					}
 
-					pView->setTurnPointList(tpList);
+					pView->setTurnPointList(tpList, tri);
 					pView->loadMap();
 				}
 
