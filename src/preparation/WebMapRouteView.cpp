@@ -389,7 +389,7 @@ void WebMapRouteView::newLatLon(const WebMapTurnPoint *pTp)
 
 void WebMapRouteView::mapReady()
 {
-	m_pWebMapWidget->getMap()->zoomTo(47.05, 8.53, 46.92, 8.47);
+	m_pWebMapWidget->getMap()->initialize(47.05, 8.53, 46.92, 8.47);
 }
 
 int WebMapRouteView::findTpNr(const WebMapTurnPoint *pTp)
