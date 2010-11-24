@@ -10,12 +10,12 @@
 		<script type="text/javascript">
 			var map;
 			
-			function initialize()
+			function initialize(lat, lon, zoom)
 			{
 				if(GBrowserIsCompatible())
 				{
 					map = new GMap2(document.getElementById("map"));
-					map.setCenter(new GLatLng(47.0, 8.5), 18);
+					map.setCenter(new GLatLng(lat, lon), zoom);
 					map.setMapType(G_PHYSICAL_MAP);
 				}
 			}
@@ -126,7 +126,7 @@
 			}
 		</script>
 	</head>
-	<body onload="initialize()" onunload="GUnload()" topmargin="0" leftmargin="0">
+	<body onunload="GUnload()" topmargin="0" leftmargin="0">
 		<div id="map" style="width: 800px; height: 800px"></div>
 	</body>
 </html>
