@@ -57,7 +57,20 @@ void WebMap::loadMap()
 	load(QUrl("qrc:/index.html"));
 }
 
-void WebMap::getPointFromLatLon(qreal lat, qreal lng, int &x, int &y)
+void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
+{
+	QString code = "initialize(%1, %2, %3);";
+	QWebFrame *pFrame;
+	qreal lat;
+	qreal lon;
+	int zoom;
+
+	getCenterAndZoom(north, east, south, west, lat, lon, zoom);
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(zoom));
+}
+
+void WebMap::getPointFromLatLon(qreal lat, qreal lon, int &x, int &y)
 {
 	QString code = "getPointFromLatLon(%1, %2);";
 	QWebFrame *pFrame;
@@ -65,7 +78,7 @@ void WebMap::getPointFromLatLon(qreal lat, qreal lng, int &x, int &y)
 	QList<QVariant> posList;
 
 	pFrame = page()->mainFrame();
-	posList = pFrame->evaluateJavaScript(code.arg(lat).arg(lng)).toList();
+	posList = pFrame->evaluateJavaScript(code.arg(lat).arg(lon)).toList();
 
 	if(posList.size() == 2)
 	{
@@ -237,6 +250,18 @@ void WebMap::setSize(uint width, uint height)
 
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(width).arg(height));
+}
+
+void WebMap::getCenterAndZoom(qreal north, qreal east, qreal south, qreal west, qreal &lat, qreal &lon, int &zoom)
+{
+	double zoomLon;
+	double zoomLat;
+
+	lat = (north + south) / 2;
+	lon = (east + west) / 2;
+	zoomLon = log(360 * width() / (256 * (east - west))) / log(2);
+	zoomLat = log(180 * height() / (256 * (north - south))) / log(2);
+	zoom = QMIN((int)QMIN(floor(zoomLon), floor(zoomLat)), 17);
 }
 
 void WebMap::loadFinished(bool ok)
