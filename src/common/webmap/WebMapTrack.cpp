@@ -35,6 +35,7 @@ WebMapTrack::WebMapTrack()
 	setPos(0, 0);
 	m_trackToMap = false;
 	m_tpsToMap = false;
+	m_tri = false;
 }
 
 WebMapTrack::~WebMapTrack()
@@ -53,10 +54,11 @@ void WebMapTrack::setWayPointList(const WayPoint::WayPointListType &wpList)
 	}
 }
 
-void WebMapTrack::setTurnPointList(const FlightPointList &tpList)
+void WebMapTrack::setTurnPointList(const FlightPointList &tpList, bool tri)
 {
 	m_tpsToMap = true;
 	m_tpList = tpList;
+	m_tri = tri;
 
 	if(getMap()->isMapReady())
 	{
@@ -78,19 +80,6 @@ void WebMapTrack::setWayPointListToMap()
 	if(m_trackToMap && (m_wpList.size() > 1))
 	{
 		m_trackToMap = false;
-/**
-		m_wayPoints.resize(listSize);
-	
-		for(wpNr=0; wpNr<listSize; wpNr++)
-		{
-			lat = m_wpList[wpNr].latitude();
-			lon = m_wpList[wpNr].longitude();
-			getMap()->getPointFromLatLon(lat, lon, x, y);
-			m_wayPoints[wpNr] = QPointF(x, y);
-		}
-*/
-
-		// Track
 		encoder.dpEncode(m_wpList, encPoints, encLevels);
 		getMap()->setPolyLine(encPoints, encLevels, 3, "#FF0000");
 	}
@@ -116,13 +105,44 @@ void WebMapTrack::setTurnPointListToMap()
 		getMap()->setMarker(m_tpList[4].wp.latitude(), m_tpList[4].wp.longitude(), WebMap::MarkerLand);
 	
 		// Turnpoints
-		for(tpNr=0; tpNr<m_tpList.size(); tpNr++)
+		if(m_tri)
 		{
-			tpList.push_back(m_tpList[tpNr].wp);
+			// Triangle
+			for(tpNr=1; tpNr<=3; tpNr++)
+			{
+				tpList.push_back(m_tpList[tpNr].wp);
+			}
+
+			tpList.push_back(m_tpList[1].wp);
+			encoder.dpEncode(tpList, encPoints, encLevels);
+			getMap()->setPolyLine(encPoints, encLevels, 2, "#FFFFFF");
+			tpList.clear();
+
+			// S to 1
+			tpList.push_back(m_tpList[0].wp);
+			tpList.push_back(m_tpList[1].wp);
+			encoder.dpEncode(tpList, encPoints, encLevels);
+			getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
+			tpList.clear();
+
+			// 3 to L
+			tpList.push_back(m_tpList[3].wp);
+			tpList.push_back(m_tpList[4].wp);
+			encoder.dpEncode(tpList, encPoints, encLevels);
+			getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
+			tpList.clear();
 		}
-		
-		encoder.dpEncode(tpList, encPoints, encLevels);
-		getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
+		else
+		{
+			for(tpNr=0; tpNr<m_tpList.size(); tpNr++)
+			{
+				tpList.push_back(m_tpList[tpNr].wp);
+			}
+
+			encoder.dpEncode(tpList, encPoints, encLevels);
+			getMap()->setPolyLine(encPoints, encLevels, 2, "#FFFFFF");
+			tpList.clear();
+		}
 	}
 }
 
