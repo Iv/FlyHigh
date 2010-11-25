@@ -1043,7 +1043,7 @@ void FlightWindow::showOnWebMap()
 					// free distance
 					distFree = olcOptimizer.freeDistance(fpIndexList);
 
-					if((distFlat * 1.2) < distFree)
+					if(((distFlat * 1.2) < distFree) && ((distFai * 1.4) < distFree))
 					{
 						tpList.clear();
 						tri = false;
