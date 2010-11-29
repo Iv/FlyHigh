@@ -30,10 +30,6 @@
 WebMapTrack::WebMapTrack()
 	:WebMapItem(WebMapTrackType)
 {
-//	setFlag(ItemIsSelectable);
-//	setAcceptedMouseButtons(Qt::LeftButton);
-	setPenWidth(3.0);
-	setPos(0, 0);
 	m_trackToMap = false;
 	m_tpsToMap = false;
 	m_tri = false;
@@ -169,121 +165,20 @@ qreal WebMapTrack::getWest() const
 
 void WebMapTrack::adjust()
 {
-/**
-	if(m_wpList.size() == 0)
-			return;
-
-	prepareGeometryChange();
-	setWayPointListToMap();
-	update();
-
-	if(!m_pSrcTp || !m_pDstTp)
-			return;
-
-	prepareGeometryChange();
-
-	m_srcPoint = mapFromItem(m_pSrcTp, 0, 0);
-	m_dstPoint = mapFromItem(m_pDstTp, 0, 0);
-
-	update();
-*/
 }
 
 QRectF WebMapTrack::boundingRect() const
 {
-	qreal extra;
-	
-	if(m_wayPoints.size() == 0)
-			return QRectF();
-
-	extra = (getPenWidth() / 2.0);
-
-	return m_wayPoints.boundingRect()
-			.normalized()
-			.adjusted(-extra, -extra, extra, extra);
-
-/**
-	if(!m_pSrcTp || !m_pDstTp)
-			return QRectF();
-
-	qreal penWidth = 1;
-	qreal extra = (penWidth + m_arrowSize) / 2.0;
-
-	return QRectF(m_srcPoint, QSizeF(m_dstPoint.x() - m_srcPoint.x(),
-																		m_dstPoint.y() - m_srcPoint.y()))
-			.normalized()
-			.adjusted(-extra, -extra, extra, extra);
-*/
+	return QRectF();
 }
 
 QPainterPath WebMapTrack::shape() const
 {
-	QPainterPath path;
-	QRectF rect;
-	qreal extra;
-
-	extra = (getPenWidth() / 2.0);
-
-	rect = m_wayPoints.boundingRect();
-	rect.adjust(-extra, -extra, extra, extra);
-	path.addRect(rect);
-
-	return path;
-
-/**
-	QPainterPath path;
-
-	QLineF line(m_srcPoint, m_dstPoint);
-
-	path.addPolygon(QPolygonF() << line.p1() << line.p2());
-
-	return path;
-*/
+	return QPainterPath();
 }
 
 void WebMapTrack::paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOption, QWidget *pWidget)
 {
-	if(m_wayPoints.size() == 0)
-			return;
-
-	pPainter->setPen(QPen(QColor(255, 170, 0), getPenWidth(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	pPainter->drawPolyline(m_wayPoints);
-}
-
-void WebMapTrack::mousePressEvent(QGraphicsSceneMouseEvent *pEvent)
-{
-	update();
-	QGraphicsItem::mousePressEvent(pEvent);
-}
-
-void WebMapTrack::mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent)
-{
-	update();
-	QGraphicsItem::mouseReleaseEvent(pEvent);
-}
-
-QVariant WebMapTrack::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-	if(change == QGraphicsItem::ItemPositionChange)
-	{
-//		calcWayPoints();
-
-printf("pos = %i, %i\n", scenePos().x(), scenePos().y());
-	}
-
-	return QGraphicsItem::itemChange(change, value);
-}
-
-void WebMapTrack::updatePos()
-{
-/**
-printf("begin calcWayPoints()\n");
-	calcWayPoints();
-printf("end calcWayPoints()\n");
-	setPos(0, 0);
-
-	update();
-*/
 }
 
 void WebMapTrack::calcBounds()
