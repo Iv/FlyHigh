@@ -21,6 +21,7 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <math.h>
+#include <stdio.h>
 #include "PolyLineEncoder.h"
 #include "WebMap.h"
 #include "WebMapTrack.h"
