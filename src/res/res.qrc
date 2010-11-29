@@ -10,5 +10,8 @@
      <file>MarkerS.png</file>
      <file>MarkerL.png</file>
      <file>index.html</file>
+     <file>webmap.html</file>
+     <file>css/webmap.css</file>
+     <file>js/webmap.js</file>
  </qresource>
  </RCC>
