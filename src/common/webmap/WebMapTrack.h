@@ -58,18 +58,9 @@ class WebMapTrack: public WebMapItem
 
 		void paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOption, QWidget *pWidget);
 
-		void mousePressEvent(QGraphicsSceneMouseEvent *pEvent);
-	
-		void mouseReleaseEvent(QGraphicsSceneMouseEvent *pEvent);
-
-		QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-		void updatePos();
-
 	private:
 		WayPoint::WayPointListType m_wpList;
 		FlightPointList m_tpList;
-		QPolygonF m_wayPoints;
 		qreal m_north;
 		qreal m_east;
 		qreal m_south;
