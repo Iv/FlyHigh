@@ -10,15 +10,13 @@
 		</script>
 		<script src="js/webmap.js" type="text/javascript"></script>
 	</head>
-	<body onload="initialize(47,8,11)" onunload="GUnload()" topmargin="0" leftmargin="0">
+	<body onunload="GUnload()">
 		<div id="left">
 			<span id="distance" style="font-size: 36px;">0.0 km</span><br/>
 			<span id="description">Open distance</span> (&times;<span id="multiplier">1.0</span>)<br/>
 			<span id="score" style="font-size: 24px;">0.0 points</span><br/>
 			<hr/>
 			<input id="location" type="text" onkeypress="XCGoOnEnter(event);"/>
-			<input type="submit" onclick="XCGo();" value="Go" title="Center the map on this location"/>
-			<input type="submit" onclick="XCHere();" value="Reset" title="Place the turnpoints on the map" /><br/>
 			<hr/>
 			<select name="flightType" id="flightType" onchange="XCUpdateFlightType();"></select><br/>
 			<hr/>
@@ -79,6 +77,6 @@
 			<input id="defaultStart" type="hidden" value="null"/>
 		</div>
 		<div id="right">
-		<div id="map" style="width: 800px; height: 800px"></div>
+		<div id="map"></div>
 	</body>
 </html>
