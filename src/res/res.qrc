@@ -4,11 +4,11 @@
      <file>flyhigh.png</file>
      <file>ft_5020.png</file>
      <file>polare.png</file>
-     <file>MarkerTp1.png</file>
-     <file>MarkerTp2.png</file>
-     <file>MarkerTp3.png</file>
-     <file>MarkerS.png</file>
-     <file>MarkerL.png</file>
+     <file>img/MarkerTp1.png</file>
+     <file>img/MarkerTp2.png</file>
+     <file>img/MarkerTp3.png</file>
+     <file>img/MarkerS.png</file>
+     <file>img/MarkerL.png</file>
      <file>index.html</file>
      <file>webmap.html</file>
      <file>css/webmap.css</file>
