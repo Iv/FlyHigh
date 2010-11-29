@@ -245,7 +245,7 @@ void WebMap::setCenter(qreal lat, qreal lon)
 
 void WebMap::setSize(uint width, uint height)
 {
-	QString code = "setSize(%1, %2);";
+	QString code = "setMapSize(%1, %2);";
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
