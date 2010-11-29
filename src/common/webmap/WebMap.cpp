@@ -54,7 +54,7 @@ WebMap::~WebMap()
 void WebMap::loadMap()
 {
 	m_mapReady = false;
-	load(QUrl("qrc:/index.html"));
+	load(QUrl("qrc:/webmap.html"));
 }
 
 void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
@@ -141,19 +141,19 @@ void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
 	switch(type)
 	{
 		case MarkerStart:
-			image = "MarkerS.png";
+			image = "img/MarkerS.png";
 		break;
 		case MarkerLand:
-			image = "MarkerL.png";
+			image = "img/MarkerL.png";
 		break;
 		case MarkerTp1:
-			image = "MarkerTp1.png";
+			image = "img/MarkerTp1.png";
 		break;
 		case MarkerTp2:
-			image = "MarkerTp2.png";
+			image = "img/MarkerTp2.png";
 		break;
 		case MarkerTp3:
-			image = "MarkerTp3.png";
+			image = "img/MarkerTp3.png";
 		break;
 		default:
 			image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png";
