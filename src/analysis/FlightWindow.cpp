@@ -1000,7 +1000,7 @@ void FlightWindow::showOnWebMap()
 
 			if(tpListSize > 0)
 			{
-				pView = new WebMapFlightView(this, tr("View Flight"));
+				pView = new WebMapFlightView(tr("View Flight"));
 
 				// set waypoints
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
