@@ -10,41 +10,6 @@ function initialize(lat, lon, zoom)
 	}
 }
 
-function getPointFromLatLon(lat, lon)
-{
-	var proj;
-	var west;
-	var north;
-	var nwPoint;
-	var point;
-
-	proj = map.getCurrentMapType().getProjection();
-	west = map.getBounds().getSouthWest().lng();
-	north = map.getBounds().getNorthEast().lat();
-	nwPoint = proj.fromLatLngToPixel(new GLatLng(north, west), map.getZoom());
-	point = proj.fromLatLngToPixel(new GLatLng(lat, lon), map.getZoom());
-
-	return new Array(point.x - nwPoint.x, point.y - nwPoint.y);
-}
-
-function getLatLonFromPoint(x, y)
-{
-	var proj;
-	var west;
-	var north;
-	var nwPoint;
-	var gLatLng;
-
-	west = map.getBounds().getSouthWest().lng();
-	north = map.getBounds().getNorthEast().lat();
-	proj = map.getCurrentMapType().getProjection();
-	nwpoint = proj.fromLatLngToPixel(new GLatLng(north, west), map.getZoom());
-	gLatLng = proj.fromPixelToLatLng(new GPoint(nwpoint.x + x,
-						nwpoint.y + y), map.getZoom());
-
-	return new Array(gLatLng.lat(), gLatLng.lng());
-}
-
 function zoomIn()
 {
 	map.zoomIn();
@@ -53,19 +18,6 @@ function zoomIn()
 function zoomOut()
 {
 	map.zoomOut();
-}
-
-function zoomTo(north, east, south, west)
-{
-	var bounds;
-	var sw;
-	var ne;
-
-	sw = new GLatLng(south, west);
-	ne = new GLatLng(north, east);
-	bounds = new GLatLngBounds(sw, ne);
-	map.setCenter(new GLatLng(bounds.getCenter().lat(), bounds.getCenter().lng()),
-				map.getBoundsZoomLevel(bounds));
 }
 
 function setPolyLine(encPoints, encLevels, weight, color)
@@ -100,17 +52,12 @@ function setMarker(lat, lon, image)
 	map.addOverlay(marker);
 }
 
-function setSize(w, h)
+function setMapSize(w, h)
 {
 	var map_div;
 
 	map_div = document.getElementById("map");
-	map_div.style.width = w + "px";
+	map_div.style.width = (w - 280) + "px";
 	map_div.style.height = h + "px";
 	map.checkResize();
-}
-
-function setCenter(lat, lon)
-{
-	map.setCenter(new GLatLng(lat, lon));
 }
