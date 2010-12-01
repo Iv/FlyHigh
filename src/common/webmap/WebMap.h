@@ -27,6 +27,7 @@ class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
+class FlightPointList;
 
 /**
 	@author Alex Graf <grafal@sourceforge.net>
@@ -44,19 +45,29 @@ class WebMap: public QWebView
 
 		void loadMap();
 
-		void initialize(qreal north, qreal east, qreal south, qreal west);
+		void XCLoad();
 
-		void getPointFromLatLon(qreal lat, qreal lon, int &x, int &y);
+		void setTurnPointList(const FlightPointList &tpList);
 
-		void getLatLonFromPoint(int x, int y, qreal &lat, qreal &lon);
+		void setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
-		void gotoLocation(const QString &local);
+		void setMarkerDragable(bool en);
 
-		void zoomTo(qreal north, qreal east, qreal south, qreal west);
+		void setLocation(const QString &loc);
 
-		void setPolyLine(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
+		void setFlightType(const QString &flightType);
 
-		void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
+void initialize(qreal north, qreal east, qreal south, qreal west);
+
+void getPointFromLatLon(qreal lat, qreal lon, int &x, int &y);
+
+void getLatLonFromPoint(int x, int y, qreal &lat, qreal &lon);
+
+void gotoLocation(const QString &local);
+
+void zoomTo(qreal north, qreal east, qreal south, qreal west);
+
+void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
 
 		bool isMapReady() const;
 
