@@ -36,22 +36,27 @@ class FlightPointList
 
 		FlightPointList();
 		
-		void add(FlightPointType &flightPoint);
+		void add(const FlightPointType &flightPoint);
+
 		void clear();
-		uint size();
+
+		uint size() const;
 		
 		int firstValidFlightData();
+
 		int lastValidFlightData();
 		
 		// returns the speed in m/s
 		double speedH(uint index1, uint index2);
+
 		double speedV(uint index1, uint index2);
 		
 		// returns duration in s
 		int duration(uint index1, uint index2);
 		
 		FlightPointType& operator[] (int index);
-		FlightPointType& at(int index);
+
+		const FlightPointType& at(int index) const;
 
 	private:
 		QVector<FlightPointType> m_flightPointList;
