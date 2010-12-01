@@ -1,55 +1,47 @@
-var map;
-
-function initialize(lat, lon, zoom)
+function setTurnPointList(tps)
 {
-	if(GBrowserIsCompatible())
-	{
-		map = new GMap2(document.getElementById("map"));
-		map.setCenter(new GLatLng(lat, lon), zoom);
-		map.setMapType(G_PHYSICAL_MAP);
-	}
+	var tpInput;
+	
+	tpInput = document.getElementById("defaultTurnpoints");
+	tpInput.value = tps;
 }
 
-function zoomIn()
+function setWayPointList(encTrack, encLevels, weight, color)
 {
-	map.zoomIn();
-}
+	var polyline;
 
-function zoomOut()
-{
-	map.zoomOut();
-}
-
-function setPolyLine(encPoints, encLevels, weight, color)
-{
-	var encPolyLine;
-
-	encPolyLine = new GPolyline.fromEncoded({
+	polyline = new GPolyline.fromEncoded({
 			color: color,
 			weight: weight,
 			opacity: 1.0,
-			points: encPoints,
+			points: encTrack,
 			levels: encLevels,
 			zoomFactor: 2,
 			numLevels: 18
 	});
 
-	map.addOverlay(encPolyLine);
+	map.addOverlay(polyline);
 }
 
-function setMarker(lat, lon, image)
+function setMarkerDragable(drag)
 {
-	var latLng;
-	var marker;
-	var icon;
-	var markerOpts;
+	DragMarker = drag;
+}
 
-	icon = new GIcon(G_DEFAULT_ICON);
-	icon.image = image;
-	latLng = new GLatLng(lat, lon);
-	markerOpts = {icon: icon};
-	marker = new GMarker(latLng, markerOpts);
-	map.addOverlay(marker);
+function setLocation(loc)
+{
+	var locInput;
+	
+	locInput = document.getElementById("defaultLocation");
+	locInput.value = loc;
+}
+
+function setFlightType(flightType)
+{
+	var typeInput;
+	
+	typeInput = document.getElementById("defaultFlightType");
+	typeInput.value = flightType;
 }
 
 function setMapSize(w, h)
@@ -60,4 +52,14 @@ function setMapSize(w, h)
 	map_div.style.width = (w - 280) + "px";
 	map_div.style.height = h + "px";
 	map.checkResize();
+}
+
+function zoomIn()
+{
+	map.zoomIn();
+}
+
+function zoomOut()
+{
+	map.zoomOut();
 }
