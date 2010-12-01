@@ -24,7 +24,7 @@ FlightPointList::FlightPointList()
 {
 }
 
-void FlightPointList::add(FlightPointType &flightPoint)
+void FlightPointList::add(const FlightPointType &flightPoint)
 {
 	return m_flightPointList.push_back(flightPoint);
 }
@@ -34,7 +34,7 @@ void FlightPointList::clear()
 	return m_flightPointList.clear();
 }
 
-uint FlightPointList::size()
+uint FlightPointList::size() const
 {
 	return m_flightPointList.size();
 }
@@ -44,9 +44,9 @@ FlightPointList::FlightPointType& FlightPointList::operator[] (int index)
 	return m_flightPointList[index];
 }
 
-FlightPointList::FlightPointType& FlightPointList::at(int index)
+const FlightPointList::FlightPointType& FlightPointList::at(int index) const
 {
-	return m_flightPointList[index];
+	return m_flightPointList.at(index);
 }
 
 int FlightPointList::firstValidFlightData()
