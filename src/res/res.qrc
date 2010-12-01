@@ -10,8 +10,13 @@
      <file>img/MarkerS.png</file>
      <file>img/MarkerL.png</file>
      <file>index.html</file>
-     <file>webmap.html</file>
+     <file>webmap_analysis.html</file>
      <file>css/webmap.css</file>
      <file>js/webmap.js</file>
+     <file>js/jscoord-1.1.1.js</file>
+     <file>js/json2.js</file>
+     <file>js/mapiconmaker.js</file>
+     <file>js/prototype.js</file>
+     <file>js/xcplanner.js</file>
  </qresource>
  </RCC>
