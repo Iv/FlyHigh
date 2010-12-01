@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <QWebFrame>
 #include <math.h>
+#include "FlightPointList.h"
 #include "WebMap.h"
 
 WebMap::WebMap(QWidget *pParent)
@@ -54,7 +55,7 @@ WebMap::~WebMap()
 void WebMap::loadMap()
 {
 	m_mapReady = false;
-	load(QUrl("qrc:/webmap.html"));
+	load(QUrl("qrc:/webmap_analysis.html"));
 }
 
 void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
@@ -69,6 +70,81 @@ void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(zoom));
 }
+
+void WebMap::XCLoad()
+{
+	QString code = "XCLoad();";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
+}
+
+void WebMap::setTurnPointList(const FlightPointList &tpList)
+{
+	QString code = "setTurnPointList('%1');";
+	QString arg = "[";
+	QString argElem = "[%1,%2]";
+	QWebFrame *pFrame;
+	uint tpNr;
+	bool first = true;
+
+	pFrame = page()->mainFrame();
+
+	for(tpNr=0; tpNr<tpList.size(); tpNr++)
+	{
+		if(!first)
+		{
+			arg += ",";
+		}
+
+		first = false;
+		arg += argElem.arg(tpList.at(tpNr).wp.latitude()).arg(tpList.at(tpNr).wp.longitude());
+	}
+
+	arg += "]";
+	pFrame->evaluateJavaScript(code.arg(arg));
+
+	setFlightType("xc5");
+	setMarkerDragable(false);
+}
+
+void WebMap::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
+{
+	QString code = "setWayPointList('%1', '%2', %3, '%4');";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels).arg(weight).arg(color));
+}
+
+void WebMap::setMarkerDragable(bool en)
+{
+	QString code = "setMarkerDragable(%1);";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(en));
+}
+
+void WebMap::setLocation(const QString &loc)
+{
+	QString code = "setLocation('%1');";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(loc));
+}
+
+void WebMap::setFlightType(const QString &flightType)
+{
+	QString code = "setFlightType('%1');";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(flightType));
+}
+
 
 void WebMap::getPointFromLatLon(qreal lat, qreal lon, int &x, int &y)
 {
@@ -121,15 +197,6 @@ void WebMap::zoomTo(qreal north, qreal east, qreal south, qreal west)
 
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(north).arg(east).arg(south).arg(west));
-}
-
-void WebMap::setPolyLine(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
-{
-	QString code = "setPolyLine('%1', '%2', %3, '%4');";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels).arg(weight).arg(color));
 }
 
 void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
