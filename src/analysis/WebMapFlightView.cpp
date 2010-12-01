@@ -84,8 +84,7 @@ void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapFlightView::mapReady()
 {
-	m_pWebMapWidget->getMap()->initialize(m_pTrack->getNorth(), m_pTrack->getEast(),
-				m_pTrack->getSouth(), m_pTrack->getWest());
-	m_pTrack->setWayPointListToMap();
 	m_pTrack->setTurnPointListToMap();
+	m_pWebMapWidget->getMap()->XCLoad();
+	m_pTrack->setWayPointListToMap();
 }
