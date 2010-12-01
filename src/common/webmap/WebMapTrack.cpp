@@ -78,68 +78,15 @@ void WebMapTrack::setWayPointListToMap()
 	{
 		m_trackToMap = false;
 		encoder.dpEncode(m_wpList, encPoints, encLevels);
-		getMap()->setPolyLine(encPoints, encLevels, 3, "#FF0000");
+		getMap()->setWayPointList(encPoints, encLevels, 3, "#FF0000");
 	}
 }
 
 void WebMapTrack::setTurnPointListToMap()
 {
-	PolyLineEncoder encoder;
-	QString encPoints;
-	QString encLevels;
-	WayPoint::WayPointListType tpList;
-	int tpNr;
-
-	if(m_tpsToMap && (m_tpList.size() == 5))
+	if(m_tpsToMap)
 	{
-		m_tpsToMap = false;
-
-		// Marker
-		getMap()->setMarker(m_tpList[0].wp.latitude(), m_tpList[0].wp.longitude(), WebMap::MarkerStart);
-		getMap()->setMarker(m_tpList[1].wp.latitude(), m_tpList[1].wp.longitude(), WebMap::MarkerTp1);
-		getMap()->setMarker(m_tpList[2].wp.latitude(), m_tpList[2].wp.longitude(), WebMap::MarkerTp2);
-		getMap()->setMarker(m_tpList[3].wp.latitude(), m_tpList[3].wp.longitude(), WebMap::MarkerTp3);
-		getMap()->setMarker(m_tpList[4].wp.latitude(), m_tpList[4].wp.longitude(), WebMap::MarkerLand);
-	
-		// Turnpoints
-		if(m_tri)
-		{
-			// Triangle
-			for(tpNr=1; tpNr<=3; tpNr++)
-			{
-				tpList.push_back(m_tpList[tpNr].wp);
-			}
-
-			tpList.push_back(m_tpList[1].wp);
-			encoder.dpEncode(tpList, encPoints, encLevels);
-			getMap()->setPolyLine(encPoints, encLevels, 2, "#FFFFFF");
-			tpList.clear();
-
-			// S to 1
-			tpList.push_back(m_tpList[0].wp);
-			tpList.push_back(m_tpList[1].wp);
-			encoder.dpEncode(tpList, encPoints, encLevels);
-			getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
-			tpList.clear();
-
-			// 3 to L
-			tpList.push_back(m_tpList[3].wp);
-			tpList.push_back(m_tpList[4].wp);
-			encoder.dpEncode(tpList, encPoints, encLevels);
-			getMap()->setPolyLine(encPoints, encLevels, 1, "#FFFFFF");
-			tpList.clear();
-		}
-		else
-		{
-			for(tpNr=0; tpNr<m_tpList.size(); tpNr++)
-			{
-				tpList.push_back(m_tpList[tpNr].wp);
-			}
-
-			encoder.dpEncode(tpList, encPoints, encLevels);
-			getMap()->setPolyLine(encPoints, encLevels, 2, "#FFFFFF");
-			tpList.clear();
-		}
+		getMap()->setTurnPointList(m_tpList);
 	}
 }
 
