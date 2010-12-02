@@ -15,13 +15,13 @@
 	</head>
 	<body onunload="XCUnload()" onresize="XCResize()" scroll="no">
 		<div id="left">
-			<span id="distance" style="font-size: 36px;">0.0 km</span><br/>
+			<span id="distance" style="font-size: 24px;">0.0 km</span><br/>
 			<span id="description">Open distance</span> (&times;<span id="multiplier">1.0</span>)<br/>
-			<span id="score" style="font-size: 24px;">0.0 points</span><br/>
+			<span id="score" style="font-size: 18px;">0.0 points</span><br/>
 			<hr/>
-			<input id="location" type="text" onkeypress="XCGoOnEnter(event);"/>
+			<input id="location" type="text" readonly="readonly"/>
 			<hr/>
-			<select name="flightType" id="flightType" onchange="XCUpdateFlightType();"></select><br/>
+			<select name="flightType" id="flightType" onchange="this.selectedIndex=21;"></select><br/>
 			<hr/>
 			<b>Route:</b>
 			<input type="submit" onclick="XCZoomRoute();" value="&#8853;" title="Show the whole route"/>
