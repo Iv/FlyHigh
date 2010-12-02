@@ -40,7 +40,7 @@ WebMapWidget::~WebMapWidget()
 
 void WebMapWidget::loadMap()
 {
-	m_pMap->loadMap();
+	m_pMap->loadMap("qrc:/webmap_analysis.html");
 }
 
 void WebMapWidget::addItem(WebMapItem *pItem)
