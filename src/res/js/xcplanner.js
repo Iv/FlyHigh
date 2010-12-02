@@ -25,7 +25,7 @@ var COLOR = {
 	faiSectors: ["#00ff00", "#00bbff", "#ff0000"]
 };
 
-var DragMarker = true;
+var TurnPointsDragable = true;
 
 var triangleMarkerColors = COLOR.faiSectors;
 var olc5MarkerColors = [COLOR.marker, COLOR.faiSectors[0], COLOR.faiSectors[1], COLOR.faiSectors[2], COLOR.marker];
@@ -734,7 +734,7 @@ function XCUpdateFlightType() {
 	turnpointMarkers = $R(0, flightType.n, true).map(function(i) {
 		var primaryColor = markerColors ? markerColors[i] : COLOR.marker;
 		var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: (i + 1).toString(), primaryColor: primaryColor});
-		var marker = new GMarker(defaultTurnpointLatLngs[i], {draggable: DragMarker, icon: icon});
+		var marker = new GMarker(defaultTurnpointLatLngs[i], {draggable: TurnPointsDragable, icon: icon});
 		marker.rev = 0;
 		marker.ele = -9999;
 		GEvent.addListener(marker, "drag", function() { XCDragMarker(i); });
