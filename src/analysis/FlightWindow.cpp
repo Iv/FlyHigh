@@ -1001,6 +1001,7 @@ void FlightWindow::showOnWebMap()
 			if(tpListSize > 0)
 			{
 				pView = new WebMapFlightView(tr("View Flight"));
+				pView->setLocation(m_flightList[row].startPt().name());
 
 				// set waypoints
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
