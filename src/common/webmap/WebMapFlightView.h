@@ -42,7 +42,7 @@ class WebMapFlightView: public QWidget
 
 		void setWayPointList(const WayPoint::WayPointListType &wpList);
 
-		void setFlight(const Flight *pFlight);
+		void setLocation(const QString &location);
 
 		void loadMap();
 
@@ -53,7 +53,7 @@ class WebMapFlightView: public QWidget
 		WebMap *m_pWebMap;
 		WayPoint::WayPointListType m_wpList;
 		FlightPointList m_tpList;
-		const Flight *m_pFlight;
+		QString m_location;
 
 	public slots:
 		void mapReady();
