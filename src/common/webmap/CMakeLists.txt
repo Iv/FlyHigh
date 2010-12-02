@@ -12,10 +12,12 @@ set(webmap_SRCS WebMapFaiSector.cpp
              WebMapWidget.cpp
              WebMapTurnPoint.cpp
              WebMapTrack.cpp
+             WebMapFlightView.cpp
              PolyLineEncoder.cpp)
 
 set(webmap_HDRS WebMap.h
              WebMapScene.h
+             WebMapFlightView.h
              WebMapTurnPoint.h)
 
 QT4_WRAP_CPP(webmap_SRCS ${webmap_HDRS})
