@@ -43,7 +43,7 @@ class WebMap: public QWebView
 
 		~WebMap();
 
-		void loadMap();
+		void loadMap(const QString &url);
 
 		void XCLoad();
 
@@ -51,7 +51,7 @@ class WebMap: public QWebView
 
 		void setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
-		void setMarkerDragable(bool en);
+		void setTurnPointsDragable(bool en);
 
 		void setLocation(const QString &loc);
 
