@@ -1054,7 +1054,7 @@ void FlightWindow::showOnWebMap()
 						}
 					}
 
-					pView->setTurnPointList(tpList, tri);
+					pView->setTurnPointList(tpList);
 					pView->loadMap();
 				}
 
