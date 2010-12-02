@@ -52,10 +52,10 @@ WebMap::~WebMap()
 {
 }
 
-void WebMap::loadMap()
+void WebMap::loadMap(const QString &url)
 {
 	m_mapReady = false;
-	load(QUrl("qrc:/webmap_analysis.html"));
+	load(QUrl(url));
 }
 
 void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
@@ -104,9 +104,6 @@ void WebMap::setTurnPointList(const FlightPointList &tpList)
 
 	arg += "]";
 	pFrame->evaluateJavaScript(code.arg(arg));
-
-	setFlightType("xc5");
-	setMarkerDragable(false);
 }
 
 void WebMap::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
@@ -118,9 +115,9 @@ void WebMap::setWayPointList(const QString &encPoints, const QString &encLevels,
 	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels).arg(weight).arg(color));
 }
 
-void WebMap::setMarkerDragable(bool en)
+void WebMap::setTurnPointsDragable(bool en)
 {
-	QString code = "setMarkerDragable(%1);";
+	QString code = "setTurnPointsDragable(%1);";
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
