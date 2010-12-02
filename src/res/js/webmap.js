@@ -23,9 +23,9 @@ function setWayPointList(encTrack, encLevels, weight, color)
 	map.addOverlay(polyline);
 }
 
-function setMarkerDragable(drag)
+function setTurnPointsDragable(drag)
 {
-	DragMarker = drag;
+	TurnPointsDragable = drag;
 }
 
 function setLocation(loc)
