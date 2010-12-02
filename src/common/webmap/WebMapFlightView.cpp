@@ -29,7 +29,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 	resize(1000, 800);
 
 	m_pWebMap = new WebMap(this);
-	m_pFlight = NULL;
+	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 }
 
@@ -48,9 +48,9 @@ void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
 	m_wpList = wpList;
 }
 
-void WebMapFlightView::setFlight(const Flight *pFlight)
+void WebMapFlightView::setLocation(const QString &location)
 {
-	m_pFlight = pFlight;
+	m_location = location;
 }
 
 void WebMapFlightView::loadMap()
@@ -72,6 +72,7 @@ void WebMapFlightView::mapReady()
 	m_pWebMap->setTurnPointList(m_tpList);
 	m_pWebMap->setTurnPointsDragable(false);
 	m_pWebMap->setFlightType("xc5");
+	m_pWebMap->setLocation(m_location);
 	m_pWebMap->XCLoad();
 	encoder.dpEncode(m_wpList, encPoints, encLevels);
 	m_pWebMap->setWayPointList(encPoints, encLevels, 3, "#FF0000");
