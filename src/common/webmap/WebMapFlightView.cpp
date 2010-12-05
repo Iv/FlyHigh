@@ -31,6 +31,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 	m_pWebMap = new WebMap(this);
 	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
 }
 
 WebMapFlightView::~WebMapFlightView()
