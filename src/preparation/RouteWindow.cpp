@@ -171,9 +171,24 @@ void RouteWindow::file_new()
 void RouteWindow::file_newWebMap()
 {
 	WebMapRouteView *pView;
+	Route route;
 
-	pView = new WebMapRouteView(this, tr("Route from DB"), IDataBase::SqlDB);
-	pView->show();
+	route.wayPointList().push_back(WayPoint(46.52439, 7.97287));
+	route.wayPointList().push_back(WayPoint(46.52439, 8.29102));
+	route.wayPointList().push_back(WayPoint(46.27975, 8.29102));
+	route.wayPointList().push_back(WayPoint(46.27975, 7.97287));
+	route.wayPointList().push_back(WayPoint(46.40207, 8.13194));
+
+	pView = new WebMapRouteView(tr("Add Route to DB"));
+	pView->setRoute(&route);
+	pView->loadMap();
+
+	if(pView->exec() == QDialog::Accepted)
+	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		ISql::pInstance()->add(route);
+		TableWindow::unsetCursor();
+	}
 }
 
 void RouteWindow::file_view()
@@ -189,6 +204,25 @@ void RouteWindow::file_view()
 		IRouteForm routeForm(this, tr("View Route"), &route);
 		routeForm.execReadOnly();
 	}
+}
+
+void RouteWindow::file_viewWebMap()
+{
+/**
+	WebMapRouteView *pView;
+	int row;
+	Route route;
+	
+	row = getTable()->currentRow();
+	
+	if(row >= 0)
+	{
+		route = m_routeList[row];
+		pView = new WebMapRouteView(tr("Route from DB"));
+		pView->setRoute(&route);
+		pView->show();
+	}
+*/
 }
 
 void RouteWindow::file_AddToGPS()

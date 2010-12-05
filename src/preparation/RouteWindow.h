@@ -43,6 +43,8 @@ class RouteWindow : public TableWindow
 
 		void file_view();
 
+		void file_viewWebMap();
+
 		void file_delete();
 
 		void file_update();
