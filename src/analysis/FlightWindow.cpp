@@ -975,7 +975,7 @@ void FlightWindow::showOnWebMap()
 	ProgressDlg progDlg(this);
 	WebMapFlightView *pView;
 	WayPoint::WayPointListType wpList;
-	FlightPointList tpList;
+	WayPoint::WayPointListType tpList;
 	uint tpListSize;
 	uint fpNr;
 	uint distFai;
@@ -1024,7 +1024,7 @@ void FlightWindow::showOnWebMap()
 
 					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 					{
-						tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+						tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
 					}
 
 					// flat triangle
@@ -1037,7 +1037,7 @@ void FlightWindow::showOnWebMap()
 
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{
-							tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+							tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
 						}
 					}
 
@@ -1051,7 +1051,7 @@ void FlightWindow::showOnWebMap()
 	
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{
-							tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+							tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
 						}
 					}
 
