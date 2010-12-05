@@ -12,13 +12,11 @@ set(preparation_SRCS AirSpaceView.cpp
                      AirSpaceWindow.cpp
                      OpenAirFileParser.cpp
                      RouteWindow.cpp
-                     WayPointWindow.cpp
-                     WebMapRouteView.cpp)
+                     WayPointWindow.cpp)
 
 set(preparation_HDRS WayPointWindow.h
                      RouteWindow.h
-                     AirSpaceWindow.h
-                     WebMapRouteView.h)
+                     AirSpaceWindow.h)
 
 QT4_WRAP_CPP(preparation_SRCS ${preparation_HDRS})
 
