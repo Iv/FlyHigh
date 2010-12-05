@@ -48,8 +48,10 @@ class WebMapRouteView: public QDialog
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
 
-	public slots:
+	private slots:
 		void mapReady();
+
+		void finished(int res);
 };
 
 #endif

@@ -30,6 +30,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	m_pRoute = NULL;
 	m_pWebMap = new WebMap(this);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
 }
 
 WebMapRouteView::~WebMapRouteView()
@@ -55,13 +56,39 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 void WebMapRouteView::mapReady()
 {
 	m_pWebMap->setTurnPointsDragable(true);
-	m_pWebMap->setFlightType("xc5");
 
 	if(m_pRoute != NULL)
 	{
 		m_pWebMap->setTurnPointList(m_pRoute->wayPointList());
 		m_pWebMap->setLocation(m_pRoute->name());
+
+		switch(m_pRoute->wayPointList().size())
+		{
+			case 2:
+				m_pWebMap->setFlightType("xc2");
+			break;
+			case 3:
+				m_pWebMap->setFlightType("xc3");
+			break;
+			case 4:
+				m_pWebMap->setFlightType("xc4");
+			break;
+			case 5:
+				m_pWebMap->setFlightType("xc5");
+			break;
+		}
 	}
 
 	m_pWebMap->XCLoad();
+}
+
+void WebMapRouteView::finished(int res)
+{
+	if(m_pRoute != NULL)
+	{
+		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
+		m_pRoute->setName(m_pWebMap->getLocation());
+	}
+
+	done(res);
 }
