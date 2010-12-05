@@ -21,14 +21,13 @@
 #ifndef _WebMapFlightView_h
 #define _WebMapFlightView_h
 
-#include <QWidget>
-#include "FlightPointList.h"
+#include <QDialog>
 #include "WayPoint.h"
 
 class Flight;
 class WebMap;
 
-class WebMapFlightView: public QWidget
+class WebMapFlightView: public QDialog
 {
 	Q_OBJECT
 
@@ -54,7 +53,7 @@ class WebMapFlightView: public QWidget
 		WayPoint::WayPointListType m_tpList;
 		QString m_location;
 
-	public slots:
+	private slots:
 		void mapReady();
 };
 
