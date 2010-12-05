@@ -39,6 +39,18 @@ WayPoint::WayPoint()
 	m_spot = "";
 }
 
+WayPoint::WayPoint(double lat, double lon)
+{
+	m_id = -1;
+	m_name = "";
+	m_desc = "";
+	m_lat = lat;
+	m_lon = lon;
+	m_alt = 0;
+	m_country = "";
+	m_spot = "";
+}
+
 int WayPoint::id() const
 {
 	return m_id;
