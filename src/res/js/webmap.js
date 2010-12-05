@@ -6,6 +6,17 @@ function setTurnPointList(tps)
 	tpInput.value = tps;
 }
 
+function getTurnPointList()
+{
+	var tps = [];
+
+	turnpointMarkers.each(function(marker, i) {
+		tps[i] = [marker.getLatLng().lat(), marker.getLatLng().lng()] ;
+	});
+
+	return tps;
+}
+
 function setWayPointList(encTrack, encLevels, weight, color)
 {
 	var polyline;
@@ -34,6 +45,15 @@ function setLocation(loc)
 	
 	locInput = document.getElementById("defaultLocation");
 	locInput.value = loc;
+}
+
+function getLocation()
+{
+	var locInput;
+	
+	locInput = document.getElementById("location");
+
+	return locInput.value;
 }
 
 function setFlightType(flightType)
