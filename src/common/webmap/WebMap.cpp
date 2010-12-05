@@ -46,6 +46,7 @@ WebMap::WebMap(QWidget *pParent)
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 	connect(this, SIGNAL(loadProgress(int)), m_pProgress, SLOT(setValue(int)));
+	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMap::~WebMap()
@@ -56,19 +57,6 @@ void WebMap::loadMap(const QString &url)
 {
 	m_mapReady = false;
 	load(QUrl(url));
-}
-
-void WebMap::initialize(qreal north, qreal east, qreal south, qreal west)
-{
-	QString code = "initialize(%1, %2, %3);";
-	QWebFrame *pFrame;
-	qreal lat;
-	qreal lon;
-	int zoom;
-
-	getCenterAndZoom(north, east, south, west, lat, lon, zoom);
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(zoom));
 }
 
 void WebMap::XCLoad()
@@ -142,169 +130,15 @@ void WebMap::setFlightType(const QString &flightType)
 	pFrame->evaluateJavaScript(code.arg(flightType));
 }
 
-
-void WebMap::getPointFromLatLon(qreal lat, qreal lon, int &x, int &y)
-{
-	QString code = "getPointFromLatLon(%1, %2);";
-	QWebFrame *pFrame;
-	QVariant pos;
-	QList<QVariant> posList;
-
-	pFrame = page()->mainFrame();
-	posList = pFrame->evaluateJavaScript(code.arg(lat).arg(lon)).toList();
-
-	if(posList.size() == 2)
-	{
-		x = posList[0].toInt();
-		y = posList[1].toInt();
-	}
-}
-
-void WebMap::getLatLonFromPoint(int x, int y, qreal &lat, qreal &lon)
-{
-	QString code = "getLatLonFromPoint(%1, %2);";
-	QWebFrame *pFrame;
-	QVariant pos;
-	QList<QVariant> latLonList;
-
-	pFrame = page()->mainFrame();
-	latLonList = pFrame->evaluateJavaScript(code.arg(x).arg(y)).toList();
-
-	if(latLonList.size() == 2)
-	{
-		lat = latLonList[0].toDouble();
-		lon = latLonList[1].toDouble();
-	}
-}
-
-void WebMap::gotoLocation(const QString &local)
-{
-	QString requestStr(tr("http://maps.google.com/maps/geo?q=%1&output=%2&key=%3")
-			.arg(local)
-			.arg("csv")
-			.arg("GOOGLE_MAPS_KEY") );
-
-	m_pNetMgr->get(QNetworkRequest(requestStr));
-}
-
-void WebMap::zoomTo(qreal north, qreal east, qreal south, qreal west)
-{
-	QString code = "zoomTo(%1, %2, %3, %4);";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(north).arg(east).arg(south).arg(west));
-}
-
-void WebMap::setMarker(qreal lat, qreal lon, MarkerType type)
-{
-	QString code = "setMarker(%1, %2, '%3');";
-	QWebFrame *pFrame;
-	QString image;
-
-	switch(type)
-	{
-		case MarkerStart:
-			image = "img/MarkerS.png";
-		break;
-		case MarkerLand:
-			image = "img/MarkerL.png";
-		break;
-		case MarkerTp1:
-			image = "img/MarkerTp1.png";
-		break;
-		case MarkerTp2:
-			image = "img/MarkerTp2.png";
-		break;
-		case MarkerTp3:
-			image = "img/MarkerTp3.png";
-		break;
-		default:
-			image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png";
-		break;
-	}
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(image));
-}
-
 bool WebMap::isMapReady() const
 {
 	return m_mapReady;
-}
-
-void WebMap::mouseSlot(QGraphicsSceneMouseEvent *pEvent)
-{
-	QPoint pos((int)pEvent->scenePos().x(), (int)pEvent->scenePos().y());
-
-	switch(pEvent->type())
-	{
-		case QEvent::GraphicsSceneMouseMove:
-		{
-			QMouseEvent event(QEvent::MouseMove, pos, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
-			QWebView::mouseMoveEvent(&event);
-		}
-		break;
-		case QEvent::GraphicsSceneMousePress:
-		{
-			QMouseEvent event(QEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-			QWebView::mousePressEvent(&event);
-		}
-		break;
-		case QEvent::GraphicsSceneMouseRelease:
-		{
-			QMouseEvent event(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-			QWebView::mouseReleaseEvent(&event);
-		}
-		break;
-		default:
-		break;
-	}
-}
-
-void WebMap::wheelSlot(QGraphicsSceneWheelEvent *pEvent)
-{
-	if(pEvent->delta() > 0)
-	{
-		zoomIn();
-	}
-	else if(pEvent->delta() < 0)
-	{
-		zoomOut();
-	}
 }
 
 void WebMap::resizeEvent(QResizeEvent *pEvent)
 {
 	QWebView::resizeEvent(pEvent);
 	setSize(width(), height());
-}
-
-void WebMap::zoomIn()
-{
-	QString code = "zoomIn();";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
-}
-
-void WebMap::zoomOut()
-{
-	QString code = "zoomOut();";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
-}
-
-void WebMap::setCenter(qreal lat, qreal lon)
-{
-	QString code = "setCenter(%1, %2);";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(lat).arg(lon));
 }
 
 void WebMap::setSize(uint width, uint height)
@@ -314,18 +148,6 @@ void WebMap::setSize(uint width, uint height)
 
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(width).arg(height));
-}
-
-void WebMap::getCenterAndZoom(qreal north, qreal east, qreal south, qreal west, qreal &lat, qreal &lon, int &zoom)
-{
-	double zoomLon;
-	double zoomLat;
-
-	lat = (north + south) / 2;
-	lon = (east + west) / 2;
-	zoomLon = log(360 * width() / (256 * (east - west))) / log(2);
-	zoomLat = log(180 * height() / (256 * (north - south))) / log(2);
-	zoom = QMIN((int)QMIN(floor(zoomLon), floor(zoomLat)), 17);
 }
 
 void WebMap::loadFinished(bool ok)
@@ -338,6 +160,7 @@ void WebMap::loadFinished(bool ok)
 
 void WebMap::replyFinished(QNetworkReply *pReply)
 {
+/*
 	QString replyStr(pReply->readAll());
 	QStringList latLonStrList = replyStr.split(",");
 
@@ -346,4 +169,16 @@ void WebMap::replyFinished(QNetworkReply *pReply)
 		setCenter(latLonStrList[2].toFloat(), latLonStrList[3].toFloat());
 		emit mapReady();
 	}
+*/
+}
+
+void WebMap::populateJavaScriptWindowObject()
+{
+	page()->mainFrame()->addToJavaScriptWindowObject("WebMap", this);
+}
+
+void WebMap::setOk(bool ok)
+{
+	emit accepted(ok);
+	printf("setOk %i\n", ok);
 }
