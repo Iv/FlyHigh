@@ -38,7 +38,7 @@ WebMapFlightView::~WebMapFlightView()
 	delete m_pWebMap;
 }
 
-void WebMapFlightView::setTurnPointList(const FlightPointList &tpList)
+void WebMapFlightView::setTurnPointList(const WayPoint::WayPointListType &tpList)
 {
 	m_tpList = tpList;
 }

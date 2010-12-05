@@ -26,7 +26,6 @@
 #include "WayPoint.h"
 
 class Flight;
-class FlightPointList;
 class WebMap;
 
 class WebMapFlightView: public QWidget
@@ -38,7 +37,7 @@ class WebMapFlightView: public QWidget
 
 		~WebMapFlightView();
 
-		void setTurnPointList(const FlightPointList &tpList);
+		void setTurnPointList(const WayPoint::WayPointListType &tpList);
 
 		void setWayPointList(const WayPoint::WayPointListType &wpList);
 
@@ -52,7 +51,7 @@ class WebMapFlightView: public QWidget
 	private:
 		WebMap *m_pWebMap;
 		WayPoint::WayPointListType m_wpList;
-		FlightPointList m_tpList;
+		WayPoint::WayPointListType m_tpList;
 		QString m_location;
 
 	public slots:
