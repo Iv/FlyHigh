@@ -17,15 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QGraphicsSceneMouseEvent>
-#include <QMouseEvent>
+#include <QDialog>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QProgressBar>
-#include <QTimer>
 #include <QWebFrame>
-#include <math.h>
-#include "FlightPointList.h"
 #include "WebMap.h"
 
 WebMap::WebMap(QWidget *pParent)
@@ -94,6 +90,37 @@ void WebMap::setTurnPointList(const WayPoint::WayPointListType &tpList)
 	pFrame->evaluateJavaScript(code.arg(arg));
 }
 
+void WebMap::getTurnPointList(WayPoint::WayPointListType &tpList)
+{
+	QString code = "getTurnPointList();";
+	QWebFrame *pFrame;
+	QVariantList list;
+	QVariantList::iterator it;
+	QVariantList::iterator latLngIt;
+	WayPoint wp;
+	QString name;
+	int wpNr = 0;
+
+	pFrame = page()->mainFrame();
+	list = pFrame->evaluateJavaScript(code).toList();
+	tpList.clear();
+
+	name = getLocation();
+	name += "%1";
+
+	for(it=list.begin(); it!=list.end(); it++)
+	{
+		if((*it).toList().size() == 2)
+		{
+			wp.setName(name.arg(wpNr));
+			wp.setLatitude((*it).toList().at(0).toDouble());
+			wp.setLongitude((*it).toList().at(1).toDouble());
+			wpNr++;
+			tpList.push_back(wp);
+		}
+	}
+}
+
 void WebMap::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
 {
 	QString code = "setWayPointList('%1', '%2', %3, '%4');";
@@ -119,6 +146,16 @@ void WebMap::setLocation(const QString &loc)
 
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(loc));
+}
+
+QString WebMap::getLocation()
+{
+	QString code = "getLocation();";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+
+	return pFrame->evaluateJavaScript(code).toString();
 }
 
 void WebMap::setFlightType(const QString &flightType)
@@ -179,6 +216,14 @@ void WebMap::populateJavaScriptWindowObject()
 
 void WebMap::setOk(bool ok)
 {
-	emit accepted(ok);
+	if(ok)
+	{
+		emit finished(QDialog::Accepted);
+	}
+	else
+	{
+		emit finished(QDialog::Rejected);
+	}
+
 	printf("setOk %i\n", ok);
 }
