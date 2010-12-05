@@ -80,7 +80,7 @@ void WebMap::XCLoad()
 	pFrame->evaluateJavaScript(code);
 }
 
-void WebMap::setTurnPointList(const FlightPointList &tpList)
+void WebMap::setTurnPointList(const WayPoint::WayPointListType &tpList)
 {
 	QString code = "setTurnPointList('%1');";
 	QString arg = "[";
@@ -99,7 +99,7 @@ void WebMap::setTurnPointList(const FlightPointList &tpList)
 		}
 
 		first = false;
-		arg += argElem.arg(tpList.at(tpNr).wp.latitude()).arg(tpList.at(tpNr).wp.longitude());
+		arg += argElem.arg(tpList.at(tpNr).latitude()).arg(tpList.at(tpNr).longitude());
 	}
 
 	arg += "]";
