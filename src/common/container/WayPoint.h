@@ -39,6 +39,8 @@ class WayPoint
 		
 		WayPoint();
 
+		WayPoint(double lat, double lon);
+
 		int id() const;
 
 		void setId(int id);
