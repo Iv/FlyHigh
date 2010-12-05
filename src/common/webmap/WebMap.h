@@ -57,30 +57,18 @@ class WebMap: public QWebView
 
 		void setFlightType(const QString &flightType);
 
-void initialize(qreal north, qreal east, qreal south, qreal west);
-
-void getPointFromLatLon(qreal lat, qreal lon, int &x, int &y);
-
-void getLatLonFromPoint(int x, int y, qreal &lat, qreal &lon);
-
-void gotoLocation(const QString &local);
-
-void zoomTo(qreal north, qreal east, qreal south, qreal west);
-
-void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
-
 		bool isMapReady() const;
 
 	signals:
 		void mapReady();
 
-	public slots:
-		void mouseSlot(QGraphicsSceneMouseEvent *pEvent);
-
-		void wheelSlot(QGraphicsSceneWheelEvent *pEvent);
+		void accepted(bool ok);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
+
+	protected slots:
+		void setOk(bool ok);
 
 	private:
 		enum {ProgressW = 200, ProgressH = 15};
@@ -89,20 +77,14 @@ void setMarker(qreal lat, qreal lon, MarkerType type = MarkerDefault);
 		QProgressBar *m_pProgress;
 		bool m_mapReady;
 
-		void zoomIn();
-
-		void zoomOut();
-
-		void setCenter(qreal lat, qreal lon);
-
 		void setSize(uint width, uint height);
-
-		void getCenterAndZoom(qreal north, qreal east, qreal south, qreal west, qreal &lat, qreal &lon, int &zoom);
 
 	private slots:
 		void loadFinished(bool ok);
 
 		void replyFinished(QNetworkReply *pReply);
+
+		void populateJavaScriptWindowObject();
 };
 
 #endif
