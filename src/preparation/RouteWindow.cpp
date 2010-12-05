@@ -65,7 +65,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 			caption = "Routes from GPS";
 
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
 		}
 		break;
@@ -75,16 +75,19 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	}
 	
 	QAction* pViewAct = new QAction(tr("&View"), this);
-	connect(pViewAct,SIGNAL(triggered()), this, SLOT(file_view()));
+	connect(pViewAct, SIGNAL(triggered()), this, SLOT(file_view()));
 	pFileMenu->addAction(pViewAct);
+	QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
+	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+	pFileMenu->addAction(pViewWebMapAct);
 	QAction* pDelAct = new QAction(tr("&Delete"), this);
-	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
 	QAction* pUpdateAct = new QAction(tr("&Update"), this);
-	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+	connect(pUpdateAct, SIGNAL(triggered()), this, SLOT(file_update()));
 	pFileMenu->addAction(pUpdateAct);
 	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+	connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
 	pFileMenu->addAction(pExpAllAct);
 
 	TableWindow::setWindowTitle(caption);
@@ -173,6 +176,7 @@ void RouteWindow::file_newWebMap()
 	WebMapRouteView *pView;
 	Route route;
 
+	route.setName("Fiesch");
 	route.wayPointList().push_back(WayPoint(46.52439, 7.97287));
 	route.wayPointList().push_back(WayPoint(46.52439, 8.29102));
 	route.wayPointList().push_back(WayPoint(46.27975, 8.29102));
@@ -208,21 +212,20 @@ void RouteWindow::file_view()
 
 void RouteWindow::file_viewWebMap()
 {
-/**
 	WebMapRouteView *pView;
 	int row;
 	Route route;
-	
+
 	row = getTable()->currentRow();
 	
 	if(row >= 0)
 	{
 		route = m_routeList[row];
-		pView = new WebMapRouteView(tr("Route from DB"));
+		pView = new WebMapRouteView(tr("View Route"));
 		pView->setRoute(&route);
-		pView->show();
+		pView->loadMap();
+		pView->exec();
 	}
-*/
 }
 
 void RouteWindow::file_AddToGPS()
