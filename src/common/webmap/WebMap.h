@@ -49,11 +49,15 @@ class WebMap: public QWebView
 
 		void setTurnPointList(const WayPoint::WayPointListType &tpList);
 
+		void getTurnPointList(WayPoint::WayPointListType &tpList);
+
 		void setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
 		void setTurnPointsDragable(bool en);
 
 		void setLocation(const QString &loc);
+
+		QString getLocation();
 
 		void setFlightType(const QString &flightType);
 
@@ -62,7 +66,7 @@ class WebMap: public QWebView
 	signals:
 		void mapReady();
 
-		void accepted(bool ok);
+		void finished(int result);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
