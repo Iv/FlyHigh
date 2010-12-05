@@ -174,8 +174,10 @@ void RouteWindow::file_new()
 void RouteWindow::file_newWebMap()
 {
 	WebMapRouteView *pView;
+	WayPoint::WayPointListType::iterator it;
 	Route route;
 
+	// default route
 	route.setName("Fiesch");
 	route.wayPointList().push_back(WayPoint(46.52439, 7.97287));
 	route.wayPointList().push_back(WayPoint(46.52439, 8.29102));
@@ -189,7 +191,14 @@ void RouteWindow::file_newWebMap()
 
 	if(pView->exec() == QDialog::Accepted)
 	{
+		// save new route
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
+		for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
+		{
+			ISql::pInstance()->add(*it);
+		}
+
 		ISql::pInstance()->add(route);
 		TableWindow::unsetCursor();
 	}
