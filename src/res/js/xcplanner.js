@@ -415,7 +415,8 @@ function XCLoad() {
 	XCResize();
 	geocoder = new GClientGeocoder();
 	map = new GMap2($("map"));
-	map.setUIToDefault();
+//	map.setUIToDefault();
+	map.enableScrollWheelZoom();
 	map.setMapType(G_PHYSICAL_MAP);
 	var copyright = new GCopyrightCollection("\u00a9 ");
 	copyright.addCopyright(new GCopyright("XContest", new GLatLngBounds(new GLatLng(-90, -180), new GLatLng(90, 180)), 0, "\u00a9 XContest"));
