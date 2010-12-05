@@ -56,7 +56,7 @@ void WebMapFlightView::setLocation(const QString &location)
 
 void WebMapFlightView::loadMap()
 {
-	m_pWebMap->loadMap("qrc:/webmap_analysis.html");
+	m_pWebMap->loadMap("qrc:/webmap_flight.html");
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
