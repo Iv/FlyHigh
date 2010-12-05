@@ -22,12 +22,12 @@
 #define WebMap_h
 
 #include <QWebView>
+#include "WayPoint.h"
 
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
-class FlightPointList;
 
 /**
 	@author Alex Graf <grafal@sourceforge.net>
@@ -47,7 +47,7 @@ class WebMap: public QWebView
 
 		void XCLoad();
 
-		void setTurnPointList(const FlightPointList &tpList);
+		void setTurnPointList(const WayPoint::WayPointListType &tpList);
 
 		void setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
 
