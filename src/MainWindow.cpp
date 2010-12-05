@@ -30,7 +30,6 @@
 
 #include "AirSpaceWindow.h"
 #include "GliderWindow.h"
-#include "IFlyHighRC.h"
 #include "IFlytecConfig.h"
 #include "IFlytec6015Config.h"
 #include "MainWindow.h"
