@@ -224,6 +224,4 @@ void WebMap::setOk(bool ok)
 	{
 		emit finished(QDialog::Rejected);
 	}
-
-	printf("setOk %i\n", ok);
 }
