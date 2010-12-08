@@ -738,16 +738,22 @@ function XCUpdateFlightType() {
 		var marker = new GMarker(defaultTurnpointLatLngs[i], {draggable: TurnPointsDragable, icon: icon});
 		marker.rev = 0;
 		marker.ele = -9999;
-		GEvent.addListener(marker, "drag", function() { XCDragMarker(i); });
+		if (TurnPointsDragable) {
+			GEvent.addListener(marker, "drag", function() { XCDragMarker(i); });
+		}
+
 		return marker;
 	});
 	if (flightType.circuit) {
 		var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: "0", primaryColor: COLOR.marker});
-		startMarker = new GMarker(defaultStartLatLng, {draggable: true, icon: icon});
+		startMarker = new GMarker(defaultStartLatLng, {draggable: TurnPointsDragable, icon: icon});
 		startMarker.rev = 0;
 		startMarker.ele = -9999;
-		GEvent.addListener(startMarker, "drag", function() { XCDragMarker(-1); });
-	} else {
+
+		if (TurnPointsDragable) {
+			GEvent.addListener(startMarker, "drag", function() { XCDragMarker(-1); });
+		}
+	}else {
 		startMarker = null;
 	}
 	turnpointMarkers.each(function(m, i) { map.addOverlay(m); });
