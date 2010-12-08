@@ -36,28 +36,42 @@ class IFlyHighRC
 		static IFlyHighRC* pInstance();
 		
 		void loadRC();
+
 		void saveRC();
 		
 		const QString& deviceLine();
+
 		void setDeviceLine(const QString &name);
+
 		uint deviceSpeed();
+
 		void setDeviceSpeed(uint index);
 
 		const QString deviceSpeedString() const;
 
 		uint deviceName();
+
 		void setDeviceName(uint index);
+
 		char utcOffset();
+
 		void setUtcOffset(char offset);
+
 		const QString& lastDir();
+
 		void setLastDir(const QString& name);
+
 		const QString& versionInfo();
+
+		const QString& copyInfo();
 		
 		const QStringList& deviceNameList();
+
 		const QStringList& deviceSpeedList();
 		
 		// pilot info
 		void setPilotId(int id);
+
 		int pilotId();
 
 	private:
@@ -69,6 +83,7 @@ class IFlyHighRC
 		char m_utcOffset;
 		QString m_lastDir;
 		QString m_versionInfo;
+		QString m_copyInfo;
 		int m_pilotId;
 		
 		QStringList m_deviceNameList;
