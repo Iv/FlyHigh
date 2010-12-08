@@ -67,9 +67,17 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homePath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.7.0";
+	m_versionInfo = "FlyHigh Version 0.8.0";
+	m_copyInfo =
+			"Copyright (c): 2004-2010 by Alex Graf <grafal@sf.net> and\n"
+			"Jurg Allemann <ja_kern@sf.net>.\n"
+			"Thanks to: Manolis Andreadakis, Victor Berchet, Petr Chromec,\n"
+			"Alex Graf, Marcus Kroiss, Jonty Lawson, Tom Payne and\n"
+			"Marc Poulhies for some lines of code for Web Map.\n"
+			"FlyHigh is distributed under the terms of the General Public\n"
+			"License (GPL). Visit www.gnu.org for more information.\n";
 
-        m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
+	m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
 }
 
 uint IFlyHighRC::deviceName()
@@ -146,6 +154,11 @@ void IFlyHighRC::setLastDir(const QString& name)
 const QString& IFlyHighRC::versionInfo()
 {
 	return m_versionInfo;
+}
+
+const QString& IFlyHighRC::copyInfo()
+{
+	return m_copyInfo;
 }
 
 const QStringList& IFlyHighRC::deviceNameList()
