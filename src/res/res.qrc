@@ -13,5 +13,10 @@
      <file>js/mapiconmaker.js</file>
      <file>js/prototype.js</file>
      <file>js/xcplanner.js</file>
+     <file>js/chartFX/canvaschart.css</file>
+     <file>js/chartFX/canvaschartpainter.js</file>
+     <file>js/chartFX/chart.js</file>
+     <file>js/chartFX/excanvas.js</file>
+     <file>data.js</file>
  </qresource>
  </RCC>
