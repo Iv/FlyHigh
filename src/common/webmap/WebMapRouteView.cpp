@@ -55,6 +55,7 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapRouteView::mapReady()
 {
+	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 	m_pWebMap->setTurnPointsDragable(true);
 
 	if(m_pRoute != NULL)

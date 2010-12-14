@@ -70,6 +70,7 @@ void WebMapFlightView::mapReady()
 	QString encPoints;
 	QString encLevels;
 
+	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 	m_pWebMap->setTurnPointList(m_tpList);
 	m_pWebMap->setTurnPointsDragable(false);
 	m_pWebMap->setFlightType("xc5");
