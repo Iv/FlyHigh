@@ -1,46 +1,91 @@
 html, body {
-	height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-#action:hover {
-	background: #ff0;
+	font: normal 100.01% Helvetica, Arial, sans-serif;
+	color: black;
+	background-color: #ffffe0;
 }
 
 body {
 	overflow: hidden;
-	padding: 6px 6px 1px 6px;
+/*	padding: 6px 6px 1px 6px;*/
 	background-color: #ffffff;
 	font-family: Arial;
 	font-size: 12px;
 }
 
-#action {
-	color: #00f;
-}
-
-#left {
-	height: 100%;
+div#left {
+	position:absolute;
+	top: 0px;
+	left: 0px;
 	width: 280px;
-	float: left;
-	overflow: scroll;
+	height: 100%;
+	margin-left: 5px;
+/*	overflow: scroll;*/
 }
 
-#right {
-	position: relative;
+div#map {
+	position:absolute;
+	top: 0px;
+	left: 280px;
+	width: 720px; /* setzen */
+	height: 460px; /* setzen */
+}
+
+div#plot {
+	position:absolute;
+	top: 660px; /* setzen */
+	left: 280px;
+	background-color: #eeeeee;
+}
+
+div#chart {
+	position: absolute;
+	left: 0px;
+	top: 20px;
+	width: 720px; /* setzen */
+	height: 120px;
+}
+
+div#cursor {
+	position: absolute;
+	top: 34px;
+	height: 86px;
 	width: 1px;
-	height: 1px;
+	left: 29px;
+	z-index: 100;
+	background-color: #00ff00;
+}
+
+ul#legend {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 720px; /* setzen */
+	height: 20px;
+	margin: 0px;
+	padding-left: 20px;
+	text-align: left;
+	background-color: silver;
+}
+
+ul#legend li {
+	list-style: none;
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+
+ul#legend span {
 	float: left;
+	width: 100px;
+	margin-left: 10px;
+	padding: 1px 5px;
+	text-decoration: none;
+	font-size: 12px;
+	border: 1px solid black;
+	color: maroon;
+	background-color: #ccc;
 }
 
-#right #map {
-	width: 100%;
-	height: 100%
-}
-
-#map {
-	clear: both;
+ul#legend div {
+	clear: left;
 }
