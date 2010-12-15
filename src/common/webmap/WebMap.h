@@ -28,6 +28,7 @@ class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
+class FlightPointList;
 
 /**
 	@author Alex Graf <grafal@sourceforge.net>
@@ -60,6 +61,8 @@ class WebMap: public QWebView
 		QString getLocation();
 
 		void setFlightType(const QString &flightType);
+
+		void setFlightPointList(const FlightPointList &fpList);
 
 		bool isMapReady() const;
 

@@ -22,6 +22,8 @@
 #include <QNetworkRequest>
 #include <QProgressBar>
 #include <QWebFrame>
+#include "FlightPointList.h"
+#include "PolyLineEncoder.h"
 #include "WebMap.h"
 
 WebMap::WebMap(QWidget *pParent)
@@ -165,6 +167,91 @@ void WebMap::setFlightType(const QString &flightType)
 
 	pFrame = page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(flightType));
+}
+
+void WebMap::setFlightPointList(const FlightPointList &fpList)
+{
+	QString timeCode = "setFlightTime([%1], %2, %3);";
+	QString altCode = "setFlightAlt([%1], %2, %3);";
+
+//QString altCode = "FlightData.elev = [%1];";
+
+	QString showCode = "showFlight();";
+	QWebFrame *pFrame;
+	WayPoint::WayPointListType wpList;
+	PolyLineEncoder encoder;
+	QString encPoints;
+	QString encLevels;
+	uint fpNr;
+	uint fpListSize;
+
+	QString value = "%1";
+	QString strTime = "";
+	QString strAlt = "";
+
+	QList<QVariant> altList;
+
+	QTime time;
+	WayPoint wp;
+	uint start;
+	uint duration;
+	int minAlt;
+	int maxAlt;
+	int alt;
+	bool first = true;
+
+	fpListSize = fpList.size();
+
+	if(fpListSize > 0)
+	{
+		minAlt = fpList.at(0).wp.altitude();
+		maxAlt = minAlt;
+		time = fpList.at(0).time;
+		start = time.hour() * 3600 + time.minute() * 60 + time.second();
+		time = fpList.at(fpListSize - 1).time;
+		duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
+
+		for(fpNr=0; fpNr<fpListSize; fpNr++)
+		{
+			wpList.push_back(fpList.at(fpNr).wp);
+	
+			if(!first)
+			{
+				strTime += ",";
+				strAlt += ",";
+			}
+
+			first = false;
+	
+			// time
+			strTime += "'";
+			strTime += fpList.at(fpNr).time.toString("hh:mm:ss");
+			strTime += "'";
+
+			// altitude
+			wp = fpList.at(fpNr).wp;
+
+			minAlt = qMax(alt, minAlt);
+			maxAlt = qMin(alt, maxAlt);
+			strAlt += value.arg(wp.altitude());
+	/*
+				FlightData.time[j]=sec2Time(flightArray.time[i]);
+				FlightData.elev[j]=flightArray.elev[i];
+				FlightData.lat[j]=flightArray.lat[i];
+				FlightData.lon[j]=flightArray.lon[i];
+				FlightData.speed[j]=flightArray.speed[i];
+				FlightData.vario[j]=flightArray.vario[i];
+	*/
+		}
+	
+		encoder.dpEncode(wpList, encPoints, encLevels);
+		setWayPointList(encPoints, encLevels, 3, "#FF0000");
+	
+		pFrame = page()->mainFrame();
+		pFrame->evaluateJavaScript(timeCode.arg(strTime).arg(start).arg(duration));
+		pFrame->evaluateJavaScript(altCode.arg(strAlt).arg(minAlt).arg(maxAlt));
+		pFrame->evaluateJavaScript(showCode);
+	}
 }
 
 bool WebMap::isMapReady() const
