@@ -88,8 +88,6 @@ function setLocation(loc)
 	
 	locInput = document.getElementById("defaultLocation");
 	locInput.value = loc;
-
-init();
 }
 
 function getLocation()
@@ -151,7 +149,21 @@ function zoomOut()
 }
 
 
-function init()
+function setFlightTime(time, start, duration)
+{
+	FlightData.time = time;
+	StartTime = start;
+	Duration = duration;
+}
+
+function setFlightAlt(alt, minAlt, maxAlt)
+{
+	FlightData.elev = alt;
+	FlightData.min_alt = minAlt;
+	FlightData.max_alt = maxAlt;
+}
+
+function showFlight()
 {
 	cursorDiv = document.getElementById("cursor").style;
 	chartDiv = document.getElementById("chart");
@@ -173,9 +185,8 @@ function drawChart()
 	// trim off points before start / after end
 	var j = 0;
 	FlightData.points_num = 0;
-	FlightData.max_alt = 0;
-	FlightData.min_alt = 100000;
 
+/*
 	for(i=0; i<flightArray.time.length; i++)
 	{
 		if(flightArray.time[i]>=StartTime && flightArray.time[i]<= StartTime + Duration)
@@ -212,8 +223,9 @@ function drawChart()
 			j++;
 		}
 	}
-
+*/
 	FlightData.label_num = flightArray.label_num;
+
 
 	var nbPts = FlightData.time.length;
 	var label_num = FlightData.label_num;
@@ -228,6 +240,7 @@ function drawChart()
 
 	// add some spaces to the last legend
 	FlightData.labels[FlightData.labels.length - 1] += "   ___";
+
 
 	var min_alt = Math.floor((FlightData.min_alt / 100.0))  * 100;
 	var max_alt = Math.ceil((FlightData.max_alt / 100.0)) * 100;
@@ -314,7 +327,9 @@ return;
 function setLegend(idx)
 {
 	altDiv.innerHTML = "ALT: " + FlightData.elev[idx] + " m";
+/*
 	sogDiv.innerHTML = "SOG: " + FlightData.speed[idx] + " km/h";
 	varioDiv.innerHTML = "Vario: " + FlightData.vario[idx] + " m/s";
+*/
 	timeDiv.innerHTML = "Time: " + FlightData.time[idx];
 }
