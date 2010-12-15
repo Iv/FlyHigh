@@ -18,8 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "Flight.h"
-#include "PolyLineEncoder.h"
 #include "WebMap.h"
 #include "WebMapFlightView.h"
 
@@ -54,6 +52,11 @@ void WebMapFlightView::setLocation(const QString &location)
 	m_location = location;
 }
 
+void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
+{
+	m_fpList = fpList;
+}
+
 void WebMapFlightView::loadMap()
 {
 	m_pWebMap->loadMap("qrc:/webmap_flight.html");
@@ -66,17 +69,12 @@ void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapFlightView::mapReady()
 {
-	PolyLineEncoder encoder;
-	QString encPoints;
-	QString encLevels;
-
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 	m_pWebMap->setTurnPointList(m_tpList);
 	m_pWebMap->setTurnPointsDragable(false);
 	m_pWebMap->setFlightType("xc5");
 	m_pWebMap->setLocation(m_location);
 	m_pWebMap->XCLoad();
-	encoder.dpEncode(m_wpList, encPoints, encLevels);
-	m_pWebMap->setWayPointList(encPoints, encLevels, 3, "#FF0000");
 
+	m_pWebMap->setFlightPointList(m_fpList);
 }
