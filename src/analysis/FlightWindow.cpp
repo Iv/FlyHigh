@@ -1004,12 +1004,15 @@ void FlightWindow::showOnWebMap()
 				pView->setLocation(m_flightList[row].startPt().name());
 
 				// set waypoints
+/**
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
 					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
 				}
 
 				pView->setWayPointList(wpList);
+*/
+				pView->setFlightPointList(igcParser.flightPointList());
 
 				// optimize flight
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
