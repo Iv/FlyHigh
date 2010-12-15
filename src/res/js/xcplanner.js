@@ -412,7 +412,6 @@ function XCLoad() {
 		$("elevationFormat").appendChild(new Element("option", {label: elevationFormatPair[0], value: elevationFormatPair[0]}).update(elevationFormatPair[0]));
 	});
 	$("elevationFormat").setValue("m");
-	XCResize();
 	geocoder = new GClientGeocoder();
 	map = new GMap2($("map"));
 //	map.setUIToDefault();
@@ -484,11 +483,6 @@ function XCSetDefaultTurnpoints(replace) {
 	if (replace || !defaultStartLatLng) {
 		defaultStartLatLng = bounds.getCenter();
 	}
-}
-
-function XCResize() {
-	$("map").style.width = (document.viewport.getWidth() - 305) + "px";
-	$("map").style.height = (document.viewport.getHeight() - 25) + "px";
 }
 
 function XCReverseRoute() {
