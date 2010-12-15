@@ -22,9 +22,9 @@
 #define _WebMapFlightView_h
 
 #include <QDialog>
+#include "FlightPointList.h"
 #include "WayPoint.h"
 
-class Flight;
 class WebMap;
 
 class WebMapFlightView: public QDialog
@@ -42,6 +42,8 @@ class WebMapFlightView: public QDialog
 
 		void setLocation(const QString &location);
 
+		void setFlightPointList(const FlightPointList &fpList);
+
 		void loadMap();
 
 	protected:
@@ -49,6 +51,7 @@ class WebMapFlightView: public QDialog
 
 	private:
 		WebMap *m_pWebMap;
+		FlightPointList m_fpList;
 		WayPoint::WayPointListType m_wpList;
 		WayPoint::WayPointListType m_tpList;
 		QString m_location;
