@@ -22,6 +22,7 @@
 #include <QNetworkRequest>
 #include <QProgressBar>
 #include <QWebFrame>
+#include <math.h>
 #include "FlightPointList.h"
 #include "PolyLineEncoder.h"
 #include "WebMap.h"
@@ -173,6 +174,7 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 {
 	QString timeCode = "setFlightTime([%1], %2, %3);";
 	QString altCode = "setFlightAlt([%1], %2, %3);";
+	QString latLonCode = "setFlightLatLon([%1], [%2]);";
 
 //QString altCode = "FlightData.elev = [%1];";
 
@@ -188,6 +190,8 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 	QString value = "%1";
 	QString strTime = "";
 	QString strAlt = "";
+	QString strLat = "";
+	QString strLon = "";
 
 	QList<QVariant> altList;
 
@@ -197,7 +201,6 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 	uint duration;
 	int minAlt;
 	int maxAlt;
-	int alt;
 	bool first = true;
 
 	fpListSize = fpList.size();
@@ -219,6 +222,8 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 			{
 				strTime += ",";
 				strAlt += ",";
+				strLat += ",";
+				strLon += ",";
 			}
 
 			first = false;
@@ -228,12 +233,16 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 			strTime += fpList.at(fpNr).time.toString("hh:mm:ss");
 			strTime += "'";
 
-			// altitude
 			wp = fpList.at(fpNr).wp;
 
-			minAlt = qMax(alt, minAlt);
-			maxAlt = qMin(alt, maxAlt);
+			// altitude
+			minAlt = qMin(wp.altitude(), minAlt);
+			maxAlt = qMax(wp.altitude(), maxAlt);
 			strAlt += value.arg(wp.altitude());
+
+			// lat, lon
+			strLat += value.arg(wp.latitude());
+			strLon += value.arg(wp.longitude());
 	/*
 				FlightData.time[j]=sec2Time(flightArray.time[i]);
 				FlightData.elev[j]=flightArray.elev[i];
@@ -243,13 +252,17 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 				FlightData.vario[j]=flightArray.vario[i];
 	*/
 		}
-	
+
+		minAlt = floor(minAlt / 100.0) * 100;
+		maxAlt = ceil(maxAlt / 100.0) * 100;
+
 		encoder.dpEncode(wpList, encPoints, encLevels);
 		setWayPointList(encPoints, encLevels, 3, "#FF0000");
 	
 		pFrame = page()->mainFrame();
 		pFrame->evaluateJavaScript(timeCode.arg(strTime).arg(start).arg(duration));
 		pFrame->evaluateJavaScript(altCode.arg(strAlt).arg(minAlt).arg(maxAlt));
+		pFrame->evaluateJavaScript(latLonCode.arg(strLat).arg(strLon));
 		pFrame->evaluateJavaScript(showCode);
 	}
 }
