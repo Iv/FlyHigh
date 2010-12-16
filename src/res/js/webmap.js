@@ -34,12 +34,13 @@ var timeDiv;
 			var latDiv;
 			var lonDiv;
 */
-var ChartMarginLeft = 29;
-var ChartMarginRight = 34;
-var LeftWidth;
+var ChartMarginLeft = 20;
+var ChartMarginRight = 38;
+var LeftWidth = 280;
 var ChartWidth;
-var PlotHeight;
+var PlotHeight = 140;
 var chart;
+var glider;
 
 function setTurnPointList(tps)
 {
@@ -53,8 +54,8 @@ function getTurnPointList()
 {
 	var tps = [];
 
-	turnpointMarkers.each(function(marker, i) {
-		tps[i] = [marker.getLatLng().lat(), marker.getLatLng().lng()] ;
+	turnpointMarkers.each(function(glider, i) {
+		tps[i] = [glider.getLatLng().lat(), glider.getLatLng().lng()] ;
 	});
 
 	return tps;
@@ -107,14 +108,12 @@ function setFlightType(flightType)
 	typeInput.value = flightType;
 }
 
-function setMapSize(w, h)
+function setMapSize(width, height)
 {
 	var div;
 
-	LeftWidth = 280;
-	PlotHeight = 140;
-	ChartWidth = (w - LeftWidth);
-	ChartHeight = (h - PlotHeight);
+	ChartWidth = (width - LeftWidth);
+	ChartHeight = (height - PlotHeight);
 
 	// map
 	div = document.getElementById("map");
@@ -135,6 +134,7 @@ function setMapSize(w, h)
 	div = document.getElementById("legend");
 	div.style.width = ChartWidth + "px";
 
+	// redraw chart
 	chart.draw();
 }
 
@@ -148,7 +148,6 @@ function zoomOut()
 	map.zoomOut();
 }
 
-
 function setFlightTime(time, start, duration)
 {
 	FlightData.time = time;
@@ -161,10 +160,40 @@ function setFlightAlt(alt, minAlt, maxAlt)
 	FlightData.elev = alt;
 	FlightData.min_alt = minAlt;
 	FlightData.max_alt = maxAlt;
+
+	if(maxAlt > 999)
+	{
+		ChartMarginLeft = 34;
+	}
+	else if(maxAlt > 99)
+	{
+		ChartMarginLeft = 27;
+	}
+	else if(maxAlt > 9)
+	{
+		ChartMarginLeft = 20;
+	}
+}
+
+function setFlightLatLon(lat, lon)
+{
+	FlightData.lat = lat;
+	FlightData.lon = lon;
 }
 
 function showFlight()
 {
+	var nbPts;
+	var horLabelNum = 8;
+	var verLabelNum = 5;
+	var idx = 0;
+	var step;
+	var labelNr;
+
+	nbPts = FlightData.time.length;
+	step = Math.floor((nbPts - 1) / (horLabelNum - 1));
+
+	// divs
 	cursorDiv = document.getElementById("cursor").style;
 	chartDiv = document.getElementById("chart");
 	altDiv = document.getElementById("alt");
@@ -176,80 +205,20 @@ function showFlight()
 				lonDiv = document.getElementById("lon");
 */
 
-	drawChart();
-	setLegend(0);
-}
-
-function drawChart()
-{
-	// trim off points before start / after end
-	var j = 0;
-	FlightData.points_num = 0;
-
-/*
-	for(i=0; i<flightArray.time.length; i++)
+	for(labelNr=0; labelNr<horLabelNum; labelNr++)
 	{
-		if(flightArray.time[i]>=StartTime && flightArray.time[i]<= StartTime + Duration)
-		{
-			FlightData.time[j]=sec2Time(flightArray.time[i]);
-			FlightData.elev[j]=flightArray.elev[i];
-			FlightData.elevGnd[j]=flightArray.elevGnd[i];
-			FlightData.lat[j]=flightArray.lat[i];
-			FlightData.lon[j]=flightArray.lon[i];
-			FlightData.speed[j]=flightArray.speed[i];
-			FlightData.vario[j]=flightArray.vario[i];
-			FlightData.distance[j]=flightArray.distance[i];
-
-			// for testing
-			// FlightData.elevGnd[j]=800;
-			if(j == 0)
-			{
-				lat = FlightData.lat[j] = flightArray.lat[i];
-				lon = FlightData.lon[j] = flightArray.lon[i];
-			}
-			else
-			{
-				//P.Wild ground height hack  3.4.08
-				if(FlightData.elevGnd[j] == 0)
-						FlightData.elevGnd[j] = (FlightData.elevGnd[j-1] * 0.95 ) +
-								(FlightData.elevGnd[j-1] * 0.1 * (Math.random()));
-			}
-
-			if(FlightData.elev[j] > FlightData.max_alt) FlightData.max_alt = FlightData.elev[j];
-			if(FlightData.elevGnd[j] > FlightData.max_alt ) FlightData.max_alt = FlightData.elevGnd[j];
-			if(FlightData.elev[j] < FlightData.min_alt) FlightData.min_alt = FlightData.elev[j];
-			if(FlightData.elevGnd[j] < FlightData.min_alt) FlightData.min_alt = FlightData.elevGnd[j];
-			FlightData.points_num++;
-			j++;
-		}
-	}
-*/
-	FlightData.label_num = flightArray.label_num;
-
-
-	var nbPts = FlightData.time.length;
-	var label_num = FlightData.label_num;
-	var idx = 0;
-	var step = Math.floor((nbPts - 1) / (label_num - 1));
-
-	for(i = 0 ; i < label_num; i++)
-	{
-		FlightData.labels[i] = FlightData.time[idx].substr(0, 5);
+		FlightData.labels[labelNr] = FlightData.time[idx].substr(0, 5);
 		idx += step;
 	}
 
 	// add some spaces to the last legend
 	FlightData.labels[FlightData.labels.length - 1] += "   ___";
 
-
-	var min_alt = Math.floor((FlightData.min_alt / 100.0))  * 100;
-	var max_alt = Math.ceil((FlightData.max_alt / 100.0)) * 100;
-	var ver_label_num = 5;
-
+	// chart
 	chart = new Chart(chartDiv);
 	chart.setDefaultType(CHART_LINE);
-	chart.setGridDensity(FlightData.label_num, ver_label_num);
-	chart.setVerticalRange(min_alt, max_alt);
+	chart.setGridDensity(horLabelNum, verLabelNum);
+	chart.setVerticalRange(FlightData.min_alt, FlightData.max_alt);
 	chart.setShowLegend(false);
 	chart.setLabelPrecision(0);
 	chart.setHorizontalLabels(FlightData.labels);
@@ -257,24 +226,15 @@ function drawChart()
 //				chart.add('Ground Elev',  '#C0AF9C', FlightData.elevGnd, CHART_AREA);
 	chart.draw();
 
+	// glider
+	var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: "G", primaryColor: "#ffffff"});
+	glider = new GMarker(new GLatLng(FlightData.lat[0], FlightData.lon[0]), {draggable: false, icon: icon});
+	glider.rev = 0;
+	glider.ele = -9999;
+	map.addOverlay(glider);
+
 	addMouseEvents();
-}
-
-function sec2Time(secs)
-{
-	var hour;
-	var min;
-	var sec;
-
-	sec = secs % 60;
-	if(sec < 10) sec = "0" + sec;
-	secs = Math.floor(secs / 60);
-	min = secs % 60;
-	if(min < 10) min = "0" + min;
-	hour = Math.floor(secs / 60);
-	if(hour < 10) hour = "0" + hour;
-
-	return hour + ":" + min + ":" + sec;
+	setLegend(0);
 }
 
 function addMouseEvents()
@@ -307,21 +267,11 @@ function setGlider(posX)
 	var lat;
 	var lon;
 	var idx;
-/*
-alert("setGlider=" + FlightData.speed[0]);
-return;
-//alert("setGlider=" + posX + ", length=" + FlightData.lat.length);
-*/
 
-	idx = (posX - ChartMarginLeft) * (FlightData.lat.length - 1) / (ChartWidth - ChartMarginRight);
+	idx = (posX - ChartMarginLeft) * (FlightData.time.length - 1) / (ChartWidth - ChartMarginRight);
 	idx = Math.round(idx);
-
+	glider.setLatLng(new GLatLng(FlightData.lat[idx], FlightData.lon[idx]));
 	setLegend(idx);
-
-/*
-		var newpos = new GLatLng(lat, lon);
-		posMarker.setPoint(newpos);
-*/
 }
 
 function setLegend(idx)
