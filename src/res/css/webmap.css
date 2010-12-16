@@ -1,7 +1,7 @@
 html, body {
 	font: normal 100.01% Helvetica, Arial, sans-serif;
 	color: black;
-	background-color: #ffffe0;
+	background-color: #eeeee6;
 }
 
 body {
@@ -47,10 +47,10 @@ div#chart {
 
 div#cursor {
 	position: absolute;
-	top: 34px;
-	height: 86px;
+	top: 27px;
+	height: 92px;
 	width: 1px;
-	left: 29px;
+	left: 34px;
 	z-index: 100;
 	background-color: #00ff00;
 }
