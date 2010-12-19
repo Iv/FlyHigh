@@ -58,12 +58,12 @@ void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
 	m_fpList = fpList;
 }
 
-void WebMapFlightView::setSogList(const WayPoint::SogListType &sogList)
+void WebMapFlightView::setSogList(const FlightPointList::SogListType &sogList)
 {
 	m_sogList = sogList;
 }
 
-void WebMapFlightView::setVarioList(const WayPoint::VarioListType &varioList)
+void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioList)
 {
 	m_varioList = varioList;
 }
