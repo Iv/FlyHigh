@@ -33,6 +33,7 @@ WebMap::WebMap(QWidget *pParent)
 	QWebFrame *pFrame;
 
 	m_mapReady = false;
+	m_plotEn = false;
 	m_pNetMgr = new QNetworkAccessManager(this);
 	m_pProgress = new QProgressBar(this);
 	m_pProgress->setGeometry(0, 0, ProgressW, ProgressH);
@@ -267,6 +268,11 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 	}
 }
 
+void WebMap::setPlotEnable(bool en)
+{
+	m_plotEn = en;
+}
+
 bool WebMap::isMapReady() const
 {
 	return m_mapReady;
@@ -280,11 +286,23 @@ void WebMap::resizeEvent(QResizeEvent *pEvent)
 
 void WebMap::setSize(uint width, uint height)
 {
-	QString code = "setMapSize(%1, %2);";
+	QString code;
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(width).arg(height));
+
+	if(m_plotEn)
+	{
+		code = "setMapSize(%1, %2);";
+		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
+		code = "setPlotSize(%1, %2);";
+		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
+	}
+	else
+	{
+		code = "setMapSize(%1, %2);";
+		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+	}
 }
 
 void WebMap::loadFinished(bool ok)

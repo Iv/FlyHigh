@@ -64,6 +64,8 @@ class WebMap: public QWebView
 
 		void setFlightPointList(const FlightPointList &fpList);
 
+		void setPlotEnable(bool en);
+
 		bool isMapReady() const;
 
 	signals:
@@ -78,10 +80,11 @@ class WebMap: public QWebView
 		void setOk(bool ok);
 
 	private:
-		enum {ProgressW = 200, ProgressH = 15};
+		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
+		uint m_plotEn;
 		bool m_mapReady;
 
 		void setSize(uint width, uint height);
