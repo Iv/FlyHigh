@@ -190,7 +190,17 @@ function setFlightLatLon(lat, lon)
 	FlightData.lon = lon;
 }
 
-function showFlight()
+function setSog(sog)
+{
+	FlightData.speed = sog;
+}
+
+function setVario(vario)
+{
+	FlightData.vario = vario;
+}
+
+function showPlot()
 {
 	var nbPts;
 	var horLabelNum = 8;
@@ -209,10 +219,6 @@ function showFlight()
 	sogDiv = document.getElementById("sog");
 	varioDiv = document.getElementById("vario");
 	timeDiv = document.getElementById("time");
-/*
-				latDiv = document.getElementById("lat");
-				lonDiv = document.getElementById("lon");
-*/
 
 	for(labelNr=0; labelNr<horLabelNum; labelNr++)
 	{
@@ -286,9 +292,7 @@ function setGlider(posX)
 function setLegend(idx)
 {
 	altDiv.innerHTML = "ALT: " + FlightData.elev[idx] + " m";
-/*
 	sogDiv.innerHTML = "SOG: " + FlightData.speed[idx] + " km/h";
 	varioDiv.innerHTML = "Vario: " + FlightData.vario[idx] + " m/s";
-*/
 	timeDiv.innerHTML = "Time: " + FlightData.time[idx];
 }
