@@ -34,6 +34,7 @@ class WayPoint
 	public:
 		typedef QVector<WayPoint> WayPointListType;
 		typedef QVector<int> WayPointIdListType;
+		typedef QVector<int> AltListType;
 		static const uint startLandRadius; // in meters
 		static const double earthRadius; // in meters
 		

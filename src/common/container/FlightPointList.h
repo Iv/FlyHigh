@@ -34,6 +34,9 @@ class FlightPointList
 			WayPoint wp;
 		}FlightPointType;
 
+		typedef QVector<float> SogListType;
+		typedef QVector<float> VarioListType;
+
 		FlightPointList();
 		
 		void add(const FlightPointType &flightPoint);
