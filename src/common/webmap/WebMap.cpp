@@ -173,31 +173,21 @@ void WebMap::setFlightType(const QString &flightType)
 
 void WebMap::setFlightPointList(const FlightPointList &fpList)
 {
-	QString timeCode = "setFlightTime([%1], %2, %3);";
-	QString altCode = "setFlightAlt([%1], %2, %3);";
-	QString latLonCode = "setFlightLatLon([%1], [%2]);";
-
-//QString altCode = "FlightData.elev = [%1];";
-
-	QString showCode = "showFlight();";
+	QString code;
 	QWebFrame *pFrame;
 	WayPoint::WayPointListType wpList;
 	PolyLineEncoder encoder;
 	QString encPoints;
 	QString encLevels;
-	uint fpNr;
-	uint fpListSize;
-
 	QString value = "%1";
 	QString strTime = "";
 	QString strAlt = "";
 	QString strLat = "";
 	QString strLon = "";
-
-	QList<QVariant> altList;
-
 	QTime time;
 	WayPoint wp;
+	uint fpNr;
+	uint fpListSize;
 	uint start;
 	uint duration;
 	int minAlt;
@@ -244,14 +234,6 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 			// lat, lon
 			strLat += value.arg(wp.latitude());
 			strLon += value.arg(wp.longitude());
-	/*
-				FlightData.time[j]=sec2Time(flightArray.time[i]);
-				FlightData.elev[j]=flightArray.elev[i];
-				FlightData.lat[j]=flightArray.lat[i];
-				FlightData.lon[j]=flightArray.lon[i];
-				FlightData.speed[j]=flightArray.speed[i];
-				FlightData.vario[j]=flightArray.vario[i];
-	*/
 		}
 
 		minAlt = floor(minAlt / 100.0) * 100;
@@ -261,10 +243,88 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 		setWayPointList(encPoints, encLevels, 3, "#FF0000");
 	
 		pFrame = page()->mainFrame();
-		pFrame->evaluateJavaScript(timeCode.arg(strTime).arg(start).arg(duration));
-		pFrame->evaluateJavaScript(altCode.arg(strAlt).arg(minAlt).arg(maxAlt));
-		pFrame->evaluateJavaScript(latLonCode.arg(strLat).arg(strLon));
-		pFrame->evaluateJavaScript(showCode);
+		code = "setFlightTime([%1], %2, %3);";
+		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
+		code = "setFlightAlt([%1], %2, %3);";
+		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
+		code = "setFlightLatLon([%1], [%2]);";
+		pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon));
+	}
+}
+
+void WebMap::setSogList(const WayPoint::SogListType &sogList)
+{
+	QString code = "setSog([%1]);";
+	QWebFrame *pFrame;
+	QString value = "%1";
+	QString strSog = "";
+	uint itemNr;
+	uint listSize;
+	bool first = true;
+
+	listSize = sogList.size();
+
+	if(listSize > 0)
+	{
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+			if(!first)
+			{
+				strSog += ",";
+			}
+
+			first = false;
+
+			// sog
+			strSog += value.arg(round(sogList.at(itemNr) * 10.0) / 10.0);
+		}
+	
+		pFrame = page()->mainFrame();
+		pFrame->evaluateJavaScript(code.arg(strSog));
+	}
+}
+
+void WebMap::setVarioList(const WayPoint::VarioListType &varioList)
+{
+	QString code = "setVario([%1]);";
+	QWebFrame *pFrame;
+	QString value = "%1";
+	QString strVario = "";
+	uint itemNr;
+	uint listSize;
+	bool first = true;
+
+	listSize = varioList.size();
+
+	if(listSize > 0)
+	{
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+			if(!first)
+			{
+				strVario += ",";
+			}
+
+			first = false;
+
+			// sog
+			strVario += value.arg(round(varioList.at(itemNr) * 10.0) / 10.0);
+		}
+	
+		pFrame = page()->mainFrame();
+		pFrame->evaluateJavaScript(code.arg(strVario));
+	}
+}
+
+void WebMap::showPlot()
+{
+	QString code = "showPlot();";
+	QWebFrame *pFrame;
+
+	if(m_plotEn)
+	{
+		pFrame = page()->mainFrame();
+		pFrame->evaluateJavaScript(code);
 	}
 }
 

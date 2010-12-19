@@ -64,6 +64,12 @@ class WebMap: public QWebView
 
 		void setFlightPointList(const FlightPointList &fpList);
 
+		void setSogList(const WayPoint::SogListType &sogList);
+
+		void setVarioList(const WayPoint::VarioListType &varioList);
+
+		void showPlot();
+
 		void setPlotEnable(bool en);
 
 		bool isMapReady() const;
