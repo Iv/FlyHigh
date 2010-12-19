@@ -252,7 +252,7 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 	}
 }
 
-void WebMap::setSogList(const WayPoint::SogListType &sogList)
+void WebMap::setSogList(const FlightPointList::SogListType &sogList)
 {
 	QString code = "setSog([%1]);";
 	QWebFrame *pFrame;
@@ -284,7 +284,7 @@ void WebMap::setSogList(const WayPoint::SogListType &sogList)
 	}
 }
 
-void WebMap::setVarioList(const WayPoint::VarioListType &varioList)
+void WebMap::setVarioList(const FlightPointList::VarioListType &varioList)
 {
 	QString code = "setVario([%1]);";
 	QWebFrame *pFrame;

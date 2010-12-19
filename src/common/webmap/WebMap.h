@@ -22,13 +22,13 @@
 #define WebMap_h
 
 #include <QWebView>
+#include "FlightPointList.h"
 #include "WayPoint.h"
 
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
-class FlightPointList;
 
 /**
 	@author Alex Graf <grafal@sourceforge.net>
@@ -64,9 +64,9 @@ class WebMap: public QWebView
 
 		void setFlightPointList(const FlightPointList &fpList);
 
-		void setSogList(const WayPoint::SogListType &sogList);
+		void setSogList(const FlightPointList::SogListType &sogList);
 
-		void setVarioList(const WayPoint::VarioListType &varioList);
+		void setVarioList(const FlightPointList::VarioListType &varioList);
 
 		void showPlot();
 
