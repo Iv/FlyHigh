@@ -44,6 +44,10 @@ class WebMapFlightView: public QDialog
 
 		void setFlightPointList(const FlightPointList &fpList);
 
+		void setSogList(const WayPoint::SogListType &sogList);
+
+		void setVarioList(const WayPoint::VarioListType &varioList);
+
 		void loadMap();
 
 	protected:
@@ -54,6 +58,8 @@ class WebMapFlightView: public QDialog
 		FlightPointList m_fpList;
 		WayPoint::WayPointListType m_wpList;
 		WayPoint::WayPointListType m_tpList;
+		WayPoint::SogListType m_sogList;
+		WayPoint::VarioListType m_varioList;
 		QString m_location;
 
 	private slots:

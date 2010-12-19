@@ -58,6 +58,16 @@ void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
 	m_fpList = fpList;
 }
 
+void WebMapFlightView::setSogList(const WayPoint::SogListType &sogList)
+{
+	m_sogList = sogList;
+}
+
+void WebMapFlightView::setVarioList(const WayPoint::VarioListType &varioList)
+{
+	m_varioList = varioList;
+}
+
 void WebMapFlightView::loadMap()
 {
 	m_pWebMap->loadMap("qrc:/webmap_flight.html");
@@ -77,4 +87,7 @@ void WebMapFlightView::mapReady()
 	m_pWebMap->XCLoad();
 
 	m_pWebMap->setFlightPointList(m_fpList);
+	m_pWebMap->setSogList(m_sogList);
+	m_pWebMap->setVarioList(m_varioList);
+	m_pWebMap->showPlot();
 }
