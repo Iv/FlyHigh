@@ -26,13 +26,13 @@ div#map {
 	position:absolute;
 	top: 0px;
 	left: 280px;
-	width: 720px; /* setzen */
-	height: 460px; /* setzen */
+	width: 720px; /* set by webmap.js */
+	height: 460px; /* set by webmap.js */
 }
 
 div#plot {
 	position:absolute;
-	top: 660px; /* setzen */
+	top: 660px; /* set by webmap.js */
 	left: 280px;
 	background-color: #eeeeee;
 }
@@ -41,8 +41,8 @@ div#chart {
 	position: absolute;
 	left: 0px;
 	top: 20px;
-	width: 720px; /* setzen */
-	height: 120px;
+	width: 720px; /* set by webmap.js */
+	height: 120px; /* set by webmap.js */
 }
 
 div#cursor {
@@ -59,8 +59,8 @@ ul#legend {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	width: 720px; /* setzen */
-	height: 20px;
+	width: 720px; /* set by webmap.js */
+	height: 20px; /* set by webmap.js */
 	margin: 0px;
 	padding-left: 20px;
 	text-align: left;
