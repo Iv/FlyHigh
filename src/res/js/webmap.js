@@ -37,8 +37,9 @@ var timeDiv;
 var ChartMarginLeft = 20;
 var ChartMarginRight = 38;
 var LeftWidth = 280;
-var ChartWidth;
-var PlotHeight = 140;
+var LegendHeight = 20;
+var mapHeight;
+var plotWidth;
 var chart;
 var glider;
 
@@ -112,27 +113,35 @@ function setMapSize(width, height)
 {
 	var div;
 
-	ChartWidth = (width - LeftWidth);
-	ChartHeight = (height - PlotHeight);
-
-	// map
+	mapHeight = height;
 	div = document.getElementById("map");
-	div.style.width = ChartWidth + "px";
-	div.style.height = ChartHeight + "px";
+	div.style.width = width + "px";
+	div.style.height = height + "px";
 	map.checkResize();
+}
+
+function setPlotSize(width, height)
+{
+	var div;
+	var plotHeight;
+
+	plotWidth = width;
+	plotHeight = height;
 
 	// plot
 	div = document.getElementById("plot");
-	div.style.top = ChartHeight + "px";
-	div.style.width = ChartWidth + "px";
+	div.style.top = mapHeight + "px";
+	div.style.width = plotWidth + "px";
 
 	// chart
 	div = document.getElementById("chart");
-	div.style.width = ChartWidth + "px";
+	div.style.width = plotWidth + "px";
+	div.style.height = (height - LegendHeight) + "px";
 
 	// legend
 	div = document.getElementById("legend");
-	div.style.width = ChartWidth + "px";
+	div.style.width = plotWidth + "px";
+	div.style.height = LegendHeight + "px";
 
 	// redraw chart
 	chart.draw();
@@ -247,9 +256,9 @@ function addMouseEvents()
 		{
 			posX = ChartMarginLeft;
 		}
-		else if(posX > (ChartWidth + ChartMarginLeft - ChartMarginRight))
+		else if(posX > (plotWidth + ChartMarginLeft - ChartMarginRight))
 		{
-			posX = (ChartWidth + ChartMarginLeft - ChartMarginRight);
+			posX = (plotWidth + ChartMarginLeft - ChartMarginRight);
 		}
 
 		setTimeLine(posX);
@@ -268,7 +277,7 @@ function setGlider(posX)
 	var lon;
 	var idx;
 
-	idx = (posX - ChartMarginLeft) * (FlightData.time.length - 1) / (ChartWidth - ChartMarginRight);
+	idx = (posX - ChartMarginLeft) * (FlightData.time.length - 1) / (plotWidth - ChartMarginRight);
 	idx = Math.round(idx);
 	glider.setLatLng(new GLatLng(FlightData.lat[idx], FlightData.lon[idx]));
 	setLegend(idx);
