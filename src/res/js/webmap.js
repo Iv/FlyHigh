@@ -206,11 +206,12 @@ function showPlot()
 	var horLabelNum = 8;
 	var verLabelNum = 5;
 	var idx = 0;
+	var roundIdx;
 	var step;
 	var labelNr;
 
 	nbPts = FlightData.time.length;
-	step = Math.floor((nbPts - 1) / (horLabelNum - 1));
+	step = (nbPts - 1) / (horLabelNum - 1);
 
 	// divs
 	cursorDiv = document.getElementById("cursor").style;
@@ -222,7 +223,8 @@ function showPlot()
 
 	for(labelNr=0; labelNr<horLabelNum; labelNr++)
 	{
-		FlightData.labels[labelNr] = FlightData.time[idx].substr(0, 5);
+		roundIdx = Math.round(idx);
+		FlightData.labels[labelNr] = FlightData.time[roundIdx].substr(0, 5);
 		idx += step;
 	}
 
