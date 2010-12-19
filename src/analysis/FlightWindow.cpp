@@ -974,8 +974,9 @@ void FlightWindow::showOnWebMap()
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
 	ProgressDlg progDlg(this);
 	WebMapFlightView *pView;
-	WayPoint::WayPointListType wpList;
 	WayPoint::WayPointListType tpList;
+	FlightPointList::SogListType sogList;
+	FlightPointList::VarioListType varioList;
 	uint tpListSize;
 	uint fpNr;
 	uint distFai;
@@ -1003,15 +1004,7 @@ void FlightWindow::showOnWebMap()
 				pView = new WebMapFlightView(tr("View Flight"));
 				pView->setLocation(m_flightList[row].startPt().name());
 
-				// set waypoints
-/**
-				for(fpNr=0; fpNr<tpListSize; fpNr++)
-				{
-					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
-				}
-
-				pView->setWayPointList(wpList);
-*/
+				// set flight points
 				pView->setFlightPointList(igcParser.flightPointList());
 
 				// optimize flight
@@ -1061,6 +1054,22 @@ void FlightWindow::showOnWebMap()
 					pView->setTurnPointList(tpList);
 					pView->loadMap();
 				}
+
+				// speed
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
+				{
+					sogList.push_back(igcParser.flightPointList().speedH(fpNr, fpNr + 1) * 3.6); // in km/h
+				}
+
+				pView->setSogList(sogList);
+
+				// vario
+				for(fpNr=0; fpNr<tpListSize; fpNr++)
+				{
+					varioList.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // in m/s
+				}
+
+				pView->setVarioList(varioList);
 
 				progDlg.endProgress();
 				pView->show();
