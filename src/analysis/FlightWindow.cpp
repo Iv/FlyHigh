@@ -1072,7 +1072,7 @@ void FlightWindow::showOnWebMap()
 				pView->setVarioList(varioList);
 
 				progDlg.endProgress();
-				pView->show();
+				pView->exec();
 			}
 		}
 	}
