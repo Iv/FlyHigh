@@ -252,6 +252,9 @@ function showPlot()
 
 	addMouseEvents();
 	setLegend(0);
+
+	// the simplest way to put route over track
+	XCUpdateRoute();
 }
 
 function addMouseEvents()
