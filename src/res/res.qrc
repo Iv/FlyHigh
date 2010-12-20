@@ -17,6 +17,5 @@
      <file>js/chartFX/canvaschartpainter.js</file>
      <file>js/chartFX/chart.js</file>
      <file>js/chartFX/excanvas.js</file>
-     <file>data.js</file>
  </qresource>
  </RCC>
