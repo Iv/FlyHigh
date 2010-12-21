@@ -32,14 +32,14 @@ GarminDevice::GarminDevice()
 {
 }
 
-void GarminDevice::open()
+bool GarminDevice::open()
 {
-        GPS_Init(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
+	return GPS_Init(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
 }
 
 void GarminDevice::close()
 {
-        GPS_Command_Off(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
+	GPS_Command_Off(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
 }
 
 // flights

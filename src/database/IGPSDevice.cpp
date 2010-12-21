@@ -82,8 +82,9 @@ IGPSDevice* IGPSDevice::pInstance()
 	return m_pGPSDevice;
 }
 
-void IGPSDevice::open()
+bool IGPSDevice::open()
 {
+	return false;
 }
 
 void IGPSDevice::close()

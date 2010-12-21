@@ -32,17 +32,22 @@ class IGPSDevice: public IDataBase
 	
 		static IGPSDevice* pInstance();
 		
-		virtual void open();
+		virtual bool open();
+
 		virtual void close();
 
 		// memory
 		virtual bool memoryRead(QByteArray &arr);
+
 		virtual bool memoryWrite(QByteArray &arr);
 		
 		// update
 		int flightsLastModified();
+
 		int wayPointsLastModified();
+
 		int routesLastModified();
+
 		int airspacesLastModified();
 		
 	protected:
@@ -56,6 +61,7 @@ class IGPSDevice: public IDataBase
 		uint m_oldDevice;
 
 		uint oldDevice();
+
 		void setOldDevice(uint devNr);
 };
 

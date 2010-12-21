@@ -209,9 +209,14 @@ void MainFrameImpl::read()
 	
 	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
 
-	if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
+	if(IGPSDevice::pInstance()->open())
 	{
-		updateFrames();
+		if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
+		{
+			updateFrames();
+		}
+
+		IGPSDevice::pInstance()->close();
 	}
 	
 	dlg.endProgress();
@@ -228,9 +233,14 @@ void MainFrameImpl::write()
 													 2) == 1)
 	{
 		storeFrames();
-		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
-		dlg.endProgress();
+
+		if(IGPSDevice::pInstance()->open())
+		{
+			dlg.beginProgress("write memory...", IGPSDevice::pInstance());
+			IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
+			IGPSDevice::pInstance()->close();
+			dlg.endProgress();
+		}
 	}
 }
 

@@ -39,54 +39,52 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
-        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
-
-        QAction* pUpdateAct = new QAction(tr("&Update"), this);
-        connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-        pFileMenu->addAction(pUpdateAct);
+	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	QAction* pUpdateAct = new QAction(tr("&Update"), this);
+	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+	pFileMenu->addAction(pUpdateAct);
 
 	switch(src)
 	{
 		case IDataBase::SqlDB:
-                {
+		{
 			m_pDb = ISql::pInstance();
 			caption = "WayPoints from DB";
-
-                        QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
-                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGps()));
-                        pFileMenu->addAction(pAddAct);
-                }
-                break;
+			QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
+			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGps()));
+			pFileMenu->addAction(pAddAct);
+		}
+		break;
 		case IDataBase::GPSdevice:
-                {
+		{
 			m_pDb = IGPSDevice::pInstance();
 			caption = "WayPoints from GPS";
-
-                        QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-                        connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-                        pFileMenu->addAction(pAddAct);
-                }
+			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
+			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			pFileMenu->addAction(pAddAct);
+		}
 		break;
 		default:
 			Q_ASSERT(false);
 		break;
 	}
 	
-        QAction* pNewAct = new QAction(tr("&New Waypoint..."), this);
-        connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_addNewWp()));
-        pFileMenu->addAction(pNewAct);
-        QAction* pDelAct = new QAction(tr("&Delete"), this);
-        connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-        pFileMenu->addAction(pDelAct);
-        QAction* pDelAllAct = new QAction(tr("De&lete all"), this);
-        connect(pDelAllAct,SIGNAL(triggered()), this, SLOT(file_deleteAll()));
-        pFileMenu->addAction(pDelAllAct);
-        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-        pFileMenu->addAction(pExpAllAct);
+	QAction* pNewAct = new QAction(tr("&New Waypoint..."), this);
+	connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_addNewWp()));
+	pFileMenu->addAction(pNewAct);
+	QAction* pDelAct = new QAction(tr("&Delete"), this);
+	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+	pFileMenu->addAction(pDelAct);
 
-        TableWindow::setWindowTitle(caption);
-        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
+	if(src == IDataBase::GPSdevice)
+	{
+		QAction* pDelAllAct = new QAction(tr("De&lete all"), this);
+		connect(pDelAllAct,SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+		pFileMenu->addAction(pDelAllAct);
+	}
+
+	TableWindow::setWindowTitle(caption);
+	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
@@ -96,8 +94,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	nameList += "Name";
 	nameList += "Country";
 	nameList += "Spot";
-        nameList += "Longitude\n[Deg,min]";
-        nameList += "Latitude\n[Deg,min]";
+	nameList += "Longitude\n[Deg,min]";
+	nameList += "Latitude\n[Deg,min]";
 	nameList += "Altitude\n[m]";
 	nameList += "Description";
 	setupHeader(nameList);
@@ -138,9 +136,15 @@ void WayPointWindow::file_update()
 	
 	m_wpList.clear();
 	pTable->setNumRows(0); // clear table, because of different nr of waypoints
-	progDlg.beginProgress("reading waypoints...", m_pDb);
-	m_pDb->wayPointList(m_wpList);
-	progDlg.endProgress();
+
+	if(m_pDb->open())
+	{
+		progDlg.beginProgress("reading waypoints...", m_pDb);
+		m_pDb->wayPointList(m_wpList);
+		progDlg.endProgress();
+		m_pDb->close();
+	}
+
 	maxWpNr = m_wpList.size();
 	pTable->setNumRows(maxWpNr);
 	
@@ -156,11 +160,12 @@ void WayPointWindow::file_AddToGps()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && IGPSDevice::pInstance()->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		IGPSDevice::pInstance()->add(m_wpList[row]);
 		TableWindow::unsetCursor();
+		IGPSDevice::pInstance()->close();
 	}
 }
 
@@ -170,17 +175,22 @@ void WayPointWindow::file_delete()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delWayPoint(m_wpList[row]);
 		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
 }
 
 void WayPointWindow::file_deleteAll()
 {
-	m_pDb->delAllWayPoints();
+	if(m_pDb->open())
+	{
+		m_pDb->delAllWayPoints();
+		m_pDb->close();
+	}
 }
 
 void WayPointWindow::file_addNewWp()
@@ -188,9 +198,10 @@ void WayPointWindow::file_addNewWp()
 	WayPoint wp;
 	IWayPointForm wayPointForm(this, tr("New WayPoint"), &wp);
 
-	if(wayPointForm.exec())
+	if(wayPointForm.exec() && m_pDb->open())
 	{
 		m_pDb->add(wp);
+		m_pDb->close();
 	}
 }
 
@@ -200,7 +211,7 @@ void WayPointWindow::file_AddToSqlDB()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && ISql::pInstance()->open())
 	{
 		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &m_wpList[row]);
 		
@@ -210,6 +221,8 @@ void WayPointWindow::file_AddToSqlDB()
 			ISql::pInstance()->add(m_wpList[row]);
 			TableWindow::unsetCursor();
 		}
+
+		ISql::pInstance()->close();
 	}
 }
 

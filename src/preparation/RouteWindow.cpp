@@ -61,12 +61,14 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 		break;
 		case IDataBase::GPSdevice:
 		{
+/**
 			m_pDb = IGPSDevice::pInstance();
 			caption = "Routes from GPS";
 
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
+*/
 		}
 		break;
 		default:
@@ -144,18 +146,23 @@ void RouteWindow::file_update()
 
 	m_routeList.clear();
 	pTable->setNumRows(0);
-	progDlg.beginProgress("read routes...", m_pDb);
-	m_pDb->routeList(m_routeList);
-	progDlg.endProgress();
-	maxRouteNr = m_routeList.size();
-	pTable->setNumRows(maxRouteNr);
-	
-	for(routeNr=0; routeNr<maxRouteNr; routeNr++)
+
+	if(m_pDb->open())
 	{
-		setRouteToRow(routeNr, m_routeList[routeNr]);
+		progDlg.beginProgress("read routes...", m_pDb);
+		m_pDb->routeList(m_routeList);
+		progDlg.endProgress();
+		maxRouteNr = m_routeList.size();
+		pTable->setNumRows(maxRouteNr);
+		
+		for(routeNr=0; routeNr<maxRouteNr; routeNr++)
+		{
+			setRouteToRow(routeNr, m_routeList[routeNr]);
+		}
+		
+		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
-	
-	TableWindow::unsetCursor();
 }
 
 void RouteWindow::file_new()
@@ -163,11 +170,12 @@ void RouteWindow::file_new()
 	Route route;
 	IRouteForm routeForm(this, tr("Add Route to DB"), &route);
 	
-	if(routeForm.exec())
+	if(routeForm.exec() && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		ISql::pInstance()->add(route);
+		m_pDb->add(route);
 		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
 }
 
@@ -189,7 +197,7 @@ void RouteWindow::file_newWebMap()
 	pView->setRoute(&route);
 	pView->loadMap();
 
-	if(pView->exec() == QDialog::Accepted)
+	if((pView->exec() == QDialog::Accepted) && m_pDb->open())
 	{
 		// save new route
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
@@ -199,8 +207,9 @@ void RouteWindow::file_newWebMap()
 			ISql::pInstance()->add(*it);
 		}
 
-		ISql::pInstance()->add(route);
+		m_pDb->add(route);
 		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
 }
 
@@ -247,18 +256,20 @@ void RouteWindow::file_AddToGPS()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && IGPSDevice::pInstance()->open())
 	{
 		// Route
 		progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(m_routeList[row]);
 		progDlg.endProgress();
+		IGPSDevice::pInstance()->close();
 	}
 }
 
 void RouteWindow::file_AddToSqlDB()
 {
-/*	QString str;
+/**
+	QString str;
 	WayPoint wp;
 	double lon;
 	double lat;
@@ -289,14 +300,15 @@ void RouteWindow::file_AddToSqlDB()
 	
 		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &wp);
 		
-		if(wayPointForm.exec())
+		if(wayPointForm.exec() && m_pDb->open())
 		{
-			ISql::pInstance()->add(wp);
+			m_pDb->add(wp);
+			m_pDb->close();
 		}
 		
 		TableWindow::unsetCursor();
 	}
-	*/
+*/
 }
 
 void RouteWindow::setRouteToRow(uint row, Route &route)

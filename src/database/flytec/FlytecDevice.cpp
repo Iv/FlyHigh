@@ -34,12 +34,14 @@ FlytecDevice::FlytecDevice()
 {
 }
 
-void FlytecDevice::open()
+bool FlytecDevice::open()
 {
 	bool success;
 
-        success = (ft_init(IFlyHighRC::pInstance()->deviceLine().toAscii().constData()) == 0);
+	success = (ft_init(IFlyHighRC::pInstance()->deviceLine().toAscii().constData()) == 0);
 	Error::verify(success, Error::FLYTEC_OPEN);
+
+	return success;
 }
 
 void FlytecDevice::close()

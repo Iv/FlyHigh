@@ -47,37 +47,65 @@ class ISql: public IDataBase
 {
 	public:
 		static ISql* pInstance();
+
 		virtual ~ISql();
 
+		bool open();
+
+		void close();
+
+		bool connectDb();
+
 		void setName(const QString &name);
+
 		void setUserName(const QString &userName);
+
 		void setPassword(const QString &passwd);
+
 		void setHostName(const QString &hostName);
+
 		void setPort(int port);
 		
 		bool add(WayPoint &wp);
+
 		bool delWayPoint(WayPoint &wp);
+
 		bool findWayPoint(WayPoint &wp, uint radius);
+
 		bool wayPointList(WayPoint::WayPointListType &wpList);
+
 		int wayPointsLastModified();
 
 		bool add(Glider &glider);
+
 		bool delGlider(Glider &glider);
+
 		bool glider(const QString &model, Glider &glider);
+
 		bool gliderList(Glider::GliderListType &gliderList);
+
 		int glidersLastModified();
 
 		bool add(Flight &flight);
+
 		bool delFlight(Flight &flight);
+
 		int newFlightNr(Pilot &pilot);
+
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
+
 		bool flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList);
+
 		bool loadIGCFile(Flight &flight);
+
 		int flightsLastModified();
 		
 		bool add(Route &route);
+
 		bool delRoute(Route &route);
+
 		int routesLastModified();
+
 		bool routeList(Route::RouteListType &routeList);
 		
 /* not longer supported
@@ -88,24 +116,33 @@ class ISql: public IDataBase
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 */
 		bool add(Servicing &serv);
+
 		bool delServicing(Servicing &servicing);
+
 		bool servicingList(Servicing::ServicingListType &servicingList);
+
 		int servicingsLastModified();
 
 		bool add(Pilot &pilot);
+
 		bool update(Pilot &pilot);
+
 		bool pilot(int id, Pilot &pilot);
+
 		bool setId(Pilot &pilot);
+
 		int pilotsLastModified();
 		
-		bool open();
-
 	protected:
 //		AirSpaces* pAirSpaceTable();
 		WayPoints* pWayPointTable();
+
 		Gliders* pGliderTable();
+
 		Flights* pFlightTable();
+
 		Servicings* pServicingTable();
+
 		Pilots* pPilotTable();
 
 	private:
@@ -122,7 +159,9 @@ class ISql: public IDataBase
 		ISql();
 
 		void setupTables();
+
 		int tableVersion();
+
 		void setTableVersion();
 
 //		friend class AirSpaces;
