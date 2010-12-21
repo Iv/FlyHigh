@@ -31,17 +31,22 @@ class WayPointWindow: public TableWindow
 	Q_OBJECT
 	
 	public:
-          WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 	
 	protected:
 		bool periodicalUpdate();
 		
 	private slots:
 		void file_update();
+
 		void file_AddToSqlDB();
+
 		void file_AddToGps();
+
 		void file_delete();
+
 		void file_deleteAll();
+
 		void file_addNewWp();
 		
 	private:

@@ -462,21 +462,14 @@ void MainWindow::settings_device()
 {
 	QAction* pAct = qobject_cast<QAction*>(sender());
 	
-	IGPSDevice::pInstance()->close();
 	IFlyHighRC::pInstance()->setDeviceName(pAct->data().toUInt());
-	IGPSDevice::pInstance()->open();
 }
 
 void MainWindow::settings_port()
 {
 	IPortFrame portFrame;
-	QString value;
 
-	if(portFrame.show())
-	{
-		IGPSDevice::pInstance()->close();
-		IGPSDevice::pInstance()->open();
-	}
+	portFrame.show();
 }
 
 void MainWindow::settings_configure_device()

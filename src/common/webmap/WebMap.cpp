@@ -36,7 +36,7 @@ WebMap::WebMap(QWidget *pParent)
 	m_plotEn = false;
 	m_pNetMgr = new QNetworkAccessManager(this);
 	m_pProgress = new QProgressBar(this);
-	m_pProgress->setGeometry(0, 0, ProgressW, ProgressH);
+	m_pProgress->setGeometry(LeftWidth, 0, ProgressW, ProgressH);
 	m_pProgress->show();
 
 	pFrame = page()->mainFrame();

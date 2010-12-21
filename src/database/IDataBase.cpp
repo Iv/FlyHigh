@@ -28,6 +28,15 @@ IDataBase::~IDataBase()
 {
 }
 
+bool IDataBase::open()
+{
+	return false;
+}
+
+void IDataBase::close()
+{
+}
+
 // flights
 bool IDataBase::add(Flight &flight)
 {

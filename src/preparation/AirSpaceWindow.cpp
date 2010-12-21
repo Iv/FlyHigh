@@ -183,11 +183,12 @@ void AirSpaceWindow::file_delete()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delAirSpace(getTable()->text(row, Name));
 		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
 }
 
@@ -200,19 +201,25 @@ void AirSpaceWindow::file_update()
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 	
 	m_airSpaceList.clear();
-	m_pDb->airspaceList(m_airSpaceList);
-	maxAirspaceNr = m_airSpaceList.count();
-	pTable->setNumRows(maxAirspaceNr);
-	
-	for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
-	{
-		setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
-	}
+	pTable->setNumRows(0);
 
-	m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
-	m_airSpaceView.show();
-	pTable->selectRow(0);
-	TableWindow::unsetCursor();
+	if(m_pDb->open())
+	{
+		m_pDb->airspaceList(m_airSpaceList);
+		maxAirspaceNr = m_airSpaceList.count();
+		pTable->setNumRows(maxAirspaceNr);
+		
+		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+		{
+			setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
+		}
+	
+		m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
+		m_airSpaceView.show();
+		pTable->selectRow(0);
+		TableWindow::unsetCursor();
+		m_pDb->close();
+	}
 }
 
 void AirSpaceWindow::file_AddToGPS()
@@ -222,13 +229,14 @@ void AirSpaceWindow::file_AddToGPS()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(*m_airSpaceList.at(row));
 		progDlg.endProgress();
 		TableWindow::unsetCursor();
+		m_pDb->close();
 	}
 }
 

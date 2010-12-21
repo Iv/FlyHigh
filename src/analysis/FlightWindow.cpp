@@ -59,11 +59,10 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 
 	switch(src)
 	{
-	case IDataBase::SqlDB:
+		case IDataBase::SqlDB:
 		{
 			m_pDb = ISql::pInstance();
 			caption = tr("Flights from DB");
-
 			QAction* pNewAct = new QAction(tr("&New..."), this);
 			connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
 			pFileMenu->addAction(pNewAct);
@@ -75,18 +74,17 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 			pFileMenu->addAction(pImpAct);
 		}
 		break;
-	case IDataBase::GPSdevice:
+		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
 			caption = tr("Flights from GPS");
-
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
 			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
 		}
 		break;
-	default:
-		Q_ASSERT(false);
+		default:
+			Q_ASSERT(false);
 		break;
 	}
 	
@@ -184,20 +182,26 @@ void FlightWindow::file_update()
 	
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	m_flightList.clear();
-	progDlg.beginProgress(tr("reading flights..."), m_pDb);
-	
-	if(m_pDb->flightList(pilot, m_flightList))
+	pTable->setNumRows(0);
+
+	if(m_pDb->open())
 	{
-		maxFlightNr = m_flightList.size();
-		pTable->setNumRows(maxFlightNr);
+		progDlg.beginProgress(tr("reading flights..."), m_pDb);
 		
-		for(flightNr=0; flightNr<maxFlightNr; flightNr++)
+		if(m_pDb->flightList(pilot, m_flightList))
 		{
-			setFlightToRow(flightNr, m_flightList[flightNr]);
+			maxFlightNr = m_flightList.size();
+			pTable->setNumRows(maxFlightNr);
+			
+			for(flightNr=0; flightNr<maxFlightNr; flightNr++)
+			{
+				setFlightToRow(flightNr, m_flightList[flightNr]);
+			}
 		}
+		
+		progDlg.endProgress();
+		m_pDb->close();
 	}
-	
-	progDlg.endProgress();
 }
 
 void FlightWindow::setFlightToRow(uint row, Flight &flight)
@@ -247,19 +251,23 @@ void FlightWindow::file_AddToSqlDB()
 	uint gpsFlightNr;
 	uint newFlightNr;
 	int id;
-	bool success;
+	bool success = false;
 
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		// pilot info
 		ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	
 		// load igc data
-		progDlg.beginProgress(tr("read igc file..."), m_pDb);
-		success = m_pDb->loadIGCFile(m_flightList[row]);
-		progDlg.endProgress();
+		if(m_pDb->open())
+		{
+			progDlg.beginProgress(tr("read igc file..."), m_pDb);
+			success = m_pDb->loadIGCFile(m_flightList[row]);
+			m_pDb->close();
+			progDlg.endProgress();
+		}
 	
 		if(success)
 		{
@@ -348,6 +356,8 @@ void FlightWindow::file_AddToSqlDB()
 
 			m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
 		}
+
+		m_pDb->close();
 	}
 }
 
@@ -471,9 +481,10 @@ void FlightWindow::file_import()
 			// a new flight
 			newFlightForm.setFlight(&flight);
 			
-			if(newFlightForm.exec())
+			if(newFlightForm.exec() && m_pDb->open())
 			{
-				ISql::pInstance()->add(flight);
+				m_pDb->add(flight);
+				m_pDb->close();
 			}
 		}
 	}
@@ -501,7 +512,7 @@ void FlightWindow::file_exportIGC()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		if(m_pDb->loadIGCFile(m_flightList[row]))
 		{
@@ -515,8 +526,8 @@ void FlightWindow::file_exportIGC()
 			selected = QFileDialog::getSaveFileName(this,
 																							tr("IGC file export"),
 																							IFlyHighRC::pInstance()->lastDir() + QDir::separator()
-																																								 + olcFileName
-																																								 + ".igc",
+																																								+ olcFileName
+																																								+ ".igc",
 																							"IGC Files (*.igc)");
 
 			if(selected!="")
@@ -587,6 +598,8 @@ void FlightWindow::file_exportIGC()
 				progDlg.endProgress();
 			}
 		}
+
+		m_pDb->close();
 	}
 }
 
@@ -612,7 +625,7 @@ void FlightWindow::file_exportKML()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		if(m_pDb->loadIGCFile(m_flightList[row]))
 		{
@@ -683,6 +696,8 @@ void FlightWindow::file_exportKML()
 				progDlg.endProgress();
 			}
 		}
+
+		m_pDb->close();
 	}
 }
 
@@ -711,9 +726,10 @@ void FlightWindow::file_new()
 	// a new flight
 	newFlightForm.setFlight(&flight);
 	
-	if(newFlightForm.exec())
+	if(newFlightForm.exec() && m_pDb->open())
 	{
 		ISql::pInstance()->add(flight);
+		m_pDb->close();
 	}
 }
 
@@ -723,9 +739,10 @@ void FlightWindow::file_delete()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		m_pDb->delFlight(m_flightList[row]);
+		m_pDb->close();
 	}
 }
 

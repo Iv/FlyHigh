@@ -55,8 +55,8 @@ function getTurnPointList()
 {
 	var tps = [];
 
-	turnpointMarkers.each(function(glider, i) {
-		tps[i] = [glider.getLatLng().lat(), glider.getLatLng().lng()] ;
+	turnpointMarkers.each(function(tp, i) {
+		tps[i] = [tp.getLatLng().lat(), tp.getLatLng().lng()] ;
 	});
 
 	return tps;

@@ -37,46 +37,73 @@ class IDataBase: public QObject
 		typedef enum SourceType{GPSdevice, SqlDB, File}SourceType;
 		
 		IDataBase();
+
 		virtual ~IDataBase();
+
+		virtual bool open();
+
+		virtual void close();
 
 		// flights
 		virtual bool add(Flight &flight);
+
 		virtual bool delFlight(Flight &flight);
+
 		virtual int flightsLastModified();
+
 		virtual bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
+
 		virtual bool loadIGCFile(Flight &flight);
 		
 		// waypoints
 		virtual bool add(WayPoint &wp);
+
 		virtual bool delWayPoint(WayPoint &wp);
+
 		virtual bool delAllWayPoints();
+
 		virtual int wayPointsLastModified();
+
 		virtual bool wayPointList(WayPoint::WayPointListType &wpList);
 		
 		// gliders
 		virtual bool add(Glider &glider);
+
 		virtual bool delGlider(Glider &glider);
+
 		virtual bool gliderList(Glider::GliderListType &gliderList);
+
 		virtual int glidersLastModified();
 
 		// routes
 		virtual bool add(Route &route);
+
 		virtual bool delRoute(Route &route);
+
 		virtual int routesLastModified();
+
 		virtual bool routeList(Route::RouteListType &routeList);
 		
 		// airspaces
 		virtual bool add(AirSpace &airspace);
+
 		virtual bool delAirSpace(const QString &name);
+
 		virtual bool airspace(const QString &name, AirSpace &airspace);
+
 		virtual int airspacesLastModified();
+
 		virtual bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 
 		// pilots
 		virtual bool add(Pilot &pilot);
+
 		virtual bool update(Pilot &pilot);
+
 		virtual bool pilot(int id, Pilot &pilot);
+
 		virtual bool setId(Pilot &pilot);
+
 		virtual int pilotsLastModified();
 		
 	signals:

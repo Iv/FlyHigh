@@ -125,9 +125,13 @@ void MainFrame6015Impl::read()
 {
 	ProgressDlg dlg(this);
 	
-	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
-	updateFrames();
-	dlg.endProgress();
+	if(IGPSDevice::pInstance()->open())
+	{
+		dlg.beginProgress("read memory...", IGPSDevice::pInstance());
+		updateFrames();
+		IGPSDevice::pInstance()->close();
+		dlg.endProgress();
+	}
 }
 
 void MainFrame6015Impl::write()
@@ -140,9 +144,13 @@ void MainFrame6015Impl::write()
 													 1,
 													 2) == 1)
 	{
-		dlg.beginProgress("write memory...", IGPSDevice::pInstance());
-		storeFrames();
-		dlg.endProgress();
+		if(IGPSDevice::pInstance()->open())
+		{
+			dlg.beginProgress("write memory...", IGPSDevice::pInstance());
+			storeFrames();
+			IGPSDevice::pInstance()->close();
+			dlg.endProgress();
+		}
 	}
 }
 

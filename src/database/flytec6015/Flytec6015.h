@@ -43,7 +43,7 @@ class Flytec6015: public IGPSDevice
 		QVariant memoryRead(MemType memType, int par, DataType dataType);
 
 	protected:
-		void open();
+		bool open();
 
 		void close();
 

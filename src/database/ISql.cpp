@@ -38,7 +38,7 @@ ISql::ISql()
 	setName("flyhigh_v2");
 	setUserName("flyhigh");
 	setPassword("flyhigh");
-        setHostName("localhost");
+	setHostName("localhost");
 	setPort(3306);
 	
 //	m_pAirSpaces = new AirSpaces(m_DefaultDB);
@@ -48,14 +48,12 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
-
-        m_DefaultDB.open();
 }
 
 ISql::~ISql()
 {
 	m_DefaultDB.close();
-	
+
 //	delete m_pAirSpaces;
 	delete m_pWayPoints;
 	delete m_pGliders;
@@ -63,6 +61,26 @@ ISql::~ISql()
 	delete m_pRoutes;
 	delete m_pServicings;
 	delete m_pPilots;
+}
+
+bool ISql::open()
+{
+	return m_DefaultDB.isOpen();
+}
+
+void ISql::close()
+{
+}
+
+bool ISql::connectDb()
+{
+	bool success;
+	
+	success = m_DefaultDB.open();
+	Error::verify(success, Error::SQL_OPEN);
+	setupTables();
+	
+	return success;
 }
 
 void ISql::setName(const QString &name)
@@ -88,18 +106,6 @@ void ISql::setHostName(const QString &hostName)
 void ISql::setPort(int port)
 {
 	m_DefaultDB.setPort(port);
-}
-
-bool ISql::open()
-{
-	bool success;
-	
- //	success = m_DefaultDB.open();
- success=true;
-	Error::verify(success, Error::SQL_OPEN);
-	setupTables();
-	
-	return success;
 }
 
 ISql* ISql::pInstance()
