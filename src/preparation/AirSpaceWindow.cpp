@@ -195,17 +195,19 @@ void AirSpaceWindow::file_delete()
 void AirSpaceWindow::file_update()
 {
 	Q3Table *pTable = TableWindow::getTable();
+	ProgressDlg progDlg(this);
 	uint airspaceNr;
 	uint maxAirspaceNr;
 
-	TableWindow::setCursor(QCursor(Qt::WaitCursor));
-	
 	m_airSpaceList.clear();
 	pTable->setNumRows(0);
 
 	if(m_pDb->open())
 	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read airspaces...", m_pDb);
 		m_pDb->airspaceList(m_airSpaceList);
+		progDlg.endProgress();
 		maxAirspaceNr = m_airSpaceList.count();
 		pTable->setNumRows(maxAirspaceNr);
 		
@@ -217,8 +219,8 @@ void AirSpaceWindow::file_update()
 		m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
 		m_airSpaceView.show();
 		pTable->selectRow(0);
-		TableWindow::unsetCursor();
 		m_pDb->close();
+		TableWindow::unsetCursor();
 	}
 }
 
