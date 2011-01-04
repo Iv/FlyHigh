@@ -61,10 +61,9 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 		break;
 		case IDataBase::GPSdevice:
 		{
-/**
 			m_pDb = IGPSDevice::pInstance();
 			caption = "Routes from GPS";
-
+/**
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
@@ -259,10 +258,12 @@ void RouteWindow::file_AddToGPS()
 	if((row >= 0) && IGPSDevice::pInstance()->open())
 	{
 		// Route
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(m_routeList[row]);
 		progDlg.endProgress();
 		IGPSDevice::pInstance()->close();
+		TableWindow::unsetCursor();
 	}
 }
 
