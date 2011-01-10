@@ -31,7 +31,7 @@ QT4_WRAP_CPP(flyhigh_SRCS ${flyhigh_HDRS})
 
 add_executable(flyhigh ${flyhigh_SRCS} ${flyhigh_HDRS})
 
-target_link_libraries(flyhigh ${QT_LIBRARIES}
+target_link_libraries(flyhigh
                  analysis
                  cfgdatabase
                  cfgflytec
@@ -48,7 +48,8 @@ target_link_libraries(flyhigh ${QT_LIBRARIES}
                  map
                  webmap
                  utils
-                 res )
+								 res
+								 ${QT_LIBRARIES})
 
 
 ########### install files ###############
