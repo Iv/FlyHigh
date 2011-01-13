@@ -109,8 +109,8 @@ void WebMap::getTurnPointList(WayPoint::WayPointListType &tpList)
 	list = pFrame->evaluateJavaScript(code).toList();
 	tpList.clear();
 
-	name = getLocation();
-	name += "%1";
+	name = getName();
+	name += "_%1";
 
 	for(it=list.begin(); it!=list.end(); it++)
 	{
@@ -155,6 +155,25 @@ void WebMap::setLocation(const QString &loc)
 QString WebMap::getLocation()
 {
 	QString code = "getLocation();";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+
+	return pFrame->evaluateJavaScript(code).toString();
+}
+
+void WebMap::setName(const QString &name)
+{
+	QString code = "setName('%1');";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(name));
+}
+
+QString WebMap::getName()
+{
+	QString code = "getName();";
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
