@@ -18,6 +18,9 @@
 			<span id="description">Open distance</span> (&times;<span id="multiplier">1.0</span>)<br/>
 			<span id="score" style="font-size: 18px;">0.0 points</span><br/>
 			<hr/>
+			<b>Name:</b>
+			<input id="name" type="text" value="FIE_100"/>
+			<hr/>
 			<input id="location" type="text" onkeypress="XCGoOnEnter(event);"/>
 			<input type="submit" onclick="XCGo();" value="Go" title="Center the map on this location"/>
 			<input type="submit" onclick="XCHere();" value="Reset" title="Place the turnpoints on the map" /><br/>
@@ -78,7 +81,7 @@
 			<hr/>
 			<input type="submit" onclick="WebMap.setOk(true);" value="OK"/>
 			<input type="submit" onclick="WebMap.setOk(false);" value="Cancel"/>
-			<input id="defaultLocation" type="hidden" value="Fiesch"/>
+			<input id="defaultLocation" type="hidden" value=""/>
 			<input id="defaultFlightType" type="hidden" value="xc5"/>
 			<input id="defaultTurnpoints" type="hidden" value="null"/>
 			<input id="defaultStart" type="hidden" value="null"/>
