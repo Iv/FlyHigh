@@ -60,6 +60,10 @@ class WebMap: public QWebView
 
 		QString getLocation();
 
+		void setName(const QString &name);
+
+		QString getName();
+
 		void setFlightType(const QString &flightType);
 
 		void setFlightPointList(const FlightPointList &fpList);

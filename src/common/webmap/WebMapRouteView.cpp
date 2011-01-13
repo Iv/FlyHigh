@@ -25,7 +25,7 @@
 WebMapRouteView::WebMapRouteView(const QString &name)
 {
 	QWidget::setWindowTitle(name);
-	resize(1000, 800);
+	resize(1000, 850);
 
 	m_pRoute = NULL;
 	m_pWebMap = new WebMap(this);
@@ -61,7 +61,7 @@ void WebMapRouteView::mapReady()
 	if(m_pRoute != NULL)
 	{
 		m_pWebMap->setTurnPointList(m_pRoute->wayPointList());
-		m_pWebMap->setLocation(m_pRoute->name());
+		m_pWebMap->setName(m_pRoute->name());
 
 		switch(m_pRoute->wayPointList().size())
 		{
@@ -88,7 +88,7 @@ void WebMapRouteView::finished(int res)
 	if(m_pRoute != NULL)
 	{
 		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
-		m_pRoute->setName(m_pWebMap->getLocation());
+		m_pRoute->setName(m_pWebMap->getName());
 	}
 
 	done(res);
