@@ -101,6 +101,23 @@ function getLocation()
 	return locInput.value;
 }
 
+function setName(name)
+{
+	var nameInput;
+	
+	nameInput = document.getElementById("name");
+	nameInput.value = name;
+}
+
+function getName()
+{
+	var nameInput;
+	
+	nameInput = document.getElementById("name");
+
+	return nameInput.value;
+}
+
 function setFlightType(flightType)
 {
 	var typeInput;
