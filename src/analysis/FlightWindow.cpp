@@ -761,7 +761,7 @@ void FlightWindow::plot_speedVsTime()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -787,7 +787,8 @@ void FlightWindow::plot_speedVsTime()
 				m_plotter.plotXY(x, y, "Speed vs Time");
 			}
 		}
-		
+
+		m_pDb->close();
 		TableWindow::unsetCursor();
 	}
 }
@@ -807,7 +808,7 @@ void FlightWindow::plot_altVsTime()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -833,7 +834,8 @@ void FlightWindow::plot_altVsTime()
 				m_plotter.plotXY(x, y, "Altitude vs Time");
 			}
 		}
-		
+
+		m_pDb->close();
 		TableWindow::unsetCursor();
 	}
 }
@@ -853,7 +855,7 @@ void FlightWindow::plot_varioVsTime()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -879,7 +881,8 @@ void FlightWindow::plot_varioVsTime()
 				m_plotter.plotXY(x, y, "Vario vs Time");
 			}
 		}
-		
+
+		m_pDb->close();
 		TableWindow::unsetCursor();
 	}
 }
@@ -899,7 +902,7 @@ void FlightWindow::plot_OLC()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -958,7 +961,8 @@ void FlightWindow::plot_OLC()
 				progDlg.endProgress();
 			}
 		}
-		
+
+		m_pDb->close();
 		TableWindow::unsetCursor();
 	}
 }
@@ -1005,7 +1009,7 @@ void FlightWindow::showOnWebMap()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -1092,6 +1096,8 @@ void FlightWindow::showOnWebMap()
 				pView->exec();
 			}
 		}
+
+		m_pDb->close();
 	}
 }
 
@@ -1109,7 +1115,7 @@ void FlightWindow::showOnMap()
 	
 	row = getTable()->currentRow();
 	
-	if(row >= 0)
+	if((row >= 0) && m_pDb->open())
 	{
 		progDlg.beginProgress(tr("read igc file..."), m_pDb);
 		success = m_pDb->loadIGCFile(m_flightList[row]);
@@ -1132,5 +1138,7 @@ void FlightWindow::showOnMap()
 				pView->showMaximized();
 			}
 		}
+
+		m_pDb->close();
 	}
 }
