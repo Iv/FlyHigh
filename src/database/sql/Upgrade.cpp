@@ -29,7 +29,7 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_0 = QDateTime(QDate(
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0)); // equal version_0_3_1
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50)); // equal version_0_3_2
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime(0, 0)); // equal version_0_5_0
-
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(2011, 1, 18), QTime(0, 0)); // equal version_0_8_1
 
 Upgrade::Upgrade(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -38,9 +38,20 @@ Upgrade::Upgrade(QSqlDatabase DB)
 
 void Upgrade::upgrade()
 {
+	QString sqls;
+	QSqlQuery query(db());
+	DataBaseVersion dbVers = DataBaseVersion_0_5_0;
+
 	if(dataBaseVersion() < DataBaseVersion_0_5_0)
 	{
 		Q_ASSERT(false);       
+	}
+
+	if(dataBaseVersion() < DataBaseVersion_0_8_1)
+	{
+		sqls = "ALTER TABLE Routes ADD Type VARCHAR(16) NOT NULL;";
+		query.exec(sqls);
+		setDataBaseVersion(DataBaseVersion_0_8_1);
 	}
 }
 
