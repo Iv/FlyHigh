@@ -11,7 +11,7 @@ case "$1" in
 
 		if [ -z "$dbvers" ]
 		then
-			echo "Setup flyhigh SQL database"
+			echo "Setup flyhigh SQL database. Enter mysqldb root password."
 			mysql -u root -p < /usr/share/flyhigh/flyhigh.sql
 		fi
 		;;
