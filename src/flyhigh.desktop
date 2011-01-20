@@ -1,7 +1,8 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
 Encoding=UTF-8
 Name=FlyHigh
-Exec=/usr/bin/flyhigh
-Icon=/usr/share/flyhigh/flyhigh.png
+Exec=flyhigh
+Icon=flyhigh
 Type=Application
 Comment=Flight preparation and analysis
