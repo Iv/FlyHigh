@@ -1,3 +1,5 @@
+GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON *.* TO 'flyhigh'@'localhost' IDENTIFIED BY 'flyhigh';
+
 CREATE DATABASE IF NOT EXISTS `flyhigh_v2` DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 USE `flyhigh_v2`;
 
