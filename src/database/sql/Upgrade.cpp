@@ -49,7 +49,7 @@ void Upgrade::upgrade()
 
 	if(dataBaseVersion() < DataBaseVersion_0_8_1)
 	{
-		sqls = "ALTER TABLE Routes ADD Type VARCHAR(16) NOT NULL;";
+		sqls = "ALTER TABLE Routes ADD Type INT NULL DEFAULT 0;";
 		query.exec(sqls);
 		setDataBaseVersion(DataBaseVersion_0_8_1);
 	}
