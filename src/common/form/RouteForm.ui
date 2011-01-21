@@ -190,6 +190,11 @@
    </property>
    <item>
     <property name="text" >
+     <string>Undefined</string>
+    </property>
+   </item>
+   <item>
+    <property name="text" >
      <string>Free flight</string>
     </property>
    </item>
