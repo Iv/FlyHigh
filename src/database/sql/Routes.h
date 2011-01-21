@@ -32,11 +32,13 @@ class Routes: public DataBaseSub
 		Routes(QSqlDatabase DB);
 		
 		bool add(Route &route);
+
 		bool delRoute(Route &route);
+
 		bool routeList(Route::RouteListType &routeList);
 		
 	private:
-		enum RouteElements{Id, Name};
+		enum RouteElements{Id, Name, Type};
 		enum RouteItemElements{RouteItemId, RouteId, WayPointId};
 
 		bool setId(Route &route);

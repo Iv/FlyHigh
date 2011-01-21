@@ -43,7 +43,7 @@ bool Routes::add(Route &route)
 	bool success;
 	
 	// insert route name
-        sqls = QString("INSERT INTO Routes(Id, Name) VALUES(NULL, '%1');").arg(route.name());
+	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(NULL, '%1', %2);").arg(route.name()).arg(route.type());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
@@ -116,6 +116,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			// route name
 			route.setId(routeQuery.value(Id).toInt());
 			route.setName(routeQuery.value(Name).toString());
+			route.setType((Route::Type)routeQuery.value(Type).toInt());
 			route.wayPointList().clear();
 
 			// route items
