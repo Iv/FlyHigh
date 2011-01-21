@@ -40,7 +40,7 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 	m_pRoute = pRoute;
 	m_readOnly = false;
 	
-        setWindowTitle(caption);
+	setWindowTitle(caption);
 
 	// database waypoints
 	ISql::pInstance()->wayPointList(m_wpDbList);
@@ -52,8 +52,13 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 		listBoxDBWayPoints->insertItem(fullName);
 	}
 
-	// route
+	// name
 	lineEditName->setText(m_pRoute->name());
+
+	// type
+	comboBoxType->setCurrentIndex(m_pRoute->type());
+
+	// waypoints
 	nItems = m_pRoute->wayPointList().size();
 	
 	for(curItem=0; curItem<nItems; curItem++)
@@ -70,6 +75,7 @@ void RouteFormImpl::setReadOnly()
 	m_readOnly = true;
 
 	lineEditName->setEnabled(false);
+	comboBoxType->setEnabled(false);
 	pushButtonUp->setEnabled(false);
 	pushButtonDown->setEnabled(false);
 	pushButtonToRight->setEnabled(false);
@@ -85,6 +91,7 @@ void RouteFormImpl::accept()
 	if(!m_readOnly)
 	{
 		m_pRoute->setName(lineEditName->text());
+		m_pRoute->setType((Route::Type)comboBoxType->currentIndex());
 		m_pRoute->wayPointList().clear();
 		nItems = m_wpRouteList.count();
 	
