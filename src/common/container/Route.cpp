@@ -26,12 +26,7 @@ Route::Route()
 	m_name = "";
 }
 
-const QString& Route::name()
-{
-	return m_name;
-}
-
-int Route::id()
+int Route::id() const
 {
 	return m_id;
 }
@@ -41,9 +36,24 @@ void Route::setId(int id)
 	m_id = id;
 }
 
+const QString& Route::name() const
+{
+	return m_name;
+}
+
 void Route::setName(const QString &name)
 {
 	m_name = name;
+}
+
+Route::Type Route::type() const
+{
+	return m_type;
+}
+
+void Route::setType(Type type)
+{
+	m_type = type;
 }
 
 WayPoint::WayPointListType& Route::wayPointList()

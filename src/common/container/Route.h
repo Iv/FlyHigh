@@ -29,13 +29,23 @@ class Route
 {
 	public:
 		typedef QVector<Route> RouteListType;
+
+		typedef enum Type{Undefined, Free, Free1Tp, Free2Tp, Free3Tp, FlatOrFaiTri}Type;
 		
 		Route();
 
-		int id();
+		int id() const;
+
 		void setId(int id);
-		const QString& name();
+
+		const QString& name() const;
+
 		void setName(const QString &name);
+
+		Type type() const;
+
+		void setType(Type type);
+
 		WayPoint::WayPointListType& wayPointList();
 		
 		Route& operator=(const Route &route);
@@ -43,6 +53,7 @@ class Route
 	private:
 		int m_id;
 		QString m_name;
+		Type m_type;
 		WayPoint::WayPointListType m_wpList;
 };
 
