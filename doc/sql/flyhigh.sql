@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `Routes`
 (
 	`Id` INT NULL AUTO_INCREMENT,
   `Name` VARCHAR(16) NOT NULL,
+	`Type` INT NULL DEFAULT 0,
 	PRIMARY KEY(`Id`),
 	UNIQUE KEY byRoutes(`Name`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -99,3 +100,12 @@ CREATE TABLE IF NOT EXISTS `LastModified`
 	PRIMARY KEY(`Id`),
 	UNIQUE KEY (`Name`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES
+(1, 'Pilots', '1970-01-01 00:00:00'),
+(2, 'Flights', '1970-01-01 00:00:00'),
+(3, 'Gliders', '1970-01-01 00:00:00'),
+(4, 'Servicings', '1970-01-01 00:00:00'),
+(5, 'WayPoints', '1970-01-01 00:00:00'),
+(6, 'DataBaseVersion', '2011-01-18 00:00:00'),
+(7, 'Routes', '1970-01-01 00:00:00');
