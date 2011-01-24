@@ -63,19 +63,42 @@ void WebMapRouteView::mapReady()
 		m_pWebMap->setTurnPointList(m_pRoute->wayPointList());
 		m_pWebMap->setName(m_pRoute->name());
 
-		switch(m_pRoute->wayPointList().size())
+		switch(m_pRoute->type())
 		{
-			case 2:
+			case Route::Free:
 				m_pWebMap->setFlightType("xc2");
 			break;
-			case 3:
+			case Route::Free1Tp:
 				m_pWebMap->setFlightType("xc3");
 			break;
-			case 4:
+			case Route::Free2Tp:
 				m_pWebMap->setFlightType("xc4");
 			break;
-			case 5:
+			case Route::Free3Tp:
 				m_pWebMap->setFlightType("xc5");
+			break;
+			case Route::FlatOrFaiTri:
+				m_pWebMap->setFlightType("xc3c");
+			break;
+			default:
+				switch(m_pRoute->wayPointList().size())
+				{
+					case 2:
+						m_pWebMap->setFlightType("xc2");
+					break;
+					case 3:
+						m_pWebMap->setFlightType("xc3");
+					break;
+					case 4:
+						m_pWebMap->setFlightType("xc4");
+					break;
+					case 5:
+						m_pWebMap->setFlightType("xc5");
+					break;
+					default:
+						m_pWebMap->setFlightType("xc5");
+					break;
+				}
 			break;
 		}
 	}
