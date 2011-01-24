@@ -23,6 +23,7 @@
 Route::Route()
 {
 	m_id = -1;
+	m_type = Undefined;
 	m_name = "";
 }
 
@@ -66,6 +67,7 @@ Route& Route::operator=(const Route &route)
 	m_id = route.m_id;
 	m_name = route.m_name;
 	m_wpList = route.m_wpList;
+	m_type = route.m_type;
 	
 	return *this;
 }
