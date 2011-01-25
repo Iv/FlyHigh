@@ -190,6 +190,16 @@ void WebMap::setFlightType(const QString &flightType)
 	pFrame->evaluateJavaScript(code.arg(flightType));
 }
 
+QString WebMap::getFlightType() const
+{
+	QString code = "getFlightType();";
+	QWebFrame *pFrame;
+
+	pFrame = page()->mainFrame();
+
+	return pFrame->evaluateJavaScript(code).toString();
+}
+
 void WebMap::setFlightPointList(const FlightPointList &fpList)
 {
 	QString code;

@@ -66,6 +66,8 @@ class WebMap: public QWebView
 
 		void setFlightType(const QString &flightType);
 
+		QString getFlightType() const;
+
 		void setFlightPointList(const FlightPointList &fpList);
 
 		void setSogList(const FlightPointList::SogListType &sogList);
