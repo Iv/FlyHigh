@@ -126,6 +126,15 @@ function setFlightType(flightType)
 	typeInput.value = flightType;
 }
 
+function getFlightType()
+{
+	var typeInput;
+	
+	typeInput = document.getElementById("flightType");
+
+	return typeInput.value;
+}
+
 function setMapSize(width, height)
 {
 	var div;
