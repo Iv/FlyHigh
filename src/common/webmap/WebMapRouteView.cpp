@@ -108,10 +108,39 @@ void WebMapRouteView::mapReady()
 
 void WebMapRouteView::finished(int res)
 {
+	QString type;
+
 	if(m_pRoute != NULL)
 	{
 		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
 		m_pRoute->setName(m_pWebMap->getName());
+
+		type = m_pWebMap->getFlightType();
+
+		if(type == "xc2")
+		{
+			m_pRoute->setType(Route::Free);
+		}
+		else if(type == "xc3")
+		{
+			m_pRoute->setType(Route::Free1Tp);
+		}
+		else if(type == "xc4")
+		{
+			m_pRoute->setType(Route::Free2Tp);
+		}
+		else if(type == "xc5")
+		{
+			m_pRoute->setType(Route::Free3Tp);
+		}
+		else if(type == "xc3c")
+		{
+			m_pRoute->setType(Route::FlatOrFaiTri);
+		}
+		else
+		{
+			m_pRoute->setType(Route::Undefined);
+		}
 	}
 
 	done(res);
