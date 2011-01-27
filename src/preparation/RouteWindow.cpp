@@ -248,10 +248,10 @@ void RouteWindow::file_viewWebMap()
 void RouteWindow::file_AddToGPS()
 {
 	ProgressDlg progDlg(this);
-	QString name;
+	Route route;
 	int row;
-	uint wpNr;
-	uint nofWp;
+	int nTps;
+	int tpNr;
 	
 	row = getTable()->currentRow();
 	
@@ -260,7 +260,31 @@ void RouteWindow::file_AddToGPS()
 		// Route
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("writing route...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->add(m_routeList[row]);
+		route.setName(m_routeList[row].name());
+		nTps = m_routeList[row].wayPointList().size();
+
+		if(route.type() == Route::Free)
+		{
+			if(nTps == 2)
+			{
+				route.wayPointList().push_back(m_routeList[row].wayPointList().at(1));
+				route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
+			}
+		}
+		else
+		{
+			for(tpNr=1; tpNr<nTps; tpNr++)
+			{
+				route.wayPointList().push_back(m_routeList[row].wayPointList().at(tpNr));
+			}
+
+			if((nTps == 5) && (route.type() == Route::FlatOrFaiTri))
+			{
+				route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
+			}
+		}
+
+		IGPSDevice::pInstance()->add(route);
 		progDlg.endProgress();
 		IGPSDevice::pInstance()->close();
 		TableWindow::unsetCursor();
