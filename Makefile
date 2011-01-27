@@ -1,5 +1,6 @@
 TARGET_DIR=./build
 BIN=flyhigh
+BUILD_TYPE=Debug
 DIRS = \
 	usr/ \
 	usr/share/ \
