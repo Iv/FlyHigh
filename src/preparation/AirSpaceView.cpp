@@ -94,7 +94,7 @@ void AirSpaceView::mouseMoveEvent(QMouseEvent *pEvent)
 {
 	QPoint prevOff;
 
-        if(m_mouseDown && (pEvent->buttons() & Qt::LeftButton))
+	if(m_mouseDown && (pEvent->buttons() & Qt::LeftButton))
 	{
 		prevOff = m_offset;
 		calcOffset(pEvent->pos());
@@ -187,18 +187,16 @@ void AirSpaceView::drawAirspace()
 		}
 
 		// offset, scale and color
-		paint.translate(m_offset.x() * paint.window().width() / viewRect.width(), m_offset.y() * paint.window().height() / viewRect.height());
+		paint.translate(m_offset.x() * paint.window().width() / viewRect.width(), m_offset.y() * paint.window().height() / viewRect.height() * 2.0);
 		paint.scale(m_scale, m_scale);
-                paint.setPen(palette().windowText().color());
-
-
+		paint.setPen(palette().windowText().color());
 
 		// draw airspaces
 		for(pAirSpace=m_pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=m_pAirSpaceList->next())
 		{
 			pointList.resize(pAirSpace->pointList().size());
 			ptNr = 0;
-		
+
 			for(it=pAirSpace->pointList().begin(); it!=pAirSpace->pointList().end(); it++)
 			{
 				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;
@@ -206,7 +204,7 @@ void AirSpaceView::drawAirspace()
 				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
 			}
-	
+
 			if(spaceNr == m_selected)
 			{
 				pSelAirSpace = pAirSpace;
