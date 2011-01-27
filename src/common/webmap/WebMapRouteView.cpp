@@ -29,6 +29,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 
 	m_pRoute = NULL;
 	m_pWebMap = new WebMap(this);
+	m_tpDrag = true;
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
 }
@@ -48,6 +49,11 @@ void WebMapRouteView::loadMap()
 	m_pWebMap->loadMap("qrc:/webmap_route.html");
 }
 
+void WebMapRouteView::setTurnPointsDragable(bool drag)
+{
+	m_tpDrag = drag;
+}
+
 void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
@@ -56,7 +62,7 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 void WebMapRouteView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-	m_pWebMap->setTurnPointsDragable(true);
+	m_pWebMap->setTurnPointsDragable(m_tpDrag);
 
 	if(m_pRoute != NULL)
 	{
@@ -114,7 +120,6 @@ void WebMapRouteView::finished(int res)
 	{
 		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
 		m_pRoute->setName(m_pWebMap->getName());
-
 		type = m_pWebMap->getFlightType();
 
 		if(type == "xc2")

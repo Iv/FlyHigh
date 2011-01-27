@@ -41,12 +41,15 @@ class WebMapRouteView: public QDialog
 
 		void loadMap();
 
+		void setTurnPointsDragable(bool drag);
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
 	private:
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
+		bool m_tpDrag;
 
 	private slots:
 		void mapReady();
