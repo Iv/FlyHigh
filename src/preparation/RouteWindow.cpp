@@ -78,9 +78,14 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	QAction* pViewAct = new QAction(tr("&View"), this);
 	connect(pViewAct, SIGNAL(triggered()), this, SLOT(file_view()));
 	pFileMenu->addAction(pViewAct);
-	QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
-	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	pFileMenu->addAction(pViewWebMapAct);
+
+	if(src == IDataBase::SqlDB)
+	{
+		QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
+		connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+		pFileMenu->addAction(pViewWebMapAct);
+	}
+
 	QAction* pDelAct = new QAction(tr("&Delete"), this);
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
@@ -240,6 +245,7 @@ void RouteWindow::file_viewWebMap()
 		route = m_routeList[row];
 		pView = new WebMapRouteView(tr("View Route"));
 		pView->setRoute(&route);
+		pView->setTurnPointsDragable(false);
 		pView->loadMap();
 		pView->exec();
 	}
@@ -263,25 +269,15 @@ void RouteWindow::file_AddToGPS()
 		route.setName(m_routeList[row].name());
 		nTps = m_routeList[row].wayPointList().size();
 
-		if(route.type() == Route::Free)
+		for(tpNr=0; tpNr<nTps; tpNr++)
 		{
-			if(nTps == 2)
-			{
-				route.wayPointList().push_back(m_routeList[row].wayPointList().at(1));
-				route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
-			}
+			route.wayPointList().push_back(m_routeList[row].wayPointList().at(tpNr));
 		}
-		else
-		{
-			for(tpNr=1; tpNr<nTps; tpNr++)
-			{
-				route.wayPointList().push_back(m_routeList[row].wayPointList().at(tpNr));
-			}
 
-			if((nTps == 5) && (route.type() == Route::FlatOrFaiTri))
-			{
-				route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
-			}
+		if(((nTps == 2) && (route.type() == Route::Free)) ||
+				((nTps == 5) && (route.type() == Route::FlatOrFaiTri)))
+		{
+			route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
 		}
 
 		IGPSDevice::pInstance()->add(route);
