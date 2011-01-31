@@ -27,6 +27,8 @@ class Upgrade: public DataBaseSub
 	public:
 		Upgrade(QSqlDatabase DB);
 
+		void setup();
+
 		void upgrade();
 
 	private:
