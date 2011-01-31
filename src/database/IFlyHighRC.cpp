@@ -51,8 +51,8 @@ IFlyHighRC* IFlyHighRC::pInstance()
 
 IFlyHighRC::IFlyHighRC()
 {
-	m_deviceNameList += "Flytec5020";
-	m_deviceNameList += "Flytec6015";
+	m_deviceNameList += "5020 / Competino";
+	m_deviceNameList += "6015 / IQ Basic";
 //	m_deviceNameList += "Garmin";
 
 /*	m_deviceSpeedList = "9600";
