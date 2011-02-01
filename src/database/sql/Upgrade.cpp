@@ -36,19 +36,22 @@ Upgrade::Upgrade(QSqlDatabase DB)
 {
 }
 
-void Upgrade::setup()
+void Upgrade::setup(const QString &dbname, const QString &user, const QString &pwd)
 {
 	QSqlQuery query(db());
 	QString sqls;
 
-	sqls = "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON *.* TO 'flyhigh'@'localhost' IDENTIFIED BY 'flyhigh';";
-	query.exec(sqls);
+	sqls = "CREATE DATABASE `%1` DEFAULT CHARSET=utf8 COLLATE=utf8_bin;";
+	query.exec(sqls.arg(dbname));
 
-	sqls = "CREATE DATABASE `test` DEFAULT CHARSET=utf8 COLLATE=utf8_bin;";
-	query.exec(sqls);
+	sqls = "CREATE USER '%1'@'localhost' IDENTIFIED BY '%2';";
+	query.exec(sqls.arg(user).arg(pwd));
 
-	sqls = "USE `test`;";
-	query.exec(sqls);
+	sqls = "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %1.* TO '%2'@'localhost' IDENTIFIED BY '%3';";
+	query.exec(sqls.arg(dbname).arg(user).arg(pwd));
+
+	sqls = "USE `%1`;";
+	query.exec(sqls.arg(dbname));
 
 	sqls = "CREATE TABLE `Gliders`"
 	"("
@@ -208,7 +211,7 @@ void Upgrade::setDataBaseVersion(const DataBaseVersion &tabVers)
 	QString version;
 	QSqlQuery query(db());
 	
-        version = tabVers.toString("yyyy-MM-dd hh:mm:ss");
-        sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = 'DataBaseVersion'").arg(version);
+	version = tabVers.toString("yyyy-MM-dd hh:mm:ss");
+	sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = 'DataBaseVersion'").arg(version);
 	query.exec(sqls);
 }

@@ -27,7 +27,7 @@ class Upgrade: public DataBaseSub
 	public:
 		Upgrade(QSqlDatabase DB);
 
-		void setup();
+		void setup(const QString &dbname, const QString &user, const QString &pwd);
 
 		void upgrade();
 
