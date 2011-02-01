@@ -26,19 +26,36 @@
 #include "IGPSDevice.h"
 #include "ISql.h"
 
+#include <QInputDialog>
+#include <QDir>
+
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
+	QString root;
+	QString pwd;
 	Q_INIT_RESOURCE(res);
 	MainWindow* pMainWin;
 	int res;
+	bool ok;
 
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
 	IFlyHighRC::pInstance()->loadRC();
-	ISql::pInstance()->connectDb();
+
+	if(!ISql::pInstance()->connectDb())
+	{
+		root = QInputDialog::getText(NULL, "Enter MySQL root", "root name:", QLineEdit::Normal, "root", &ok);
+		pwd = QInputDialog::getText(NULL, "Enter MySQL root password", "root pwd:", QLineEdit::Normal, "", &ok);
+
+		if(ok)
+		{
+			ISql::pInstance()->createDb(root, pwd);
+			ISql::pInstance()->connectDb();
+		}
+	}
 	
 	pMainWin = new MainWindow();
 	pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
