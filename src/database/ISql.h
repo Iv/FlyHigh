@@ -56,6 +56,8 @@ class ISql: public IDataBase
 
 		bool connectDb();
 
+		bool createDb(const QString &root, const QString &pwd);
+
 		void setName(const QString &name);
 
 		void setUserName(const QString &userName);
@@ -155,10 +157,11 @@ class ISql: public IDataBase
 		Servicings* m_pServicings;
 		Pilots* m_pPilots;
 		QSqlDatabase m_DefaultDB;
+		bool m_firstConnect;
 
 		ISql();
 
-		void setupTables();
+		void upgradeTables();
 
 		int tableVersion();
 

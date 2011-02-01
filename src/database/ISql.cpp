@@ -29,6 +29,8 @@
 #include "Upgrade.h"
 #include "ISql.h"
 
+#include <QSqlQuery>
+
 ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
@@ -48,6 +50,7 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
+	m_firstConnect = true;
 }
 
 ISql::~ISql()
@@ -77,9 +80,41 @@ bool ISql::connectDb()
 	bool success;
 	
 	success = m_DefaultDB.open();
-	Error::verify(success, Error::SQL_OPEN);
-	setupTables();
+
+	if(!m_firstConnect)
+	{
+		Error::verify(success, Error::SQL_OPEN);
+	}
+
+	m_firstConnect = false;
+
+	if(success)
+	{
+		upgradeTables();
+	}
 	
+	return success;
+}
+
+bool ISql::createDb(const QString &root, const QString &pwd)
+{
+	QSqlDatabase setupDb;
+	bool success;
+
+	setupDb = QSqlDatabase::addDatabase("QMYSQL", "root_db");
+	setupDb.setUserName(root);
+	setupDb.setPassword(pwd);
+	setupDb.setHostName("localhost");
+	setupDb.setPort(3306);
+	success = setupDb.open();
+
+	if(success)
+	{
+		Upgrade upgrade(setupDb);
+		upgrade.setup(m_DefaultDB.databaseName(), m_DefaultDB.userName(), m_DefaultDB.password());
+		setupDb.close();
+	}
+
 	return success;
 }
 
@@ -324,7 +359,7 @@ Pilots* ISql::pPilotTable()
 	return m_pPilots;
 }
 
-void ISql::setupTables()
+void ISql::upgradeTables()
 {
 	Upgrade upgrade(m_DefaultDB);
 	
