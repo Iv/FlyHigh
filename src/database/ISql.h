@@ -157,7 +157,6 @@ class ISql: public IDataBase
 		Servicings* m_pServicings;
 		Pilots* m_pPilots;
 		QSqlDatabase m_DefaultDB;
-		bool m_firstConnect;
 
 		ISql();
 
