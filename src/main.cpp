@@ -47,8 +47,8 @@ int main( int argc, char ** argv )
 
 	if(!ISql::pInstance()->connectDb())
 	{
-		root = QInputDialog::getText(NULL, "Enter MySQL root", "root name:", QLineEdit::Normal, "root", &ok);
-		pwd = QInputDialog::getText(NULL, "Enter MySQL root password", "root pwd:", QLineEdit::Normal, "", &ok);
+		root = QInputDialog::getText(NULL, QObject::tr("Name"), QObject::tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
+		pwd = QInputDialog::getText(NULL, QObject::tr("Password"), QObject::tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
 
 		if(ok)
 		{
