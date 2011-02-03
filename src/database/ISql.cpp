@@ -29,8 +29,6 @@
 #include "Upgrade.h"
 #include "ISql.h"
 
-#include <QSqlQuery>
-
 ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
@@ -50,7 +48,6 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
-	m_firstConnect = true;
 }
 
 ISql::~ISql()
@@ -80,13 +77,7 @@ bool ISql::connectDb()
 	bool success;
 	
 	success = m_DefaultDB.open();
-
-	if(!m_firstConnect)
-	{
-		Error::verify(success, Error::SQL_OPEN);
-	}
-
-	m_firstConnect = false;
+	Error::verify(success, Error::SQL_OPEN);
 
 	if(success)
 	{
