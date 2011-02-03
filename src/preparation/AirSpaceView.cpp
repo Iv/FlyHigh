@@ -205,6 +205,13 @@ void AirSpaceView::drawAirspace()
 				ptNr++;
 			}
 
+			ptNr = pointList.size() - 1;
+
+			if((pointList.size() > 0) && (pointList[0] != pointList[ptNr]))
+			{
+				pointList.append(pointList[0]);
+			}
+
 			if(spaceNr == m_selected)
 			{
 				pSelAirSpace = pAirSpace;
@@ -229,6 +236,13 @@ void AirSpaceView::drawAirspace()
 				lon = (*it).longitude() - offLon;
 				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
+			}
+
+			ptNr = pointList.size() - 1;
+
+			if((pointList.size() > 0) && (pointList[0] != pointList[ptNr]))
+			{
+				pointList.append(pointList[0]);
 			}
 
 			paint.setPen(QColor(255, 0, 0));
