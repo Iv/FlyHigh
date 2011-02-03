@@ -21,7 +21,7 @@
 #ifndef Error_h
 #define Error_h
 
-#include <qstring.h>
+#include <QString>
 
 class Error
 {
@@ -36,11 +36,11 @@ class Error
 			FLYTEC_OPEN,
 			FLYTEC_CMD,
 			GNUPLOT_OPEN,
-			GPLIGC_OPEN,
 			NOF_ERRORS
 		}ErrorIdType;
 	
 		static void show(ErrorIdType error);
+
 		static void verify(bool expression, ErrorIdType error);
 
 	private:
