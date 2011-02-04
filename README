@@ -1,6 +1,7 @@
-Version 0.5
-WARNING: Database model is totally redesigned. There is a script to migrate to database
-version 2. database version 2 will be new created. The old one stays untouched. But it's
+Attention users of version 0.5 or below:
+WARNING: Database model was totally redesigned in version 0.5.
+There is a script to migrate to database version 2.
+database version 2 will be new created. The old one stays untouched. But it's
 recommended to backup your flights!!!
 The new model has the advantage of more and complexer waypoint and flight information.
 
