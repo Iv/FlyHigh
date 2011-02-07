@@ -2,7 +2,7 @@
 
 if [ -z $1 ]
 then
-	echo "usage: mkrelease revision\nFor example ./mkrelease 0.4.1"; exit
+	echo "usage: mkrelease revision\nFor example ./mkrelease 0.8.1"; exit
 fi
 
 project=flyhigh
@@ -27,7 +27,9 @@ echo "tar -czf $project-$revision.tar.gz $project-$revision"
 tar -czf $project-$revision.tar.gz $project-$revision
 
 # build
-cd $workDir
+mkdir $workDir/build
+cd $workDir/build
+cmake ..
 make
 echo "strip $workDir/build/src/$project"
 strip $workDir/build/src/$project
