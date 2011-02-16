@@ -1,561 +1,568 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>AcousticFrame6015</class>
-  <widget class="QWidget" name="AcousticFrame6015">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>486</width>
-        <height>611</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>Acoustic</string>
-    </property>
-    <widget class="QLabel" name="textLabel_Volume">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>10</y>
-          <width>150</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Volume</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSlider" name="slider_Volume">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>10</y>
-          <width>171</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>4</number>
-      </property>
-      <property name="singleStep">
-        <number>1</number>
-      </property>
-      <property name="pageStep">
-        <number>1</number>
-      </property>
-      <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-      </property>
-    </widget>
-    <widget class="Q3GroupBox" name="groupBox3">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>40</y>
-          <width>381</width>
-          <height>260</height>
-        </rect>
-      </property>
-      <property name="title">
-        <string>Up</string>
-      </property>
-      <widget class="QLabel" name="textLabel_Rise_En">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>20</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Enabled</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QCheckBox" name="checkBox_RiseAcoustic">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>20</y>
-            <width>16</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string/>
-        </property>
-        <property name="checked">
-          <bool>true</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_FreqMod">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>140</y>
-            <width>162</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Frequency Gain</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_Threshold">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>60</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Threshold</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_ThresholdUnit">
-        <property name="geometry">
-          <rect>
-            <x>310</x>
-            <y>60</y>
-            <width>67</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>[cm/s]</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_UpFreq">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>100</y>
-            <width>150</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Base Frequency</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_UpFreqUnit">
-        <property name="geometry">
-          <rect>
-            <x>310</x>
-            <y>100</y>
-            <width>67</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>[Hz]</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QSlider" name="slider_FreqGain">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>140</y>
-            <width>171</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="cursor">
-          <cursor>0</cursor>
-        </property>
-        <property name="minimum">
-          <number>0</number>
-        </property>
-        <property name="maximum">
-          <number>4</number>
-        </property>
-        <property name="pageStep">
-          <number>1</number>
-        </property>
-        <property name="value">
-          <number>0</number>
-        </property>
-        <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-        </property>
-      </widget>
-      <widget class="QSlider" name="slider_PitchGain">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>180</y>
-            <width>171</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="minimum">
-          <number>1</number>
-        </property>
-        <property name="maximum">
-          <number>5</number>
-        </property>
-        <property name="pageStep">
-          <number>1</number>
-        </property>
-        <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-        </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_UpFreq">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>100</y>
-            <width>100</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="maximum">
-          <number>1400</number>
-        </property>
-        <property name="minimum">
-          <number>600</number>
-        </property>
-        <property name="singleStep">
-          <number>1</number>
-        </property>
-        <property name="value">
-          <number>600</number>
-        </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_ThresUp">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>60</y>
-            <width>100</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="maximum">
-          <number>20</number>
-        </property>
-        <property name="minimum">
-          <number>0</number>
-        </property>
-      </widget>
-      <widget class="QComboBox" name="comboBox_RisePitch">
-        <property name="enabled">
-          <bool>true</bool>
-        </property>
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>220</y>
-            <width>160</width>
-            <height>28</height>
-          </rect>
-        </property>
-        <item>
-          <property name="text">
-            <string>Linear</string>
-          </property>
-        </item>
-        <item>
-          <property name="text">
-            <string>Exponential</string>
-          </property>
-        </item>
-      </widget>
-      <widget class="QLabel" name="textLabel_Pitch">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>180</y>
-            <width>150</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Pitch Gain</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_Variomode">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>225</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Rise Pitch</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-    </widget>
-    <widget class="Q3GroupBox" name="groupBox2">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>330</y>
-          <width>380</width>
-          <height>220</height>
-        </rect>
-      </property>
-      <property name="title">
-        <string>Down</string>
-      </property>
-      <widget class="QLabel" name="textLabel_Sink">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>100</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Threshold</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_DownFreq">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>180</y>
-            <width>150</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Base Frequency</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_SinkUnit">
-        <property name="geometry">
-          <rect>
-            <x>310</x>
-            <y>100</y>
-            <width>50</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>[cm/s]</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_DownFreq">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>180</y>
-            <width>100</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="maximum">
-          <number>1400</number>
-        </property>
-        <property name="minimum">
-          <number>300</number>
-        </property>
-        <property name="singleStep">
-          <number>1</number>
-        </property>
-        <property name="value">
-          <number>300</number>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_SinkUnit_2">
-        <property name="geometry">
-          <rect>
-            <x>310</x>
-            <y>140</y>
-            <width>50</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>[cm/s]</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_DownFreqUnit">
-        <property name="geometry">
-          <rect>
-            <x>310</x>
-            <y>180</y>
-            <width>33</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>[Hz]</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_Sink_2">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>140</y>
-            <width>156</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Threshold Sink Alarm</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_StallAlarm">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>60</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Stall Alarm</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QLabel" name="textLabel_SinkAlarm">
-        <property name="geometry">
-          <rect>
-            <x>10</x>
-            <y>20</y>
-            <width>134</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string>Sink Alarm</string>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-      <widget class="QCheckBox" name="checkBox_StallAlarm">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>60</y>
-            <width>16</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string/>
-        </property>
-        <property name="checked">
-          <bool>true</bool>
-        </property>
-      </widget>
-      <widget class="QCheckBox" name="checkBox_SinkAlarm">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>20</y>
-            <width>16</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="text">
-          <string/>
-        </property>
-        <property name="checked">
-          <bool>true</bool>
-        </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_ThresDown">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>100</y>
-            <width>100</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="prefix">
-          <string/>
-        </property>
-        <property name="maximum">
-          <number>-10</number>
-        </property>
-        <property name="minimum">
-          <number>-2000</number>
-        </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_ThresSinkAlarm">
-        <property name="geometry">
-          <rect>
-            <x>190</x>
-            <y>140</y>
-            <width>100</width>
-            <height>20</height>
-          </rect>
-        </property>
-        <property name="prefix">
-          <string/>
-        </property>
-        <property name="maximum">
-          <number>-10</number>
-        </property>
-        <property name="minimum">
-          <number>-9990</number>
-        </property>
-      </widget>
-    </widget>
+<ui version="4.0">
+ <class>AcousticFrame6015</class>
+ <widget class="QWidget" name="AcousticFrame6015">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>486</width>
+    <height>611</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Acoustic</string>
+  </property>
+  <widget class="QLabel" name="textLabel_Volume">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>10</y>
+     <width>150</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Volume</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <widget class="QSlider" name="slider_Volume">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>171</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>4</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="pageStep">
+    <number>1</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Q3GroupBox" name="groupBox3">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>381</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Up</string>
+   </property>
+   <widget class="QLabel" name="textLabel_Rise_En">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enabled</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_RiseAcoustic">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>30</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_FreqMod">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>162</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Frequency Gain</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_Threshold">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Threshold</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_ThresholdUnit">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>70</y>
+      <width>67</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>[cm/s]</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_UpFreq">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>150</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Base Frequency</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_UpFreqUnit">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>110</y>
+      <width>67</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>[Hz]</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QSlider" name="slider_FreqGain">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>150</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>4</number>
+    </property>
+    <property name="pageStep">
+     <number>1</number>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QSlider" name="slider_PitchGain">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>190</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>5</number>
+    </property>
+    <property name="pageStep">
+     <number>1</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_UpFreq">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>100</y>
+      <width>100</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>600</number>
+    </property>
+    <property name="maximum">
+     <number>1400</number>
+    </property>
+    <property name="singleStep">
+     <number>1</number>
+    </property>
+    <property name="value">
+     <number>600</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_ThresUp">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>60</y>
+      <width>100</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>20</number>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_RisePitch">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>220</y>
+      <width>160</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Linear</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Exponential</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="textLabel_Pitch">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>150</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pitch Gain</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_Variomode">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>230</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rise Pitch</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="Q3GroupBox" name="groupBox2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>320</y>
+     <width>380</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Down</string>
+   </property>
+   <widget class="QLabel" name="textLabel_Sink">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Threshold</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_DownFreq">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>150</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Base Frequency</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_SinkUnit">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>110</y>
+      <width>50</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>[cm/s]</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_DownFreq">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>180</y>
+      <width>100</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>300</number>
+    </property>
+    <property name="maximum">
+     <number>1400</number>
+    </property>
+    <property name="singleStep">
+     <number>1</number>
+    </property>
+    <property name="value">
+     <number>300</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_SinkUnit_2">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>150</y>
+      <width>50</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>[cm/s]</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_DownFreqUnit">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>190</y>
+      <width>33</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>[Hz]</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_Sink_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>156</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Threshold Sink Alarm</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_StallAlarm">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stall Alarm</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel_SinkAlarm">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>134</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sink Alarm</string>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_StallAlarm">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>70</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_SinkAlarm">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>30</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_ThresDown">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>100</y>
+      <width>100</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="prefix">
+     <string/>
+    </property>
+    <property name="minimum">
+     <number>-2000</number>
+    </property>
+    <property name="maximum">
+     <number>-10</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_ThresSinkAlarm">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>140</y>
+      <width>100</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="prefix">
+     <string/>
+    </property>
+    <property name="minimum">
+     <number>-9990</number>
+    </property>
+    <property name="maximum">
+     <number>-10</number>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
 </ui>

@@ -1,509 +1,511 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>PolareFrame</class>
-  <widget class="QWidget" name="PolareFrame">
-    <property name="enabled">
-      <bool>true</bool>
-    </property>
-    <property name="geometry">
+<ui version="4.0">
+ <class>PolareFrame</class>
+ <widget class="QWidget" name="PolareFrame">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>425</width>
+    <height>387</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Polare</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>0</y>
+     <width>390</width>
+     <height>280</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Polare Set 1</string>
+    </attribute>
+    <widget class="QLabel" name="textLabel_Altitude1">
+     <property name="geometry">
       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>425</width>
-        <height>387</height>
+       <x>20</x>
+       <y>30</y>
+       <width>150</width>
+       <height>20</height>
       </rect>
-    </property>
-    <property name="windowTitle">
-      <string>Polare</string>
-    </property>
-    <widget class="QTabWidget" name="tabWidget">
-      <property name="geometry">
-        <rect>
-          <x>20</x>
-          <y>0</y>
-          <width>390</width>
-          <height>280</height>
-        </rect>
-      </property>
-      <widget class="QWidget" name="tab">
-        <attribute name="title">
-          <string>Polare Set 1</string>
-        </attribute>
-        <widget class="QLabel" name="textLabel_Altitude1">
-          <property name="geometry">
-            <rect>
-              <x>20</x>
-              <y>30</y>
-              <width>150</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Polare Altitude</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Altitude1">
-          <property name="geometry">
-            <rect>
-              <x>200</x>
-              <y>30</y>
-              <width>100</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>3000</number>
-          </property>
-          <property name="minimum">
-            <number>0</number>
-          </property>
-          <property name="singleStep">
-            <number>1</number>
-          </property>
-          <property name="value">
-            <number>0</number>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_AltitudeUnit1">
-          <property name="geometry">
-            <rect>
-              <x>310</x>
-              <y>30</y>
-              <width>67</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>[m]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_SinkUnit1">
-          <property name="geometry">
-            <rect>
-              <x>20</x>
-              <y>200</y>
-              <width>41</width>
-              <height>31</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink
-[cm/s]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Sink1_0">
-          <property name="geometry">
-            <rect>
-              <x>130</x>
-              <y>90</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>200</number>
-          </property>
-          <property name="minimum">
-            <number>1</number>
-          </property>
-        </widget>
-        <widget class="QLabel" name="pixmapLabel_Polare1">
-          <property name="geometry">
-            <rect>
-              <x>30</x>
-              <y>110</y>
-              <width>297</width>
-              <height>81</height>
-            </rect>
-          </property>
-          <property name="scaledContents">
-            <bool>false</bool>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Speed1_0">
-          <property name="geometry">
-            <rect>
-              <x>130</x>
-              <y>110</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>120</number>
-          </property>
-          <property name="minimum">
-            <number>20</number>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Speed1_1">
-          <property name="geometry">
-            <rect>
-              <x>220</x>
-              <y>190</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>120</number>
-          </property>
-          <property name="minimum">
-            <number>20</number>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Sink1_1">
-          <property name="geometry">
-            <rect>
-              <x>220</x>
-              <y>170</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>200</number>
-          </property>
-          <property name="minimum">
-            <number>1</number>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Speed1_1">
-          <property name="geometry">
-            <rect>
-              <x>170</x>
-              <y>190</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Sink1_1">
-          <property name="geometry">
-            <rect>
-              <x>170</x>
-              <y>170</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Speed1_0">
-          <property name="geometry">
-            <rect>
-              <x>80</x>
-              <y>110</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Sink1_0">
-          <property name="geometry">
-            <rect>
-              <x>80</x>
-              <y>90</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_SpeedUnit1">
-          <property name="geometry">
-            <rect>
-              <x>330</x>
-              <y>90</y>
-              <width>51</width>
-              <height>37</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed
-[km/h]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-      </widget>
-      <widget class="QWidget" name="tab">
-        <attribute name="title">
-          <string>Polare Set 2</string>
-        </attribute>
-        <widget class="QSpinBox" name="spinBox_Altitude2">
-          <property name="geometry">
-            <rect>
-              <x>200</x>
-              <y>30</y>
-              <width>100</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>3000</number>
-          </property>
-          <property name="minimum">
-            <number>0</number>
-          </property>
-          <property name="singleStep">
-            <number>1</number>
-          </property>
-          <property name="value">
-            <number>0</number>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Altitude2">
-          <property name="geometry">
-            <rect>
-              <x>20</x>
-              <y>30</y>
-              <width>150</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Polare Altitude</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_AltitudeUnit2">
-          <property name="geometry">
-            <rect>
-              <x>310</x>
-              <y>30</y>
-              <width>67</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>[m]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="pixmapLabel_Polare2">
-          <property name="geometry">
-            <rect>
-              <x>30</x>
-              <y>110</y>
-              <width>297</width>
-              <height>81</height>
-            </rect>
-          </property>
-          <property name="scaledContents">
-            <bool>false</bool>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_SinkUnit2">
-          <property name="geometry">
-            <rect>
-              <x>20</x>
-              <y>200</y>
-              <width>41</width>
-              <height>31</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink
-[cm/s]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Sink2_0">
-          <property name="geometry">
-            <rect>
-              <x>130</x>
-              <y>90</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>200</number>
-          </property>
-          <property name="minimum">
-            <number>1</number>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Speed2_0">
-          <property name="geometry">
-            <rect>
-              <x>130</x>
-              <y>110</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>120</number>
-          </property>
-          <property name="minimum">
-            <number>20</number>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Speed2_1">
-          <property name="geometry">
-            <rect>
-              <x>220</x>
-              <y>190</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>120</number>
-          </property>
-          <property name="minimum">
-            <number>20</number>
-          </property>
-        </widget>
-        <widget class="QSpinBox" name="spinBox_Sink2_1">
-          <property name="geometry">
-            <rect>
-              <x>220</x>
-              <y>170</y>
-              <width>55</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="maximum">
-            <number>200</number>
-          </property>
-          <property name="minimum">
-            <number>1</number>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Sink2_0">
-          <property name="geometry">
-            <rect>
-              <x>80</x>
-              <y>90</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Speed2_0">
-          <property name="geometry">
-            <rect>
-              <x>80</x>
-              <y>110</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Sink2_1">
-          <property name="geometry">
-            <rect>
-              <x>170</x>
-              <y>170</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Sink</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_Speed2_1">
-          <property name="geometry">
-            <rect>
-              <x>170</x>
-              <y>190</y>
-              <width>50</width>
-              <height>20</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-        <widget class="QLabel" name="textLabel_SpeedUnit2">
-          <property name="geometry">
-            <rect>
-              <x>330</x>
-              <y>90</y>
-              <width>51</width>
-              <height>37</height>
-            </rect>
-          </property>
-          <property name="text">
-            <string>Speed
-[km/h]</string>
-          </property>
-          <property name="wordWrap">
-            <bool>false</bool>
-          </property>
-        </widget>
-      </widget>
+     </property>
+     <property name="text">
+      <string>Polare Altitude</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
     </widget>
+    <widget class="QSpinBox" name="spinBox_Altitude1">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>19</y>
+       <width>100</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>3000</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_AltitudeUnit1">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>30</y>
+       <width>67</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>[m]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_SinkUnit1">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>200</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink
+[cm/s]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Sink1_0">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>79</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pixmapLabel_Polare1">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>297</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Speed1_0">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>110</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>20</number>
+     </property>
+     <property name="maximum">
+      <number>120</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Speed1_1">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>190</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>20</number>
+     </property>
+     <property name="maximum">
+      <number>120</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Sink1_1">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>159</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Speed1_1">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>190</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Sink1_1">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>170</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Speed1_0">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>110</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Sink1_0">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>90</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_SpeedUnit1">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>90</y>
+       <width>51</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed
+[km/h]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Polare Set 2</string>
+    </attribute>
+    <widget class="QSpinBox" name="spinBox_Altitude2">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>19</y>
+       <width>100</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>3000</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Altitude2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>150</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Polare Altitude</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_AltitudeUnit2">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>30</y>
+       <width>67</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>[m]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pixmapLabel_Polare2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>297</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_SinkUnit2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>200</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink
+[cm/s]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Sink2_0">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>79</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Speed2_0">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>110</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>20</number>
+     </property>
+     <property name="maximum">
+      <number>120</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Speed2_1">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>190</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>20</number>
+     </property>
+     <property name="maximum">
+      <number>120</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Sink2_1">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>159</y>
+       <width>55</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>200</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Sink2_0">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>90</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Speed2_0">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>110</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Sink2_1">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>170</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sink</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_Speed2_1">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>190</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="textLabel_SpeedUnit2">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>90</y>
+       <width>51</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Speed
+[km/h]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </widget>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
 </ui>

@@ -1,184 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>FlyCalcFrame</class>
-  <widget class="QWidget" name="FlyCalcFrame">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>423</width>
-        <height>390</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>Fly Calculator</string>
-    </property>
-    <widget class="QLabel" name="textLabel_DelayUnit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>40</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[s]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_Delay">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>40</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>30</number>
-      </property>
-      <property name="minimum">
-        <number>0</number>
-      </property>
-      <property name="singleStep">
-        <number>1</number>
-      </property>
-      <property name="value">
-        <number>0</number>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_Gap">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>100</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>50</number>
-      </property>
-      <property name="minimum">
-        <number>0</number>
-      </property>
-      <property name="singleStep">
-        <number>1</number>
-      </property>
-      <property name="value">
-        <number>0</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_GapUnit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>100</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[cm/s]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_Average">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>160</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>600</number>
-      </property>
-      <property name="minimum">
-        <number>0</number>
-      </property>
-      <property name="singleStep">
-        <number>30</number>
-      </property>
-      <property name="value">
-        <number>0</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_AverageUnit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>160</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[s]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_Average">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>160</y>
-          <width>188</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Daytypical Rising Average</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_Gap">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>100</y>
-          <width>150</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>McCready Gap</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_Delay">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>40</y>
-          <width>150</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>McCready Delay</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
+<ui version="4.0">
+ <class>FlyCalcFrame</class>
+ <widget class="QWidget" name="FlyCalcFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>423</width>
+    <height>390</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Fly Calc</string>
+  </property>
+  <widget class="QLabel" name="textLabel_DelayUnit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>40</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[s]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <widget class="QSpinBox" name="spinBox_Delay">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>30</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>30</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_Gap">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>90</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>50</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_GapUnit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>100</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[cm/s]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_Average">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>150</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>600</number>
+   </property>
+   <property name="singleStep">
+    <number>30</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_AverageUnit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>160</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[s]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_Average">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>160</y>
+     <width>188</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Daytypical Rising Average</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_Gap">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>100</y>
+     <width>150</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>McCready Gap</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_Delay">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>150</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>McCready Delay</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
 </ui>

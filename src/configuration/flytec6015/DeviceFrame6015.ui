@@ -1,306 +1,314 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>DeviceFrame6015</class>
-  <widget class="QWidget" name="DeviceFrame6015">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>473</width>
-        <height>496</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>Device</string>
-    </property>
-    <widget class="QComboBox" name="comboBoxModel">
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>74</y>
-          <width>160</width>
-          <height>28</height>
-        </rect>
-      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_PilotName">
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>30</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-      <property name="maxLength">
-        <number>16</number>
-      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_SerialNr">
-      <property name="enabled">
-        <bool>false</bool>
-      </property>
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>180</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonGlider">
-      <property name="geometry">
-        <rect>
-          <x>370</x>
-          <y>74</y>
-          <width>60</width>
-          <height>28</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>new...</string>
-      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_SwVersion">
-      <property name="enabled">
-        <bool>false</bool>
-      </property>
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>280</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_DeviceIdent">
-      <property name="enabled">
-        <bool>false</bool>
-      </property>
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>230</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_GliderID">
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>130</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-      <property name="maxLength">
-        <number>16</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_PilotName">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>30</y>
-          <width>153</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Pilot (First Surname)</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabelModel">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>80</y>
-          <width>108</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Model of glider</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_GliderID">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>130</y>
-          <width>70</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Call Sign</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_SerialNr">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>180</y>
-          <width>110</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Serial Number</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_DeviceIdent">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>230</y>
-          <width>130</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Device Identifier</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_SwVersion">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>280</y>
-          <width>130</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Software Version</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_AutoOff">
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>328</y>
-          <width>20</width>
-          <height>23</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_BattType_2">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>330</y>
-          <width>134</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Auto Power Off</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_PowerOffTime">
-      <property name="geometry">
-        <rect>
-          <x>30</x>
-          <y>380</y>
-          <width>134</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Power Off Time</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_PowerOffTime">
-      <property name="geometry">
-        <rect>
-          <x>190</x>
-          <y>380</y>
-          <width>160</width>
-          <height>23</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>240</number>
-      </property>
-      <property name="minimum">
-        <number>10</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_PowerOffTimeUnit">
-      <property name="geometry">
-        <rect>
-          <x>370</x>
-          <y>380</y>
-          <width>41</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[min]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
+<ui version="4.0">
+ <class>DeviceFrame6015</class>
+ <widget class="QWidget" name="DeviceFrame6015">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>473</width>
+    <height>496</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Device</string>
+  </property>
+  <widget class="QComboBox" name="comboBoxModel">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>64</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
-  <connections>
-    <connection>
-      <sender>pushButtonGlider</sender>
-      <signal>clicked()</signal>
-      <receiver>DeviceFrame6015</receiver>
-      <slot>newGlider()</slot>
-    </connection>
-  </connections>
+  <widget class="QLineEdit" name="lineEdit_PilotName">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>20</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="maxLength">
+    <number>16</number>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_SerialNr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>170</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonGlider">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>74</y>
+     <width>60</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>new...</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_SwVersion">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>270</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_DeviceIdent">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>220</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_GliderID">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>120</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="maxLength">
+    <number>16</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_PilotName">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>153</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pilot (First Surname)</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelModel">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>80</y>
+     <width>108</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Model of glider</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_GliderID">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>130</y>
+     <width>70</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Call Sign</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_SerialNr">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>180</y>
+     <width>110</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Serial Number</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_DeviceIdent">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>230</y>
+     <width>130</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Device Identifier</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_SwVersion">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>280</y>
+     <width>130</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Software Version</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_AutoOff">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>320</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_BattType_2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>330</y>
+     <width>134</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Auto Power Off</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_PowerOffTime">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>380</y>
+     <width>134</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Power Off Time</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_PowerOffTime">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>370</y>
+     <width>160</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>10</number>
+   </property>
+   <property name="maximum">
+    <number>240</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_PowerOffTimeUnit">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>380</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[min]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButtonGlider</sender>
+   <signal>clicked()</signal>
+   <receiver>DeviceFrame6015</receiver>
+   <slot>newGlider()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
