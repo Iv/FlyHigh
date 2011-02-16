@@ -1,200 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>GPSFrame</class>
-  <widget class="QWidget" name="GPSFrame">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>424</width>
-        <height>390</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>GPS</string>
-    </property>
-    <widget class="QLabel" name="textLabel_GridSys">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>40</y>
-          <width>134</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Grid System</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_GridSys">
-      <property name="geometry">
-        <rect>
-          <x>214</x>
-          <y>34</y>
-          <width>151</width>
-          <height>28</height>
-        </rect>
-      </property>
-      <item>
-        <property name="text">
-          <string>dd'mm.mm</string>
-        </property>
-      </item>
-      <item>
-        <property name="text">
-          <string>dd.dddd</string>
-        </property>
-      </item>
-      <item>
-        <property name="text">
-          <string>dd'mm''ss</string>
-        </property>
-      </item>
-      <item>
-        <property name="text">
-          <string>UTM</string>
-        </property>
-      </item>
-      <item>
-        <property name="text">
-          <string>Swiss Grid</string>
-        </property>
-      </item>
-    </widget>
-    <widget class="QLabel" name="textLabel_UTCoffsetUnit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>90</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[h]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_GeoID">
-      <property name="enabled">
-        <bool>false</bool>
-      </property>
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>190</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="specialValueText">
-        <string>WGS84</string>
-      </property>
-      <property name="maximum">
-        <number>192</number>
-      </property>
-      <property name="minimum">
-        <number>1</number>
-      </property>
-      <property name="singleStep">
-        <number>1</number>
-      </property>
-      <property name="value">
-        <number>1</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_GeoID">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>190</y>
-          <width>134</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Geodic ID</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_UTCoffset">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>90</y>
-          <width>150</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>UTC Offset</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_UTCoffset_2">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>140</y>
-          <width>150</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>0.5h UTC Offset</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_UTCoffset">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>90</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>13</number>
-      </property>
-      <property name="minimum">
-        <number>-13</number>
-      </property>
-      <property name="singleStep">
-        <number>1</number>
-      </property>
-      <property name="value">
-        <number>0</number>
-      </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_UTChalfOffset">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>140</y>
-          <width>83</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string/>
-      </property>
-    </widget>
+<ui version="4.0">
+ <class>GPSFrame</class>
+ <widget class="QWidget" name="GPSFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>424</width>
+    <height>390</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GPS</string>
+  </property>
+  <widget class="QLabel" name="textLabel_GridSys">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>134</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Grid System</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <widget class="QComboBox" name="comboBox_GridSys">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>30</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>dd'mm.mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>dd.dddd</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>dd'mm''ss</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>UTM</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Swiss Grid</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="textLabel_UTCoffsetUnit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>90</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[h]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_GeoID">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>190</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="specialValueText">
+    <string>WGS84</string>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>192</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>1</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_GeoID">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>190</y>
+     <width>134</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Geodic ID</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_UTCoffset">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>90</y>
+     <width>150</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>UTC Offset</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_UTCoffset_2">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>140</y>
+     <width>150</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>0.5h UTC Offset</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_UTCoffset">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>90</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-13</number>
+   </property>
+   <property name="maximum">
+    <number>13</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_UTChalfOffset">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>140</y>
+     <width>21</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
 </ui>

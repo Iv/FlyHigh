@@ -1,169 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0" stdsetdef="1">
-  <author></author>
-  <comment></comment>
-  <exportmacro></exportmacro>
-  <class>CorrFrame</class>
-  <widget class="QWidget" name="CorrFrame">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>423</width>
-        <height>390</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>Correction</string>
-    </property>
-    <widget class="QSpinBox" name="spinBox_QNHCorrA2">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>90</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>8000</number>
-      </property>
-      <property name="minimum">
-        <number>-8000</number>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_QNHCorrA1">
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>40</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>1000</number>
-      </property>
-      <property name="minimum">
-        <number>-2000</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_QNHCorrA1Unit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>40</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[m]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_QNHCorrA2Unit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>90</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[m]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_TempCorrUnit">
-      <property name="geometry">
-        <rect>
-          <x>340</x>
-          <y>140</y>
-          <width>67</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>[°C]</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_TempCorr">
-      <property name="enabled">
-        <bool>false</bool>
-      </property>
-      <property name="geometry">
-        <rect>
-          <x>220</x>
-          <y>140</y>
-          <width>100</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="maximum">
-        <number>10</number>
-      </property>
-      <property name="minimum">
-        <number>-10</number>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_QNHCorrA1">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>40</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>QNH Correction of A1</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_QNHCorrA2">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>90</y>
-          <width>160</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>QNH Correction of A2</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
-    <widget class="QLabel" name="textLabel_TempCorr">
-      <property name="geometry">
-        <rect>
-          <x>40</x>
-          <y>140</y>
-          <width>169</width>
-          <height>20</height>
-        </rect>
-      </property>
-      <property name="text">
-        <string>Temperatur Correction</string>
-      </property>
-      <property name="wordWrap">
-        <bool>false</bool>
-      </property>
-    </widget>
+<ui version="4.0">
+ <class>CorrFrame</class>
+ <widget class="QWidget" name="CorrFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>423</width>
+    <height>390</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Correction</string>
+  </property>
+  <widget class="QSpinBox" name="spinBox_QNHCorrA2">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>80</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-8000</number>
+   </property>
+   <property name="maximum">
+    <number>8000</number>
+   </property>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <widget class="QSpinBox" name="spinBox_QNHCorrA1">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>30</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-2000</number>
+   </property>
+   <property name="maximum">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_QNHCorrA1Unit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>40</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[m]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_QNHCorrA2Unit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>90</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[m]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_TempCorrUnit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>140</y>
+     <width>67</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[°C]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_TempCorr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>130</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-10</number>
+   </property>
+   <property name="maximum">
+    <number>10</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_QNHCorrA1">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>160</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>QNH Correction of A1</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_QNHCorrA2">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>90</y>
+     <width>160</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>QNH Correction of A2</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabel_TempCorr">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>140</y>
+     <width>169</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Temperatur Correction</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
 </ui>
