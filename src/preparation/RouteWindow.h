@@ -35,7 +35,7 @@ class RouteWindow : public TableWindow
 
 	protected:
 		bool periodicalUpdate();
-		
+
 	private slots:
 		void file_new();
 
@@ -52,14 +52,15 @@ class RouteWindow : public TableWindow
 		void file_AddToGPS();
 
 		void file_AddToSqlDB();
-		
+
 	private:
-		enum Fields{Name};
+		enum Fields{Name, Type};
+
 		Route::RouteListType m_routeList;
-		
+
 		IDataBase *m_pDb;
 		int m_lastModified;
-		
+
 		void setRouteToRow(uint row, Route &route);
 };
 

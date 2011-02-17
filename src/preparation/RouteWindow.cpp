@@ -104,10 +104,12 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	pTable->setSelectionMode(Q3Table::SingleRow);
 
 	// header
-	nameList += "Name";
+	nameList += tr("Name");
+	nameList += tr("Type");
 	setupHeader(nameList);
 	
 	pTable->setColumnWidth(Name, 200);
+	pTable->setColumnWidth(Type, 300);
 	
 	m_lastModified = 0;
 }
@@ -337,4 +339,5 @@ void RouteWindow::setRouteToRow(uint row, Route &route)
 	Q3Table *pTable = TableWindow::getTable();
 	
 	pTable->setText(row, Name, route.name());
+	pTable->setText(row, Type, route.typeAsText());
 }
