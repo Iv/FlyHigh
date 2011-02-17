@@ -17,8 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
+#include <QStringList> 
 #include "Route.h"
+
+QStringList TypeTextList = QStringList()
+<< QObject::tr("Undefined")
+<< QObject::tr("Free flight")
+<< QObject::tr("Free flight via a turnpoint")
+<< QObject::tr("Free flight via 2 turnpoints")
+<< QObject::tr("Free flight via 3 turnpoints")
+<< QObject::tr("Flat or FAI triangle");
 
 Route::Route()
 {
@@ -50,6 +59,11 @@ void Route::setName(const QString &name)
 Route::Type Route::type() const
 {
 	return m_type;
+}
+
+QString Route::typeAsText() const
+{
+	return TypeTextList[m_type];
 }
 
 void Route::setType(Type type)
