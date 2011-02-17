@@ -21,8 +21,8 @@
 #ifndef Route_h
 #define Route_h
 
-#include <qstringlist.h> 
-#include <qvector.h>
+#include <QString> 
+#include <QVector>
 #include "WayPoint.h"
 
 class Route
@@ -43,6 +43,8 @@ class Route
 		void setName(const QString &name);
 
 		Type type() const;
+		
+		QString typeAsText() const;
 
 		void setType(Type type);
 
