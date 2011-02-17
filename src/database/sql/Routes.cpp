@@ -77,20 +77,42 @@ bool Routes::add(Route &route)
 
 bool Routes::delRoute(Route &route)
 {
+	WayPoint::WayPointListType::iterator it;
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
 
 	// first delete route items
-	sqls.sprintf("DELETE FROM RouteItems WHERE RouteId = %i;", route.id());
-	success = query.exec(sqls);
+	sqls = "DELETE FROM RouteItems WHERE RouteId = %1;";
+	success = query.exec(sqls.arg(route.id()));
 	Error::verify(success, Error::SQL_CMD);
 	
 	// route
-	sqls.sprintf("DELETE FROM Routes WHERE Id = %i;", route.id());
-	success = query.exec(sqls);
+	sqls = "DELETE FROM Routes WHERE Id = %1;";
+	success = query.exec(sqls.arg(route.id()));
 	Error::verify(success, Error::SQL_CMD);
+	
+	// waypoints
+	success = true;
+	
+	for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
+	{
+		sqls = "SELECT COUNT(*) FROM Flights WHERE StartPtId = %1 OR LandPtId = %2";
 
+		if(query.exec(sqls.arg((*it).id()).arg((*it).id())) && query.next())
+		{
+			if(query.value(0).toInt() == 0)
+			{
+				sqls = "DELETE FROM WayPoints WHERE Id = %1";
+				success &= query.exec(sqls.arg((*it).id()));
+			}
+		}
+		
+
+	}
+
+	Error::verify(success, Error::SQL_DEL);
+	DataBaseSub::setLastModified("WayPoints");
 	DataBaseSub::setLastModified("Routes");
 	
 	return success;
