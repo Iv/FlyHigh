@@ -4,7 +4,7 @@ Section: database
 Priority: optional
 Architecture: i386
 Depends: libqtcore4 (>= 4.4.3), libqtgui4 (>= 4.4.3), libqt4-qt3support (>= 4.4.3), libqt4-sql-mysql (>= 4.4.3),
- libqt4-webkit (>= 4.4.3), gnuplot (>= 4.2), mysql-server-5.0 (>= 5.0), mysql-common (>= 5.0)
+ libqt4-webkit (>= 4.4.3), gnuplot (>= 4.2), mysql-server (>= 5.0), mysql-common (>= 5.0)
 Suggests:
 Provides: flyhigh
 Installed-Size:
@@ -15,4 +15,4 @@ Description: Manage flights
  Flight analysis: 2D, 3D Plots with OLC optimization, Google maps, flights on Swiss Map 100
  Statistics (flights per year)
  Import of airspaces from OpenAir files
- Full support of Flytec 5020, 6015 and Competino, IQ Basic
+ Full support of Flytec 5020, 6015 and Brauniger Competino, IQ Basic
