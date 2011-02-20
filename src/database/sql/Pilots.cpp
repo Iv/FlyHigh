@@ -67,13 +67,13 @@ bool Pilots::update(Pilot &pilot)
 
 	birthDate = pilot.birthDate().toString("yyyy-MM-dd");
 
-        sqls = QString("UPDATE Pilots SET FirstName= '%1', LastName = '%2', BirthDate = '%3', CallSign = '%4', GliderId = %5 WHERE Id = %6").arg(
-                pilot.firstName(),
-                pilot.lastName(),
-                birthDate,
-                pilot.callSign()).arg(
-                pilot.glider().id(),
-                pilot.id());
+	sqls = QString("UPDATE Pilots SET FirstName= '%1', LastName = '%2', BirthDate = '%3', CallSign = '%4', GliderId = %5 WHERE Id = %6")
+		.arg(pilot.firstName())
+		.arg(pilot.lastName())
+		.arg(birthDate)
+		.arg(pilot.callSign())
+		.arg(pilot.glider().id())
+		.arg(pilot.id());
 	success = query.exec(sqls);
 	
 	Error::verify(success, Error::SQL_CMD);
