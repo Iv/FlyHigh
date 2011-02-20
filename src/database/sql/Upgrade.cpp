@@ -25,11 +25,12 @@
 #include "Error.h"
 #include "Upgrade.h"
 
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_0 = QDateTime(QDate(2004, 3, 20), QTime(20, 0)); // equal version_0_3_0
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0)); // equal version_0_3_1
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50)); // equal version_0_3_2
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime(0, 0)); // equal version_0_5_0
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(2011, 1, 18), QTime(0, 0)); // equal version_0_8_1
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_0 = QDateTime(QDate(2004, 3, 20), QTime(20, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_1 = QDateTime(QDate(2005, 6, 12), QTime(20, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(2006, 3, 31), QTime(20, 50));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime(0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(2011, 1, 18), QTime(0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_2 = QDateTime(QDate(2011, 2, 20), QTime(0, 0));
 
 Upgrade::Upgrade(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -160,13 +161,13 @@ void Upgrade::setup(const QString &dbname, const QString &user, const QString &p
 	query.exec(sqls);
 
 	sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-	"(1, 'Pilots', '1970-01-01 00:00:00'),"
-	"(2, 'Flights', '1970-01-01 00:00:00'),"
-	"(3, 'Gliders', '1970-01-01 00:00:00'),"
-	"(4, 'Servicings', '1970-01-01 00:00:00'),"
-	"(5, 'WayPoints', '1970-01-01 00:00:00'),"
+	"(1, 'Pilots', '1970-01-01 01:01:00'),"
+	"(2, 'Flights', '1970-01-01 01:01:00'),"
+	"(3, 'Gliders', '1970-01-01 01:01:00'),"
+	"(4, 'Servicings', '1970-01-01 01:01:00'),"
+	"(5, 'WayPoints', '1970-01-01 01:01:00'),"
 	"(6, 'DataBaseVersion', '2011-01-18 00:00:00'),"
-	"(7, 'Routes', '1970-01-01 00:00:00');";
+	"(7, 'Routes', '1970-01-01 01:01:00');";
 	query.exec(sqls);
 }
 
@@ -186,6 +187,17 @@ void Upgrade::upgrade()
 		sqls = "ALTER TABLE Routes ADD Type INT NULL DEFAULT 0;";
 		query.exec(sqls);
 		setDataBaseVersion(DataBaseVersion_0_8_1);
+	}
+	
+	if(dataBaseVersion() < DataBaseVersion_0_8_2)
+	{
+		DataBaseSub::setLastModified("Pilots");
+		DataBaseSub::setLastModified("Flights");
+		DataBaseSub::setLastModified("Gliders");
+		DataBaseSub::setLastModified("Servicings");
+		DataBaseSub::setLastModified("WayPoints");
+		DataBaseSub::setLastModified("Routes");
+		setDataBaseVersion(DataBaseVersion_0_8_2);
 	}
 }
 
