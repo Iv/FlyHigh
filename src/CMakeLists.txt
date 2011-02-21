@@ -32,24 +32,25 @@ QT4_WRAP_CPP(flyhigh_SRCS ${flyhigh_HDRS})
 add_executable(flyhigh ${flyhigh_SRCS} ${flyhigh_HDRS})
 
 target_link_libraries(flyhigh
-                 analysis
-                 cfgdatabase
-                 cfgflytec
-                 cfgflytec6015
-                 cfginterface
-                 database
-                 dbflytec
-                 dbflytec6015
-                 dbgarmin
-                 dbsql
-                 preparation
-                 container
-                 form
-                 map
-                 webmap
-                 utils
-								 res
-								 ${QT_LIBRARIES})
+	analysis
+	cfgdatabase
+	cfgflytec
+	cfgflytec6015
+	cfginterface
+	database
+	dbflytec
+	dbflytec6015
+	dbgarmin
+	dbsql
+	preparation
+	container
+	form
+	map
+	webmap
+	utils
+	res
+	qextserialport
+	${QT_LIBRARIES})
 
 
 # install executable
