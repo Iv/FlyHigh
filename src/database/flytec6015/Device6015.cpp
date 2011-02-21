@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
+#include "qextserialport.h"
 #include "Device6015.h"
 
 Device6015::Device6015()
@@ -21,16 +22,39 @@ Device6015::Device6015()
 	m_tlg = "";
 	m_ttyFd = -1;
 	m_tout = 0;
+	
+	m_serialPort = new QextSerialPort(QextSerialPort::Polling);
+	m_serialPort->setFlowControl(FLOW_OFF);
+	m_serialPort->setParity(PAR_NONE);
+	m_serialPort->setDataBits(DATA_8);
+	m_serialPort->setStopBits(STOP_1);
+	m_serialPort->setTimeout(0);
+}
+
+Device6015::~Device6015()
+{
+	delete m_serialPort;
 }
 
 bool Device6015::openDevice(const QString &dev, int baud)
 {
-	struct termios sTermSet;
-	int ret;
-	uint bBaud;
 	bool success;
 
-        m_ttyFd = open(dev.toAscii().constData(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+	m_serialPort->setPortName(dev);
+
+	if(baud == 57600)
+	{
+		m_serialPort->setBaudRate(BAUD57600);
+	}
+
+	success = m_serialPort->open(QIODevice::ReadWrite);
+
+/**
+struct termios sTermSet;
+	int ret;
+	uint bBaud;
+
+	m_ttyFd = open(dev.toAscii().constData(), O_RDWR | O_NOCTTY | O_NONBLOCK);
 	success = (m_ttyFd > 0);
 
 	if(isatty(m_ttyFd))
@@ -65,29 +89,36 @@ bool Device6015::openDevice(const QString &dev, int baud)
 
 		// input mode non-canonical, no echo
 		sTermSet.c_lflag = 0;
-		sTermSet.c_cc[VTIME] = 0;   /* inter-character timer unused */
-		sTermSet.c_cc[VMIN] = 0;   /* 0 not blocking if 1 blocking read until 1 chars received */
+		sTermSet.c_cc[VTIME] = 0;   // inter-character timer unused
+		sTermSet.c_cc[VMIN] = 0;   // not blocking if 1 blocking read until 1 chars received
 
 		ret = tcsetattr(m_ttyFd, TCSANOW, &sTermSet);
 		success = (ret == 0);
 
 		flush();
 	}
+*/
 
 	return success;
 }
 
 bool Device6015::isOpen()
 {
-	return isatty(m_ttyFd);
+	return m_serialPort->isOpen();
+
+/// return isatty(m_ttyFd);
 }
 
 void Device6015::closeDevice()
 {
+	m_serialPort->close();
+
+/**
 	if(m_ttyFd != -1)
 	{
 		close(m_ttyFd);
 	}
+*/
 }
 
 bool Device6015::recieveTlg(int tout)
@@ -98,6 +129,8 @@ bool Device6015::recieveTlg(int tout)
 
 	m_tlg = "";
 	startTimer(tout);
+
+//	m_serialPort->setTimeout(tout);
 
 	do
 	{
@@ -129,7 +162,7 @@ const QString& Device6015::getTlg()
 
 bool Device6015::sendTlg(const QString &tlg)
 {
-        return writeBuffer(tlg.toAscii().constData(), tlg.length());
+	return writeBuffer(tlg.toAscii().constData(), tlg.length());
 }
 
 void Device6015::flush()
@@ -142,15 +175,30 @@ void Device6015::flush()
 
 bool Device6015::getChar(char &ch)
 {
+	bool success;
+
+	success = m_serialPort->getChar(&ch);
+
+	return success;
+
+/*
 	int nRead;
 
 	nRead = read(m_ttyFd, &ch, 1);
 
 	return (nRead == 1);
+*/
 }
 
 bool Device6015::writeBuffer(const char *pBuff, int len)
 {
+	int nWrite;
+	
+	nWrite = m_serialPort->write(pBuff, len);
+
+	return (nWrite == len);
+
+/**
 	int nWrite;
 	bool success;
 
@@ -163,6 +211,7 @@ bool Device6015::writeBuffer(const char *pBuff, int len)
 	}
 
 	return success;
+*/
 }
 
 void Device6015::startTimer(int tout)
