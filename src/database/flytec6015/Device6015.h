@@ -5,10 +5,14 @@
 #include <qstring.h>
 #include <qtimer.h>
 
+class QextSerialPort;
+
 class Device6015
 {
 	public:
 		Device6015();
+
+		~Device6015();
 
 		bool openDevice(const QString &dev, int baud);
 
@@ -26,6 +30,8 @@ class Device6015
 
 	private:
 		enum {MaxTlgSize = 255};
+
+		QextSerialPort *m_serialPort;
 
 		QString m_tlg;
 		int m_tout;
