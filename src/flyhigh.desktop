@@ -5,4 +5,5 @@ Name=FlyHigh
 Exec=flyhigh
 Icon=flyhigh
 Type=Application
+Categories=Utility
 Comment=Flight preparation and analysis
