@@ -24,6 +24,14 @@
 
 class QString;
 
+typedef struct DeviceInfo
+{
+	QString deviceIdent;
+	QString pilotName;
+	uint serialNr;
+	QString swVersion;
+}DeviceInfoType;
+
 class Protocol5020
 {
 	public:
@@ -35,10 +43,16 @@ class Protocol5020
 
 		void close();
 
+		bool devInfoReq();
+
+		bool devInfoRec(DeviceInfo &devInfo);
+
 	private:
 		Device5020 m_device;
 
-		QString getCheckSum(const QString &tlg);
+		void addTail(QString &tlg) const;
+
+		QString getCheckSum(const QString &tlg, uint end) const;
 };
 
 #endif
