@@ -20,6 +20,8 @@
  
 #include "Protocol5020.h"
 
+#include <QtDebug>
+
 Protocol5020::Protocol5020()
 {
 }
@@ -43,6 +45,48 @@ void Protocol5020::close()
 	m_device.closeDevice();
 }
 
-QString getCheckSum(const QString &tlg)
+bool Protocol5020::devInfoReq()
 {
+	QString tlg;
+	
+	tlg = "$PBRSNP,";
+	addTail(tlg);
+	m_device.sendTlg(tlg);
+
+qDebug() << "devInfoReq" << tlg;
+}
+
+bool Protocol5020::devInfoRec(DeviceInfo &devInfo)
+{
+	if(m_device.recieveTlg(500))
+	{
+qDebug() << m_device.getTlg();
+//		printf("rec: %s\n", m_device.getTlg());
+	}
+}
+
+void Protocol5020::addTail(QString &tlg) const
+{
+	QString checkSum;
+
+	tlg += "*";
+	tlg += getCheckSum(tlg, tlg.size() - 1);
+	tlg += "\r\n";
+}
+
+QString Protocol5020::getCheckSum(const QString &tlg, uint end) const
+{
+	enum {CheckSumSize = 2};
+	uint charNr;
+	char checkSum = 0;
+	char strCheckSum[CheckSumSize + 1];
+
+	for(charNr=1; charNr<end; charNr++)
+	{
+		checkSum ^= tlg.at(charNr).toAscii();
+	}
+
+	snprintf(strCheckSum, CheckSumSize + 1, "%02X", checkSum);
+
+	return strCheckSum;
 }
