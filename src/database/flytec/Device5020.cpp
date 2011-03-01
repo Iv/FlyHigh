@@ -90,26 +90,39 @@ bool Device5020::recieveTlg(int tout)
 	int charNr = 0;
 	bool validTlg = false;
 	char ch;
+	State state;
 
 	m_tlg = "";
+	state = SearchHead;
 	startTimer(tout);
 
 	do
 	{
 		if(getChar(ch))
 		{
-			charNr++;
-			m_tlg += ch;
-			validTlg = (ch == '\n');
-
-			if(validTlg || (charNr >= MaxTlgSize))
+			if(state == SearchHead)
 			{
-				break;
+				if(ch == '$')
+				{
+					state = ReadTlg;
+					m_tlg = ch;
+				}
 			}
-
-			if(m_tlg.length() >= MaxTlgSize)
+			else
 			{
-				m_tlg = "";
+				charNr++;
+				m_tlg += ch;
+				validTlg = (ch == '\n');
+
+				if(charNr > MaxTlgSize)
+				{
+					m_tlg = "";
+				}
+				
+				if(validTlg || (charNr > MaxTlgSize))
+				{
+					break;
+				}
 			}
 		}
 	}while(!isElapsed());
