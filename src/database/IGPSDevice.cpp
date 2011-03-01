@@ -22,8 +22,8 @@
 #include <stdlib.h>
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
+#include "Flytec5020.h"
 #include "Flytec6015.h"
-#include "FlytecDevice.h"
 #include "GarminDevice.h"
 
 IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
@@ -65,13 +65,13 @@ IGPSDevice* IGPSDevice::pInstance()
 		switch(curDevice)
 		{
 			case 0:
-				m_pGPSDevice = new FlytecDevice();
+				m_pGPSDevice = new Flytec5020();
 			break;
 			case 1:
 				m_pGPSDevice = new Flytec6015();
 			break;
 			default:
-				m_pGPSDevice = new FlytecDevice;
+				m_pGPSDevice = new Flytec5020();
 				IFlyHighRC::pInstance()->setDeviceName(0);
 			break;
 		}
