@@ -44,6 +44,8 @@ class Device5020
 		void flush();
 
 	private:
+		typedef enum State{SearchHead, ReadTlg}State;
+
 		enum {MaxTlgSize = 255};
 
 		QString m_tlg;
