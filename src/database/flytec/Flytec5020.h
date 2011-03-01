@@ -20,14 +20,26 @@
 #ifndef Flytec5020_h
 #define Flytec5020_h
 
-class Flytec5020
+#include "IGPSDevice.h"
+
+class Protocol5020;
+
+class Flytec5020: public IGPSDevice
 {
 	public:
 		Flytec5020();
 
-		~Flytec5020();
+		virtual ~Flytec5020();
+
+	protected:
+		bool open();
+
+		void close();
+
+//		void cancel();
 
 	private:
+		Protocol5020 *m_protocol;
 };
 
 #endif

@@ -17,13 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
+#include "Error.h"
 #include "Flytec5020.h"
+#include "IFlyHighRC.h"
+#include "Protocol5020.h"
 
 Flytec5020::Flytec5020()
 {
+	m_protocol = new Protocol5020();
 }
 
 Flytec5020::~Flytec5020()
 {
+	delete m_protocol;
+}
+
+bool Flytec5020::open()
+{
+	bool success;
+
+	success = m_protocol->open(IFlyHighRC::pInstance()->deviceLine(),
+					IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
+	Error::verify(success, Error::FLYTEC_OPEN);
+
+DeviceInfo devInfo;
+
+m_protocol->devInfoReq();
+m_protocol->devInfoRec(devInfo);
+
+	return success;
+}
+
+void Flytec5020::close()
+{
+	m_protocol->close();
 }
