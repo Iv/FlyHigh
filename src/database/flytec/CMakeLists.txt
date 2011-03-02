@@ -1,6 +1,8 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
+                    ${CMAKE_SOURCE_DIR}/src/common/qextserialport
                     ${CMAKE_SOURCE_DIR}/src/common/utils
-                    ${CMAKE_SOURCE_DIR}/src/database)
+                    ${CMAKE_SOURCE_DIR}/src/database
+                    ${QT_INCLUDES})
 
 set(dbflytec_SRCS flytec_al.c
                   flytec_ll.c
@@ -8,7 +10,6 @@ set(dbflytec_SRCS flytec_al.c
                   FlytecDevice.cpp
                   Flytec5020.cpp
                   Protocol5020.cpp
-                  Device5020.cpp
-                  )
+                  Device5020.cpp)
 
 add_library(dbflytec ${dbflytec_SRCS})
