@@ -30,6 +30,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "qextserialport.h"
 #include "Device5020.h"
 
 Device5020::Device5020()
@@ -37,14 +38,36 @@ Device5020::Device5020()
 	m_tlg = "";
 	m_ttyFd = -1;
 	m_tout = 0;
+	
+	m_serialPort = new QextSerialPort(QextSerialPort::Polling);
+	m_serialPort->setFlowControl(FLOW_XONXOFF);
+	m_serialPort->setParity(PAR_NONE);
+	m_serialPort->setDataBits(DATA_8);
+	m_serialPort->setStopBits(STOP_1);
+	m_serialPort->setTimeout(0);
 }
 
 Device5020::~Device5020()
 {
+	delete m_serialPort;
 }
 
 bool Device5020::openDevice(const QString &dev, int baud)
 {
+	bool success;
+
+	m_serialPort->setPortName(dev);
+
+	if(baud == 57600)
+	{
+		m_serialPort->setBaudRate(BAUD57600);
+	}
+
+	success = m_serialPort->open(QIODevice::ReadWrite);
+
+	return success;
+
+#if 0
 	struct termios sTermSet;
 	int ret;
 	bool success;
@@ -70,19 +93,25 @@ bool Device5020::openDevice(const QString &dev, int baud)
 	}
 
 	return success;
+#endif
 }
 
 bool Device5020::isOpen()
 {
-	return isatty(m_ttyFd);
+	return m_serialPort->isOpen();
+///	return isatty(m_ttyFd);
 }
 
 void Device5020::closeDevice()
 {
+	m_serialPort->close();
+
+/**
 	if(m_ttyFd != -1)
 	{
 		close(m_ttyFd);
 	}
+*/
 }
 
 bool Device5020::recieveTlg(int tout)
@@ -150,15 +179,30 @@ void Device5020::flush()
 
 bool Device5020::getChar(char &ch)
 {
+	bool success;
+
+	success = m_serialPort->getChar(&ch);
+
+	return success;
+
+/**
 	int nRead;
 
 	nRead = read(m_ttyFd, &ch, 1);
 
 	return (nRead == 1);
+*/
 }
 
 bool Device5020::writeBuffer(const char *pBuff, int len)
 {
+	int nWrite;
+	
+	nWrite = m_serialPort->write(pBuff, len);
+
+	return (nWrite == len);
+
+/**
 	int nWrite;
 	bool success;
 
@@ -171,6 +215,7 @@ bool Device5020::writeBuffer(const char *pBuff, int len)
 	}
 
 	return success;
+*/
 }
 
 void Device5020::startTimer(int tout)

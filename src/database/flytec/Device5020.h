@@ -22,6 +22,8 @@
 
 #include <QString>
 
+class QextSerialPort;
+
 class Device5020
 {
 	public:
@@ -47,6 +49,8 @@ class Device5020
 		typedef enum State{SearchHead, ReadTlg}State;
 
 		enum {MaxTlgSize = 255};
+
+		QextSerialPort *m_serialPort;
 
 		QString m_tlg;
 		int m_tout;
