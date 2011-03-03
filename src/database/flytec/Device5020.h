@@ -54,8 +54,6 @@ class Device5020
 
 		QString m_tlg;
 		int m_tout;
-		int m_ttyFd;
-		bool m_elapsed;
 
 		bool getChar(char &ch);
 
