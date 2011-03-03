@@ -44,10 +44,12 @@ bool Flytec5020::open()
 					IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
 	Error::verify(success, Error::FLYTEC_OPEN);
 
+/*
 DeviceInfo devInfo;
 
 m_protocol->devInfoReq();
 m_protocol->devInfoRec(devInfo);
+*/
 
 	return success;
 }
@@ -75,8 +77,11 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	
 	if(success)
 	{
-		while(m_protocol->trackListRec(total, flight))
+		do
 		{
+			m_protocol->trackListRec(total, flight);
+			flightList.push_back(flight);
+
 			if(total > 0)
 			{
 				emit progress(flight.number() * 100 / total);
@@ -86,9 +91,7 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 			{
 				return false;
 			}
-
-			flightList.push_back(flight);
-		}
+		}while(flight.number() < (total - 1));
 	}
 
 	Error::verify((flightList.size() > 0), Error::FLYTEC_CMD);
