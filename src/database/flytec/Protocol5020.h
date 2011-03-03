@@ -20,17 +20,12 @@
 #ifndef Protocol5020_h
 #define Protocol5020_h
 
+#include "Defs5020.h"
 #include "Device5020.h"
 
 class QString;
-
-typedef struct DeviceInfo
-{
-	QString deviceIdent;
-	QString pilotName;
-	uint serialNr;
-	QString swVersion;
-}DeviceInfoType;
+class Flight;
+class WayPoint;
 
 class Protocol5020
 {
@@ -47,12 +42,55 @@ class Protocol5020
 
 		bool devInfoRec(DeviceInfo &devInfo);
 
+/**
+int memoryRead(uint addr, uchar *pPage);
+
+int memoryWrite(uint addr, uchar *pPage);
+
+int ft_updateConfiguration();
+*/
+
+		/** Track */
+		bool trackListReq();
+
+		bool trackListRec(uint &total, Flight &flight);
+		
+#if 0
+		bool trackReq(int trackNr);
+
+		bool trackRec(QString &line);
+
+		/** Waypoint */
+		bool wpListReq();
+
+		bool wpListRec(WayPoint &wp);
+
+		bool wpSnd(const WayPoint &wp);
+
+		bool wpDelAll();
+
+		/** Route */
+		bool routeListReq();
+
+		bool routeListRec(WayPoint &wp);
+
+		bool routeSnd(const WayPoint &wp);
+
+		bool routeDel();
+#endif
+
 	private:
 		Device5020 m_device;
+
+		QDate parseDate(const QString &token) const;
+
+		QTime parseTime(const QString &token) const;
 
 		void addTail(QString &tlg) const;
 
 		QString getCheckSum(const QString &tlg, uint end) const;
+
+		bool validateCheckSum(const QString &tlg) const;
 };
 
 #endif

@@ -22,6 +22,7 @@
 
 #include "IGPSDevice.h"
 
+class Pilot;
 class Protocol5020;
 
 class Flytec5020: public IGPSDevice
@@ -36,10 +37,31 @@ class Flytec5020: public IGPSDevice
 
 		void close();
 
-//		void cancel();
+		void cancel();
+
+		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
+
+/*
+		bool loadIGCFile(Flight &flight);
+
+		bool add(WayPoint &wp);
+
+		bool delWayPoint(WayPoint &wp);
+
+		bool delAllWayPoints();
+
+		bool wayPointList(WayPoint::WayPointListType &wpList);
+		
+		bool add(Route &route);
+
+		bool routeList(Route::RouteListType &routeList);
+
+		bool delRoute(Route &route);
+*/
 
 	private:
 		Protocol5020 *m_protocol;
+		bool m_cancel;
 };
 
 #endif

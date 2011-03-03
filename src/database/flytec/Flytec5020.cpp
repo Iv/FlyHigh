@@ -23,9 +23,12 @@
 #include "IFlyHighRC.h"
 #include "Protocol5020.h"
 
+#include <QDebug>
+
 Flytec5020::Flytec5020()
 {
 	m_protocol = new Protocol5020();
+	m_cancel = false;
 }
 
 Flytec5020::~Flytec5020()
@@ -53,3 +56,76 @@ void Flytec5020::close()
 {
 	m_protocol->close();
 }
+
+void Flytec5020::cancel()
+{
+	m_cancel = true;
+}
+
+bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
+{
+	Flight flight;
+	bool success;
+	uint total;
+
+	(void)pilot;
+
+	success = m_protocol->trackListReq();
+	m_cancel = false;
+	
+	if(success)
+	{
+		while(m_protocol->trackListRec(total, flight))
+		{
+			if(total > 0)
+			{
+				emit progress(flight.number() * 100 / total);
+			}
+
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			flightList.push_back(flight);
+		}
+	}
+
+	Error::verify((flightList.size() > 0), Error::FLYTEC_CMD);
+
+	return success;
+}
+
+/**
+bool Flytec5020::loadIGCFile(Flight &flight)
+{
+}
+
+bool Flytec5020::add(WayPoint &wp)
+{
+}
+
+bool Flytec5020::delWayPoint(WayPoint &wp)
+{
+}
+
+bool Flytec5020::delAllWayPoints()
+{
+}
+
+bool Flytec5020::wayPointList(WayPoint::WayPointListType &wpList)
+{
+}
+
+bool Flytec5020::add(Route &route)
+{
+}
+
+bool Flytec5020::routeList(Route::RouteListType &routeList)
+{
+}
+
+bool Flytec5020::delRoute(Route &route)
+{
+}
+*/
