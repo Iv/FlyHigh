@@ -41,9 +41,9 @@ class Flytec5020: public IGPSDevice
 
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
-/*
 		bool loadIGCFile(Flight &flight);
 
+/*
 		bool add(WayPoint &wp);
 
 		bool delWayPoint(WayPoint &wp);
