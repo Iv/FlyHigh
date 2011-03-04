@@ -103,15 +103,23 @@ void Device5020::closeDevice()
 */
 }
 
-bool Device5020::recieveTlg(int tout)
+bool Device5020::recieveTlg(int tout, bool head)
 {
 	int charNr = 0;
 	bool validTlg = false;
 	char ch;
 	State state;
 
+	if(head)
+	{
+		state = SearchHead;
+	}
+	else
+	{
+		state = ReadTlg;
+	}
+
 	m_tlg = "";
-	state = SearchHead;
 	startTimer(tout);
 
 	do
