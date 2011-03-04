@@ -37,7 +37,7 @@ class Device5020
 
 		void closeDevice();
 
-		bool recieveTlg(int tout);
+		bool recieveTlg(int tout, bool head = true);
 
 		const QString& getTlg();
 
