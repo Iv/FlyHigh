@@ -36,6 +36,8 @@ const QString DirectoryTag = "[directory]\n";
 const QString PilotTag = "[pilot]\n";
 const QString PilotId = "pilotId="; 
 const QString DirectoryLastVar = "last=";
+const QString DatabaseTag = "[database]\n";
+const QString DatabaseHostVar = "dbserverhost=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
 
@@ -78,6 +80,7 @@ IFlyHighRC::IFlyHighRC()
 			"License (GPL). Visit www.gnu.org for more information.\n";
 
 	m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
+	m_dbHost = "localhost";
 }
 
 uint IFlyHighRC::deviceName()
@@ -181,6 +184,16 @@ int IFlyHighRC::pilotId()
 	return m_pilotId;
 }
 
+void IFlyHighRC::setDBHost(const QString& host)
+{
+	m_dbHost = host;
+}
+
+const QString& IFlyHighRC::dBHost()
+{
+	return m_dbHost;
+}
+
 void IFlyHighRC::loadRC()
 {
 	QByteArray rcFileData;
@@ -212,6 +225,10 @@ void IFlyHighRC::loadRC()
 			{
 				parsePilot(buff);
 			}
+			else if(line == DatabaseTag)
+			{
+				parseDBHost(buff);
+			}
 		}
 		buff.close();
 	}
@@ -227,6 +244,7 @@ void IFlyHighRC::saveRC()
 		saveDateTime(stream);
 		saveDirectory(stream);
 		savePilot(stream);
+		saveDBHost(stream);
 
 		stream.flush();
 		
@@ -286,9 +304,9 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-                if(DateTimeUtcVar.indexOf(var) == 0)
+		if(DateTimeUtcVar.indexOf(var) == 0)
 		{
-                        setUtcOffset(val.toInt());
+			setUtcOffset(val.toInt());
 		}
 		else
 		{
@@ -360,6 +378,34 @@ void IFlyHighRC::savePilot(QTextStream &stream)
 {
 	stream << PilotTag;
 	stream << PilotId << m_pilotId << "\n";
+	stream << "\n";
+}
+
+void IFlyHighRC::parseDBHost(QBuffer &buff)
+{
+	char line[MAX_LINE_SIZE];
+	QString var;
+	QString val;
+
+	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
+	{
+		parseValue(line, var, val);
+
+		if(DatabaseHostVar.indexOf(var) == 0)
+		{
+			m_dbHost = val;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void IFlyHighRC::saveDBHost(QTextStream &stream)
+{
+	stream << DatabaseTag;
+	stream << DatabaseHostVar << m_dbHost << "\n";
 	stream << "\n";
 }
 

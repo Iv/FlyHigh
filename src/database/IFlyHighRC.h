@@ -74,6 +74,10 @@ class IFlyHighRC
 
 		int pilotId();
 
+		// mysql db sever host
+		void setDBHost(const QString& host);
+		const QString& dBHost();
+
 	private:
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
@@ -85,6 +89,7 @@ class IFlyHighRC
 		QString m_versionInfo;
 		QString m_copyInfo;
 		int m_pilotId;
+		QString m_dbHost;
 		
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
@@ -99,6 +104,8 @@ class IFlyHighRC
 		void saveDirectory(QTextStream &stream);
 		void parsePilot(QBuffer &buff);
 		void savePilot(QTextStream &stream);
+		void parseDBHost(QBuffer &buff);
+		void saveDBHost(QTextStream &stream);
 		void parseValue(char *line, QString &var, QString &val);
 };
 
