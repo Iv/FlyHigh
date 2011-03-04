@@ -54,12 +54,12 @@ int ft_updateConfiguration();
 		bool trackListReq();
 
 		bool trackListRec(uint &total, Flight &flight);
-		
-#if 0
-		bool trackReq(int trackNr);
+
+		bool trackReq(uint trackNr);
 
 		bool trackRec(QString &line);
-
+		
+#if 0
 		/** Waypoint */
 		bool wpListReq();
 

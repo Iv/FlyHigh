@@ -116,50 +116,31 @@ bool Protocol5020::trackListRec(uint &total, Flight &flight)
 	}
 
 	return valid;
+}
+	
+bool Protocol5020::trackReq(uint trackNr)
+{
+	QString tlg;
 
-#if 0
-	res = flytec_ll_recieve(ProductResp, &buff[0], &len);
-	
-	if(res == 0)
+	tlg = "$PBRTR,";
+	tlg += QString::number(trackNr).rightJustified(2, '0');
+	addTail(tlg);
+
+	m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::trackRec(QString &line)
+{
+	bool success;
+
+	success = m_device.recieveTlg(500, false);
+
+	if(success)
 	{
-		res = memcmp((char*)&buff[0], "PBRTL", 5);
+		line = m_device.getTlg();
 	}
-	
-	if(res == 0)
-	{
-		/* nof tracks */
-		buff[8] = '\0';
-		pTrack->totalNum = atoi((char*)&buff[6]);
-		
-		/* track number */
-		buff[11] = '\0';
-		pTrack->trackNum = pTrack->totalNum - atoi((char*)&buff[9]) - 1;
-		
-		/* date */
-		buff[14] = '\0';
-		pTrack->date.day= atoi((char*)&buff[12]);
-		buff[17] = '\0';
-		pTrack->date.month= atoi((char*)&buff[15]);
-		buff[20] = '\0';
-		pTrack->date.year= 2000 + atoi((char*)&buff[18]);
-		
-		/* start */
-		buff[23] = '\0';
-		pTrack->start.hour = atoi((char*)&buff[21]);
-		buff[26] = '\0';
-		pTrack->start.min = atoi((char*)&buff[24]);
-		buff[29] = '\0';
-		pTrack->start.sec = atoi((char*)&buff[27]);
-		
-		/* duration */
-		buff[32] = '\0';
-		pTrack->duration.hour = atoi((char*)&buff[30]);
-		buff[35] = '\0';
-		pTrack->duration.min = atoi((char*)&buff[33]);
-		buff[38] = '\0';
-		pTrack->duration.sec = atoi((char*)&buff[36]);
-	}
-#endif
+
+	return success;
 }
 
 QDate Protocol5020::parseDate(const QString &token) const
@@ -209,19 +190,15 @@ void Protocol5020::addTail(QString &tlg) const
 
 QString Protocol5020::getCheckSum(const QString &tlg, uint end) const
 {
-	enum {CheckSumSize = 2};
 	uint charNr;
 	char checkSum = 0;
-	char strCheckSum[CheckSumSize + 1];
 
 	for(charNr=1; charNr<end; charNr++)
 	{
 		checkSum ^= tlg.at(charNr).toAscii();
 	}
 
-	snprintf(strCheckSum, CheckSumSize + 1, "%02X", checkSum);
-
-	return strCheckSum;
+	return QString::number(checkSum, 16).rightJustified(2, '0').toUpper();
 }
 
 bool Protocol5020::validateCheckSum(const QString &tlg) const

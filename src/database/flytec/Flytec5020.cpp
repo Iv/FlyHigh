@@ -99,11 +99,45 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	return success;
 }
 
-/**
 bool Flytec5020::loadIGCFile(Flight &flight)
 {
+	QBuffer buff;
+	QByteArray track;
+	QString line;
+	bool success = false;
+	int prog = 0;
+
+	buff.setBuffer(&track);
+	m_cancel = false;
+
+	if(m_protocol->trackReq(flight.number()))
+	{
+		buff.open(QIODevice::WriteOnly);
+
+		while(m_protocol->trackRec(line))
+		{
+			prog = (prog + 1) % 100;
+			emit progress(prog);
+
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			buff.write(line.toAscii(), line.length());
+			success = true;
+		}
+
+		buff.close();
+		flight.setIgcData(track);
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+	
+	return success;
 }
 
+/*
 bool Flytec5020::add(WayPoint &wp)
 {
 }
