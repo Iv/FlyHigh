@@ -17,10 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
+#include <iostream>
 #include <QApplication>
 #include <QIcon>
 #include <QTextCodec>
+#include <QHostInfo>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
@@ -44,6 +46,20 @@ int main( int argc, char ** argv )
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
 	IFlyHighRC::pInstance()->loadRC();
+
+	QString dbhost = IFlyHighRC::pInstance()->dBHost();
+	QHostInfo info = QHostInfo::fromName(dbhost);
+
+	if(info.error()==QHostInfo::NoError)
+	{
+		ISql::pInstance()->setHostName(dbhost);
+		std::cout << dbhost.toStdString() << " resolved to " << info.addresses().at(0).toString().toStdString() << std::endl;
+	}
+	else
+	{
+		// todo: show error dialog
+		std::cerr << info.errorString().toStdString() << std::endl;
+	}
 
 	if(!ISql::pInstance()->connectDb())
 	{
