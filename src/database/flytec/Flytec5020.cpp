@@ -137,23 +137,85 @@ bool Flytec5020::loadIGCFile(Flight &flight)
 	return success;
 }
 
-/*
 bool Flytec5020::add(WayPoint &wp)
 {
+	bool success;
+
+	success = m_protocol->wpSnd(wp);
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+
+	return success;
 }
 
 bool Flytec5020::delWayPoint(WayPoint &wp)
 {
+	bool success;
+
+	success = m_protocol->wpDel(wp.name());
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	
+	return success;
 }
 
 bool Flytec5020::delAllWayPoints()
 {
+	int prog;
+	bool success;
+	
+	success = m_protocol->wpDelAll();
+
+/**
+	for(prog=0; prog<=100; prog+=10)
+	{
+		emit progress(prog);
+
+		if(m_protocol->recieveDone())
+		{
+			break;
+		}
+	}
+*/
+
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	
+	return success;
 }
 
 bool Flytec5020::wayPointList(WayPoint::WayPointListType &wpList)
 {
+	WayPoint wp;
+	bool success = false;
+	int prog = 0;
+
+	m_cancel = false;
+
+	success = m_protocol->wpListReq();
+	
+	if(success)
+	{
+		while(m_protocol->wpListRec(wp))
+		{
+			prog = (prog + 10) % 100;
+			emit progress(prog);
+			
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			wpList.push_back(wp);
+		}
+	}
+	
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
 }
 
+/*
 bool Flytec5020::add(Route &route)
 {
 }

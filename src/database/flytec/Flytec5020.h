@@ -43,7 +43,6 @@ class Flytec5020: public IGPSDevice
 
 		bool loadIGCFile(Flight &flight);
 
-/*
 		bool add(WayPoint &wp);
 
 		bool delWayPoint(WayPoint &wp);
@@ -51,6 +50,8 @@ class Flytec5020: public IGPSDevice
 		bool delAllWayPoints();
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
+
+/*
 		
 		bool add(Route &route);
 
