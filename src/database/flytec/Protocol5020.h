@@ -58,8 +58,7 @@ int ft_updateConfiguration();
 		bool trackReq(uint trackNr);
 
 		bool trackRec(QString &line);
-		
-#if 0
+
 		/** Waypoint */
 		bool wpListReq();
 
@@ -67,8 +66,11 @@ int ft_updateConfiguration();
 
 		bool wpSnd(const WayPoint &wp);
 
+		bool wpDel(const QString wpName);
+
 		bool wpDelAll();
 
+#if 0
 		/** Route */
 		bool routeListReq();
 
@@ -85,6 +87,12 @@ int ft_updateConfiguration();
 		QDate parseDate(const QString &token) const;
 
 		QTime parseTime(const QString &token) const;
+
+		double parseDeg(const QString &degToken, const QString &dirToken);
+
+		QString qString2ftString(const QString &qString, uint length);
+
+		QString ftString2qString(const QString &ftString);
 
 		void addTail(QString &tlg) const;
 

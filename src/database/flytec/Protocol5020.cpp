@@ -18,9 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <math.h>
 #include "Flight.h"
 #include "Protocol5020.h"
 #include "Tokenizer.h"
+#include "WayPoint.h"
 
 #include <QtDebug>
 
@@ -53,7 +55,8 @@ bool Protocol5020::devInfoReq()
 	
 	tlg = "$PBRSNP,";
 	addTail(tlg);
-	m_device.sendTlg(tlg);
+
+	return m_device.sendTlg(tlg);
 
 qDebug() << "devInfoReq" << tlg;
 }
@@ -73,7 +76,8 @@ bool Protocol5020::trackListReq()
 	
 	tlg = "$PBRTL,";
 	addTail(tlg);
-	m_device.sendTlg(tlg);
+
+	return m_device.sendTlg(tlg);
 }
 
 bool Protocol5020::trackListRec(uint &total, Flight &flight)
@@ -126,7 +130,7 @@ bool Protocol5020::trackReq(uint trackNr)
 	tlg += QString::number(trackNr).rightJustified(2, '0');
 	addTail(tlg);
 
-	m_device.sendTlg(tlg);
+	return m_device.sendTlg(tlg);
 }
 
 bool Protocol5020::trackRec(QString &line)
@@ -141,6 +145,82 @@ bool Protocol5020::trackRec(QString &line)
 	}
 
 	return success;
+}
+
+bool Protocol5020::wpListReq()
+{
+	QString tlg;
+	
+	tlg = "$PBRWPS,";
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::wpListRec(WayPoint &wp)
+{
+	Tokenizer tokenizer;
+	QString token;
+	QString degToken;
+	QString dirToken;
+	QString tlg;
+	bool valid = false;
+
+	if(m_device.recieveTlg(500))
+	{
+		tlg = m_device.getTlg();
+
+		tokenizer.getFirstToken(tlg, ',', token); // $PBRWPS
+		valid = (token == "$PBRWPS");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+			// latitude
+			tokenizer.getNextToken(tlg, ',', degToken);
+			tokenizer.getNextToken(tlg, ',', dirToken);
+			wp.setLatitude(parseDeg(degToken, dirToken));
+
+			// longitude
+			tokenizer.getNextToken(tlg, ',', degToken);
+			tokenizer.getNextToken(tlg, ',', dirToken);
+			wp.setLongitude(parseDeg(degToken, dirToken));
+
+			// short name
+			tokenizer.getNextToken(tlg, ',', token); // skip
+
+			// name
+			tokenizer.getNextToken(tlg, ',', token);
+			wp.setName(ftString2qString(token));
+			
+			// altitude
+			tokenizer.getNextToken(tlg, '*', token);
+			wp.setAltitude(token.toInt());
+		}
+	}
+
+	return valid;
+}
+
+bool Protocol5020::wpSnd(const WayPoint &wp)
+{
+}
+
+bool Protocol5020::wpDel(const QString wpName)
+{
+	QString tlg;
+
+// why this does not work???
+
+	tlg = "$PBRWPX,";
+	tlg += qString2ftString(wpName, 17);
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::wpDelAll()
+{
 }
 
 QDate Protocol5020::parseDate(const QString &token) const
@@ -177,6 +257,62 @@ QTime Protocol5020::parseTime(const QString &token) const
 	sec = timeToken.toInt();
 
 	return QTime(hour, min, sec);
+}
+
+double Protocol5020::parseDeg(const QString &degToken, const QString &dirToken)
+{
+	Tokenizer subTokenizer;
+	QString subToken;
+	QChar dir;
+	int intValue;
+	double dValue;
+	double deg;
+
+	dValue = degToken.toDouble() / 100.0;
+	intValue = floor(dValue);
+	deg = intValue + (dValue - intValue) * 100 / 60;
+
+	if((dirToken == "W") || (dirToken == "S"))
+	{
+		deg *= (-1); // negate values below equator and west
+	}
+
+	return deg;
+}
+
+QString Protocol5020::qString2ftString(const QString &qString, uint length)
+{
+	QString pad;
+	QString ftString;
+
+	if(qString.length() < length)
+	{
+		pad.fill(' ', length - qString.length());
+		ftString = qString;
+		ftString += pad;
+	}
+	else
+	{
+		ftString = qString;
+		ftString.truncate(length);
+	}
+
+	return ftString;
+}
+
+QString Protocol5020::ftString2qString(const QString &ftString)
+{
+	int cpyLength;
+	
+	for(cpyLength=ftString.length(); cpyLength>0; cpyLength--)
+	{
+		if(ftString[cpyLength-1] != ' ')
+		{
+			break;
+		}
+	}
+
+	return ftString.left(cpyLength);
 }
 
 void Protocol5020::addTail(QString &tlg) const
