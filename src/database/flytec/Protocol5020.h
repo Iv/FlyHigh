@@ -90,6 +90,8 @@ int ft_updateConfiguration();
 
 		double parseDeg(const QString &degToken, const QString &dirToken);
 
+		QString degToString(double deg, int size) const;
+
 		QString qString2ftString(const QString &qString, uint length);
 
 		QString ftString2qString(const QString &ftString);

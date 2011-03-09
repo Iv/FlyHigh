@@ -52,7 +52,7 @@ void Protocol5020::close()
 bool Protocol5020::devInfoReq()
 {
 	QString tlg;
-	
+
 	tlg = "$PBRSNP,";
 	addTail(tlg);
 
@@ -73,7 +73,7 @@ qDebug() << m_device.getTlg();
 bool Protocol5020::trackListReq()
 {
 	QString tlg;
-	
+
 	tlg = "$PBRTL,";
 	addTail(tlg);
 
@@ -121,7 +121,7 @@ bool Protocol5020::trackListRec(uint &total, Flight &flight)
 
 	return valid;
 }
-	
+
 bool Protocol5020::trackReq(uint trackNr)
 {
 	QString tlg;
@@ -150,7 +150,7 @@ bool Protocol5020::trackRec(QString &line)
 bool Protocol5020::wpListReq()
 {
 	QString tlg;
-	
+
 	tlg = "$PBRWPS,";
 	addTail(tlg);
 
@@ -192,7 +192,7 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 			// name
 			tokenizer.getNextToken(tlg, ',', token);
 			wp.setName(ftString2qString(token));
-			
+
 			// altitude
 			tokenizer.getNextToken(tlg, '*', token);
 			wp.setAltitude(token.toInt());
@@ -204,6 +204,47 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 
 bool Protocol5020::wpSnd(const WayPoint &wp)
 {
+	QString tlg;
+
+	tlg = "$PBRWPR,";
+
+	// latitude
+	tlg += degToString(wp.latitude(), 8);
+
+	if(wp.latitude() < 0)
+	{
+		tlg += ",S,";
+	}
+	else
+	{
+		tlg += ",N,";
+	}
+
+	// longitude
+	tlg += degToString(wp.longitude(), 9);
+
+	if(wp.longitude() < 0)
+	{
+		tlg += ",W,";
+	}
+	else
+	{
+		tlg += ",E,";
+	}
+
+	// separator
+	tlg += ",";
+
+	// name
+	tlg += qString2ftString(wp.name(), 17);
+	tlg += ",";
+
+	// altitude
+	tlg += QString::number(wp.altitude()).rightJustified(4, '0');
+
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
 }
 
 bool Protocol5020::wpDel(const QString wpName)
@@ -280,6 +321,17 @@ double Protocol5020::parseDeg(const QString &degToken, const QString &dirToken)
 	return deg;
 }
 
+QString Protocol5020::degToString(double deg, int size) const
+{
+	int intValue;
+	double value;
+
+	intValue = floor(deg);
+	value = intValue * 100 + (deg - intValue) * 60;
+
+	return QString::number(value, 'f', 3).rightJustified(size, '0');
+}
+
 QString Protocol5020::qString2ftString(const QString &qString, uint length)
 {
 	QString pad;
@@ -303,7 +355,7 @@ QString Protocol5020::qString2ftString(const QString &qString, uint length)
 QString Protocol5020::ftString2qString(const QString &ftString)
 {
 	int cpyLength;
-	
+
 	for(cpyLength=ftString.length(); cpyLength>0; cpyLength--)
 	{
 		if(ftString[cpyLength-1] != ' ')
