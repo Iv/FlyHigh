@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <qcursor.h>
 #include <q3header.h>
 #include <qmenubar.h>
@@ -74,7 +74,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 			Q_ASSERT(false);
 		break;
 	}
-	
+
 	QAction* pViewAct = new QAction(tr("&View"), this);
 	connect(pViewAct, SIGNAL(triggered()), this, SLOT(file_view()));
 	pFileMenu->addAction(pViewAct);
@@ -98,7 +98,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
-	
+
 	// configure the table
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(Q3Table::SingleRow);
@@ -107,39 +107,40 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	nameList += tr("Name");
 	nameList += tr("Type");
 	setupHeader(nameList);
-	
+
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(Type, 300);
-	
+
 	m_lastModified = 0;
 }
 
 bool RouteWindow::periodicalUpdate()
 {
 	int lastModified;
-	
+
 	lastModified = m_pDb->routesLastModified();
-	
+
 	if(m_lastModified < lastModified)
 	{
 		file_update();
 		m_lastModified = lastModified;
 	}
-	
+
 	return true;
 }
 
 void RouteWindow::file_delete()
 {
 	int row;
-	
+
 	row = getTable()->currentRow();
-	
-	if(row >= 0)
+
+	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delRoute(m_routeList[row]);
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		m_pDb->close();
 	}
 }
 
@@ -160,12 +161,12 @@ void RouteWindow::file_update()
 		progDlg.endProgress();
 		maxRouteNr = m_routeList.size();
 		pTable->setNumRows(maxRouteNr);
-		
+
 		for(routeNr=0; routeNr<maxRouteNr; routeNr++)
 		{
 			setRouteToRow(routeNr, m_routeList[routeNr]);
 		}
-		
+
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
@@ -175,7 +176,7 @@ void RouteWindow::file_new()
 {
 	Route route;
 	IRouteForm routeForm(this, tr("Add Route to DB"), &route);
-	
+
 	if(routeForm.exec() && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
@@ -223,9 +224,9 @@ void RouteWindow::file_view()
 {
 	int row;
 	Route route;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if(row >= 0)
 	{
 		route = m_routeList[row];
@@ -241,7 +242,7 @@ void RouteWindow::file_viewWebMap()
 	Route route;
 
 	row = getTable()->currentRow();
-	
+
 	if(row >= 0)
 	{
 		route = m_routeList[row];
@@ -260,9 +261,9 @@ void RouteWindow::file_AddToGPS()
 	int row;
 	int nTps;
 	int tpNr;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if((row >= 0) && IGPSDevice::pInstance()->open())
 	{
 		// Route
@@ -298,16 +299,16 @@ void RouteWindow::file_AddToSqlDB()
 	double lat;
 	int alt;
 	int row;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if(row >= 0)
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
 		// Coordinates
 		str = getTable()->text(row, Name);
-		
+
 		for(....)
 		{
 		lon = str.toDouble();
@@ -316,19 +317,19 @@ void RouteWindow::file_AddToSqlDB()
 		str = getTable()->text(row, Altitude);
 		alt = str.toInt();
 		wp.setCoordinates(lat, lon, alt);
-		
+
 		// Name
 		str = getTable()->text(row, Name);
 		wp.setName(str);
-	
+
 		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &wp);
-		
+
 		if(wayPointForm.exec() && m_pDb->open())
 		{
 			m_pDb->add(wp);
 			m_pDb->close();
 		}
-		
+
 		TableWindow::unsetCursor();
 	}
 */
@@ -337,7 +338,7 @@ void RouteWindow::file_AddToSqlDB()
 void RouteWindow::setRouteToRow(uint row, Route &route)
 {
 	Q3Table *pTable = TableWindow::getTable();
-	
+
 	pTable->setText(row, Name, route.name());
 	pTable->setText(row, Type, route.typeAsText());
 }
