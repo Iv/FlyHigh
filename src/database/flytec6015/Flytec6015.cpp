@@ -71,16 +71,16 @@ bool Flytec6015::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	uint trackNr = 0;
 
 	(void)pilot;
-	
+
 	success = m_protocol->trackListReq();
 	m_cancel = false;
-	
+
 	if(success)
 	{
 		while(m_protocol->trackListRec(flight))
 		{
 			emit progress(trackNr * 100 / 5);
-			
+
 			if(m_cancel)
 			{
 				return false;
@@ -90,9 +90,9 @@ bool Flytec6015::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 			trackNr++;
 		}
 	}
-	
+
 	Error::verify((flightList.size() > 0), Error::FLYTEC_CMD);
-	
+
 	return success;
 }
 
@@ -110,18 +110,18 @@ bool Flytec6015::loadIGCFile(Flight &flight)
 	if(m_protocol->trackReq(flight.number()))
 	{
 		buff.open(QIODevice::WriteOnly);
-	
+
 		while(m_protocol->trackRec(line))
 		{
 			prog = (prog + 1) % 100;
 			emit progress(prog);
-			
+
 			if(m_cancel)
 			{
 				return false;
 			}
 
-                        buff.write(line.toAscii(), line.length());
+			buff.write(line.toAscii(), line.length());
 			success = true;
 		}
 
@@ -130,7 +130,7 @@ bool Flytec6015::loadIGCFile(Flight &flight)
 	}
 
 	Error::verify(success, Error::FLYTEC_CMD);
-	
+
 	return success;
 }
 
@@ -141,7 +141,7 @@ bool Flytec6015::add(WayPoint &wp)
 	success = m_protocol->wpSnd(wp);
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
-	
+
 	return success;
 }
 
@@ -156,7 +156,7 @@ bool Flytec6015::delAllWayPoints()
 {
 	int prog;
 	bool success;
-	
+
 	success = m_protocol->wpDelAll();
 
 	for(prog=0; prog<=100; prog+=10)
@@ -171,7 +171,7 @@ bool Flytec6015::delAllWayPoints()
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
-	
+
 	return success;
 }
 
@@ -184,14 +184,14 @@ bool Flytec6015::wayPointList(WayPoint::WayPointListType &wpList)
 	m_cancel = false;
 
 	success = m_protocol->wpListReq();
-	
+
 	if(success)
 	{
 		while(m_protocol->wpListRec(wp))
 		{
 			prog = (prog + 10) % 100;
 			emit progress(prog);
-			
+
 			if(m_cancel)
 			{
 				return false;
@@ -200,7 +200,7 @@ bool Flytec6015::wayPointList(WayPoint::WayPointListType &wpList)
 			wpList.push_back(wp);
 		}
 	}
-	
+
 	Error::verify(success, Error::FLYTEC_CMD);
 
 	return success;
@@ -220,14 +220,14 @@ bool Flytec6015::add(Route &route)
 	for(wpNr=0; wpNr<nofWp; wpNr++)
 	{
 		emit progress(wpNr * 100 / nofWp);
-		
+
 		if(m_cancel)
 		{
 			return false;
 		}
 
 		success = m_protocol->routeSnd(route.wayPointList().at(wpNr));
-		
+
 		if(!success)
 		{
 			break;
@@ -236,7 +236,7 @@ bool Flytec6015::add(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
-	
+
 	return success;
 }
 
@@ -251,7 +251,7 @@ bool Flytec6015::routeList(Route::RouteListType &routeList)
 
 	success = m_protocol->routeListReq();
 	routeList.clear();
-	
+
 	if(success)
 	{
 		route.wayPointList().clear();
@@ -260,7 +260,7 @@ bool Flytec6015::routeList(Route::RouteListType &routeList)
 		{
 			prog = (prog + 10) % 100;
 			emit progress(prog);
-			
+
 			if(m_cancel)
 			{
 				return false;
@@ -275,7 +275,7 @@ bool Flytec6015::routeList(Route::RouteListType &routeList)
 			routeList.push_back(route);
 		}
 	}
-	
+
 	Error::verify(success, Error::FLYTEC_CMD);
 
 	return success;
@@ -303,6 +303,6 @@ bool Flytec6015::delRoute(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
-	
+
 	return success;
 }
