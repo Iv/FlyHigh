@@ -622,6 +622,8 @@ void QextSerialPort::setFlowControl(FlowType flow)
             case FLOW_XONXOFF:
                 Posix_CommConfig.c_cflag&=(~CRTSCTS);
                 Posix_CommConfig.c_iflag|=(IXON|IXOFF|IXANY);
+								Posix_CommConfig.c_cc[VSTART] = 0x11;     /* DC1 */
+								Posix_CommConfig.c_cc[VSTOP] = 0x13;     /* DC3 */
                 tcsetattr(fd, TCSAFLUSH, &Posix_CommConfig);
                 break;
 
