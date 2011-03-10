@@ -51,14 +51,11 @@ class Flytec5020: public IGPSDevice
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 
-/*
-		
 		bool add(Route &route);
 
 		bool routeList(Route::RouteListType &routeList);
 
 		bool delRoute(Route &route);
-*/
 
 	private:
 		Protocol5020 *m_protocol;

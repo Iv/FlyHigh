@@ -21,6 +21,7 @@
 #include <math.h>
 #include "Flight.h"
 #include "Protocol5020.h"
+#include "Route.h"
 #include "Tokenizer.h"
 #include "WayPoint.h"
 
@@ -91,7 +92,7 @@ bool Protocol5020::trackListRec(uint &total, Flight &flight)
 	{
 		tlg = m_device.getTlg();
 
-		tokenizer.getFirstToken(tlg, ',', token); // $PBRTL
+		tokenizer.getFirstToken(tlg, ',', token);
 		valid = (token == "$PBRTL");
 		valid &= validateCheckSum(tlg);
 
@@ -170,7 +171,7 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 	{
 		tlg = m_device.getTlg();
 
-		tokenizer.getFirstToken(tlg, ',', token); // $PBRWPS
+		tokenizer.getFirstToken(tlg, ',', token);
 		valid = (token == "$PBRWPS");
 		valid &= validateCheckSum(tlg);
 
@@ -247,14 +248,12 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	return m_device.sendTlg(tlg);
 }
 
-bool Protocol5020::wpDel(const QString wpName)
+bool Protocol5020::wpDel(const QString &name)
 {
 	QString tlg;
 
-// why this does not work???
-
 	tlg = "$PBRWPX,";
-	tlg += qString2ftString(wpName, 17);
+	tlg += qString2ftString(name, 17);
 	addTail(tlg);
 
 	return m_device.sendTlg(tlg);
@@ -262,6 +261,131 @@ bool Protocol5020::wpDel(const QString wpName)
 
 bool Protocol5020::wpDelAll()
 {
+	QString tlg;
+
+	tlg = "$PBRWPX,,";
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::routeListReq()
+{
+	QString tlg;
+
+	tlg = "$PBRRTS,";
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::routeListRec(uint &curSent, uint &totalSent, Route &route)
+{
+	Tokenizer tokenizer;
+	QString token;
+	QString tlg;
+	int id;
+	bool valid = false;
+
+	if(m_device.recieveTlg(500))
+	{
+		tlg = m_device.getTlg();
+
+		tokenizer.getFirstToken(tlg, ',', token);
+		valid = (token == "$PBRRTS");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+			// route number
+			tokenizer.getNextToken(tlg, ',', token);
+			id = token.toUInt();
+
+			// total sentences
+			tokenizer.getNextToken(tlg, ',', token);
+			totalSent = token.toUInt();
+
+			// cur sentence
+			tokenizer.getNextToken(tlg, ',', token);
+			curSent = token.toUInt();
+
+			// name or waypoint
+			if(curSent == 0)
+			{
+				// internal number as id
+				route.setId(id);
+
+				// name of route
+				tokenizer.getNextToken(tlg, '*', token);
+				route.setName(token);
+			}
+			else
+			{
+				WayPoint wp;
+
+				// skip  compatible name
+				tokenizer.getNextToken(tlg, ',', token);
+
+				// name of waypoint
+				tokenizer.getNextToken(tlg, '*', token);
+				wp.setName(token);
+				route.wayPointList().push_back(wp);
+			}
+		}
+	}
+
+	return valid;
+}
+
+bool Protocol5020::routeSnd(uint curSent, uint totalSent, Route &route)
+{
+	QString tlg;
+
+	tlg = "$PBRRTR,";
+
+	// route number
+	tlg += QString::number(1).rightJustified(2, '0');
+	tlg += ",";
+
+	// total sentences
+	tlg += QString::number(totalSent).rightJustified(2, '0');
+	tlg += ",";
+
+	// cur sentence
+	tlg += QString::number(curSent).rightJustified(2, '0');
+	tlg += ",";
+
+	if(curSent == 0)
+	{
+		// name of route
+		tlg += qString2ftString(route.name(), 17);
+	}
+	else
+	{
+		// skip compatible name
+		tlg += ",";
+
+		// name of waypoint
+		tlg += qString2ftString(route.wayPointList().at(curSent - 1).name(), 17);
+	}
+
+	addTail(tlg);
+
+	return m_device.sendTlg(tlg);
+}
+
+bool Protocol5020::routeDel(const QString &name)
+{
+	QString tlg;
+
+	// don't ask me why this won't work
+	tlg = "$PBRRTX,";
+	tlg += qString2ftString(name, 17);
+	addTail(tlg);
+
+	m_device.sendTlg(tlg);
+
+	return true;
 }
 
 QDate Protocol5020::parseDate(const QString &token) const

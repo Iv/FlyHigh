@@ -25,6 +25,7 @@
 
 class QString;
 class Flight;
+class Route;
 class WayPoint;
 
 class Protocol5020
@@ -66,20 +67,18 @@ int ft_updateConfiguration();
 
 		bool wpSnd(const WayPoint &wp);
 
-		bool wpDel(const QString wpName);
+		bool wpDel(const QString &name);
 
 		bool wpDelAll();
 
-#if 0
 		/** Route */
 		bool routeListReq();
 
-		bool routeListRec(WayPoint &wp);
+		bool routeListRec(uint &curSent, uint &totalSent, Route &route);
 
-		bool routeSnd(const WayPoint &wp);
+		bool routeSnd(uint curSent, uint totalSent, Route &route);
 
-		bool routeDel();
-#endif
+		bool routeDel(const QString &name);
 
 	private:
 		Device5020 m_device;
