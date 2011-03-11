@@ -32,6 +32,8 @@
 #include "WayPointWindow.h"
 #include "WayPoint.h"
 
+#include <stdio.h>
+
 WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
@@ -88,7 +90,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	
 	// configure the table
 	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setSelectionMode(Q3Table::MultiRow);
 
 	// header
 	nameList += "Name";
@@ -156,14 +158,29 @@ void WayPointWindow::file_update()
 
 void WayPointWindow::file_AddToGps()
 {
+	int numSel;
+	int sel;
+	int topRow;
+	int bottomRow;
 	int row;
-	
-	row = getTable()->currentRow();
-	
-	if((row >= 0) && IGPSDevice::pInstance()->open())
+
+	numSel = getTable()->numSelections();
+
+	if((numSel > 0) && IGPSDevice::pInstance()->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		IGPSDevice::pInstance()->add(m_wpList[row]);
+
+		for(sel=0; sel<numSel; sel++)
+		{
+			topRow = getTable()->selection(sel).topRow();
+			bottomRow = getTable()->selection(sel).bottomRow();
+
+			for(row=topRow; row<=bottomRow; row++)
+			{
+				IGPSDevice::pInstance()->add(m_wpList[row]);
+			}
+		}
+
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
