@@ -78,13 +78,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
 
-	if(src == IDataBase::GPSdevice)
-	{
-		QAction* pDelAllAct = new QAction(tr("De&lete all"), this);
-		connect(pDelAllAct,SIGNAL(triggered()), this, SLOT(file_deleteAll()));
-		pFileMenu->addAction(pDelAllAct);
-	}
-
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
@@ -188,25 +181,31 @@ void WayPointWindow::file_AddToGps()
 
 void WayPointWindow::file_delete()
 {
+	int numSel;
+	int sel;
+	int topRow;
+	int bottomRow;
 	int row;
-	
-	row = getTable()->currentRow();
-	
-	if((row >= 0) && m_pDb->open())
+
+	numSel = getTable()->numSelections();
+
+	if((numSel > 0) && IGPSDevice::pInstance()->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delWayPoint(m_wpList[row]);
-		TableWindow::unsetCursor();
-		m_pDb->close();
-	}
-}
 
-void WayPointWindow::file_deleteAll()
-{
-	if(m_pDb->open())
-	{
-		m_pDb->delAllWayPoints();
-		m_pDb->close();
+		for(sel=0; sel<numSel; sel++)
+		{
+			topRow = getTable()->selection(sel).topRow();
+			bottomRow = getTable()->selection(sel).bottomRow();
+
+			for(row=topRow; row<=bottomRow; row++)
+			{
+				m_pDb->delWayPoint(m_wpList[row]);
+			}
+		}
+
+		TableWindow::unsetCursor();
+		IGPSDevice::pInstance()->close();
 	}
 }
 
