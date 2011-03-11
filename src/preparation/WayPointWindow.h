@@ -45,8 +45,6 @@ class WayPointWindow: public TableWindow
 
 		void file_delete();
 
-		void file_deleteAll();
-
 		void file_addNewWp();
 		
 	private:
