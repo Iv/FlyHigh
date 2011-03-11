@@ -230,7 +230,6 @@ bool Flytec5020::add(Route &route)
 	{
 		emit progress(wpNr *100 / nofWp);
 		m_protocol->wpSnd(route.wayPointList().at(wpNr));
-		usleep(100*1000);
 	}
 
 	// now write the route
@@ -247,7 +246,6 @@ bool Flytec5020::add(Route &route)
 		}
 
 		success = m_protocol->routeSnd(curSent, totalSent, route);
-		usleep(200*1000);
 
 		if(!success)
 		{

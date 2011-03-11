@@ -206,6 +206,7 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 bool Protocol5020::wpSnd(const WayPoint &wp)
 {
 	QString tlg;
+	bool success;
 
 	tlg = "$PBRWPR,";
 
@@ -244,19 +245,29 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	tlg += QString::number(wp.altitude()).rightJustified(4, '0');
 
 	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+	usleep(100*1000);
 
-	return m_device.sendTlg(tlg);
+qDebug() << tlg;
+
+	return success;
 }
 
 bool Protocol5020::wpDel(const QString &name)
 {
 	QString tlg;
+	bool success;
 
 	tlg = "$PBRWPX,";
 	tlg += qString2ftString(name, 17);
 	addTail(tlg);
 
-	return m_device.sendTlg(tlg);
+qDebug() << tlg;
+
+	success = m_device.sendTlg(tlg);
+	usleep(2000*1000);
+
+	return success;
 }
 
 bool Protocol5020::wpDelAll()
@@ -340,6 +351,7 @@ bool Protocol5020::routeListRec(uint &curSent, uint &totalSent, Route &route)
 bool Protocol5020::routeSnd(uint curSent, uint totalSent, Route &route)
 {
 	QString tlg;
+	bool success;
 
 	tlg = "$PBRRTR,";
 
@@ -370,22 +382,24 @@ bool Protocol5020::routeSnd(uint curSent, uint totalSent, Route &route)
 	}
 
 	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+	usleep(200*1000);
 
-	return m_device.sendTlg(tlg);
+	return success;
 }
 
 bool Protocol5020::routeDel(const QString &name)
 {
 	QString tlg;
+	bool success;
 
 	// don't ask me why this won't work
 	tlg = "$PBRRTX,";
 	tlg += qString2ftString(name, 17);
 	addTail(tlg);
+	success = m_device.sendTlg(tlg);
 
-	m_device.sendTlg(tlg);
-
-	return true;
+	return success;
 }
 
 QDate Protocol5020::parseDate(const QString &token) const
