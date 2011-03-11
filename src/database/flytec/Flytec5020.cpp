@@ -232,6 +232,8 @@ bool Flytec5020::add(Route &route)
 		m_protocol->wpSnd(route.wayPointList().at(wpNr));
 	}
 
+	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+
 	// now write the route
 	totalSent = 1 + route.wayPointList().size();
 	m_cancel = false;
