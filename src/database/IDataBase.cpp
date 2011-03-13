@@ -196,9 +196,9 @@ bool IDataBase::add(AirSpace &airspace)
 	return false;
 }
 
-bool IDataBase::delAirSpace(const QString &name)
+bool IDataBase::delAirSpace(AirSpace &airspace)
 {
-	(void)name;
+	(void)airspace;
 
 	return false;
 }

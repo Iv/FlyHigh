@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef IDataBase_h
 #define IDataBase_h
 
@@ -35,7 +35,7 @@ class IDataBase: public QObject
 	Q_OBJECT
 	public:
 		typedef enum SourceType{GPSdevice, SqlDB, File}SourceType;
-		
+
 		IDataBase();
 
 		virtual ~IDataBase();
@@ -54,7 +54,7 @@ class IDataBase: public QObject
 		virtual bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
 		virtual bool loadIGCFile(Flight &flight);
-		
+
 		// waypoints
 		virtual bool add(WayPoint &wp);
 
@@ -65,7 +65,7 @@ class IDataBase: public QObject
 		virtual int wayPointsLastModified();
 
 		virtual bool wayPointList(WayPoint::WayPointListType &wpList);
-		
+
 		// gliders
 		virtual bool add(Glider &glider);
 
@@ -83,11 +83,11 @@ class IDataBase: public QObject
 		virtual int routesLastModified();
 
 		virtual bool routeList(Route::RouteListType &routeList);
-		
+
 		// airspaces
 		virtual bool add(AirSpace &airspace);
 
-		virtual bool delAirSpace(const QString &name);
+		virtual bool delAirSpace(AirSpace &airspace);
 
 		virtual bool airspace(const QString &name, AirSpace &airspace);
 
@@ -105,10 +105,10 @@ class IDataBase: public QObject
 		virtual bool setId(Pilot &pilot);
 
 		virtual int pilotsLastModified();
-		
+
 	signals:
 		void progress(int percent);
-		
+
 	public slots:
 		virtual void cancel();
 };
