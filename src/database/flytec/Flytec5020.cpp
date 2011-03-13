@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "AirSpace.h"
 #include "Error.h"
 #include "Flytec5020.h"
 #include "IFlyHighRC.h"
@@ -266,7 +267,6 @@ bool Flytec5020::routeList(Route::RouteListType &routeList)
 	Route route;
 	WayPoint wp;
 	bool success = false;
-	int prog = 0;
 	uint curSent;
 	uint totalSent;
 
@@ -322,4 +322,92 @@ bool Flytec5020::delRoute(Route &route)
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
 
 	return success;
+}
+
+bool Flytec5020::add(AirSpace &airspace)
+{
+	bool success = false;
+	uint curSent;
+	uint totalSent;
+
+	totalSent = 2 + airspace.airSpaceItemList().size();
+	m_cancel = false;
+
+	// send airspace
+	for(curSent=0; curSent<totalSent; curSent++)
+	{
+		emit progress(curSent * 100 / totalSent);
+
+		if(m_cancel)
+		{
+			return false;
+		}
+
+		success = m_protocol->ctrSnd(curSent, totalSent, airspace);
+
+		if(!success)
+		{
+			break;
+		}
+	}
+
+	// recieve ack
+	if(success)
+	{
+		success == m_protocol->recAck();
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+
+	return success;
+}
+
+bool Flytec5020::delAirSpace(AirSpace &airspace)
+{
+	bool success;
+
+	success = m_protocol->ctrDel(airspace.name());
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+
+	return success;
+}
+
+bool Flytec5020::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+{
+	/**
+	AirSpace airspace;
+	bool success = false;
+	uint curSent;
+	uint totalSent;
+
+	m_cancel = false;
+
+	success = m_protocol->ctrListReq();
+	airspaceList.clear();
+
+	if(success)
+	{
+		while(m_protocol->ctrListRec(curSent, totalSent, airspace))
+		{
+			emit progress(curSent * 100 / totalSent);
+
+			if(m_cancel)
+			{
+				return false;
+			}
+
+			if((curSent + 1) == totalSent)
+			{
+				airspaceList.append(airspace);
+				airspace.airSpaceItemList().clear();
+			}
+		}
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
+	*/
 }

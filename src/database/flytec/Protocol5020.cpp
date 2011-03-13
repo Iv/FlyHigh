@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include <math.h>
+#include "AirSpace.h"
+#include "AirSpaceItem.h"
 #include "Flight.h"
 #include "Protocol5020.h"
 #include "Route.h"
@@ -211,30 +213,14 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	tlg = "$PBRWPR,";
 
 	// latitude
-	tlg += degToString(wp.latitude(), 8);
-
-	if(wp.latitude() < 0)
-	{
-		tlg += ",S,";
-	}
-	else
-	{
-		tlg += ",N,";
-	}
+	tlg += latToString(wp.latitude(), 8);
+	tlg += ",";
 
 	// longitude
-	tlg += degToString(wp.longitude(), 9);
+	tlg += lonToString(wp.longitude(), 9);
+	tlg += ",";
 
-	if(wp.longitude() < 0)
-	{
-		tlg += ",W,";
-	}
-	else
-	{
-		tlg += ",E,";
-	}
-
-	// separator
+	// skip short name
 	tlg += ",";
 
 	// name
@@ -402,6 +388,180 @@ bool Protocol5020::routeDel(const QString &name)
 	return success;
 }
 
+bool Protocol5020::ctrListReq()
+{
+}
+
+bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace &airspace)
+{
+}
+
+bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
+{
+	QString tlg;
+	AirSpaceItem *pItem;
+	AirSpaceItemSeg *pSegment;
+	AirSpaceItemCircle *pCircle;
+	bool success;
+
+	tlg = "$PBRCTRW,";
+
+	// total sentences
+	tlg += QString::number(totalSent).rightJustified(3, '0');
+	tlg += ",";
+
+	// cur sentence
+	tlg += QString::number(curSent).rightJustified(3, '0');
+	tlg += ",";
+
+	if(curSent == 0)
+	{
+		// name of airspace
+		tlg += qString2ftString(airspace.name(), 17);
+		tlg += ",";
+
+		// warn distance
+		tlg += QString::number(airspace.warnDist()).rightJustified(4, '0');
+	}
+	else if(curSent == 1)
+	{
+		// remark
+		tlg += qString2ftString(airspace.remark(), 17);
+	}
+	else
+	{
+		pItem = airspace.airSpaceItemList().at(curSent - 2);
+
+		if(pItem != NULL)
+		{
+			switch(pItem->type())
+			{
+				case AirSpaceItem::Point:
+				case AirSpaceItem::Center:
+					// type
+					if(pItem->type() == AirSpaceItem::Point)
+					{
+						tlg += "P,";
+					}
+					else
+					{
+						tlg += "X,";
+					}
+
+					// latitude
+					tlg += latToString(pItem->lat(), 8);
+					tlg += ",";
+
+					// longitude
+					tlg += lonToString(pItem->lon(), 9);
+				break;
+				case AirSpaceItem::StartSegment:
+				case AirSpaceItem::StopSegment:
+					// type
+					if(pItem->type() == AirSpaceItem::StartSegment)
+					{
+						tlg += "T,";
+					}
+					else
+					{
+						tlg += "Z,";
+					}
+
+					// latitude
+					tlg += latToString(pItem->lat(), 8);
+					tlg += ",";
+
+					// longitude
+					tlg += lonToString(pItem->lon(), 9);
+					tlg += ",";
+
+					// direction
+					pSegment = (AirSpaceItemSeg*)pItem;
+
+					if(pSegment->dir())
+					{
+						tlg += "+";
+					}
+					else
+					{
+						tlg += "-";
+					}
+				break;
+				case AirSpaceItem::Circle:
+					// type
+					tlg += "C,";
+
+					// latitude
+					tlg += latToString(pItem->lat(), 8);
+					tlg += ",";
+
+					// longitude
+					tlg += lonToString(pItem->lon(), 9);
+
+					// radius
+					pCircle = (AirSpaceItemCircle*)pItem;
+					tlg += QString::number(pCircle->radius()).rightJustified(5, '0');
+				break;
+			}
+		}
+	}
+
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+qDebug() << tlg;
+
+	usleep(200*1000);
+
+	return success;
+}
+
+bool Protocol5020::ctrDel(const QString &name)
+{
+	QString tlg;
+	bool success;
+
+	tlg = "$PBRCTRD,";
+	tlg += qString2ftString(name, 17);
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+qDebug() << tlg;
+
+	usleep(2000*1000);
+
+	return success;
+}
+
+bool Protocol5020::recAck()
+{
+	Tokenizer tokenizer;
+	QString token;
+	QString tlg;
+	int status;
+	bool valid = false;
+
+	if(m_device.recieveTlg(500))
+	{
+		tlg = m_device.getTlg();
+
+		tokenizer.getFirstToken(tlg, ',', token);
+		valid = (token == "$PBRANS");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+			// status
+			tokenizer.getFirstToken(tlg, '*', token);
+			status = token.toUInt();
+
+			valid = (status == 1);
+		}
+	}
+
+	return valid;
+}
+
 QDate Protocol5020::parseDate(const QString &token) const
 {
 	Tokenizer tokenizer;
@@ -457,6 +617,38 @@ double Protocol5020::parseDeg(const QString &degToken, const QString &dirToken)
 	}
 
 	return deg;
+}
+
+QString Protocol5020::latToString(double deg, int size) const
+{
+	QString tlg;
+
+	tlg = degToString(deg, size);
+
+	if(deg < 0)
+	{
+		tlg += ",S";
+	}
+	else
+	{
+		tlg += ",N";
+	}
+}
+
+QString Protocol5020::lonToString(double deg, int size) const
+{
+	QString tlg;
+
+	tlg = degToString(deg, size);
+
+	if(deg < 0)
+	{
+		tlg += ",W";
+	}
+	else
+	{
+		tlg += ",E";
+	}
 }
 
 QString Protocol5020::degToString(double deg, int size) const

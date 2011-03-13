@@ -24,6 +24,7 @@
 #include "Device5020.h"
 
 class QString;
+class AirSpace;
 class Flight;
 class Route;
 class WayPoint;
@@ -80,6 +81,17 @@ int ft_updateConfiguration();
 
 		bool routeDel(const QString &name);
 
+		/** CTR */
+		bool ctrListReq();
+
+		bool ctrListRec(uint &curSent, uint &totalSent, AirSpace &airspace);
+
+		bool ctrSnd(uint curSent, uint totalSent, AirSpace &airspace);
+
+		bool ctrDel(const QString &name);
+
+		bool recAck();
+
 	private:
 		Device5020 m_device;
 
@@ -88,6 +100,10 @@ int ft_updateConfiguration();
 		QTime parseTime(const QString &token) const;
 
 		double parseDeg(const QString &degToken, const QString &dirToken);
+
+		QString latToString(double deg, int size) const;
+
+		QString lonToString(double deg, int size) const;
 
 		QString degToString(double deg, int size) const;
 

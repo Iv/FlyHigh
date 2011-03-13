@@ -39,10 +39,12 @@ class Flytec5020: public IGPSDevice
 
 		void cancel();
 
+		// flights
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
 		bool loadIGCFile(Flight &flight);
 
+		// waypoints
 		bool add(WayPoint &wp);
 
 		bool delWayPoint(WayPoint &wp);
@@ -51,11 +53,19 @@ class Flytec5020: public IGPSDevice
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 
+		// routes
 		bool add(Route &route);
 
 		bool routeList(Route::RouteListType &routeList);
 
 		bool delRoute(Route &route);
+
+				// airspaces
+		bool add(AirSpace &airspace);
+
+		bool delAirSpace(AirSpace &airspace);
+
+		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 
 	private:
 		Protocol5020 *m_protocol;
