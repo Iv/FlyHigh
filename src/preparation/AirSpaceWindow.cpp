@@ -74,30 +74,30 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		}
 		break;
 	}
-	
+
 	QAction* pExpAct = new QAction(tr("&Export all..."), this);
 	connect(pExpAct,SIGNAL(triggered()), this, SLOT(exportTable()));
 	pFileMenu->addAction(pExpAct);
-	
+
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
-	
+
 	// configure the table
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(Q3Table::SingleRow);
 
-	// header	
+	// header
 	nameList += "Name";
 	nameList += "Low";
 	nameList += "High";
 	nameList += "Class";
 	setupHeader(nameList);
-	
+
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(High, 100);
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
-	
+
 	m_lastModified = 0;
 
 	m_airSpaceView.setGeometry(QRect(0, 0, 500, 500));
@@ -116,14 +116,14 @@ bool AirSpaceWindow::periodicalUpdate()
 	if(m_pDb != NULL)
 	{
 		lastModified = m_pDb->airspacesLastModified();
-	
+
 		if(m_lastModified < lastModified)
 		{
 			file_update();
 			m_lastModified = lastModified;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -180,13 +180,13 @@ void AirSpaceWindow::file_open()
 void AirSpaceWindow::file_delete()
 {
 	int row;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delAirSpace(getTable()->text(row, Name));
+		m_pDb->delAirSpace(*m_airSpaceList.at(row));
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
@@ -210,12 +210,12 @@ void AirSpaceWindow::file_update()
 		progDlg.endProgress();
 		maxAirspaceNr = m_airSpaceList.count();
 		pTable->setNumRows(maxAirspaceNr);
-		
+
 		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 		{
 			setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
 		}
-	
+
 		m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
 		m_airSpaceView.show();
 		pTable->selectRow(0);
@@ -228,9 +228,9 @@ void AirSpaceWindow::file_AddToGPS()
 {
 	ProgressDlg progDlg(this);
 	int row;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
