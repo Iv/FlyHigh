@@ -24,6 +24,7 @@
 
 class Pilot;
 class Protocol5020;
+class AirSpaceList;
 
 class Flytec5020: public IGPSDevice
 {
@@ -65,7 +66,7 @@ class Flytec5020: public IGPSDevice
 
 		bool delAirSpace(AirSpace &airspace);
 
-		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		bool airspaceList(AirSpaceList &airspaceList);
 
 	private:
 		Protocol5020 *m_protocol;

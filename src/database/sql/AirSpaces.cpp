@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 //#include <q3sqlcursor.h>
 #include <qsqldatabase.h>
 #include "Error.h"
@@ -37,7 +37,7 @@ bool AirSpaces::add(AirSpace &airspace)
 	QString edgePt;
 	uint nEdgePts;
 	uint edgePtNr;
-	
+
 	// insert record
 	pRec = cur.primeInsert();
 	pRec->setValue("Name", airspace.name());
@@ -67,12 +67,12 @@ bool AirSpaces::delAirSpace(const QString &name)
 /*	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	 
+
 	sqls.sprintf("DELETE FROM  AirSpaces WHERE Name='%s'", name.ascii());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("AirSpaces");
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	return success;*/
 	return false;
 }
@@ -90,32 +90,32 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 	uint edgePtNr;
 	int pos;
 	bool success;
-	
+
 	sqls.sprintf("SELECT * FROM AirSpaces WHERE Name='%s'", name.ascii());
 	success = query.exec(sqls);
-	
+
 	if(success)
 	{
 		success = query.first();
-		
+
 		if(success)
 		{
 			airspace.edgePointList().clear();
 			airspace.setName(query.value(Name).toString());
-			
+
 			for(edgePtNr=0; edgePtNr<MaxEdgePoints; edgePtNr++)
 			{
 				strEdgePt = query.value(EdgePoint0+edgePtNr).toString();
-				
+
 				if(strEdgePt == "")
 				{
 					break;
 				}
-				
+
                                 pos = strEdgePt.indexOf(';');
 				lon = strEdgePt.left(pos).toDouble();
 				lat = strEdgePt.right(strEdgePt.length() - pos - 1).toDouble();
-				
+
 				edgePt.setCoordinates(lat, lon);
 				airspace.edgePointList().push_back(edgePt);
 			}
@@ -125,13 +125,13 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 	{
 		Error::verify(success, Error::SQL_CMD);
 	}
-	
+
 	return success;
 */
 	return false;
 }
 
-bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 {
 	(void)airspaceList;
 /*	AirSpace airspace;
@@ -144,9 +144,9 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 	double lon;
 	uint edgePtNr;
 	bool success;
-	
+
 	success = query.exec(sqls);
-	
+
 	if(success)
 	{
 		while(query.next())
@@ -156,30 +156,30 @@ bool AirSpaces::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 			airspace.setLow(query.value(Low).toString());
 			airspace.setHigh(query.value(High).toString());
 			airspace.setAirspaceClass(query.value(Class).toString());
-			
+
 			for(edgePtNr=0; edgePtNr<MaxEdgePoints; edgePtNr++)
 			{
 				strEdgePt = query.value(EdgePoint0+edgePtNr).toString();
-				
+
 				if(strEdgePt == "")
 				{
 					break;
 				}
-				
+
                                 pos = strEdgePt.indexOf(';');
 				lon = strEdgePt.left(pos).toDouble();
 				lat = strEdgePt.right(strEdgePt.length() - pos - 1).toDouble();
-				
+
 				edgePt.setCoordinates(lat, lon);
 				airspace.edgePointList().push_back(edgePt);
 			}
-			
+
 			airspaceList.push_back(airspace);
 		}
 	}
-	
+
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	return success;
 */
 	return false;

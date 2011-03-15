@@ -84,7 +84,7 @@ int ft_updateConfiguration();
 		/** CTR */
 		bool ctrListReq();
 
-		bool ctrListRec(uint &curSent, uint &totalSent, AirSpace &airspace);
+		bool ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpace);
 
 		bool ctrSnd(uint curSent, uint totalSent, AirSpace &airspace);
 

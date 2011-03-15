@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef AirSpaces_h
 #define AirSpaces_h
 
@@ -25,6 +25,7 @@
 #include "AirSpace.h"
 
 class QSqlDatabase;
+class AirSpaceList;
 
 class AirSpaces: public DataBaseSub
 {
@@ -32,10 +33,13 @@ class AirSpaces: public DataBaseSub
 		AirSpaces(QSqlDatabase DB);
 
 		bool add(AirSpace &airspace);
+
 		bool delAirSpace(const QString &name);
+
 		bool airspace(const QString &name, AirSpace &airspace);
-		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
-		
+
+		bool airspaceList(AirSpaceList &airspaceList);
+
 	private:
 		enum Elements{Id, Name, Low, High, Class};
 };
