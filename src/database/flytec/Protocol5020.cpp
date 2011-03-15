@@ -396,6 +396,7 @@ bool Protocol5020::ctrListReq()
 	tlg = "$PBRCTR,";
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
+	usleep(1000*1000);
 
 	return success;
 
@@ -428,7 +429,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	int id;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500))
+	if(m_device.recieveTlg(3000))
 	{
 		tlg = m_device.getTlg();
 
