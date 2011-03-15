@@ -34,6 +34,8 @@ class AirSpaceList
 
 		AirSpaceList();
 
+		~AirSpaceList();
+
 		void push_back(AirSpace *pAirSpace);
 
 		void clear();
