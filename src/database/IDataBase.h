@@ -30,6 +30,8 @@
 #include "Route.h"
 #include "WayPoint.h"
 
+class AirSpaceList;
+
 class IDataBase: public QObject
 {
 	Q_OBJECT
@@ -93,7 +95,7 @@ class IDataBase: public QObject
 
 		virtual int airspacesLastModified();
 
-		virtual bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		virtual bool airspaceList(AirSpaceList &airspaceList);
 
 		// pilots
 		virtual bool add(Pilot &pilot);

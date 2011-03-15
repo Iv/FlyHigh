@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "AirSpace.h"
+#include "AirSpaceList.h"
 #include "Error.h"
 #include "Flytec5020.h"
 #include "IFlyHighRC.h"
@@ -374,13 +375,13 @@ bool Flytec5020::delAirSpace(AirSpace &airspace)
 	return success;
 }
 
-bool Flytec5020::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 {
-	/**
-	AirSpace airspace;
-	bool success = false;
+	AirSpace *pAirspace;
 	uint curSent;
 	uint totalSent;
+	bool success = false;
+	bool used = false;
 
 	m_cancel = false;
 
@@ -389,25 +390,29 @@ bool Flytec5020::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 
 	if(success)
 	{
-		while(m_protocol->ctrListRec(curSent, totalSent, airspace))
+		pAirspace = new AirSpace();
+
+		while(m_protocol->ctrListRec(curSent, totalSent, pAirspace))
 		{
 			emit progress(curSent * 100 / totalSent);
 
 			if(m_cancel)
 			{
-				return false;
+				break;
 			}
 
 			if((curSent + 1) == totalSent)
 			{
-				airspaceList.append(airspace);
-				airspace.airSpaceItemList().clear();
+				airspaceList.push_back(pAirspace);
+				pAirspace = new AirSpace();
 			}
 		}
+
+		// last one is never used
+		delete pAirspace;
 	}
 
 	Error::verify(success, Error::FLYTEC_CMD);
 
 	return success;
-	*/
 }

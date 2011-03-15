@@ -28,23 +28,25 @@
 #include "Route.h"
 #include "WayPoint.h"
 
+class AirSpaceList;
+
 class FlytecDevice: public IGPSDevice
 {
 	public:
 		FlytecDevice();
-		
+
 	protected:
 		bool open();
 
 		void close();
 
 		void cancel();
-			
+
 		// memory
 		bool memoryRead(QByteArray &arr);
 
 		bool memoryWrite(QByteArray &arr);
-		
+
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
 
 		bool loadIGCFile(Flight &flight);
@@ -56,19 +58,19 @@ class FlytecDevice: public IGPSDevice
 		bool delAllWayPoints();
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
-		
+
 		bool add(Route &route);
 
 		bool routeList(Route::RouteListType &routeList);
 
 		bool delRoute(Route &route);
-		
+
 		bool add(AirSpace &airspace);
 
-		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
+		bool airspaceList(AirSpaceList &airspaceList);
 
 		bool delAirSpace(AirSpace &airspace);
-		
+
 	private:
 		bool m_cancel;
 

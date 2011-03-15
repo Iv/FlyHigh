@@ -216,10 +216,8 @@ int IDataBase::airspacesLastModified()
 	return 0;
 }
 
-bool IDataBase::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+bool IDataBase::airspaceList(AirSpaceList &airspaceList)
 {
-	(void)airspaceList;
-
 	return false;
 }
 

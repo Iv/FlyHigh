@@ -390,10 +390,237 @@ bool Protocol5020::routeDel(const QString &name)
 
 bool Protocol5020::ctrListReq()
 {
+	QString tlg;
+	bool success;
+
+	tlg = "$PBRCTR,";
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+	return success;
+
+/**
+		int res;
+	u_char len;
+
+	sprintf((char*)&buff[0],  "PBRCTR,");
+	len = strlen((char*)&buff[0]);
+
+	res = flytec_ll_send(&buff[0], len);
+	usleep(1000*1000);
+
+	return res;
+*/
 }
 
-bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace &airspace)
+bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpace)
 {
+	Tokenizer tokenizer;
+	QString token;
+	QString degToken;
+	QString dirToken;
+	QString tlg;
+	AirSpaceItem *pItem = NULL;
+	AirSpaceItemCircle *pCircle;
+	AirSpaceItemSeg *pSegment;
+	double lat;
+	double lon;
+	int id;
+	bool valid = false;
+
+	if(m_device.recieveTlg(500))
+	{
+		tlg = m_device.getTlg();
+
+		tokenizer.getFirstToken(tlg, ',', token);
+		valid = (token == "$PBRCTR");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+			// total sentences
+			tokenizer.getNextToken(tlg, ',', token);
+			totalSent = token.toUInt();
+
+			// cur sentence
+			tokenizer.getNextToken(tlg, ',', token);
+			curSent = token.toUInt();
+
+			if(curSent == 0)
+			{
+				// name
+				tokenizer.getNextToken(tlg, ',', token);
+				pAirSpace->setName(token);
+
+				// warning distance
+				tokenizer.getNextToken(tlg, '*', token);
+				pAirSpace->setWarnDist(token.toUInt());
+			}
+			else if(curSent == 1)
+			{
+				// remark
+				tokenizer.getNextToken(tlg, '*', token);
+				pAirSpace->setRemark(token);
+			}
+			else
+			{
+				// type
+				tokenizer.getNextToken(tlg, ',', token);
+
+				if(token == "C")
+				{
+					pCircle = new AirSpaceItemCircle();
+
+					// lat
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lat = parseDeg(degToken, dirToken);
+
+					// lon
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lon = parseDeg(degToken, dirToken);
+
+					// radius
+					tokenizer.getNextToken(tlg, '*', token);
+					pCircle->setRadius(token.toUInt());
+					pItem = pCircle;
+				}
+				else if(token == "P")
+				{
+					pItem = new AirSpaceItemPoint(AirSpaceItem::Point);
+
+					// lat
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lat = parseDeg(degToken, dirToken);
+
+					// lon
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, '*', dirToken);
+					lon = parseDeg(degToken, dirToken);
+				}
+				else if(token == "X")
+				{
+					pItem = new AirSpaceItemPoint(AirSpaceItem::Center);
+
+					// lat
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lat = parseDeg(degToken, dirToken);
+
+					// lon
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, '*', dirToken);
+					lon = parseDeg(degToken, dirToken);
+				}
+				else if(token == "T")
+				{
+					pSegment = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
+
+					// lat
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lat = parseDeg(degToken, dirToken);
+
+					// lon
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lon = parseDeg(degToken, dirToken);
+
+					// dir
+					tokenizer.getNextToken(tlg, '*', token);
+					pSegment->setDir(token == "+");
+					pItem = pSegment;
+				}
+				else if(token == "Z")
+				{
+					pSegment = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
+
+					// lat
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lat = parseDeg(degToken, dirToken);
+
+					// lon
+					tokenizer.getNextToken(tlg, ',', degToken);
+					tokenizer.getNextToken(tlg, ',', dirToken);
+					lon = parseDeg(degToken, dirToken);
+
+					// dir
+					tokenizer.getNextToken(tlg, '*', token);
+					pSegment->setDir(token == "+");
+					pItem = pSegment;
+				}
+
+				if(pItem != NULL)
+				{
+					pItem->setPoint(lat, lon);
+					pAirSpace->airSpaceItemList().push_back(pItem);
+				}
+			}
+		}
+	}
+
+	return valid;
+
+#if 0
+	u_char len;
+	int res;
+
+	res = flytec_ll_recieve(ProductResp, &buff[0], &len);
+
+	if(res == 0)
+	{
+		res = memcmp((char*)&buff[0], "PBRCTR", 6);
+	}
+
+	if(res == 0)
+	{
+		/* toal sentences */
+		buff[10] = '\0';
+		pCTR->totalSent = atoi((char*)&buff[7]);
+
+		/* actual sentence */
+		buff[14] = '\0';
+		pCTR->actSent = atoi((char*)&buff[11]);
+
+		if(pCTR->actSent == 0)
+		{
+			/* ctr name */
+			ft_ftstring2string(pCTR->sent.first.name, (char*)&buff[15]);
+
+			/* warning distance */
+			buff[37] = '\0';
+			pCTR->sent.first.warnDist = atoi((char*)&buff[33]);
+		}
+		else if(pCTR->actSent == 1)
+		{
+			/* remark */
+			ft_ftstring2string(pCTR->sent.second.remark, (char*)&buff[15]);
+		}
+		else
+		{ /* a member */
+			pCTR->sent.member.type = buff[15];
+			pCTR->sent.member.latitude = stringToDeg(&buff[17], 10);
+			pCTR->sent.member.longitude = stringToDeg(&buff[28], 11);
+
+			if(pCTR->sent.member.type == 'C') /* circle */
+			{
+				/* radius */
+				buff[45] = '\0';
+				pCTR->sent.member.radius = (uint)atoi((char*)&buff[40]);
+			}
+			else if((pCTR->sent.member.type == 'T') /* start segment */ ||
+					(pCTR->sent.member.type == 'Z')) /* end segment */
+			{
+				pCTR->sent.member.direction = buff[40];
+			}
+		}
+	}
+
+	return res;
+#endif
 }
 
 bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
