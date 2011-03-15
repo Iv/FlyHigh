@@ -21,6 +21,7 @@
 #define AirSpaceWindow_h
 
 #include "AirSpace.h"
+#include "AirSpaceList.h"
 #include "AirSpaceView.h"
 #include "IDataBase.h"
 #include "TableWindow.h"
@@ -30,12 +31,12 @@ class QWidget;
 class AirSpaceWindow: public TableWindow
 {
 	Q_OBJECT
-	
+
 	public:
           AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 		~AirSpaceWindow();
-	
+
 	private slots:
 		void file_open();
 
@@ -49,16 +50,16 @@ class AirSpaceWindow: public TableWindow
 		bool periodicalUpdate();
 
 		void selectionChanged();
-		
+
 	private:
 		enum Fields{Name, Low, High, Class};
-		
+
 		IDataBase *m_pDb;
 		int m_lastModified;
-		AirSpace::AirSpaceListType m_airSpaceList;
+		AirSpaceList m_airSpaceList;
 		AirSpaceView m_airSpaceView;
-		
-		void setAirSpaceToRow(uint row, AirSpace &airspace);
+
+		void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
 };
 
 #endif

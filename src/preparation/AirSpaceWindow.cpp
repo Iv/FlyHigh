@@ -156,15 +156,14 @@ void AirSpaceWindow::file_open()
 			openAirData = file.readAll();
 			file.close();
 
-			parser.parse(openAirData);
-			m_airSpaceList = parser.airspaceList();
+			parser.parse(openAirData, m_airSpaceList);
 			m_airSpaceList.sort();
-			maxAirspaceNr = m_airSpaceList.count();
+			maxAirspaceNr = m_airSpaceList.size();
 			pTable->setNumRows(maxAirspaceNr);
 
 			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 			{
-				setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
+				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 			}
 
 			m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
@@ -186,7 +185,7 @@ void AirSpaceWindow::file_delete()
 	if((row >= 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delAirSpace(*m_airSpaceList.at(row));
+		m_pDb->delAirSpace(*m_airSpaceList[row]);
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
@@ -208,12 +207,12 @@ void AirSpaceWindow::file_update()
 		progDlg.beginProgress("read airspaces...", m_pDb);
 		m_pDb->airspaceList(m_airSpaceList);
 		progDlg.endProgress();
-		maxAirspaceNr = m_airSpaceList.count();
+		maxAirspaceNr = m_airSpaceList.size();
 		pTable->setNumRows(maxAirspaceNr);
 
 		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 		{
-			setAirSpaceToRow(airspaceNr, *m_airSpaceList.at(airspaceNr));
+			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 		}
 
 		m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
@@ -235,7 +234,7 @@ void AirSpaceWindow::file_AddToGPS()
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->add(*m_airSpaceList.at(row));
+		IGPSDevice::pInstance()->add(*m_airSpaceList[row]);
 		progDlg.endProgress();
 		TableWindow::unsetCursor();
 		m_pDb->close();
@@ -247,12 +246,12 @@ void AirSpaceWindow::selectionChanged()
 	m_airSpaceView.setSelected(getTable()->currentRow());
 }
 
-void AirSpaceWindow::setAirSpaceToRow(uint row, AirSpace &airspace)
+void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 {
 	Q3Table *pTable = TableWindow::getTable();
 
-	pTable->setText(row, Name, airspace.name());
-	pTable->setText(row, High, airspace.high());
-	pTable->setText(row, Low, airspace.low());
-	pTable->setText(row, Class, airspace.airspaceClass());
+	pTable->setText(row, Name, pAirSpace->name());
+	pTable->setText(row, High, pAirSpace->high());
+	pTable->setText(row, Low, pAirSpace->low());
+	pTable->setText(row, Class, pAirSpace->airspaceClass());
 }

@@ -17,14 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <qpainter.h>
-//Added by qt3to4:
+#include <QPainter>
 #include <QWheelEvent>
 #include <Q3PointArray>
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QPaintEvent>
 #include "AirSpace.h"
+#include "AirSpaceList.h"
 #include "AirSpaceView.h"
 
 AirSpaceView::AirSpaceView()
@@ -39,16 +39,18 @@ AirSpaceView::~AirSpaceView()
 {
 }
 
-void AirSpaceView::setAirSpaceList(AirSpace::AirSpaceListType *pAirSpaceList, int selected)
+void AirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList, int selected)
 {
+	AirSpaceList::iterator it;
 	AirSpace *pAirSpace;
 
 	m_pAirSpaceList = pAirSpaceList;
 	m_selected = selected;
 	m_bbox.init();
 
-	for(pAirSpace=pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=pAirSpaceList->next())
+	for(it=pAirSpaceList->begin(); it!=pAirSpaceList->end(); it++)
 	{
+		pAirSpace = *it;
 		pAirSpace->createPointList();
 		m_bbox.setMinMax(pAirSpace->boundBox());
 	}
@@ -137,6 +139,7 @@ void AirSpaceView::drawAirspace()
 	QRect viewRect;
 	Q3PointArray pointList;
 	BoundBox bbox;
+	AirSpaceList::iterator itAirSpace;
 	WayPoint::WayPointListType::const_iterator it;
 	AirSpace *pAirSpace;
 	AirSpace *pSelAirSpace = NULL;
@@ -157,7 +160,7 @@ void AirSpaceView::drawAirspace()
 		offLat = (m_bbox.north() + m_bbox.south()) / 2;
 		offLon = (m_bbox.east() + m_bbox.west()) / 2;
 		viewRect = paint.viewport();
-	
+
 		if(m_bbox.width() > m_bbox.height())
 		{
 			if(m_bbox.width() == 0)
@@ -192,7 +195,7 @@ void AirSpaceView::drawAirspace()
 		paint.setPen(palette().windowText().color());
 
 		// draw airspaces
-		for(pAirSpace=m_pAirSpaceList->first(); pAirSpace!=NULL; pAirSpace=m_pAirSpaceList->next())
+		for(itAirSpace=m_pAirSpaceList->begin(); itAirSpace!=m_pAirSpaceList->end(); itAirSpace++)
 		{
 			pointList.resize(pAirSpace->pointList().size());
 			ptNr = 0;
@@ -229,7 +232,7 @@ void AirSpaceView::drawAirspace()
 		{
 			pointList.resize(pSelAirSpace->pointList().size());
 			ptNr = 0;
-		
+
 			for(it=pSelAirSpace->pointList().begin(); it!=pSelAirSpace->pointList().end(); it++)
 			{
 				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;

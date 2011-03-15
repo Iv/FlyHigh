@@ -20,14 +20,14 @@
 #ifndef AirSpaceView_h
 #define AirSpaceView_h
 
-#include <qwidget.h>
-//Added by qt3to4:
+#include <QWidget>
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QCloseEvent>
 
 class AirSpace;
+class AirSpaceList;
 
 class AirSpaceView: public QWidget
 {
@@ -36,7 +36,7 @@ class AirSpaceView: public QWidget
 
 		~AirSpaceView();
 
-		void setAirSpaceList(AirSpace::AirSpaceListType *pAirSpaceList, int selected);
+		void setAirSpaceList(AirSpaceList *pAirSpaceList, int selected);
 
 		void setSelected(int selected);
 
@@ -55,7 +55,8 @@ class AirSpaceView: public QWidget
 
 	private:
 		enum {MinScale=1, MaxScale=10};
-		AirSpace::AirSpaceListType *m_pAirSpaceList;
+
+		AirSpaceList *m_pAirSpaceList;
 		BoundBox m_bbox;
 		QPoint m_offset;
 		int m_scale;
