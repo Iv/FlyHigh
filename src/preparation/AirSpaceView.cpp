@@ -50,7 +50,7 @@ void AirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList, int selected)
 
 	for(it=pAirSpaceList->begin(); it!=pAirSpaceList->end(); it++)
 	{
-		pAirSpace = *it;
+		pAirSpace = (*it);
 		pAirSpace->createPointList();
 		m_bbox.setMinMax(pAirSpace->boundBox());
 	}
@@ -197,13 +197,16 @@ void AirSpaceView::drawAirspace()
 		// draw airspaces
 		for(itAirSpace=m_pAirSpaceList->begin(); itAirSpace!=m_pAirSpaceList->end(); itAirSpace++)
 		{
+			pAirSpace = (*itAirSpace);
 			pointList.resize(pAirSpace->pointList().size());
 			ptNr = 0;
 
 			for(it=pAirSpace->pointList().begin(); it!=pAirSpace->pointList().end(); it++)
 			{
-				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;
-				lon = (*it).longitude() - offLon;
+				lat = (*it).latitude();
+				lat = m_bbox.north() + m_bbox.south() - lat - offLat;
+				lon = (*it).longitude();
+				lon = lon - offLon;
 				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
 			}
