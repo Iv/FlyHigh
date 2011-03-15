@@ -45,9 +45,9 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 
 	switch(src)
 	{
-	case IDataBase::SqlDB:
+		case IDataBase::SqlDB:
 		break;
-	case IDataBase::GPSdevice:
+		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
 			caption = "AirSpaces from GPS";
@@ -60,7 +60,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 			pFileMenu->addAction(pUpdateAct);
 		}
 		break;
-	case IDataBase::File:
+		case IDataBase::File:
 		{
 			m_pDb = NULL;
 			caption = "AirSpaces from File";
@@ -230,14 +230,14 @@ void AirSpaceWindow::file_AddToGPS()
 
 	row = getTable()->currentRow();
 
-	if((row >= 0) && m_pDb->open())
+	if((row >= 0) && IGPSDevice::pInstance()->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
 		IGPSDevice::pInstance()->add(*m_airSpaceList[row]);
 		progDlg.endProgress();
 		TableWindow::unsetCursor();
-		m_pDb->close();
+		IGPSDevice::pInstance()->close();
 	}
 }
 
