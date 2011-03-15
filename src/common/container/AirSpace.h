@@ -30,25 +30,24 @@ class AirSpace
 {
 	public:
 		enum {MaxNameSize=17};
-		typedef Q3SortedList<AirSpace> AirSpaceListType;
 
 		AirSpace();
 
 		virtual ~AirSpace();
 
-		const QString& name();
+		const QString& name() const;
 
 		void setName(const QString &name);
 
-		const QString& high();
+		const QString& high() const;
 
 		void setHigh(const QString & high);
 
-		const QString& low();
+		const QString& low() const;
 
 		void setLow(const QString & low);
 
-		const QString& airspaceClass();
+		const QString& airspaceClass() const;
 
 		void setAirspaceClass(const QString &airspaceClass);
 
@@ -56,11 +55,11 @@ class AirSpace
 
 		void setWarnDist(uint meters);
 
-		uint warnDist();
+		uint warnDist() const;
 
 		void setRemark(const QString &remark);
 
-		const QString& remark();
+		const QString& remark() const;
 
 		void createPointList();
 
@@ -69,11 +68,11 @@ class AirSpace
 		const BoundBox& boundBox() const;
 
 		bool isInside(const WayPoint &wp) const;
-		
-		bool operator<(const AirSpace &airspace);
 
-		bool operator==(const AirSpace &airspace);
-	
+		bool operator<(const AirSpace &airspace) const;
+
+		bool operator==(const AirSpace &airspace) const;
+
 	private:
 		QString m_name;
 		QString m_airspaceClass;
