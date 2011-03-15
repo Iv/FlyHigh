@@ -25,6 +25,11 @@ AirSpaceList::AirSpaceList()
 {
 }
 
+AirSpaceList::~AirSpaceList()
+{
+	clear();
+}
+
 void AirSpaceList::push_back(AirSpace *pAirSpace)
 {
 	return m_airSpaceList.push_back(pAirSpace);
