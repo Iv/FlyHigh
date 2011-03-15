@@ -17,34 +17,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef OpenAirFileParser_h
 #define OpenAirFileParser_h
 
 #include <QByteArray>
 #include "AirSpace.h"
 
+class AirSpaceList;
+
 class OpenAirFileParser
 {
 	public:
 		OpenAirFileParser();
-		
-		void parse(QByteArray &openAirData);
-		AirSpace::AirSpaceListType& airspaceList();
-		
+
+		void parse(QByteArray &openAirData, AirSpaceList &airspaceList);
+
 	private:
-		AirSpace::AirSpaceListType m_airspaceList;
 		double m_arcCenterLat;
 		double m_arcCenterLon;
 		bool m_arcDir;
 
 		void parseString(char *pRecord, QString &str);
+
 		void parseHeight(char *pRecord, int &height);
+
 		void parseAirspaceClass(char *pRecord, AirSpace *pAirspace);
+
 		void parseVarAssign(char *pRecord);
+
 		void parsePoint(char *pRecord, AirSpace *pAirspace);
+
 		void parseArc(char *pRecord, AirSpace *pAirspace);
+
 		void parseCircle(char *pRecord, AirSpace *pAirspace);
+
 		bool parseCoordinate(char *pRecord, double &latitude, double &longitude);
 };
 

@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string>
 #include "AirSpaceItem.h"
+#include "AirSpaceList.h"
 #include "OpenAirFileParser.h"
 #include "WayPoint.h"
 
@@ -34,14 +35,14 @@ OpenAirFileParser::OpenAirFileParser()
 {
 }
 
-void OpenAirFileParser::parse(QByteArray &openAirData)
+void OpenAirFileParser::parse(QByteArray &openAirData, AirSpaceList &airspaceList)
 {
 	QBuffer buff;
 	char pRecord[MAX_REC_SIZE];
 	AirSpace *pAirspace = NULL;
 	QString strValue;
-	
-	m_airspaceList.clear();
+
+	airspaceList.clear();
 	buff.setBuffer(&openAirData);
 
 	if(buff.open(QIODevice::ReadOnly))
@@ -51,7 +52,7 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
 				pAirspace = new AirSpace;
-				m_airspaceList.append(pAirspace);
+				airspaceList.push_back(pAirspace);
 				parseString(pRecord, strValue);
 				pAirspace->setAirspaceClass(strValue);
 			}
@@ -110,11 +111,6 @@ void OpenAirFileParser::parse(QByteArray &openAirData)
 	}
 }
 
-AirSpace::AirSpaceListType& OpenAirFileParser::airspaceList()
-{
-	return m_airspaceList;
-}
-
 void OpenAirFileParser::parseString(char *pRecord, QString &str)
 {
 	std::string locStr = pRecord;
@@ -163,7 +159,7 @@ void OpenAirFileParser::parseAirspaceClass(char *pRecord, AirSpace *pAirspace)
 	QString str = pRecord;
 	int begin;
 	int end;
-	
+
         begin = str.indexOf(' ') + 1;
         end = str.indexOf('\r');
 	str = str.mid(begin, end-begin);
@@ -195,7 +191,7 @@ void OpenAirFileParser::parsePoint(char *pRecord, AirSpace *pAirspace)
 	AirSpaceItemPoint *pPoint;
 	double lat;
 	double lon;
-	
+
 	pPoint = new AirSpaceItemPoint(AirSpaceItem::Point);
 	parseCoordinate(pRecord + 3, lat, lon);
 	pPoint->setPoint(lat, lon);
@@ -255,35 +251,35 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double 
 	int min;
 	int sec;
 	bool success;
-	
+
 	success = (sscanf(pRecord, "%s %1s %s %1s", lat, NS, lon, EW) == 4);
-	
+
 	if(success)
 	{
 		success = (sscanf(lat, "%d:%d:%d", &deg, &min, &sec) == 3);
-		
+
 		if(success)
 		{
 			latitude = deg + min / 60.0 + sec / 3600.0;
-			
+
 			if(strcmp(NS, "S") == 0)
 			{
 				latitude *= -1;
 			}
 		}
-		
+
 		success = (sscanf(lon, "%d:%d:%d", &deg, &min, &sec) == 3);
-		
+
 		if(success)
 		{
 			longitude = deg + min / 60.0 + sec / 3600.0;
-			
+
 			if(strcmp(EW, "W") == 0)
 			{
 				longitude *= -1;
 			}
 		}
 	}
-	
+
 	return success;
 }
