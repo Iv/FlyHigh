@@ -35,7 +35,7 @@ AirSpace::~AirSpace()
 {
 }
 
-const QString& AirSpace::name()
+const QString& AirSpace::name() const
 {
 	return m_name;
 }
@@ -43,12 +43,12 @@ const QString& AirSpace::name()
 void AirSpace::setName(const QString &name)
 {
 	QString locName = name;
-	
+
 	locName.remove('#');
 	m_name = locName.trimmed();
 }
 
-const QString& AirSpace::high()
+const QString& AirSpace::high() const
 {
 	return m_high;
 }
@@ -58,7 +58,7 @@ void AirSpace::setHigh(const QString &high)
 	m_high = high;
 }
 
-const QString& AirSpace::low()
+const QString& AirSpace::low() const
 {
 	return m_low;
 }
@@ -68,7 +68,7 @@ void AirSpace::setLow(const QString &low)
 	m_low = low;
 }
 
-const QString& AirSpace::airspaceClass()
+const QString& AirSpace::airspaceClass() const
 {
 	return m_airspaceClass;
 }
@@ -88,7 +88,7 @@ void AirSpace::setWarnDist(uint meters)
 	m_warnDist = meters;
 }
 
-uint AirSpace::warnDist()
+uint AirSpace::warnDist() const
 {
 	return m_warnDist;
 }
@@ -98,7 +98,7 @@ void AirSpace::setRemark(const QString &remark)
 	m_remark = remark;
 }
 
-const QString& AirSpace::remark()
+const QString& AirSpace::remark() const
 {
 	return m_remark;
 }
@@ -151,7 +151,7 @@ void AirSpace::createPointList()
 					centerLat = (center.latitude() * M_PI) / 180;
 					centerLon = (center.longitude() * M_PI) / 180;
 					angDist = pCircle->radius() / WayPoint::earthRadius;
-			
+
 					for(stepNr=0; stepNr<=360; stepNr+=10)
 					{
 						bear = stepNr * M_PI / 180;
@@ -182,7 +182,7 @@ void AirSpace::createPointList()
 					inc = pSegBegin->dir();
 					m_pointList.push_back(pSegBegin->pos());
 					m_boundBox.setMinMax(pSegBegin->pos());
-		
+
 					if(pSegBegin->dir())
 					{
 						if(beginArc > endArc)
@@ -205,11 +205,11 @@ void AirSpace::createPointList()
 							stepCnt = (uint)(beginArc - endArc);
 						}
 					}
-		
+
 					centerLat = (center.latitude() * M_PI) / 180;
 					centerLon = (center.longitude() * M_PI) / 180;
 					angDist = ((dist1 + dist2) / 2) / WayPoint::earthRadius;
-			
+
 					for(stepNr=1; stepNr<stepCnt; stepNr+=10)
 					{
 						bear = (beginArc + (stepNr * inc)) * M_PI / 180;
@@ -221,7 +221,7 @@ void AirSpace::createPointList()
 						m_pointList.push_back(curPt);
 						m_boundBox.setMinMax(curPt);
 					}
-		
+
 					m_pointList.push_back(pSegEnd->pos());
 					m_boundBox.setMinMax(pSegEnd->pos());
 				}
@@ -267,12 +267,12 @@ bool AirSpace::isInside(const WayPoint &wp) const
 	return (cross) && (wp.altitude() >= m_low.toInt()) && (wp.altitude() <= m_high.toInt());
 }
 
-bool AirSpace::operator<(const AirSpace &airspace)
+bool AirSpace::operator<(const AirSpace &airspace) const
 {
 	return (m_name < airspace.m_name);
 }
 
-bool AirSpace::operator==(const AirSpace &airspace)
+bool AirSpace::operator==(const AirSpace &airspace) const
 {
 	return (m_name == airspace.m_name);
 }
