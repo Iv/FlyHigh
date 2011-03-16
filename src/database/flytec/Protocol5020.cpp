@@ -287,7 +287,6 @@ bool Protocol5020::routeListRec(uint &curSent, uint &totalSent, Route &route)
 	if(m_device.recieveTlg(500))
 	{
 		tlg = m_device.getTlg();
-
 		tokenizer.getFirstToken(tlg, ',', token);
 		valid = (token == "$PBRRTS");
 		valid &= validateCheckSum(tlg);
@@ -388,6 +387,52 @@ bool Protocol5020::routeDel(const QString &name)
 	return success;
 }
 
+bool Protocol5020::ctrInfoReq()
+{
+	QString tlg;
+	bool success;
+
+	tlg = "$PBRCTRI";
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+	return success;
+}
+
+bool Protocol5020::ctrInfoRec(uint &nofCtr, uint &maxCtr, uint &nofFree)
+{
+	Tokenizer tokenizer;
+	QString token;
+	QString tlg;
+	int id;
+	bool valid = false;
+
+	if(m_device.recieveTlg(500))
+	{
+		tlg = m_device.getTlg();
+		tokenizer.getFirstToken(tlg, ',', token);
+		valid = (token == "$PBRCTRI");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+		  // no of actual CTRs
+      tokenizer.getNextToken(tlg, ',', token);
+			nofCtr = token.toUInt();
+
+      // no of max CTRs
+      tokenizer.getNextToken(tlg, ',', token);
+			maxCtr = token.toUInt();
+
+      // no of free elements
+      tokenizer.getNextToken(tlg, '*', token);
+			nofFree = token.toUInt();
+		}
+	}
+
+	return valid;
+}
+
 bool Protocol5020::ctrListReq()
 {
 	QString tlg;
@@ -399,19 +444,6 @@ bool Protocol5020::ctrListReq()
 	usleep(1000*1000);
 
 	return success;
-
-/**
-		int res;
-	u_char len;
-
-	sprintf((char*)&buff[0],  "PBRCTR,");
-	len = strlen((char*)&buff[0]);
-
-	res = flytec_ll_send(&buff[0], len);
-	usleep(1000*1000);
-
-	return res;
-*/
 }
 
 bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpace)
