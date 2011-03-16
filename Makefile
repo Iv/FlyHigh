@@ -1,6 +1,5 @@
 TARGET_DIR=./build
 BIN=flyhigh
-BUILD_TYPE=Debug
 DIRS = \
 	usr/ \
 	usr/share/ \
@@ -11,9 +10,15 @@ DIRS = \
 	usr/share/man/ \
 	usr/bin/
 
-all:
+all: Release
+
+Debug:
 	[ -x  $(TARGET_DIR) ] || mkdir $(TARGET_DIR)
-	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) ..; make
+	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=Debug ..; make
+
+Release:
+	[ -x  $(TARGET_DIR) ] || mkdir $(TARGET_DIR)
+	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=Release ..; make
 
 clean:
 	rm -rf $(TARGET_DIR)/*
