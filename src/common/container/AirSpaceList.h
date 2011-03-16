@@ -53,9 +53,9 @@ class AirSpaceList
 		void sort();
 
 	private:
-
-
 		AirSpaceListType m_airSpaceList;
+
+		static bool nameSort(const AirSpace *pAirSpace1, const AirSpace *pAirSpace2);
 };
 
 #endif
