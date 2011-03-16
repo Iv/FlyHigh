@@ -82,6 +82,10 @@ int ft_updateConfiguration();
 		bool routeDel(const QString &name);
 
 		/** CTR */
+		bool ctrInfoReq();
+
+		bool ctrInfoRec(uint &nofCtr, uint &maxCtr, uint &nofFree);
+
 		bool ctrListReq();
 
 		bool ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpace);
