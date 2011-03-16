@@ -564,64 +564,6 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	}
 
 	return valid;
-
-#if 0
-	u_char len;
-	int res;
-
-	res = flytec_ll_recieve(ProductResp, &buff[0], &len);
-
-	if(res == 0)
-	{
-		res = memcmp((char*)&buff[0], "PBRCTR", 6);
-	}
-
-	if(res == 0)
-	{
-		/* toal sentences */
-		buff[10] = '\0';
-		pCTR->totalSent = atoi((char*)&buff[7]);
-
-		/* actual sentence */
-		buff[14] = '\0';
-		pCTR->actSent = atoi((char*)&buff[11]);
-
-		if(pCTR->actSent == 0)
-		{
-			/* ctr name */
-			ft_ftstring2string(pCTR->sent.first.name, (char*)&buff[15]);
-
-			/* warning distance */
-			buff[37] = '\0';
-			pCTR->sent.first.warnDist = atoi((char*)&buff[33]);
-		}
-		else if(pCTR->actSent == 1)
-		{
-			/* remark */
-			ft_ftstring2string(pCTR->sent.second.remark, (char*)&buff[15]);
-		}
-		else
-		{ /* a member */
-			pCTR->sent.member.type = buff[15];
-			pCTR->sent.member.latitude = stringToDeg(&buff[17], 10);
-			pCTR->sent.member.longitude = stringToDeg(&buff[28], 11);
-
-			if(pCTR->sent.member.type == 'C') /* circle */
-			{
-				/* radius */
-				buff[45] = '\0';
-				pCTR->sent.member.radius = (uint)atoi((char*)&buff[40]);
-			}
-			else if((pCTR->sent.member.type == 'T') /* start segment */ ||
-					(pCTR->sent.member.type == 'Z')) /* end segment */
-			{
-				pCTR->sent.member.direction = buff[40];
-			}
-		}
-	}
-
-	return res;
-#endif
 }
 
 bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
@@ -736,10 +678,7 @@ bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
-
-qDebug() << tlg;
-
-	usleep(200*1000);
+	usleep(100*1000);
 
 	return success;
 }
@@ -861,6 +800,8 @@ QString Protocol5020::latToString(double deg, int size) const
 	{
 		tlg += ",N";
 	}
+
+	return tlg;
 }
 
 QString Protocol5020::lonToString(double deg, int size) const
@@ -877,6 +818,8 @@ QString Protocol5020::lonToString(double deg, int size) const
 	{
 		tlg += ",E";
 	}
+
+	return tlg;
 }
 
 QString Protocol5020::degToString(double deg, int size) const
