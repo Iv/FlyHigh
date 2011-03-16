@@ -21,6 +21,8 @@
 #include <math.h>
 #include "AirSpace.h"
 
+#include <QDebug>
+
 AirSpace::AirSpace()
 {
 	m_name = "";
@@ -265,14 +267,4 @@ bool AirSpace::isInside(const WayPoint &wp) const
   }
 
 	return (cross) && (wp.altitude() >= m_low.toInt()) && (wp.altitude() <= m_high.toInt());
-}
-
-bool AirSpace::operator<(const AirSpace &airspace) const
-{
-	return (m_name < airspace.m_name);
-}
-
-bool AirSpace::operator==(const AirSpace &airspace) const
-{
-	return (m_name == airspace.m_name);
 }

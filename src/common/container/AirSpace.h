@@ -69,10 +69,6 @@ class AirSpace
 
 		bool isInside(const WayPoint &wp) const;
 
-		bool operator<(const AirSpace &airspace) const;
-
-		bool operator==(const AirSpace &airspace) const;
-
 	private:
 		QString m_name;
 		QString m_airspaceClass;
