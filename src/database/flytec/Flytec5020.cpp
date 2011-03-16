@@ -380,22 +380,31 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 	AirSpace *pAirspace;
 	uint curSent;
 	uint totalSent;
+  uint nofCtr;
+  uint maxCtr;
+  uint nofFree;
+  uint ctrNr = 0;
 	bool success = false;
 	bool used = false;
+	bool ctrAv = false;
 
 	m_cancel = false;
-
-	success = m_protocol->ctrListReq();
-	airspaceList.clear();
+  airspaceList.clear();
+	success = m_protocol->ctrInfoReq();
 
 	if(success)
+	{
+    m_protocol->ctrInfoRec(nofCtr, maxCtr, nofFree);
+    ctrAv = (nofCtr > 0);
+    success = m_protocol->ctrListReq();
+	}
+
+  if(success && ctrAv)
 	{
 		pAirspace = new AirSpace();
 
 		while(m_protocol->ctrListRec(curSent, totalSent, pAirspace))
 		{
-			emit progress(curSent * 100 / totalSent);
-
 			if(m_cancel)
 			{
 				break;
@@ -405,6 +414,8 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 			{
 				airspaceList.push_back(pAirspace);
 				pAirspace = new AirSpace();
+        emit progress(ctrNr * 100 / nofCtr);
+        ctrNr++;
 			}
 		}
 
@@ -414,5 +425,5 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 
-	return success;
+	return (success || !ctrAv);
 }
