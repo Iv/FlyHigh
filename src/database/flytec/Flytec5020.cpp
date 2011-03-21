@@ -427,3 +427,94 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 
 	return (success || !ctrAv);
 }
+
+bool Flytec5020::memoryRead(QByteArray &arr)
+{
+	uint pageNr;
+	uint pageAddr;
+	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
+	bool success = false;
+
+	arr.resize(Flytec5020MemSize);
+	m_cancel = false;
+
+	for(pageNr=0; pageNr<nofPages; pageNr++)
+	{
+		emit progress(pageNr * 100 / nofPages);
+
+		if(m_cancel)
+		{
+			return false;
+		}
+
+		pageAddr = pageNr * Flytec5020PageSize;
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr));
+
+		if(!success)
+		{
+			break;
+			// read Error!
+		}
+	}
+
+	// the last few bytes....
+	if(success)
+	{
+		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr));
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
+}
+
+bool Flytec5020::memoryWrite(QByteArray &arr)
+{
+	uint pageNr;
+	uint pageAddr;
+	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
+	bool success = false;
+
+	if(arr.size() != Flytec5020MemSize)
+	{
+		return false;
+	}
+
+	m_cancel = false;
+
+	for(pageNr=0; pageNr<nofPages; pageNr++)
+	{
+		emit progress(pageNr * 100 / nofPages);
+
+		if(m_cancel)
+		{
+			return false;
+		}
+
+		pageAddr = pageNr * Flytec5020PageSize;
+		success = m_protocol->memoryWrite(pageAddr, (u_char*)(arr.data()+pageAddr));
+
+		if(!success)
+		{
+			break;
+			// write Error!
+		}
+	}
+
+	// the last few bytes....
+	if(success)
+	{
+		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		success = m_protocol->memoryWrite(pageAddr, (uchar*)(arr.data()+pageAddr));
+	}
+
+	if(success)
+	{
+		m_protocol->updateConfiguration();
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
+}
