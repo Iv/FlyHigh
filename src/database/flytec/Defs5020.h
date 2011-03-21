@@ -61,8 +61,9 @@
 #define BATT_TYPE_POS 352
 #define UTC_HALF_OFFSET_POS 384
 
-static const uchar ft_PageSize = 8;
-static const uint ft_MemSize = 452;
+static const uchar Flytec5020PageSize = 8;
+
+static const uint Flytec5020MemSize = 385;
 
 typedef struct FlytecDate
 {
