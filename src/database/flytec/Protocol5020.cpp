@@ -464,7 +464,6 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	if(m_device.recieveTlg(3000))
 	{
 		tlg = m_device.getTlg();
-
 		tokenizer.getFirstToken(tlg, ',', token);
 		valid = (token == "$PBRCTR");
 		valid &= validateCheckSum(tlg);
@@ -743,8 +742,7 @@ bool Protocol5020::recAck()
 	if(m_device.recieveTlg(500))
 	{
 		tlg = m_device.getTlg();
-
-		tokenizer.getFirstToken(tlg, ',', token);
+    tokenizer.getFirstToken(tlg, ',', token);
 		valid = (token == "$PBRANS");
 		valid &= validateCheckSum(tlg);
 
@@ -753,12 +751,117 @@ bool Protocol5020::recAck()
 			// status
 			tokenizer.getFirstToken(tlg, '*', token);
 			status = token.toUInt();
-
 			valid = (status == 1);
 		}
 	}
 
 	return valid;
+}
+
+bool Protocol5020::memoryRead(uint addr, uchar *pPage)
+{
+  Tokenizer tokenizer;
+  QString tlg;
+  QString token;
+ 	int res;
+	uchar len;
+	uchar byteNr;
+	uchar start;
+	bool valid;
+	bool success;
+	bool ok;
+
+	// valid address?
+	if((addr + Flytec5020PageSize) > Flytec5020MemSize)
+	{
+		return false;
+	}
+
+	tlg = "$PBRMEMR,";
+
+  // address
+	tlg += QString::number(addr, 16).rightJustified(4, '0').toUpper();
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+  if(success)
+  {
+    if(m_device.recieveTlg(3000))
+    {
+      tlg = m_device.getTlg();
+qDebug() << tlg;
+      tokenizer.getFirstToken(tlg, ',', token);
+      valid = (token == "$PBRMEMR");
+      valid &= validateCheckSum(tlg);
+
+      // address
+      tokenizer.getNextToken(tlg, ',', token);
+      valid &= (token.toInt(&ok, 16) == addr);
+
+      if(valid)
+      {
+        for(byteNr=0; byteNr<(Flytec5020PageSize - 1); byteNr++)
+        {
+          tokenizer.getNextToken(tlg, ',', token);
+          pPage[byteNr] = token.toInt(&ok, 16);
+        }
+
+        tokenizer.getNextToken(tlg, '*', token);
+        pPage[byteNr] = token.toInt(&ok, 16);
+      }
+    }
+  }
+
+  usleep(100 * 1000);
+
+	return success;
+}
+
+bool Protocol5020::memoryWrite(uint addr, uchar *pPage)
+{
+  QString tlg;
+  uint byteNr;
+  bool success;
+
+  // valid address?
+	if((addr + Flytec5020PageSize) > Flytec5020MemSize)
+	{
+		return false;
+	}
+
+	tlg = "$PBRMEMW,";
+
+  // address
+	tlg += QString::number(addr, 16).rightJustified(4, '0').toUpper();
+	tlg += ",";
+
+	// nof Bytes to be written
+  tlg += QString::number(Flytec5020PageSize);
+
+  // data
+  for(byteNr=0; byteNr<Flytec5020PageSize; byteNr++)
+	{
+    tlg += ",";
+	  tlg += QString::number(pPage[byteNr], 16).rightJustified(2, '0').toUpper();
+	}
+
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+  usleep(100 * 1000);
+
+  return success;
+}
+
+bool Protocol5020::updateConfiguration()
+{
+  QString tlg;
+	bool success;
+
+	tlg = "$PBRCONF,";
+	addTail(tlg);
+	success = m_device.sendTlg(tlg);
+
+	return success;
 }
 
 QDate Protocol5020::parseDate(const QString &token) const

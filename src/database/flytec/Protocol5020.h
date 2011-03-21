@@ -96,6 +96,13 @@ int ft_updateConfiguration();
 
 		bool recAck();
 
+		/** Memory */
+		bool memoryRead(uint addr, uchar *pPage);
+
+    bool memoryWrite(uint addr, uchar *pPage);
+
+    bool updateConfiguration();
+
 	private:
 		Device5020 m_device;
 
