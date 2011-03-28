@@ -61,7 +61,7 @@
 #define BATT_TYPE_POS 352
 #define UTC_HALF_OFFSET_POS 384
 
-static const uchar Flytec5020PageSize = 8;
+static const uint Flytec5020PageSize = 8;
 
 static const uint Flytec5020MemSize = 385;
 
