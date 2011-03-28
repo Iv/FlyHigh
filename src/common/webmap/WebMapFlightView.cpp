@@ -81,7 +81,7 @@ void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
 void WebMapFlightView::mapReady()
 {
 	m_pWebMap->setTurnPointList(m_tpList);
-	m_pWebMap->setTurnPointsDragable(false);
+	m_pWebMap->setTurnPointsDragable(true);
 	m_pWebMap->setFlightType("xc5");
 	m_pWebMap->setLocation(m_location);
 	m_pWebMap->XCLoad();

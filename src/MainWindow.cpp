@@ -51,7 +51,6 @@ MainWindow::MainWindow()
 	:QMainWindow(0)
 {
 	QString devName;
-	int id;
 	uint devNr;
 	uint curDev;
 	uint maxDevNr;
@@ -65,10 +64,10 @@ MainWindow::MainWindow()
 
 	m_pWinMapper = new QSignalMapper(this);
 	connect(m_pWinMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
-	
+
 	m_pActiveWin = NULL;
 	QMainWindow::setWindowTitle("FlyHigh");
-	
+
 	// Menu File
 	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* pQuitAct = new QAction(tr("&Quit"), this);
@@ -129,7 +128,7 @@ MainWindow::MainWindow()
 	QAction* pPortAct = new QAction(tr("&Port..."), this);
 	connect(pPortAct,SIGNAL(triggered()), this, SLOT(settings_port()));
 	pConfMenu->addAction(pPortAct);
-	
+
 	// Submenu Settings>Device
 	m_pDevicesMenu = pConfMenu->addMenu(tr("&Device"));
 	// create a radiobutton group
@@ -169,10 +168,10 @@ MainWindow::MainWindow()
 
 	m_pCascade = new QAction(tr("&Cascade"), this);
 	connect(m_pCascade, SIGNAL(triggered()), m_pMdiArea, SLOT(cascadeSubWindows()));
-	
+
 	m_pTile = new QAction(tr("&Tile"), this);
 	connect(m_pTile, SIGNAL(triggered()), m_pMdiArea, SLOT(tileSubWindows()));
-	
+
 	m_pTileHor = new QAction(tr("Tile &Horizontally"), this);
 	connect(m_pTileHor, SIGNAL(triggered()), SLOT(windows_tile_horizontally()));
 
@@ -317,9 +316,6 @@ void MainWindow::help_about()
 void MainWindow::aboutToShow()
 {
 	QList<QMdiSubWindow *> winList;
-	unsigned int nofWin;
-	unsigned int winNr;
-	int menuItemId;
 	bool hasMdiChild;
 
 	m_pWindowsMenu->clear();
@@ -361,7 +357,7 @@ void MainWindow::aboutToShow()
         m_pWindowsMenu->addSeparator();
         winList = m_pMdiArea->subWindowList();
 	nofWin = winList.count();
-	
+
 	for(winNr=0; winNr<nofWin; winNr++)
 	{
                 menuItemId = m_pWindowsMenu->insertItem(winList.at(winNr)->windowTitle(),
@@ -385,13 +381,11 @@ void MainWindow::windows_activated(int id)
 
 void MainWindow::windows_tile_horizontally()
 {
-        QList<QMdiSubWindow *> winList = m_pMdiArea->subWindowList();
+  QList<QMdiSubWindow *> winList = m_pMdiArea->subWindowList();
 	QWidget *pWin;
-	unsigned int winNr;
-	unsigned int nofWin;
+	uint winNr;
+	uint nofWin;
 	int heightForEach;
-	int preferredHeight;
-	int actHeight;
 	int y = 0;
 
 	// if 0 or 1 windows do normal tiling
@@ -400,7 +394,7 @@ void MainWindow::windows_tile_horizontally()
 		m_pMdiArea->tileSubWindows();
 		return;
 	}
-  
+
 	// primitive horizontal tiling
 	nofWin = winList.count();
 	heightForEach = m_pMdiArea->height() / nofWin;
@@ -408,7 +402,7 @@ void MainWindow::windows_tile_horizontally()
 	for(winNr= 0; winNr<nofWin; winNr++)
 	{
 		pWin = winList.at(winNr);
-		
+
 		if(pWin->isMaximized())
 		{
 			// prevent flicker
@@ -427,9 +421,9 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
 	QList<QMdiSubWindow *> winList = m_pMdiArea->subWindowList();
 	QWidget *pWin;
-	unsigned int nofWin = winList.count();
-	unsigned int winNr;
-	
+	uint nofWin = winList.count();
+	uint winNr;
+
 	if(nofWin > 0)
 	{
 		for(winNr=0; winNr<nofWin; winNr++)
@@ -443,7 +437,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 			}
 		}
 	}
-	
+
 	QMainWindow::closeEvent(e);
 }
 
@@ -461,7 +455,7 @@ void MainWindow::showWindow(QMainWindow *pWin)
 void MainWindow::settings_device()
 {
 	QAction* pAct = qobject_cast<QAction*>(sender());
-	
+
 	IFlyHighRC::pInstance()->setDeviceName(pAct->data().toUInt());
 }
 
@@ -476,7 +470,7 @@ void MainWindow::settings_configure_device()
 {
 	IFlytecConfig *pFrame;
 	IFlytec6015Config *pConfig6015;
-	
+
 	switch(IFlyHighRC::pInstance()->deviceName())
 	{
 		case IFlyHighRC::DevFlytec5020:
@@ -498,20 +492,20 @@ void MainWindow::settings_configure_device()
 void MainWindow::settings_pilotInfo()
 {
 	IFlyHighRCFrame rcFrame;
-	
+
 	rcFrame.show();
 }
 
 MDIWindow* MainWindow::activeMdiChild()
 {
-    if (QMdiSubWindow *activeSubWindow = m_pMdiArea->activeSubWindow())
-        return qobject_cast<MDIWindow *>(activeSubWindow->widget());
-    return 0;
+  if (QMdiSubWindow *activeSubWindow = m_pMdiArea->activeSubWindow())
+      return qobject_cast<MDIWindow *>(activeSubWindow->widget());
+  return 0;
 }
 
 void MainWindow::setActiveSubWindow(QWidget *window)
 {
-    if (!window)
-        return;
-    m_pMdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+  if (!window)
+      return;
+  m_pMdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
 }

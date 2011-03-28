@@ -31,30 +31,30 @@ class GarminDevice: public IGPSDevice
 {
 	public:
 		GarminDevice();
-		
+
 	protected:
 		bool open();
 
 		void close();
 
 		void cancel();
-			
+
 		bool flightList(Flight::FlightListType &flightList);
 
-		bool igcFile(uint flightNr, QByteArray &arr);
+		bool igcFile(int flightNr, QByteArray &arr);
 
 		bool add(WayPoint &wp);
 
 		bool delWayPoint(const QString &name);
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
-		
+
 		bool add(Route &route);
 
 		bool routeList(Route::RouteListType &routeList);
 
 		bool delRoute(const QString &name);
-		
+
 	private:
 		bool m_cancel;
 		Flight::FlightListType m_flightList;

@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef IFlyHighRC_h
 #define IFlyHighRC_h
 
@@ -34,11 +34,11 @@ class IFlyHighRC
 		enum {DevFlytec5020 = 0, DevFlytec6015 = 1};
 
 		static IFlyHighRC* pInstance();
-		
+
 		void loadRC();
 
 		void saveRC();
-		
+
 		const QString& deviceLine();
 
 		void setDeviceLine(const QString &name);
@@ -64,11 +64,11 @@ class IFlyHighRC
 		const QString& versionInfo();
 
 		const QString& copyInfo();
-		
+
 		const QStringList& deviceNameList();
 
 		const QStringList& deviceSpeedList();
-		
+
 		// pilot info
 		void setPilotId(int id);
 
@@ -82,7 +82,7 @@ class IFlyHighRC
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
 		uint m_deviceName;
-		uint m_deviceSpeed;
+		int m_deviceSpeed;
 		QString m_deviceLine;
 		char m_utcOffset;
 		QString m_lastDir;
@@ -90,12 +90,12 @@ class IFlyHighRC
 		QString m_copyInfo;
 		int m_pilotId;
 		QString m_dbHost;
-		
+
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
 
 		IFlyHighRC();
-		
+
 		void parseSerialLine(QBuffer &buff);
 		void saveSerialLine(QTextStream &stream);
 		void parseDateTime(QBuffer &buff);

@@ -74,7 +74,7 @@ void WebMap::setTurnPointList(const WayPoint::WayPointListType &tpList)
 	QString arg = "[";
 	QString argElem = "[%1,%2]";
 	QWebFrame *pFrame;
-	uint tpNr;
+	int tpNr;
 	bool first = true;
 
 	pFrame = page()->mainFrame();
@@ -237,7 +237,7 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 		for(fpNr=0; fpNr<fpListSize; fpNr++)
 		{
 			wpList.push_back(fpList.at(fpNr).wp);
-	
+
 			if(!first)
 			{
 				strTime += ",";
@@ -247,7 +247,7 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 			}
 
 			first = false;
-	
+
 			// time
 			strTime += "'";
 			strTime += fpList.at(fpNr).time.toString("hh:mm:ss");
@@ -270,7 +270,7 @@ void WebMap::setFlightPointList(const FlightPointList &fpList)
 
 		encoder.dpEncode(wpList, encPoints, encLevels);
 		setWayPointList(encPoints, encLevels, 3, "#FF0000");
-	
+
 		pFrame = page()->mainFrame();
 		code = "setFlightTime([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
@@ -307,7 +307,7 @@ void WebMap::setSogList(const FlightPointList::SogListType &sogList)
 			// sog
 			strSog += value.arg(round(sogList.at(itemNr) * 10.0) / 10.0);
 		}
-	
+
 		pFrame = page()->mainFrame();
 		pFrame->evaluateJavaScript(code.arg(strSog));
 	}
@@ -339,7 +339,7 @@ void WebMap::setVarioList(const FlightPointList::VarioListType &varioList)
 			// sog
 			strVario += value.arg(round(varioList.at(itemNr) * 10.0) / 10.0);
 		}
-	
+
 		pFrame = page()->mainFrame();
 		pFrame->evaluateJavaScript(code.arg(strVario));
 	}

@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef IGPSDevice_h
 #define IGPSDevice_h
 
@@ -29,9 +29,9 @@ class IGPSDevice: public IDataBase
 	public:
 		IGPSDevice();
 		virtual ~IGPSDevice();
-	
+
 		static IGPSDevice* pInstance();
-		
+
 		virtual bool open();
 
 		virtual void close();
@@ -40,7 +40,7 @@ class IGPSDevice: public IDataBase
 		virtual bool memoryRead(QByteArray &arr);
 
 		virtual bool memoryWrite(QByteArray &arr);
-		
+
 		// update
 		int flightsLastModified();
 
@@ -49,12 +49,12 @@ class IGPSDevice: public IDataBase
 		int routesLastModified();
 
 		int airspacesLastModified();
-		
+
 	protected:
 		typedef enum {Flights, WayPoints, Routes, AirSpaces, NofFields}FieldType;
-		
+
 		void setLastModified(FieldType field);
-		
+
 	private:
 		static IGPSDevice *m_pGPSDevice;
 		int m_lastModifiedList[NofFields];

@@ -135,14 +135,12 @@ void AirSpaceWindow::file_open()
 	QFile file;
 	OpenAirFileParser parser;
 	uint airspaceNr;
-	uint airspaceRow;
 	uint maxAirspaceNr;
 
 	selected = QFileDialog::getOpenFileName(this,
 																					"Open OpenAir File",
 																					IFlyHighRC::pInstance()->lastDir(),
 																					"OpenAir Files (*.txt *.fas)");
-
 	file.setFileName(selected);
 
 	if(selected!="" && file.exists())

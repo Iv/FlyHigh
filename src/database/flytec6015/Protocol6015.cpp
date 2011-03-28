@@ -517,7 +517,7 @@ double Protocol6015::ftString2Deg(const QString &token)
 	return deg;
 }
 
-QString Protocol6015::qString2ftString(const QString &qString, uint length)
+QString Protocol6015::qString2ftString(const QString &qString, int length)
 {
 	QString pad;
 	QString ftString;
@@ -540,7 +540,7 @@ QString Protocol6015::qString2ftString(const QString &qString, uint length)
 QString Protocol6015::ftString2qString(const QString &ftString)
 {
 	int cpyLength;
-	
+
 	for(cpyLength=ftString.length(); cpyLength>0; cpyLength--)
 	{
 		if(ftString[cpyLength-1] != ' ')
@@ -617,7 +617,7 @@ bool Protocol6015::writeParArray(MemType memType, int par, const QByteArray &val
 {
 	QString byte;
 	QString tlg;
-	uint byteNr;
+	int byteNr;
 	bool success;
 
 	for(byteNr=0; byteNr<value.size(); byteNr++)
@@ -729,7 +729,7 @@ QByteArray Protocol6015::readParArray(MemType memType, int par)
 	Tokenizer tokenizer;
 	QString token;
 	QByteArray value;
-	uint byteNr;
+	int byteNr;
 	uint elemNr;
 	int byte;
 	bool ok;
