@@ -45,7 +45,7 @@ class Protocol6015
 
 		/** Settings */
 		bool memoryWrite(MemType memType, int par, DataType dataType, const QVariant &value);
-		
+
 		QVariant memoryRead(MemType memType, int par, DataType dataType);
 
 		/**
@@ -101,22 +101,22 @@ class Protocol6015
 
 		double ftString2Deg(const QString &token);
 
-		QString qString2ftString(const QString &qString, uint length);
+		QString qString2ftString(const QString &qString, int length);
 
 		QString ftString2qString(const QString &ftString);
 
 		bool writeEnableFa();
 
 		bool writePar(MemType memType, int par, const QString &value);
-		
+
 		bool writeParString(MemType memType, int par, const QString &value);
 
 		bool writeParArray(MemType memType, int par, const QByteArray &value);
-		
+
 		bool requestPar(MemType memType, int par);
-		
+
 		int readParInt(MemType memType, int par, DataType dataType);
-		
+
 		QString readParString(MemType memType, int par);
 
 		QByteArray readParArray(MemType memType, int par);

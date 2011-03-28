@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <qbuffer.h>
 #include <qdatetime.h>
 #include "Error.h"
@@ -49,7 +49,7 @@ bool GarminDevice::flightList(Flight::FlightListType &flightList)
 	GPS_PTrack *trkList;
 	int nTracks;
 	int trackNr;
-	
+
 	m_flightList.clear();
         nTracks = GPS_Command_Get_Track(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &trkList);
 
@@ -58,30 +58,30 @@ bool GarminDevice::flightList(Flight::FlightListType &flightList)
 	{
 		fmt.GPS_Fmt_Print_Track(trkList, nTracks, m_flightList);
 		flightList = m_flightList; // copy flight list to user
-	
+
 		// release allocated memory
 		for(trackNr=0; trackNr<nTracks; trackNr++)
 		{
 			GPS_Track_Del(&trkList[trackNr]);
 		}
-		
+
 		free(trkList);
 	}
 
 	return (nTracks > 0);
 }
 
-bool GarminDevice::igcFile(uint flightNr, QByteArray &arr)
+bool GarminDevice::igcFile(int flightNr, QByteArray &arr)
 {
 	bool success;
-	
+
 	success = m_flightList.size() > flightNr;
-	
+
 	if(success)
 	{
 		arr = m_flightList[flightNr].igcData();
 	}
-	
+
 	return success;
 }
 
@@ -93,7 +93,7 @@ bool GarminDevice::add(WayPoint &wp)
 	int nWps = 1;
 
 	wayList = (GPS_PWay*)malloc(sizeof(GPS_PWay*));
-	
+
 	wayList[0] = GPS_Way_New();
 	wayList[0]->prot = gps_waypt_transfer;
         memcpy(wayList[0]->ident, wp.name().toAscii().constData(), wp.name().length());
@@ -101,14 +101,14 @@ bool GarminDevice::add(WayPoint &wp)
 	wayList[0]->lat = wp.latitude();
 	wayList[0]->lon = wp.longitude();
 	wayList[0]->alt = wp.altitude();
-	
+
 	// send wp
         ret = GPS_Command_Send_Waypoint(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), wayList, nWps);
 
 	// release allocated memory
 	GPS_Way_Del(&wayList[0]);
 	free(wayList);
-	
+
 	return !(ret < 0);
 }
 
@@ -124,19 +124,19 @@ bool GarminDevice::wayPointList(WayPoint::WayPointListType &wpList)
 	GPS_PWay *wayList;
 	int nWps;
 	int wpNr;
-	
+
         nWps = GPS_Command_Get_Waypoint(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &wayList);
 
 	if(nWps > 0)
 	{
 		fmt.GPS_Fmt_Print_Waypoint(wayList, nWps, wpList);
-		
+
 		// release allocated memory
 		for(wpNr=0; wpNr<nWps; wpNr++)
 		{
 			GPS_Way_Del(&wayList[wpNr]);
 		}
-		
+
 		free(wayList);
 	}
 
@@ -156,19 +156,19 @@ bool GarminDevice::routeList(Route::RouteListType &routeList)
 	GPS_PWay *wayList;
 	int nWps;
 	int wpNr;
-	
+
         nWps = GPS_Command_Get_Route(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &wayList);
 
 	if(nWps > 0)
 	{
 		fmt.GPS_Fmt_Print_Route(wayList, nWps, routeList);
-		
+
 		// release allocated memory
 		for(wpNr=0; wpNr<nWps; wpNr++)
 		{
 			GPS_Way_Del(&wayList[wpNr]);
 		}
-		
+
 		free(wayList);
 	}
 
