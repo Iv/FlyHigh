@@ -60,17 +60,74 @@ bool Protocol5020::devInfoReq()
 	addTail(tlg);
 
 	return m_device.sendTlg(tlg);
-
-qDebug() << "devInfoReq" << tlg;
 }
 
 bool Protocol5020::devInfoRec(DeviceInfo &devInfo)
 {
-	if(m_device.recieveTlg(500))
+  Tokenizer tokenizer;
+	QString token;
+	QString tlg;
+	bool valid = false;
+
+  if(m_device.recieveTlg(500))
 	{
-qDebug() << m_device.getTlg();
-//		printf("rec: %s\n", m_device.getTlg());
+		tlg = m_device.getTlg();
+		tokenizer.getFirstToken(tlg, ',', token);
+		valid = (token == "$PBRSNP");
+		valid &= validateCheckSum(tlg);
+
+		if(valid)
+		{
+		  // identifier
+			tokenizer.getNextToken(tlg, ',', token);
+			devInfo.deviceIdent = token;
+
+		  // pilot
+			tokenizer.getNextToken(tlg, ',', token);
+			devInfo.pilotName = ftString2qString(token);
+
+		  // serial
+			tokenizer.getNextToken(tlg, ',', token);
+			devInfo.serialNr = token.toUInt();
+
+		  // SW version
+      tokenizer.getNextToken(tlg, '*', token);
+			devInfo.swVersion = token;
+		}
 	}
+
+  return valid;
+}
+
+void Protocol5020::string2ftstring(const char *pstr, char *pftstr)
+{
+	u_char strLen;
+
+	memset(&pftstr[0], ' ', FT_STRING_SIZE);
+	strLen = strlen(&pstr[0]);
+
+	if(strLen > FT_STRING_SIZE)
+	{
+		strLen = FT_STRING_SIZE;
+	}
+
+	memcpy(&pftstr[0], &pstr[0], strLen);
+}
+
+void Protocol5020::ftstring2string(char *pstr, const char *pftstr)
+{
+	u_char strLen;
+
+	for(strLen=FT_STRING_SIZE;strLen>0;strLen--)
+	{
+		if(pftstr[strLen-1] != ' ')
+		{
+			break;
+		}
+	}
+
+	memcpy(&pstr[0], &pftstr[0], strLen);
+	pstr[strLen] = '\0';
 }
 
 bool Protocol5020::trackListReq()
@@ -83,7 +140,7 @@ bool Protocol5020::trackListReq()
 	return m_device.sendTlg(tlg);
 }
 
-bool Protocol5020::trackListRec(uint &total, Flight &flight)
+bool Protocol5020::trackListRec(int &total, Flight &flight)
 {
 	Tokenizer tokenizer;
 	QString token;
@@ -125,7 +182,7 @@ bool Protocol5020::trackListRec(uint &total, Flight &flight)
 	return valid;
 }
 
-bool Protocol5020::trackReq(uint trackNr)
+bool Protocol5020::trackReq(int trackNr)
 {
 	QString tlg;
 
@@ -404,7 +461,6 @@ bool Protocol5020::ctrInfoRec(uint &nofCtr, uint &maxCtr, uint &nofFree)
 	Tokenizer tokenizer;
 	QString token;
 	QString tlg;
-	int id;
 	bool valid = false;
 
 	if(m_device.recieveTlg(500))
@@ -458,7 +514,6 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	AirSpaceItemSeg *pSegment;
 	double lat;
 	double lon;
-	int id;
 	bool valid = false;
 
 	if(m_device.recieveTlg(3000))
@@ -763,10 +818,7 @@ bool Protocol5020::memoryRead(uint addr, uchar *pPage)
   Tokenizer tokenizer;
   QString tlg;
   QString token;
- 	int res;
-	uchar len;
-	uchar byteNr;
-	uchar start;
+	uint byteNr;
 	bool valid;
 	bool success;
 	bool ok;
@@ -789,14 +841,13 @@ bool Protocol5020::memoryRead(uint addr, uchar *pPage)
     if(m_device.recieveTlg(3000))
     {
       tlg = m_device.getTlg();
-qDebug() << tlg;
       tokenizer.getFirstToken(tlg, ',', token);
       valid = (token == "$PBRMEMR");
       valid &= validateCheckSum(tlg);
 
       // address
       tokenizer.getNextToken(tlg, ',', token);
-      valid &= (token.toInt(&ok, 16) == addr);
+      valid &= (token.toUInt(&ok, 16) == addr);
 
       if(valid)
       {
@@ -968,7 +1019,7 @@ QString Protocol5020::degToString(double deg, int size) const
 	return QString::number(value, 'f', 3).rightJustified(size, '0');
 }
 
-QString Protocol5020::qString2ftString(const QString &qString, uint length)
+QString Protocol5020::qString2ftString(const QString &qString, int length)
 {
 	QString pad;
 	QString ftString;

@@ -21,6 +21,7 @@
 #define Flytec5020_h
 
 #include "IGPSDevice.h"
+#include "Defs5020.h"
 
 class Pilot;
 class Protocol5020;
@@ -33,11 +34,17 @@ class Flytec5020: public IGPSDevice
 
 		virtual ~Flytec5020();
 
-	protected:
 		bool open();
 
 		void close();
 
+    bool deviceInfo(DeviceInfo &info);
+
+    void string2ftstring(const char *pstr, char *pftstr);
+
+    void ftstring2string(char *pstr, const char *pftstr);
+
+	protected:
 		void cancel();
 
 		// flights

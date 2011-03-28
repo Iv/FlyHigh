@@ -44,20 +44,16 @@ class Protocol5020
 
 		bool devInfoRec(DeviceInfo &devInfo);
 
-/**
-int memoryRead(uint addr, uchar *pPage);
+    void string2ftstring(const char *pstr, char *pftstr);
 
-int memoryWrite(uint addr, uchar *pPage);
-
-int ft_updateConfiguration();
-*/
+    void ftstring2string(char *pstr, const char *pftstr);
 
 		/** Track */
 		bool trackListReq();
 
-		bool trackListRec(uint &total, Flight &flight);
+		bool trackListRec(int &total, Flight &flight);
 
-		bool trackReq(uint trackNr);
+		bool trackReq(int trackNr);
 
 		bool trackRec(QString &line);
 
@@ -118,7 +114,7 @@ int ft_updateConfiguration();
 
 		QString degToString(double deg, int size) const;
 
-		QString qString2ftString(const QString &qString, uint length);
+		QString qString2ftString(const QString &qString, int length);
 
 		QString ftString2qString(const QString &ftString);
 

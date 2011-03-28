@@ -46,19 +46,36 @@ bool Flytec5020::open()
 					IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
 	Error::verify(success, Error::FLYTEC_OPEN);
 
-/*
-DeviceInfo devInfo;
-
-m_protocol->devInfoReq();
-m_protocol->devInfoRec(devInfo);
-*/
-
 	return success;
 }
 
 void Flytec5020::close()
 {
 	m_protocol->close();
+}
+
+bool Flytec5020::deviceInfo(DeviceInfo &info)
+{
+  bool success;
+
+  success = m_protocol->devInfoReq();
+
+  if(success)
+  {
+    success = m_protocol->devInfoRec(info);
+  }
+
+  return success;
+}
+
+void Flytec5020::string2ftstring(const char *pstr, char *pftstr)
+{
+  m_protocol->string2ftstring(pstr, pftstr);
+}
+
+void Flytec5020::ftstring2string(char *pstr, const char *pftstr)
+{
+  m_protocol->ftstring2string(pstr, pftstr);
 }
 
 void Flytec5020::cancel()
@@ -70,7 +87,7 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	Flight flight;
 	bool success;
-	uint total;
+	int total;
 
 	(void)pilot;
 
@@ -163,7 +180,7 @@ bool Flytec5020::delWayPoint(WayPoint &wp)
 
 bool Flytec5020::delAllWayPoints()
 {
-	int prog;
+///	int prog;
 	bool success;
 
 	success = m_protocol->wpDelAll();
@@ -355,7 +372,7 @@ bool Flytec5020::add(AirSpace &airspace)
 	// recieve ack
 	if(success)
 	{
-		success == m_protocol->recAck();
+		success = m_protocol->recAck();
 	}
 
 	Error::verify(success, Error::FLYTEC_CMD);
@@ -385,7 +402,6 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
   uint nofFree;
   uint ctrNr = 0;
 	bool success = false;
-	bool used = false;
 	bool ctrAv = false;
 
 	m_cancel = false;
@@ -476,7 +492,7 @@ bool Flytec5020::memoryWrite(QByteArray &arr)
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-	if(arr.size() != Flytec5020MemSize)
+	if((uint)arr.size() != Flytec5020MemSize)
 	{
 		return false;
 	}
