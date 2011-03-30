@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef WayPointWindow_h
 #define WayPointWindow_h
 
@@ -29,13 +29,13 @@ class QWidget;
 class WayPointWindow: public TableWindow
 {
 	Q_OBJECT
-	
+
 	public:
 		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
-	
+
 	protected:
 		bool periodicalUpdate();
-		
+
 	private slots:
 		void file_update();
 
@@ -46,13 +46,15 @@ class WayPointWindow: public TableWindow
 		void file_delete();
 
 		void file_addNewWp();
-		
+
+		void file_Edit();
+
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 		WayPoint::WayPointListType m_wpList;
 		IDataBase *m_pDb;
 		int m_lastModified;
-		
+
 		void setWpToRow(uint row, WayPoint &wp);
 };
 

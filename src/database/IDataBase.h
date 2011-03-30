@@ -60,6 +60,8 @@ class IDataBase: public QObject
 		// waypoints
 		virtual bool add(WayPoint &wp);
 
+    virtual bool update(WayPoint &wp);
+
 		virtual bool delWayPoint(WayPoint &wp);
 
 		virtual bool delAllWayPoints();

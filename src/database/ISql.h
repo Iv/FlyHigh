@@ -67,8 +67,10 @@ class ISql: public IDataBase
 		void setHostName(const QString &hostName);
 
 		void setPort(int port);
-		
+
 		bool add(WayPoint &wp);
+
+    bool update(WayPoint &wp);
 
 		bool delWayPoint(WayPoint &wp);
 
@@ -101,7 +103,7 @@ class ISql: public IDataBase
 		bool loadIGCFile(Flight &flight);
 
 		int flightsLastModified();
-		
+
 		bool add(Route &route);
 
 		bool delRoute(Route &route);
@@ -109,7 +111,7 @@ class ISql: public IDataBase
 		int routesLastModified();
 
 		bool routeList(Route::RouteListType &routeList);
-		
+
 /* not longer supported
 		bool add(AirSpace &airspace);
 		bool delAirSpace(AirSpace &airspace);
@@ -134,7 +136,7 @@ class ISql: public IDataBase
 		bool setId(Pilot &pilot);
 
 		int pilotsLastModified();
-		
+
 	protected:
 //		AirSpaces* pAirSpaceTable();
 		WayPoints* pWayPointTable();

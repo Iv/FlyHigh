@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "AirSpaces.h"
 #include "Error.h"
-#include "ISql.h" 
+#include "ISql.h"
 #include "WayPoints.h"
 #include "Gliders.h"
 #include "Flights.h"
@@ -34,13 +34,13 @@ ISql* ISql::m_pInst = NULL;
 ISql::ISql()
 {
 	m_DefaultDB = QSqlDatabase::addDatabase("QMYSQL");
-	
+
 	setName("flyhigh_v2");
 	setUserName("flyhigh");
 	setPassword("flyhigh");
 	setHostName("localhost");
 	setPort(3306);
-	
+
 //	m_pAirSpaces = new AirSpaces(m_DefaultDB);
 	m_pWayPoints = new WayPoints(m_DefaultDB);
 	m_pGliders = new Gliders(m_DefaultDB);
@@ -75,7 +75,7 @@ void ISql::close()
 bool ISql::connectDb()
 {
 	bool success;
-	
+
 	success = m_DefaultDB.open();
 	Error::verify(success, Error::SQL_OPEN);
 
@@ -83,7 +83,7 @@ bool ISql::connectDb()
 	{
 		upgradeTables();
 	}
-	
+
 	return success;
 }
 
@@ -140,13 +140,18 @@ ISql* ISql::pInstance()
 	{
 		m_pInst = new ISql();
 	}
-	
+
 	return m_pInst;
 }
 
 bool ISql::add(WayPoint &wp)
 {
 	return m_pWayPoints->add(wp);
+}
+
+bool ISql::update(WayPoint &wp)
+{
+	return m_pWayPoints->update(wp);
 }
 
 bool ISql::delWayPoint(WayPoint &wp)
@@ -353,6 +358,6 @@ Pilots* ISql::pPilotTable()
 void ISql::upgradeTables()
 {
 	Upgrade upgrade(m_DefaultDB);
-	
+
 	upgrade.upgrade();
 }
