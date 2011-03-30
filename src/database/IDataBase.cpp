@@ -79,6 +79,11 @@ bool IDataBase::add(WayPoint &wp)
 	return false;
 }
 
+bool IDataBase::update(WayPoint &wp)
+{
+  return false;
+}
+
 bool IDataBase::delWayPoint(WayPoint &wp)
 {
 	(void)wp;
