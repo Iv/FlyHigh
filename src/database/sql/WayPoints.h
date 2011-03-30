@@ -33,15 +33,22 @@ class WayPoints: public DataBaseSub
 		WayPoints(QSqlDatabase DB);
 
 		bool add(WayPoint &wp);
+
+		bool update(WayPoint &wp);
+
 		bool delWayPoint(WayPoint &wp);
+
 		bool delAllWayPoints();
+
 		bool wayPoint(int id, WayPoint &wp);
+
 		// searches a WayPoint around radius from lat and lon of wp
 		// fills values of wp and returns database ID
 		// radius in meters
 		bool findWayPoint(WayPoint &wp, uint radius);
+
 		bool wayPointList(WayPoint::WayPointListType &wpList);
-		
+
 	private:
 		enum Elements
 		{
