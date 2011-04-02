@@ -24,6 +24,8 @@
 #include "Error.h"
 #include "WayPoints.h"
 
+#include <QDebug>
+
 WayPoints::WayPoints(QSqlDatabase DB)
 	:DataBaseSub(DB)
 {
@@ -98,8 +100,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 	int alt;
 	bool success;
 
-	sqls = QString("SELECT Name,Country,Spot,Description,Longitude,Latitude,Altitude "
-                "FROM WayPoints WHERE Id = %1;").arg(id);
+	sqls = QString("SELECT * FROM WayPoints WHERE Id = %1;").arg(id);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
@@ -125,7 +126,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 {
 	QSqlQuery query(db());
-	QString sqls = "SELECT Latitude,Longitude FROM WayPoints;";
+	QString sqls = "SELECT * FROM WayPoints;";
 	WayPoint locWp;
 	double lat;
 	double lon;
@@ -139,8 +140,8 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 	{
 		while(query.next())
 		{
-			lat = query.value(0).toDouble();
-			lon = query.value(1).toDouble();
+			lat = query.value(Latitude).toDouble();
+			lon = query.value(Longitude).toDouble();
 			locWp.setCoordinates(lat, lon, 0);
 			dist = wp.distance(locWp);
 			found = (dist <= radius);
@@ -167,8 +168,7 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	QSqlQuery query(db());
-	QString sqls = "SELECT Id,Name,Country,Spot,Description,Longitude,Latitude,Altitude "
-                 "FROM WayPoints ORDER BY Country, Name, Spot ASC;";
+	QString sqls = "SELECT * FROM WayPoints ORDER BY Country, Name, Spot ASC;";
 	double lon;
 	double lat;
 	int alt;
@@ -180,16 +180,15 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 	{
 		while(query.next())
 		{
-			wp.setId(query.value(0).toInt());
-			wp.setName(query.value(1).toString());
-			wp.setSpot(query.value(2).toString());
-			wp.setCountry(query.value(3).toString());
-			wp.setDescription(query.value(4).toString());
-			lon = query.value(5).toDouble();
-			lat = query.value(6).toDouble();
-			alt = query.value(7).toInt();
+      wp.setId(query.value(Id).toInt());
+      wp.setName(query.value(Name).toString());
+      wp.setSpot(query.value(Spot).toString());
+      wp.setCountry(query.value(Country).toString());
+      wp.setDescription(query.value(Description).toString());
+      lon = query.value(Longitude).toDouble();
+      lat = query.value(Latitude).toDouble();
+      alt = query.value(Altitude).toInt();
 			wp.setCoordinates(lat, lon, alt);
-
 			wpList.push_back(wp);
 		}
 	}
