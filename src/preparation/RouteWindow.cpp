@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <qcursor.h>
-#include <q3header.h>
 #include <qmenubar.h>
 #include <qstring.h>
 #include <q3table.h>
@@ -31,6 +30,8 @@
 #include "RouteWindow.h"
 #include "WayPoint.h"
 #include "WebMapRouteView.h"
+
+#include <QDebug>
 
 RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -81,9 +82,12 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 
 	if(src == IDataBase::SqlDB)
 	{
-		QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
+    QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
 		connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 		pFileMenu->addAction(pViewWebMapAct);
+		QAction* pViewCopyFromAct = new QAction(tr("&Copy from..."), this);
+		connect(pViewCopyFromAct, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
+		pFileMenu->addAction(pViewCopyFromAct);
 	}
 
 	QAction* pDelAct = new QAction(tr("&Delete"), this);
@@ -188,8 +192,6 @@ void RouteWindow::file_new()
 
 void RouteWindow::file_newWebMap()
 {
-	WebMapRouteView *pView;
-	WayPoint::WayPointListType::iterator it;
 	Route route;
 
 	// default route
@@ -199,25 +201,7 @@ void RouteWindow::file_newWebMap()
 	route.wayPointList().push_back(WayPoint(46.27975, 8.29102));
 	route.wayPointList().push_back(WayPoint(46.27975, 7.97287));
 	route.wayPointList().push_back(WayPoint(46.40207, 8.13194));
-
-	pView = new WebMapRouteView(tr("Add Route to DB"));
-	pView->setRoute(&route);
-	pView->loadMap();
-
-	if((pView->exec() == QDialog::Accepted) && m_pDb->open())
-	{
-		// save new route
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
-		{
-			ISql::pInstance()->add(*it);
-		}
-
-		m_pDb->add(route);
-		TableWindow::unsetCursor();
-		m_pDb->close();
-	}
+	newWebMap(route);
 }
 
 void RouteWindow::file_view()
@@ -251,6 +235,18 @@ void RouteWindow::file_viewWebMap()
 		pView->setTurnPointsDragable(false);
 		pView->loadMap();
 		pView->exec();
+	}
+}
+
+void RouteWindow::file_copyFrom()
+{
+	int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    newWebMap(m_routeList[row]);
 	}
 }
 
@@ -341,4 +337,29 @@ void RouteWindow::setRouteToRow(uint row, Route &route)
 
 	pTable->setText(row, Name, route.name());
 	pTable->setText(row, Type, route.typeAsText());
+}
+
+void RouteWindow::newWebMap(Route &route)
+{
+	WebMapRouteView *pView;
+	WayPoint::WayPointListType::iterator it;
+
+	pView = new WebMapRouteView(tr("Add Route to DB"));
+	pView->setRoute(&route);
+	pView->loadMap();
+
+	if((pView->exec() == QDialog::Accepted) && m_pDb->open())
+	{
+		// save new route
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
+		for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
+		{
+			ISql::pInstance()->add(*it);
+		}
+
+		m_pDb->add(route);
+		TableWindow::unsetCursor();
+		m_pDb->close();
+	}
 }
