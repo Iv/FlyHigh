@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,8 +24,6 @@
 #include "Error.h"
 #include "WayPoints.h"
 
-#include <QDebug>
-
 WayPoints::WayPoints(QSqlDatabase DB)
 	:DataBaseSub(DB)
 {
@@ -37,13 +35,16 @@ bool WayPoints::add(WayPoint &wp)
   QString sqls;
 	bool success;
 
-  sqls = QString("INSERT INTO WayPoints (Name,Country,Spot,Description,"
-                 "Longitude,Latitude,Altitude) VALUES('%1','%2','%3','%4',%5,%6,%7);")
-              .arg(wp.name()).arg(wp.country()).arg(wp.spot()).arg(wp.description())
-              .arg(wp.longitude()).arg(wp.latitude()).arg(wp.altitude());
+  sqls = QString("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude,"
+                                        "Latitude, Altitude, Description)"
+                 "VALUES (NULL, '%1', '%2', '%3', %4, %5, %6, '%7');")
+              .arg(wp.name()).arg(wp.spot()).arg(wp.country()).arg(wp.longitude())
+              .arg(wp.latitude()).arg(wp.altitude()).arg(wp.description());
+
 	success = query.exec(sqls);
+  Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
-	Error::verify(success, Error::SQL_DEL);
+	setId(wp);
 
 	return success;
 }
@@ -60,7 +61,7 @@ bool WayPoints::update(WayPoint &wp)
           .arg(wp.longitude()).arg(wp.latitude()).arg(wp.altitude()).arg(wp.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
-	Error::verify(success, Error::SQL_DEL);
+	Error::verify(success, Error::SQL_CMD);
 
 	return success;
 }
@@ -106,13 +107,13 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 	if(success)
 	{
 		wp.setId(id);
-		wp.setName(query.value(0).toString());
-		wp.setSpot(query.value(1).toString());
-		wp.setCountry(query.value(2).toString());
-		wp.setDescription(query.value(3).toString());
-		lon = query.value(4).toDouble();
-		lat = query.value(5).toDouble();
-		alt = query.value(6).toInt();
+		wp.setName(query.value(Name).toString());
+		wp.setSpot(query.value(Spot).toString());
+		wp.setCountry(query.value(Country).toString());
+		wp.setDescription(query.value(Description).toString());
+		lon = query.value(Longitude).toDouble();
+		lat = query.value(Latitude).toDouble();
+		alt = query.value(Altitude).toInt();
 		wp.setCoordinates(lat, lon, alt);
 	}
 	else
