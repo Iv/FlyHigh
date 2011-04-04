@@ -29,7 +29,7 @@ class QWidget;
 class RouteWindow : public TableWindow
 {
 	Q_OBJECT
-	
+
 	public:
 		RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
@@ -43,7 +43,9 @@ class RouteWindow : public TableWindow
 
 		void file_view();
 
-		void file_viewWebMap();
+    void file_viewWebMap();
+
+		void file_copyFrom();
 
 		void file_delete();
 
@@ -62,6 +64,8 @@ class RouteWindow : public TableWindow
 		int m_lastModified;
 
 		void setRouteToRow(uint row, Route &route);
+
+		void newWebMap(Route &route);
 };
 
 #endif
