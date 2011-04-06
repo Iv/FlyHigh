@@ -40,9 +40,13 @@ class Flytec5020: public IGPSDevice
 
     bool deviceInfo(DeviceInfo &info);
 
-    void string2ftstring(const char *pstr, char *pftstr);
+    bool memoryRead();
 
-    void ftstring2string(char *pstr, const char *pftstr);
+    bool memoryWrite();
+
+    bool parWrite(int par, FtDataType dataType, const QVariant &value);
+
+    QVariant parRead(int par, FtDataType dataType);
 
 	protected:
 		void cancel();
@@ -82,6 +86,7 @@ class Flytec5020: public IGPSDevice
 
 	private:
 		Protocol5020 *m_protocol;
+    QByteArray m_confMem;
 		bool m_cancel;
 };
 
