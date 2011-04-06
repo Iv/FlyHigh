@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QVariant>
 #include "AirSpace.h"
 #include "AirSpaceList.h"
 #include "Error.h"
@@ -68,14 +69,105 @@ bool Flytec5020::deviceInfo(DeviceInfo &info)
   return success;
 }
 
-void Flytec5020::string2ftstring(const char *pstr, char *pftstr)
+bool Flytec5020::memoryRead()
 {
-  m_protocol->string2ftstring(pstr, pftstr);
+	uint pageNr;
+	uint pageAddr;
+	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
+	bool success = false;
+
+	m_confMem.resize(Flytec5020MemSize);
+	m_cancel = false;
+
+	for(pageNr=0; pageNr<nofPages; pageNr++)
+	{
+		emit progress(pageNr * 100 / nofPages);
+
+		if(m_cancel)
+		{
+			return false;
+		}
+
+		pageAddr = pageNr * Flytec5020PageSize;
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+
+		if(!success)
+		{
+			break;
+			// read Error!
+		}
+	}
+
+	// the last few bytes....
+	if(success)
+	{
+		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
 }
 
-void Flytec5020::ftstring2string(char *pstr, const char *pftstr)
+bool Flytec5020::memoryWrite()
 {
-  m_protocol->ftstring2string(pstr, pftstr);
+	uint pageNr;
+	uint pageAddr;
+	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
+	bool success = false;
+
+	if((uint)m_confMem.size() != Flytec5020MemSize)
+	{
+		return false;
+	}
+
+	m_cancel = false;
+
+	for(pageNr=0; pageNr<nofPages; pageNr++)
+	{
+		emit progress(pageNr * 100 / nofPages);
+
+		if(m_cancel)
+		{
+			return false;
+		}
+
+		pageAddr = pageNr * Flytec5020PageSize;
+		success = m_protocol->memoryWrite(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+
+		if(!success)
+		{
+			break;
+			// write Error!
+		}
+	}
+
+	// the last few bytes....
+	if(success)
+	{
+		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		success = m_protocol->memoryWrite(pageAddr, (uchar*)(m_confMem.data()+pageAddr));
+	}
+
+	if(success)
+	{
+		m_protocol->updateConfiguration();
+	}
+
+	Error::verify(success, Error::FLYTEC_CMD);
+
+	return success;
+}
+
+bool Flytec5020::parWrite(int par, FtDataType dataType, const QVariant &value)
+{
+  return m_protocol->parWrite(m_confMem, par, dataType, value);
+}
+
+QVariant Flytec5020::parRead(int par, FtDataType dataType)
+{
+  return m_protocol->parRead(m_confMem, par, dataType);
 }
 
 void Flytec5020::cancel()
@@ -451,7 +543,7 @@ bool Flytec5020::memoryRead(QByteArray &arr)
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-	arr.resize(Flytec5020MemSize);
+	m_confMem.resize(Flytec5020MemSize);
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
@@ -464,7 +556,7 @@ bool Flytec5020::memoryRead(QByteArray &arr)
 		}
 
 		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr));
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
 
 		if(!success)
 		{
@@ -477,7 +569,7 @@ bool Flytec5020::memoryRead(QByteArray &arr)
 	if(success)
 	{
 		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(arr.data()+pageAddr));
+		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
 	}
 
 	Error::verify(success, Error::FLYTEC_CMD);
@@ -492,7 +584,7 @@ bool Flytec5020::memoryWrite(QByteArray &arr)
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-	if((uint)arr.size() != Flytec5020MemSize)
+	if((uint)m_confMem.size() != Flytec5020MemSize)
 	{
 		return false;
 	}
@@ -509,7 +601,7 @@ bool Flytec5020::memoryWrite(QByteArray &arr)
 		}
 
 		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (u_char*)(arr.data()+pageAddr));
+		success = m_protocol->memoryWrite(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
 
 		if(!success)
 		{
@@ -522,7 +614,7 @@ bool Flytec5020::memoryWrite(QByteArray &arr)
 	if(success)
 	{
 		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (uchar*)(arr.data()+pageAddr));
+		success = m_protocol->memoryWrite(pageAddr, (uchar*)(m_confMem.data()+pageAddr));
 	}
 
 	if(success)
