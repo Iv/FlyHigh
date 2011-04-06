@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QVariant>
 #include <math.h>
 #include "AirSpace.h"
 #include "AirSpaceItem.h"
@@ -97,37 +98,6 @@ bool Protocol5020::devInfoRec(DeviceInfo &devInfo)
 	}
 
   return valid;
-}
-
-void Protocol5020::string2ftstring(const char *pstr, char *pftstr)
-{
-	u_char strLen;
-
-	memset(&pftstr[0], ' ', FT_STRING_SIZE);
-	strLen = strlen(&pstr[0]);
-
-	if(strLen > FT_STRING_SIZE)
-	{
-		strLen = FT_STRING_SIZE;
-	}
-
-	memcpy(&pftstr[0], &pstr[0], strLen);
-}
-
-void Protocol5020::ftstring2string(char *pstr, const char *pftstr)
-{
-	u_char strLen;
-
-	for(strLen=FT_STRING_SIZE;strLen>0;strLen--)
-	{
-		if(pftstr[strLen-1] != ' ')
-		{
-			break;
-		}
-	}
-
-	memcpy(&pstr[0], &pftstr[0], strLen);
-	pstr[strLen] = '\0';
 }
 
 bool Protocol5020::trackListReq()
@@ -915,6 +885,91 @@ bool Protocol5020::updateConfiguration()
 	return success;
 }
 
+bool Protocol5020::parWrite(QByteArray &mem, int par, FtDataType dataType, const QVariant &value)
+{
+  u_int16_t ui16value;
+  int16_t i16value;
+  char* pString;
+  bool success = true;
+
+  switch(dataType)
+	{
+		case FtInt8:
+      mem[par] = (int8_t)value.toInt();
+		break;
+    case FtUInt8:
+      mem[par] = (u_int8_t)value.toUInt();
+		break;
+    case FtInt16:
+      i16value = value.toInt();
+      mem[par] = (char)(i16value >> 8);
+      mem[par + 1] = (char)(i16value & 0xFF);
+    break;
+    case FtUInt16:
+      ui16value = value.toUInt();
+      mem[par] = (u_char)(ui16value >> 8);
+      mem[par + 1] = (u_char)(ui16value & 0xFF);
+    break;
+/*
+    case FtUInt32: case FtInt32:
+		break;
+*/
+		case FtString:
+      pString = mem.data();
+      qString2ftString(value.toString(), &pString[par], (int)FT_STRING_SIZE);
+    break;
+		case FtArray:
+      mem.replace(par, value.toByteArray().size(), value.toByteArray());
+		break;
+		default:
+      success = false;
+		break;
+	}
+
+	return success;
+}
+
+QVariant Protocol5020::parRead(QByteArray &mem, int par, FtDataType dataType)
+{
+  QVariant value;
+  u_int16_t ui16Value;
+  int16_t i16Value;
+  const char* pString;
+
+  switch(dataType)
+	{
+		case FtInt8:
+      value = (int8_t)mem[par];
+		break;
+    case FtUInt8:
+      value = (u_int8_t)mem[par];
+		break;
+    case FtUInt16:
+      ui16Value = mem[par] << 8;
+      ui16Value += mem[par + 1];
+      value = ui16Value;
+    break;
+    case FtInt16:
+      i16Value = mem[par] << 8;
+      i16Value += mem[par + 1];
+      value = i16Value;
+    break;
+/*
+    case FtUInt32: case FtInt32:
+		break;
+*/
+		case FtString:
+      pString = mem.constData();
+      value = ftString2qString(&pString[par], FT_STRING_SIZE);
+    break;
+		case FtArray:
+      value = mem.mid(par, getParLen(par));
+		break;
+	}
+
+	return value;
+}
+
 QDate Protocol5020::parseDate(const QString &token) const
 {
 	Tokenizer tokenizer;
@@ -1045,13 +1100,52 @@ QString Protocol5020::ftString2qString(const QString &ftString)
 
 	for(cpyLength=ftString.length(); cpyLength>0; cpyLength--)
 	{
-		if(ftString[cpyLength-1] != ' ')
+		if(ftString[cpyLength - 1] != ' ')
 		{
 			break;
 		}
 	}
 
 	return ftString.left(cpyLength);
+}
+
+void Protocol5020::qString2ftString(const QString &qString, char *pftstr, int length)
+{
+  QString ftString;
+  QString pad;
+
+	if(qString.length() < length)
+	{
+		pad.fill(' ', length - qString.length());
+		ftString = qString;
+		ftString += pad;
+	}
+	else
+	{
+		ftString = qString;
+		ftString.truncate(length);
+	}
+
+  memcpy(pftstr, ftString.data(), ftString.length());
+}
+
+QString Protocol5020::ftString2qString(const char *pftstr, int length)
+{
+  char pstr[length];
+	int strLen;
+
+	for(strLen=length; strLen>0; strLen--)
+	{
+		if(pftstr[strLen - 1] != ' ')
+		{
+			break;
+		}
+	}
+
+	memcpy(&pstr[0], &pftstr[0], strLen);
+	pstr[strLen] = '\0';
+
+  return pstr;
 }
 
 void Protocol5020::addTail(QString &tlg) const
@@ -1087,4 +1181,23 @@ bool Protocol5020::validateCheckSum(const QString &tlg) const
 	checkSum = getCheckSum(tlg, tlg.size() - 5);
 
 	return (checkSum == token);
+}
+
+int Protocol5020::getParLen(int par)
+{
+  int len;
+
+  switch(par)
+  {
+    case USERFIELD_0_POS:
+    case USERFIELD_1_POS:
+    case USERFIELD_2_POS:
+      len = 3;
+    break;
+    default:
+      len = 0;
+    break;
+  }
+
+  return len;
 }
