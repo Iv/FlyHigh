@@ -63,8 +63,6 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	QString callsign;
 	QString glider;
 	DeviceInfoType devInfo;
-
-	char str[FT_STRING_SIZE];
 	int syncRes;
   const char* devdata;
 
@@ -83,8 +81,8 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	pFlytec->close();
 
 	// pilot name
-  pFlytec->ftstring2string(str, &devdata[PILOT_NAME_POS]);
-	pilotName = str;
+	pilotName = pFlytec->parRead(PILOT_NAME, FtString).toString();
+
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
 	dbPilot.fullName(dbPilotName);
 
@@ -107,8 +105,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	lineEdit_PilotName->setText(pilotName);
 
 	// glider
-	pFlytec->ftstring2string(str, &devdata[GLYDER_TYPE_POS]);
-	glider = str;
+	glider = pFlytec->parRead(GLIDER_TYPE, FtString).toString();
 	dbGlider = m_gliderList[comboBoxModel->currentIndex()].model();
 
 	if(glider != dbGlider)
@@ -129,8 +126,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	}
 
 	// callsign
-  pFlytec->ftstring2string(str, &devdata[GLYDER_ID_POS]);
-	callsign = str;
+	callsign = pFlytec->parRead(GLIDER_ID, FtString).toString();
 
 	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
@@ -152,7 +148,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	lineEdit_GliderID->setText(callsign);
 
 	// battery type
-  comboBox_BattType->setCurrentIndex(arr[BATT_TYPE_POS]);
+  comboBox_BattType->setCurrentIndex(pFlytec->parRead(BATT_TYPE, FtUInt8).toInt());
 }
 
 void DeviceFrameImpl::store(QByteArray &arr)
@@ -167,10 +163,7 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	QString glider;
 	QString rcGlider;
 	int syncRes;
-	char *devdata;
 
-  // fetch data pointer for easy access
-  devdata = arr.data();
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// pilot
@@ -195,7 +188,7 @@ void DeviceFrameImpl::store(QByteArray &arr)
 		}
 	}
 
-	pFlytec->string2ftstring(pilotName.toAscii().constData(), &devdata[PILOT_NAME_POS]);
+	pFlytec->parWrite(PILOT_NAME, FtString, pilotName);
 
 	// glider
 	m_gliderList[comboBoxModel->currentIndex()].fullName(glider);
@@ -209,9 +202,9 @@ void DeviceFrameImpl::store(QByteArray &arr)
 
 		switch(syncRes)
 		{
-		case 0: // From Pilot
-			selectGlider(glider);
-			glider = dbPilot.glider().model();
+      case 0: // From Pilot
+        selectGlider(glider);
+        glider = dbPilot.glider().model();
 			break;
 			default:
 				glider = m_gliderList[comboBoxModel->currentIndex()].model();
@@ -223,7 +216,7 @@ void DeviceFrameImpl::store(QByteArray &arr)
 		glider = m_gliderList[comboBoxModel->currentIndex()].model();
 	}
 
-	pFlytec->string2ftstring(glider.toAscii().constData(), &devdata[GLYDER_TYPE_POS]);
+	pFlytec->parWrite(GLIDER_TYPE, FtString, glider);
 
 	// callsign
 	callsign = lineEdit_GliderID->text();
@@ -236,9 +229,9 @@ void DeviceFrameImpl::store(QByteArray &arr)
 
 		switch(syncRes)
 		{
-		case QMessageBox::Ok: // from database
-			callsign = dbPilot.callSign();
-			lineEdit_PilotName->setText(callsign);
+      case QMessageBox::Ok: // from database
+        callsign = dbPilot.callSign();
+        lineEdit_PilotName->setText(callsign);
 			break;
 			default:
 			break;
@@ -246,10 +239,10 @@ void DeviceFrameImpl::store(QByteArray &arr)
 	}
 
 	// glider id
-	pFlytec->string2ftstring(callsign.toAscii().constData(), &devdata[GLYDER_ID_POS]);
+	pFlytec->parWrite(GLIDER_ID, FtString, callsign);
 
 	// battery type
-	arr[BATT_TYPE_POS] = comboBox_BattType->currentIndex();
+	pFlytec->parWrite(BATT_TYPE, FtUInt8, comboBox_BattType->currentIndex());
 }
 
 void DeviceFrameImpl::updateGlider()
@@ -295,5 +288,4 @@ void DeviceFrameImpl::selectGlider(const QString &name)
 	}
 }
 
-#include "moc_DeviceFrameImpl.cxx"
-
+///#include "moc_DeviceFrameImpl.cxx"
