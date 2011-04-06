@@ -44,10 +44,6 @@ class Protocol5020
 
 		bool devInfoRec(DeviceInfo &devInfo);
 
-    void string2ftstring(const char *pstr, char *pftstr);
-
-    void ftstring2string(char *pstr, const char *pftstr);
-
 		/** Track */
 		bool trackListReq();
 
@@ -99,6 +95,10 @@ class Protocol5020
 
     bool updateConfiguration();
 
+    bool parWrite(QByteArray &mem, int par, FtDataType dataType, const QVariant &value);
+
+    QVariant parRead(QByteArray &mem, int par, FtDataType dataType);
+
 	private:
 		Device5020 m_device;
 
@@ -118,11 +118,17 @@ class Protocol5020
 
 		QString ftString2qString(const QString &ftString);
 
+    void qString2ftString(const QString &qString, char *pftstr, int length);
+
+    QString ftString2qString(const char *pftstr, int length);
+
 		void addTail(QString &tlg) const;
 
 		QString getCheckSum(const QString &tlg, uint end) const;
 
 		bool validateCheckSum(const QString &tlg) const;
+
+		int getParLen(int par);
 };
 
 #endif
