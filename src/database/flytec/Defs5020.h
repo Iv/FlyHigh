@@ -25,45 +25,47 @@
 
 #define FT_STRING_SIZE 17
 
-#define PILOT_NAME_POS 0
+#define PILOT_NAME 0
 #define LCD_CONTRAST_POS 32
 #define QNH_CORR_A1_POS 54
-#define BASE_VOL_BEEP_POS 74
-#define ACOUSTIC_LIFT_THR_POS 76
-#define ACOUSTIC_SINK_POS 77
+#define BASE_VOL_BEEP 74
+#define ACOUSTIC_LIFT_THR 76
+#define ACOUSTIC_SINK 77
 #define REC_STOP_MODE_POS 89
 #define UTC_OFFSET_POS 92
 #define STALL_SPEED_POS 94
 #define STALL_ALT_POS 95
 #define REC_INTERVAL_POS 97
-#define ACOUSTIC_I_POS 100
-#define UP_BASE_FRQ_POS 102
-#define DOWN_BASE_FRQ_POS 104
-#define FRQ_MODULATION_POS 110
-#define SINC_ACOUSTIC_EN_POS 119
+#define ACOUSTIC_I 100
+#define UP_BASE_FRQ 102
+#define DOWN_BASE_FRQ 104
+#define FRQ_MODULATION 110
+#define SINC_ACOUSTIC_EN 119
 #define I_TIME_POS 121
 #define SPEED_GAIN_WHEEL_POS 128
 #define UNITS_POS 141
 #define GRID_SYS_POS 142
 #define QNH_CORR_A2_POS 147
-#define ACOUSTIC_PITCH_POS 158
+#define ACOUSTIC_PITCH 158
 #define SW_VERSION_POS 159
 #define LAST_THERM_THERS_POS 185
 #define COMPANY_POS 186
 #define LANGUAGE_POS 187
-#define GLYDER_TYPE_POS 192
-#define GLYDER_ID_POS 224
+#define GLIDER_TYPE 192
+#define GLIDER_ID 224
 #define USERFIELD_0_POS 320
 #define USERFIELD_1_POS 330
 #define USERFIELD_2_POS 340
 #define BEST_LD_POS 350
 #define SPEED_BEST_LD_POS 351
-#define BATT_TYPE_POS 352
+#define BATT_TYPE 352
 #define UTC_HALF_OFFSET_POS 384
 
 static const uint Flytec5020PageSize = 8;
 
 static const uint Flytec5020MemSize = 385;
+
+typedef enum FtDataType{FtInt8, FtUInt8, FtInt16, FtUInt16, FtString, FtArray}FtDataType;
 
 typedef struct FlytecDate
 {
