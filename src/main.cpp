@@ -47,30 +47,64 @@ int main( int argc, char ** argv )
 
 	IFlyHighRC::pInstance()->loadRC();
 
-	QString dbhost = IFlyHighRC::pInstance()->dBHost();
-	QHostInfo info = QHostInfo::fromName(dbhost);
-
-	if(info.error()==QHostInfo::NoError)
+	// which type of db?
+	QString dbtype = IFlyHighRC::pInstance()->dBType();
+	if (dbtype.contains("mysql",Qt::CaseInsensitive))
 	{
-		ISql::pInstance()->setHostName(dbhost);
-		std::cout << dbhost.toStdString() << " resolved to " << info.addresses().at(0).toString().toStdString() << std::endl;
+		QString dbhost = IFlyHighRC::pInstance()->dBHost();
+		QHostInfo info = QHostInfo::fromName(dbhost);
+
+		if(info.error()==QHostInfo::NoError)
+		{
+			ISql::pInstance()->setHostName(dbhost);
+		}
+		else
+		{
+			// todo: show error dialog
+			std::cerr << info.errorString().toStdString() << std::endl;
+		}
+
+    ISql::pInstance()->setDriverName("QMYSQL");
+
+		if(!ISql::pInstance()->connectDb())
+		{
+			root = QInputDialog::getText(NULL, QObject::tr("Name"), QObject::tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
+			pwd = QInputDialog::getText(NULL, QObject::tr("Password"), QObject::tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
+
+			if(ok)
+			{
+				ISql::pInstance()->createDb(root, pwd);
+				ISql::pInstance()->connectDb();
+			}
+		}
+	}
+	else if (dbtype.contains("sqlite",Qt::CaseInsensitive))
+	{
+    ISql::pInstance()->setDriverName("QSQLITE");
+    // suggest db location in <userhome>/Flights/
+    QString path(QDir::home().path());
+    path.append(QDir::separator()).append("Flights");
+
+    // create directory if necessary
+    if (!QDir(path).exists())
+    {
+      QDir().mkdir(path);
+    }
+
+    path.append(QDir::separator()).append("flyhigh_v2.sqlite");
+    path = QDir::toNativeSeparators(path);
+    ISql::pInstance()->setName(path);
+
+    if(!ISql::pInstance()->connectDb())
+    {
+      ISql::pInstance()->createDb();
+      ISql::pInstance()->connectDb();
+    }
 	}
 	else
 	{
-		// todo: show error dialog
-		std::cerr << info.errorString().toStdString() << std::endl;
-	}
-
-	if(!ISql::pInstance()->connectDb())
-	{
-		root = QInputDialog::getText(NULL, QObject::tr("Name"), QObject::tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
-		pwd = QInputDialog::getText(NULL, QObject::tr("Password"), QObject::tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
-
-		if(ok)
-		{
-			ISql::pInstance()->createDb(root, pwd);
-			ISql::pInstance()->connectDb();
-		}
+		std::cerr << "Unknown db type '" << dbtype.toStdString() << "'." << std::endl;
+		return 1;
 	}
 	
 	pMainWin = new MainWindow();
