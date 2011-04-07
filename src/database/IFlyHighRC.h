@@ -78,6 +78,10 @@ class IFlyHighRC
 		void setDBHost(const QString& host);
 		const QString& dBHost();
 
+		// db backend type
+		void setDBType(const QString& dbtype);
+		const QString& dBType();
+
 	private:
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
@@ -90,9 +94,11 @@ class IFlyHighRC
 		QString m_copyInfo;
 		int m_pilotId;
 		QString m_dbHost;
+		QString m_dbType;
 
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
+		QStringList m_dbTypeList;
 
 		IFlyHighRC();
 
@@ -104,8 +110,8 @@ class IFlyHighRC
 		void saveDirectory(QTextStream &stream);
 		void parsePilot(QBuffer &buff);
 		void savePilot(QTextStream &stream);
-		void parseDBHost(QBuffer &buff);
-		void saveDBHost(QTextStream &stream);
+		void parseDBParam(QBuffer &buff);
+		void saveDBParam(QTextStream &stream);
 		void parseValue(char *line, QString &var, QString &val);
 };
 
