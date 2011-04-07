@@ -38,6 +38,7 @@ const QString PilotId = "pilotId=";
 const QString DirectoryLastVar = "last=";
 const QString DatabaseTag = "[database]\n";
 const QString DatabaseHostVar = "dbserverhost=";
+const QString DatabaseTypeVar = "dbtype=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
 
@@ -80,7 +81,11 @@ IFlyHighRC::IFlyHighRC()
 			"License (GPL). Visit www.gnu.org for more information.\n";
 
 	m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
+
+	m_dbTypeList += "mysql";
+	m_dbTypeList += "sqlite";
 	m_dbHost = "localhost";
+	m_dbType = m_dbTypeList[0];
 }
 
 uint IFlyHighRC::deviceName()
@@ -194,6 +199,16 @@ const QString& IFlyHighRC::dBHost()
 	return m_dbHost;
 }
 
+void IFlyHighRC::setDBType(const QString& dbtype)
+{
+	m_dbType = dbtype;
+}
+
+const QString& IFlyHighRC::dBType()
+{
+	return m_dbType;
+}
+
 void IFlyHighRC::loadRC()
 {
 	QByteArray rcFileData;
@@ -227,7 +242,7 @@ void IFlyHighRC::loadRC()
 			}
 			else if(line == DatabaseTag)
 			{
-				parseDBHost(buff);
+				parseDBParam(buff);
 			}
 		}
 		buff.close();
@@ -244,7 +259,7 @@ void IFlyHighRC::saveRC()
 		saveDateTime(stream);
 		saveDirectory(stream);
 		savePilot(stream);
-		saveDBHost(stream);
+		saveDBParam(stream);
 
 		stream.flush();
 		
@@ -262,17 +277,17 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-                if(DeviceLineVar.indexOf(var) == 0)
+		if(DeviceLineVar.indexOf(var) == 0)
 		{
 			setDeviceLine(val);
 		}
-                else if(DeviceSpeedVar.indexOf(var) == 0)
+		else if(DeviceSpeedVar.indexOf(var) == 0)
 		{
-                        setDeviceSpeed(m_deviceSpeedList.indexOf(val));
+			setDeviceSpeed(m_deviceSpeedList.indexOf(val));
 		}
-                else if(DeviceNameVar.indexOf(var) == 0)
+		else if(DeviceNameVar.indexOf(var) == 0)
 		{
-                        setDeviceName(m_deviceNameList.indexOf(val));
+			setDeviceName(m_deviceNameList.indexOf(val));
 		}
 		else
 		{
@@ -363,9 +378,9 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	{
 		parseValue(line, var, val);
 		
-                if(PilotId.indexOf(var) == 0)
+		if(PilotId.indexOf(var) == 0)
 		{
-                        setPilotId(val.toInt());
+			setPilotId(val.toInt());
 		}
 		else
 		{
@@ -381,7 +396,7 @@ void IFlyHighRC::savePilot(QTextStream &stream)
 	stream << "\n";
 }
 
-void IFlyHighRC::parseDBHost(QBuffer &buff)
+void IFlyHighRC::parseDBParam(QBuffer &buff)
 {
 	char line[MAX_LINE_SIZE];
 	QString var;
@@ -395,17 +410,27 @@ void IFlyHighRC::parseDBHost(QBuffer &buff)
 		{
 			m_dbHost = val;
 		}
-		else
+		else if (DatabaseTypeVar.indexOf(var) == 0)
 		{
-			break;
+			// some validation
+			if (m_dbTypeList.contains(val))
+			{
+				m_dbType = val;
+			}
+			else
+			{
+				// unknown db type - defaulting to mysql
+				m_dbType = m_dbTypeList[0];
+			}
 		}
 	}
 }
 
-void IFlyHighRC::saveDBHost(QTextStream &stream)
+void IFlyHighRC::saveDBParam(QTextStream &stream)
 {
 	stream << DatabaseTag;
 	stream << DatabaseHostVar << m_dbHost << "\n";
+	stream << DatabaseTypeVar << m_dbType << "\n";
 	stream << "\n";
 }
 
@@ -415,8 +440,8 @@ void IFlyHighRC::parseValue(char *line, QString &var, QString &val)
 	int valEnd;
 	int varEnd;
 	
-        varEnd = str.indexOf('=');
-        valEnd = str.indexOf('\n');
+	varEnd = str.indexOf('=');
+	valEnd = str.indexOf('\n');
 	var = str.left(varEnd);
 	val = str.mid(varEnd + 1, valEnd -  varEnd - 1);
 }
