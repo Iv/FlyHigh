@@ -56,7 +56,7 @@ class ISql: public IDataBase
 
 		bool connectDb();
 
-		bool createDb(const QString &root, const QString &pwd);
+    bool createDb(const QString &root="", const QString &pwd="");
 
 		void setName(const QString &name);
 
@@ -67,6 +67,8 @@ class ISql: public IDataBase
 		void setHostName(const QString &hostName);
 
 		void setPort(int port);
+
+		void setDriverName(const QString &name);
 
 		bool add(WayPoint &wp);
 
@@ -159,6 +161,39 @@ class ISql: public IDataBase
 		Servicings* m_pServicings;
 		Pilots* m_pPilots;
 		QSqlDatabase m_DefaultDB;
+
+    /**
+     * Driver name, either QMYSQL or QSQLITE
+     */
+		QString m_DriverName;
+
+    /**
+     * DB name.
+     * mysql: DB name
+     * sqlite: file name and path
+     */
+    QString m_DBName;
+
+    /**
+     * Non-priviledged db user. Applies to mysql only.
+     */
+    QString m_DBUserName;
+
+    /**
+     * password (urrrgh!). Applies to mysql only.
+     * @todo don't store plaintext pw
+     */
+    QString m_DBPassword;
+
+    /**
+     * DB server hostname. Applies to mysql only.
+     */
+    QString m_DBHostName;
+
+    /**
+     * DB server listening port. Applies to mysql only.
+     */
+    int m_DBPort;
 
 		ISql();
 

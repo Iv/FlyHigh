@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "qstringlist.h"
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h"
@@ -33,13 +34,13 @@ ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
 {
-	m_DefaultDB = QSqlDatabase::addDatabase("QMYSQL");
-
-	setName("flyhigh_v2");
-	setUserName("flyhigh");
-	setPassword("flyhigh");
-	setHostName("localhost");
-	setPort(3306);
+  // set default values
+  setDriverName("QMYSQL");
+  setName("flyhigh_v2");
+  setUserName("flyhigh");
+  setPassword("flyhigh");
+  setHostName("localhost");
+  setPort(3306);
 
 //	m_pAirSpaces = new AirSpaces(m_DefaultDB);
 	m_pWayPoints = new WayPoints(m_DefaultDB);
@@ -76,12 +77,36 @@ bool ISql::connectDb()
 {
 	bool success;
 
-	success = m_DefaultDB.open();
+  // create default db connection
+  m_DefaultDB = QSqlDatabase::addDatabase(m_DriverName);
+
+  // set mysql db name or sqlite filename
+  m_DefaultDB.setDatabaseName(m_DBName);
+
+  // mysql needs additional configuration
+  if (m_DriverName == "QMYSQL")
+  {
+    m_DefaultDB.setUserName(m_DBUserName);
+    m_DefaultDB.setPassword(m_DBPassword);
+    m_DefaultDB.setHostName(m_DBHostName);
+    m_DefaultDB.setPort(m_DBPort);
+  }
+
+  success = m_DefaultDB.open();
 	Error::verify(success, Error::SQL_OPEN);
 
-	if(success)
+  if(success)
 	{
-		upgradeTables();
+    // check if there is something in the db
+    // if not, the db needs to be created before upgrading
+    if (m_DefaultDB.tables().count() > 0)
+    {
+      upgradeTables();
+    }
+    else
+    {
+      success = false;
+    }
 	}
 
 	return success;
@@ -92,17 +117,25 @@ bool ISql::createDb(const QString &root, const QString &pwd)
 	QSqlDatabase setupDb;
 	bool success;
 
-	setupDb = QSqlDatabase::addDatabase("QMYSQL", "root_db");
-	setupDb.setUserName(root);
-	setupDb.setPassword(pwd);
-	setupDb.setHostName("localhost");
-	setupDb.setPort(3306);
+	setupDb = QSqlDatabase::addDatabase(m_DriverName, "root_db");
+  if (m_DriverName == "QMYSQL")
+  {
+    setupDb.setUserName(root);
+    setupDb.setPassword(pwd);
+    setupDb.setHostName(m_DBHostName);
+    setupDb.setPort(m_DBPort);
+  }
+  else if (m_DriverName == "QSQLITE")
+  {
+    setupDb.setDatabaseName(m_DBName);
+  }
+
 	success = setupDb.open();
 
 	if(success)
 	{
 		Upgrade upgrade(setupDb);
-		upgrade.setup(m_DefaultDB.databaseName(), m_DefaultDB.userName(), m_DefaultDB.password());
+    upgrade.setup(m_DBName, m_DBUserName, m_DBPassword);
 		setupDb.close();
 	}
 
@@ -111,27 +144,32 @@ bool ISql::createDb(const QString &root, const QString &pwd)
 
 void ISql::setName(const QString &name)
 {
-	m_DefaultDB.setDatabaseName(name);
+  m_DBName = name;
 }
 
 void ISql::setUserName(const QString &userName)
 {
-	m_DefaultDB.setUserName(userName);
+  m_DBUserName = userName;
 }
 
 void ISql::setPassword(const QString &passwd)
 {
-	m_DefaultDB.setPassword(passwd);
+  m_DBPassword = passwd;
 }
 
 void ISql::setHostName(const QString &hostName)
 {
-	m_DefaultDB.setHostName(hostName);
+  m_DBHostName = hostName;
 }
 
 void ISql::setPort(int port)
 {
-	m_DefaultDB.setPort(port);
+  m_DBPort = port;
+}
+
+void ISql::setDriverName(const QString& name)
+{
+	m_DriverName = name;
 }
 
 ISql* ISql::pInstance()
