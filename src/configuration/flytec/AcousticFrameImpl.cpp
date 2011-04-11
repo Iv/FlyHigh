@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -50,34 +50,34 @@ void AcousticFrameImpl::update(QByteArray &arr)
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Base Volume
-	slider_Volume->setValue(pFlytec->parRead(BASE_VOL_BEEP, FtUInt8).toUInt());
+	slider_Volume->setValue(pFlytec->parRead(BASE_VOL_BEEP_POS, FtUInt8).toUInt());
 
 	// Vario Offset
-	spinBox_Threshold->setValue(pFlytec->parRead(ACOUSTIC_LIFT_THR, FtUInt8).toUInt());
+	spinBox_Threshold->setValue(pFlytec->parRead(ACOUSTIC_LIFT_THR_POS, FtUInt8).toUInt());
 
 	// Up Base Frequency
-	spinBox_UpFreq->setValue(pFlytec->parRead(UP_BASE_FRQ, FtUInt16).toUInt());
+	spinBox_UpFreq->setValue(pFlytec->parRead(UP_BASE_FRQ_POS, FtUInt16).toUInt());
 
 	// Frequency Modulation
-	slider_FreqMod->setValue(pFlytec->parRead(FRQ_MODULATION, FtUInt8).toUInt());
+	slider_FreqMod->setValue(pFlytec->parRead(FRQ_MODULATION_POS, FtUInt8).toUInt());
 
 	// Acoustic Pitch
-	slider_Pitch->setValue(pFlytec->parRead(ACOUSTIC_PITCH, FtUInt8).toUInt());
+	slider_Pitch->setValue(pFlytec->parRead(ACOUSTIC_PITCH_POS, FtUInt8).toUInt());
 
 	// Acoustic Integral
-	slider_Integration->setValue(pFlytec->parRead(ACOUSTIC_I, FtUInt8).toUInt());
+	slider_Integration->setValue(pFlytec->parRead(ACOUSTIC_I_POS, FtUInt8).toUInt());
 
 	// Sink Acoustic Enabled
-	enabled = (pFlytec->parRead(SINC_ACOUSTIC_EN, FtUInt8).toUInt() == 1);
+	enabled = (pFlytec->parRead(SINC_ACOUSTIC_EN_POS, FtUInt8).toUInt() == 1);
 	checkBox_SinkAcoustic->setChecked(enabled);
 	spinBox_Sink->setEnabled(enabled);
 	spinBox_DownFreq->setEnabled(enabled);
 
 	// Down Base Frequency
-	spinBox_DownFreq->setValue(pFlytec->parRead(DOWN_BASE_FRQ, FtUInt16).toUInt());
+	spinBox_DownFreq->setValue(pFlytec->parRead(DOWN_BASE_FRQ_POS, FtUInt16).toUInt());
 
 	// Sink
-	spinBox_Sink->setValue(pFlytec->parRead(ACOUSTIC_SINK, FtInt8).toInt());
+	spinBox_Sink->setValue(pFlytec->parRead(ACOUSTIC_SINK_POS, FtInt8).toInt());
 }
 
 void AcousticFrameImpl::store(QByteArray &arr)
@@ -87,33 +87,29 @@ void AcousticFrameImpl::store(QByteArray &arr)
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Base Volume
-	pFlytec->parWrite(BASE_VOL_BEEP, FtUInt8, slider_Volume->value());
+	pFlytec->parWrite(BASE_VOL_BEEP_POS, FtUInt8, slider_Volume->value());
 
 	// Vario Offset
-	pFlytec->parWrite(ACOUSTIC_LIFT_THR, FtUInt8, spinBox_Threshold->value());
+	pFlytec->parWrite(ACOUSTIC_LIFT_THR_POS, FtUInt8, spinBox_Threshold->value());
 
 	// Up Base Frequency
-	pFlytec->parWrite(UP_BASE_FRQ, FtUInt16, spinBox_UpFreq->value());
+	pFlytec->parWrite(UP_BASE_FRQ_POS, FtUInt16, spinBox_UpFreq->value());
 
 	// Frequency Modulation
-	pFlytec->parWrite(FRQ_MODULATION, FtUInt8, slider_FreqMod->value());
+	pFlytec->parWrite(FRQ_MODULATION_POS, FtUInt8, slider_FreqMod->value());
 
 	// Acoustic Pitch
-  pFlytec->parWrite(ACOUSTIC_PITCH, FtUInt8, slider_Pitch->value());
+  pFlytec->parWrite(ACOUSTIC_PITCH_POS, FtUInt8, slider_Pitch->value());
 
 	// Acoustic Integral
-	pFlytec->parWrite(ACOUSTIC_I, FtUInt8, slider_Integration->value());
+	pFlytec->parWrite(ACOUSTIC_I_POS, FtUInt8, slider_Integration->value());
 
 	// Sink Acoustic Enabled
-	pFlytec->parWrite(SINC_ACOUSTIC_EN, FtUInt8, checkBox_SinkAcoustic->isChecked());
+	pFlytec->parWrite(SINC_ACOUSTIC_EN_POS, FtUInt8, checkBox_SinkAcoustic->isChecked());
 
 	// Down Base Frequency
-	pFlytec->parWrite(DOWN_BASE_FRQ, FtUInt16, spinBox_DownFreq->value());
+	pFlytec->parWrite(DOWN_BASE_FRQ_POS, FtUInt16, spinBox_DownFreq->value());
 
 	// Sink
-	pFlytec->parWrite(ACOUSTIC_SINK, FtInt8, spinBox_Sink->value());
+	pFlytec->parWrite(ACOUSTIC_SINK_POS, FtInt8, spinBox_Sink->value());
 }
-
-
-///#include "moc_AcousticFrameImpl.cxx"
-

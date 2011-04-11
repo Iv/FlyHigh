@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,32 +27,30 @@
 #include <qslider.h>
 
 #include "DisplayFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
+#include "Flytec5020.h"
 
 DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
 {
   setupUi(this);
+
 	// not supported by 5020
 	comboBox_Font->setEnabled(false);
-	
+
 	// Screen 1
-        pixmapLabel_Display->setPixmap(QPixmap(":/ft_5020.png"));
+  pixmapLabel_Display->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_0_0);
 	insertItems(comboBox_UserField_0_1);
 	insertItems(comboBox_UserField_0_2);
-	
+
 	// Screen 2
-        pixmapLabel_Display_2->setPixmap(QPixmap(":/ft_5020.png"));
+  pixmapLabel_Display_2->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_1_0);
 	insertItems(comboBox_UserField_1_1);
 	insertItems(comboBox_UserField_1_2);
-	
+
 	// Screen 3
-        pixmapLabel_Display_3->setPixmap(QPixmap(":/ft_5020.png"));
+  pixmapLabel_Display_3->setPixmap(QPixmap(":/ft_5020.png"));
 	insertItems(comboBox_UserField_2_0);
 	insertItems(comboBox_UserField_2_1);
 	insertItems(comboBox_UserField_2_2);
@@ -64,85 +62,84 @@ DisplayFrameImpl::~DisplayFrameImpl()
 
 void DisplayFrameImpl::update(QByteArray &arr)
 {
-	int16_t i16value;
+  Flytec5020 *pFlytec;
 
-	i16value = arr[LCD_CONTRAST_POS] << 8;
-	i16value += arr[LCD_CONTRAST_POS+1];
-	slider_Contrast->setValue(i16value);
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
-        comboBox_UserField_0_0->setCurrentIndex(arr[USERFIELD_0_POS]);
-        comboBox_UserField_0_1->setCurrentIndex(arr[USERFIELD_0_POS+1]);
-        comboBox_UserField_0_2->setCurrentIndex(arr[USERFIELD_0_POS+2]);
+	// LCD Contrast
+	slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtInt16).toInt());
 
-        comboBox_UserField_1_0->setCurrentIndex(arr[USERFIELD_1_POS]);
-        comboBox_UserField_1_1->setCurrentIndex(arr[USERFIELD_1_POS+1]);
-        comboBox_UserField_1_2->setCurrentIndex(arr[USERFIELD_1_POS+2]);
-	
-        comboBox_UserField_2_0->setCurrentIndex(arr[USERFIELD_2_POS]);
-        comboBox_UserField_2_1->setCurrentIndex(arr[USERFIELD_2_POS+1]);
-        comboBox_UserField_2_2->setCurrentIndex(arr[USERFIELD_2_POS+2]);
+	// User Field 0
+  comboBox_UserField_0_0->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS, FtUInt8).toUInt());
+  comboBox_UserField_0_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_0_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 2, FtUInt8).toUInt());
+
+	// User Field 1
+  comboBox_UserField_1_0->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 2, FtUInt8).toUInt());
+
+	// User Field 2
+  comboBox_UserField_2_0->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS, FtUInt8).toUInt());
+  comboBox_UserField_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 2, FtUInt8).toUInt());
 }
 
 void DisplayFrameImpl::store(QByteArray &arr)
 {
-	int16_t i16value;
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// LCD Contrast
-	i16value = slider_Contrast->value();
-	arr[LCD_CONTRAST_POS] = (u_char)(i16value >> 8);
-	arr[LCD_CONTRAST_POS+1] = (u_char)(i16value & 0xFF);
-	
+	pFlytec->parWrite(LCD_CONTRAST_POS, FtInt16, slider_Contrast->value());
+
 	// User Field 0
-        arr[USERFIELD_0_POS] = comboBox_UserField_0_0->currentIndex();
-        arr[USERFIELD_0_POS+1] = comboBox_UserField_0_1->currentIndex();
-        arr[USERFIELD_0_POS+2] = comboBox_UserField_0_2->currentIndex();
-	
+  pFlytec->parWrite(USERFIELD_0_POS, FtUInt8, comboBox_UserField_0_0->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 1, FtUInt8, comboBox_UserField_0_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 2, FtUInt8, comboBox_UserField_0_2->currentIndex());
+
 	// User Field 1
-        arr[USERFIELD_1_POS] = comboBox_UserField_1_0->currentIndex();
-        arr[USERFIELD_1_POS+1] = comboBox_UserField_1_1->currentIndex();
-        arr[USERFIELD_1_POS+2] = comboBox_UserField_1_2->currentIndex();
+  pFlytec->parWrite(USERFIELD_1_POS, FtUInt8, comboBox_UserField_1_0->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 1, FtUInt8, comboBox_UserField_1_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 2, FtUInt8, comboBox_UserField_1_2->currentIndex());
 
 	// User Field 2
-        arr[USERFIELD_2_POS] = comboBox_UserField_2_0->currentIndex();
-        arr[USERFIELD_2_POS+1] = comboBox_UserField_2_1->currentIndex();
-        arr[USERFIELD_2_POS+2] = comboBox_UserField_2_2->currentIndex();
+  pFlytec->parWrite(USERFIELD_2_POS, FtUInt8, comboBox_UserField_2_0->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 1, FtUInt8, comboBox_UserField_2_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_2_2->currentIndex());
 }
 
 void DisplayFrameImpl::insertItems( QComboBox * pItem )
 {
 	pItem->clear();
-        pItem->addItem( tr( "Wind spd" ) );
-        pItem->addItem( tr( "Time" ) );
-        pItem->addItem( tr( "Fl.Time" ) );
-        pItem->addItem( tr( "Gnd spd" ) );
-        pItem->addItem( tr( "Speed diff" ) );
-        pItem->addItem( tr( "Dist WP" ) );
-        pItem->addItem( tr( "Bearing" ) );
-        pItem->addItem( tr( "Track" ) );
-        pItem->addItem( tr( "Temp" ) );
-        pItem->addItem( tr( "Alt 2" ) );
-        pItem->addItem( tr( "Alt 3" ) );
-        pItem->addItem( tr( "QNH hPa" ) );
-        pItem->addItem( tr( "L/D Gnd" ) );
-        pItem->addItem( tr( "L/D air" ) );
-        pItem->addItem( tr( "L/D Req" ) );
-        pItem->addItem( tr( "Dist to ^" ) );
-        pItem->addItem( QString::null );
-        pItem->addItem( tr( "Alt @ BG" ) );
-        pItem->addItem( tr( "FL (ft)" ) );
-        pItem->addItem( tr( "Air spd" ) );
-        pItem->addItem( tr( "Alt @ goal" ) );
-        pItem->addItem( tr( "Dist goal" ) );
-        pItem->addItem( tr( "Vario" ) );
-        pItem->addItem( tr( "Alt 1" ) );
-        pItem->addItem( tr( "SMS p/t" ) );
-        pItem->addItem( tr( "Dist toff" ) );
-        pItem->addItem( tr( "Dist cyl" ) );
-        pItem->addItem( tr( "L/D rel goal" ) );
-        pItem->addItem( tr( "Race start" ) );
+  pItem->addItem( tr( "Wind spd" ) );
+  pItem->addItem( tr( "Time" ) );
+  pItem->addItem( tr( "Fl.Time" ) );
+  pItem->addItem( tr( "Gnd spd" ) );
+  pItem->addItem( tr( "Speed diff" ) );
+  pItem->addItem( tr( "Dist WP" ) );
+  pItem->addItem( tr( "Bearing" ) );
+  pItem->addItem( tr( "Track" ) );
+  pItem->addItem( tr( "Temp" ) );
+  pItem->addItem( tr( "Alt 2" ) );
+  pItem->addItem( tr( "Alt 3" ) );
+  pItem->addItem( tr( "QNH hPa" ) );
+  pItem->addItem( tr( "L/D Gnd" ) );
+  pItem->addItem( tr( "L/D air" ) );
+  pItem->addItem( tr( "L/D Req" ) );
+  pItem->addItem( tr( "Dist to ^" ) );
+  pItem->addItem( QString::null );
+  pItem->addItem( tr( "Alt @ BG" ) );
+  pItem->addItem( tr( "FL (ft)" ) );
+  pItem->addItem( tr( "Air spd" ) );
+  pItem->addItem( tr( "Alt @ goal" ) );
+  pItem->addItem( tr( "Dist goal" ) );
+  pItem->addItem( tr( "Vario" ) );
+  pItem->addItem( tr( "Alt 1" ) );
+  pItem->addItem( tr( "SMS p/t" ) );
+  pItem->addItem( tr( "Dist toff" ) );
+  pItem->addItem( tr( "Dist cyl" ) );
+  pItem->addItem( tr( "L/D rel goal" ) );
+  pItem->addItem( tr( "Race start" ) );
 }
-
-
-
-#include "moc_DisplayFrameImpl.cxx"
-

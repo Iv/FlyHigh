@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,13 +22,10 @@
 #include <qcombobox.h>
 
 #include "MemoryFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
+#include "Flytec5020.h"
 
 MemoryFrameImpl::MemoryFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
-: QWidget(parent)
+  :QWidget(parent)
 {
   setupUi(this);
 }
@@ -39,21 +36,26 @@ MemoryFrameImpl::~MemoryFrameImpl()
 
 void MemoryFrameImpl::update(QByteArray &arr)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// Recording Interval
-	spinBox_Intervall->setValue(arr[REC_INTERVAL_POS]);
+	spinBox_Intervall->setValue(pFlytec->parRead(REC_INTERVAL_POS, FtUInt8).toUInt());
 
 	// Stop Mode
-        comboBox_Mode->setCurrentIndex(arr[REC_STOP_MODE_POS]);
+	comboBox_Mode->setCurrentIndex(pFlytec->parRead(REC_STOP_MODE_POS, FtUInt8).toUInt());
 }
 
 void MemoryFrameImpl::store(QByteArray &arr)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// Recording Interval
-	arr[REC_INTERVAL_POS] = spinBox_Intervall->value();
+	pFlytec->parWrite(REC_INTERVAL_POS, FtUInt8, spinBox_Intervall->value());
 
 	// Stop Mode
-        arr[REC_STOP_MODE_POS] = comboBox_Mode->currentIndex();
+	pFlytec->parWrite(REC_STOP_MODE_POS, FtUInt8, comboBox_Mode->currentIndex());
 }
-
-#include "moc_MemoryFrameImpl.cxx"
-

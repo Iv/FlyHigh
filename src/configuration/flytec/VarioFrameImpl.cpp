@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,15 +20,11 @@
 
 #include <qcombobox.h>
 #include <qspinbox.h>
-
 #include "VarioFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
+#include "Flytec5020.h"
 
 VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
-: QWidget()
+  :QWidget(parent)
 {
   setupUi(this);
 }
@@ -39,6 +35,10 @@ VarioFrameImpl::~VarioFrameImpl()
 
 void VarioFrameImpl::update(QByteArray &arr)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// Response Delay
 //	spinBox_RespDelay->setValue(arr[RESP_DELAY_POS] * 200);
 
@@ -46,29 +46,27 @@ void VarioFrameImpl::update(QByteArray &arr)
 //	comboBox_Variomode->setCurrentItem(arr[VARIOMODE_POS]);
 
 	// Integration Time
-	spinBox_ITime->setValue(arr[I_TIME_POS]);
-	
+	spinBox_ITime->setValue(pFlytec->parRead(I_TIME_POS, FtUInt8).toUInt());
+
 	// Total Enery Compensation
 //	spinBox_TEC->setValue(arr[TEC_POS]);
 }
 
 void VarioFrameImpl::store(QByteArray &arr)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// Response Delay
 //	arr[RESP_DELAY_POS] = spinBox_RespDelay->value() / 200;
-	
+
 	// Vario Mode
 //	arr[VARIOMODE_POS] = comboBox_Variomode->currentItem();
 
 	// Integration Time
-	arr[I_TIME_POS] = spinBox_ITime->value();
-	
+  pFlytec->parWrite(I_TIME_POS, FtUInt8, spinBox_ITime->value());
+
 	// Total Enery Compensation
 //	arr[TEC_POS] = spinBox_TEC->value();
 }
-
-
-
-
-#include "moc_VarioFrameImpl.cxx"
-

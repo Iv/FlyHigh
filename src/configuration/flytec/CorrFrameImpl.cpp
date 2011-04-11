@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,10 +21,7 @@
 #include <qspinbox.h>
 
 #include "CorrFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
+#include "Flytec5020.h"
 
 CorrFrameImpl::CorrFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 	:QWidget(parent)
@@ -36,20 +33,17 @@ CorrFrameImpl::~CorrFrameImpl()
 {
 }
 
-
 void CorrFrameImpl::update(QByteArray &arr)
 {
-	int16_t i16value;
-	
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// correction of A1
-	i16value = arr[QNH_CORR_A1_POS] << 8;
-	i16value += arr[QNH_CORR_A1_POS+1];
-	spinBox_QNHCorrA1->setValue(i16value);
+  spinBox_QNHCorrA1->setValue(pFlytec->parRead(QNH_CORR_A1_POS, FtInt16).toInt());
 
 	// correction of A2
-	i16value = arr[QNH_CORR_A2_POS] << 8;
-	i16value += arr[QNH_CORR_A2_POS+1];
-	spinBox_QNHCorrA2->setValue(i16value);
+  spinBox_QNHCorrA1->setValue(pFlytec->parRead(QNH_CORR_A2_POS, FtInt16).toInt());
 
 /*
 	// temprature correction
@@ -60,22 +54,18 @@ void CorrFrameImpl::update(QByteArray &arr)
 
 void CorrFrameImpl::store(QByteArray &arr)
 {
-	int16_t i16value;
-	
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// correction of A1
-	i16value = spinBox_QNHCorrA1->value();
-	arr[QNH_CORR_A1_POS] = (char)(i16value >> 8);
-	arr[QNH_CORR_A1_POS+1] = (char)(i16value & 0xFF);
+	pFlytec->parWrite(QNH_CORR_A1_POS, FtInt16, spinBox_QNHCorrA1->value());
 
 	// correction of A2
-	i16value = spinBox_QNHCorrA2->value();
-	arr[QNH_CORR_A2_POS] = (char)(i16value >> 8);
-	arr[QNH_CORR_A2_POS+1] = (char)(i16value & 0xFF);
+	pFlytec->parWrite(QNH_CORR_A2_POS, FtInt16, spinBox_QNHCorrA1->value());
 
 /*
 	// temprature correction
 	arr[TMP_CORR_POS] = spinBox_TempCorr->value();
 */
 }
-
-#include "moc_CorrFrameImpl.cxx"

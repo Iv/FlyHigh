@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,13 +20,7 @@
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qspinbox.h>
-
 #include "SmsFrameImpl.h"
-
-extern "C"
-{
-	#include "flytec_al.h"
-}
 
 SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 	:QWidget(parent)
@@ -74,5 +68,3 @@ void SmsFrameImpl::store(QByteArray &arr)
 	arr[SMS_EMERGENCY_POS] = comboBox_Emerg->currentItem();
 */
 }
-
-#include "moc_SmsFrameImpl.cxx"

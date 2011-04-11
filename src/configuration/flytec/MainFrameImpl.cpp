@@ -58,21 +58,21 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	UnitFrameImpl *pUnitFrame;
 	SmsFrameImpl *pSmsFrame;
 	int pos = 0;
-	
+
 	m_fileName = "";
-	
+
 	// make a clean table
 	pWidget = toolBox->widget(0);
 	toolBox->removeItem(toolBox->indexOf(pWidget));
 	pWidget = widgetStack->widget(0);
 	widgetStack->removeWidget(pWidget);
-	
+
 	// Correction
 	pCorrFrame = new CorrFrameImpl(widgetStack);
 	addPage(pCorrFrame, &pos);
 	pCorrFrame->setEnabled(true);
 	m_FrameList.push_back(pCorrFrame);
-	
+
 	// Vario
 	pVarioFrame = new VarioFrameImpl(widgetStack);
 	addPage(pVarioFrame, &pos);
@@ -82,12 +82,12 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	pAcousticFrame = new AcousticFrameImpl(widgetStack);
 	addPage(pAcousticFrame, &pos);
 	m_FrameList.push_back(pAcousticFrame);
-	
+
 	// Velocity
 	pVelocityFrame = new VelocityFrameImpl(widgetStack);
 	addPage(pVelocityFrame, &pos);
 	m_FrameList.push_back(pVelocityFrame);
-	
+
 	// GPS
 	pGPSFrame = new GPSFrameImpl(widgetStack);
 	addPage(pGPSFrame, &pos);
@@ -98,28 +98,28 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	addPage(pFlyCalcFrame, &pos);
 	pFlyCalcFrame->setEnabled(false);
 	m_FrameList.push_back(pFlyCalcFrame);
-	
+
 	// Device
 	pDeviceFrame = new DeviceFrameImpl(widgetStack);
 	addPage(pDeviceFrame, &pos);
 	m_FrameList.push_back(pDeviceFrame);
-	
+
 	// Memory
 	pMemoryFrame = new MemoryFrameImpl(widgetStack);
 	addPage(pMemoryFrame, &pos);
 	m_FrameList.push_back(pMemoryFrame);
-	
+
 	// Display
 	pDisplayFrame = new DisplayFrameImpl(widgetStack);
 	addPage(pDisplayFrame, &pos);
 	m_FrameList.push_back(pDisplayFrame);
-	
+
 	// Polare
 	pPolareFrame = new PolareFrameImpl(widgetStack);
 	addPage(pPolareFrame, &pos);
 	pPolareFrame->setEnabled(false);
 	m_FrameList.push_back(pPolareFrame);
-	
+
 	// Unit
 	pUnitFrame = new UnitFrameImpl(widgetStack);
 	addPage(pUnitFrame, &pos);
@@ -130,7 +130,7 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	addPage(pSmsFrame, &pos);
 	pSmsFrame->setEnabled(false);
 	m_FrameList.push_back(pSmsFrame);
-	
+
 /*	m_pProgressBar = new QProgressBar(statusBar());
 	m_pProgressBar->setProgress(0, ft_MemSize/ft_PageSize);
 	m_pProgressBar->setShown(false);
@@ -140,7 +140,7 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 {
 	QWidget *pWidget;
-	
+
 	widgetStack->addWidget(pFrame, *pPos);
 	(*pPos)++;
 	pWidget = new QWidget(toolBox);
@@ -206,7 +206,7 @@ void MainFrameImpl::save()
 void MainFrameImpl::read()
 {
 	ProgressDlg dlg(this);
-	
+
 	dlg.beginProgress("read memory...", IGPSDevice::pInstance());
 
 	if(IGPSDevice::pInstance()->open())
@@ -218,14 +218,14 @@ void MainFrameImpl::read()
 
 		IGPSDevice::pInstance()->close();
 	}
-	
+
 	dlg.endProgress();
 }
 
 void MainFrameImpl::write()
 {
 	ProgressDlg dlg(this);
-		
+
 	if(QMessageBox::question(this,
 													 tr("write configuration"),
 													 tr("Write current configuration to the device?"),
@@ -247,7 +247,7 @@ void MainFrameImpl::write()
 void MainFrameImpl::storeFrames()
 {
 	FrameListType::iterator it;
-	
+
 	// update Frames
 	for(it=m_FrameList.begin(); it!=m_FrameList.end(); it++)
 	{
@@ -258,12 +258,10 @@ void MainFrameImpl::storeFrames()
 void MainFrameImpl::updateFrames()
 {
 	FrameListType::iterator it;
-	
+
 	// update Frames
 	for(it=m_FrameList.begin(); it!=m_FrameList.end(); it++)
 	{
 		(*it)->update(m_flytecMem);
 	}
 }
-
-#include "moc_MainFrameImpl.cxx"
