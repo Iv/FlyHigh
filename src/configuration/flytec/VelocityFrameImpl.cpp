@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,13 +22,10 @@
 #include <qspinbox.h>
 
 #include "VelocityFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
+#include "Flytec5020.h"
 
 VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
-: QWidget(parent)
+  :QWidget(parent)
 {
   setupUi(this);
 }
@@ -39,47 +36,44 @@ VelocityFrameImpl::~VelocityFrameImpl()
 
 void VelocityFrameImpl::update(QByteArray &arr)
 {
-	u_int16_t c16value;
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// best L/D
-	spinBox_BestLD->setValue(arr[BEST_LD_POS]);
+	spinBox_BestLD->setValue(pFlytec->parRead(BEST_LD_POS, FtUInt8).toUInt());
 
 	// speed best L/D
-	spinBox_SpeedBestLD->setValue(arr[SPEED_BEST_LD_POS]);
+	spinBox_SpeedBestLD->setValue(pFlytec->parRead(SPEED_BEST_LD_POS, FtUInt8).toUInt());
 
 	// Windweel Gain
-	spinBox_Windweel->setValue(arr[SPEED_GAIN_WHEEL_POS]);
+	spinBox_Windweel->setValue(pFlytec->parRead(SPEED_GAIN_WHEEL_POS, FtUInt8).toUInt());
 
 	// Stall Speed
-	spinBox_Stallspeed->setValue(arr[STALL_SPEED_POS]);
+	spinBox_Stallspeed->setValue(pFlytec->parRead(STALL_SPEED_POS, FtUInt8).toUInt());
 
 	// Stall Altitude
-	c16value = arr[STALL_ALT_POS] << 8;
-	c16value += arr[STALL_ALT_POS+1];
-	spinBox_Stallaltitude->setValue(c16value);
+	spinBox_Stallaltitude->setValue(pFlytec->parRead(STALL_ALT_POS, FtUInt16).toUInt());
 }
 
 void VelocityFrameImpl::store(QByteArray &arr)
 {
-	u_int16_t c16value;
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// best L/D
-	arr[BEST_LD_POS] = spinBox_BestLD->value();
+	pFlytec->parWrite(BEST_LD_POS, FtUInt8, spinBox_BestLD->value());
 
 	// speed best L/D
-	arr[SPEED_BEST_LD_POS] = spinBox_SpeedBestLD->value();
+	pFlytec->parWrite(SPEED_BEST_LD_POS, FtUInt8, spinBox_SpeedBestLD->value());
 
 	// Windweel Gain
-	arr[SPEED_GAIN_WHEEL_POS] = spinBox_Windweel->value();
+	pFlytec->parWrite(SPEED_GAIN_WHEEL_POS, FtUInt8, spinBox_Windweel->value());
 
 	// Stall Speed
-	arr[STALL_SPEED_POS] = spinBox_Stallspeed->value();
+	pFlytec->parWrite(STALL_SPEED_POS, FtUInt8, spinBox_Stallspeed->value());
 
 	// Stall Altitude
-	c16value = spinBox_Stallaltitude->value();
-	arr[STALL_ALT_POS] = (u_char)(c16value >> 8);
-	arr[STALL_ALT_POS+1] = (u_char)(c16value & 0xFF);
+	pFlytec->parWrite(STALL_ALT_POS, FtUInt16, spinBox_Stallaltitude->value());
 }
-
-#include "moc_VelocityFrameImpl.cxx"
-

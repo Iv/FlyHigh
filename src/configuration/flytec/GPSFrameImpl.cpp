@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,16 +21,12 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
+#include "Flytec5020.h"
+#include "GPSFrameImpl.h"
 #include "IFlyHighRC.h"
 
-#include "GPSFrameImpl.h"
-extern "C"
-{
-	#include "flytec_al.h"
-}
-
 GPSFrameImpl::GPSFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
-: QWidget(parent)
+  :QWidget(parent)
 {
   setupUi(this);
 }
@@ -41,39 +37,40 @@ GPSFrameImpl::~GPSFrameImpl()
 
 void GPSFrameImpl::update(QByteArray &arr)
 {
-	char i8value;
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Grid System
-        comboBox_GridSys->setCurrentIndex(arr[GRID_SYS_POS]);
-	
+  comboBox_GridSys->setCurrentIndex(pFlytec->parRead(GRID_SYS_POS, FtUInt8).toUInt());
+
 	// UTC Offset
-	i8value = arr[UTC_OFFSET_POS];
-	spinBox_UTCoffset->setValue(i8value);
+	spinBox_UTCoffset->setValue(pFlytec->parRead(UTC_OFFSET_POS, FtInt8).toInt());
 
 	// Half UTC offset
-	i8value = arr[UTC_HALF_OFFSET_POS];
-	checkBox_UTChalfOffset->setChecked(i8value);
+	checkBox_UTChalfOffset->setChecked(pFlytec->parRead(UTC_HALF_OFFSET_POS, FtUInt8).toUInt());
 
 //	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
 }
 
 void GPSFrameImpl::store(QByteArray &arr)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
 	// Grid System
-        arr[GRID_SYS_POS] = comboBox_GridSys->currentIndex();
-	
+	pFlytec->parWrite(GRID_SYS_POS, FtUInt8, comboBox_GridSys->currentIndex());
+
 	// UTC offset
-	arr[UTC_OFFSET_POS] = spinBox_UTCoffset->value();
-	
+	pFlytec->parWrite(UTC_OFFSET_POS, FtInt8, spinBox_UTCoffset->value());
+
 	// sync UTC offset with ressources
 	IFlyHighRC::pInstance()->setUtcOffset(spinBox_UTCoffset->value());
 
 	// Half UTC offset
-	arr[UTC_HALF_OFFSET_POS] = checkBox_UTChalfOffset->isChecked();
+  pFlytec->parWrite(UTC_HALF_OFFSET_POS, FtUInt8, checkBox_UTChalfOffset->isChecked());
 
 	// Geodic ID
 //	arr[GEO_ID_POS] = spinBox_GeoID->value();
 }
-
-#include "moc_GPSFrameImpl.cxx"
-
