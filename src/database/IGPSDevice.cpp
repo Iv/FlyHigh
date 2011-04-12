@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,7 +31,7 @@ IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
 IGPSDevice::IGPSDevice()
 {
 	uint fieldNr;
-	
+
 	for(fieldNr=0; fieldNr<NofFields; fieldNr++)
 	{
 		setLastModified((FieldType)fieldNr);
@@ -46,20 +46,20 @@ IGPSDevice* IGPSDevice::pInstance()
 {
 	uint curDevice;
 	bool newDevice = false;
-	
+
 	curDevice = IFlyHighRC::pInstance()->deviceName();
 	newDevice = (m_pGPSDevice == NULL);
-	
+
 	if(!newDevice)
 	{
 		newDevice = (curDevice != m_pGPSDevice->oldDevice());
-		
+
 		if(newDevice)
 		{
 			delete m_pGPSDevice;
 		}
 	}
-	
+
 	if(newDevice)
 	{
 		switch(curDevice)
@@ -75,7 +75,7 @@ IGPSDevice* IGPSDevice::pInstance()
 				IFlyHighRC::pInstance()->setDeviceName(0);
 			break;
 		}
-		
+
 		m_pGPSDevice->setOldDevice(curDevice);
 	}
 
@@ -92,16 +92,14 @@ void IGPSDevice::close()
 }
 
 // memory
-bool IGPSDevice::memoryRead(QByteArray &arr)
+bool IGPSDevice::memoryRead()
 {
-	(void)arr;
-	return -1;
+	return false;
 }
 
-bool IGPSDevice::memoryWrite(QByteArray &arr)
+bool IGPSDevice::memoryWrite()
 {
-	(void)arr;
-	return -1;
+	return false;
 }
 
 void IGPSDevice::setLastModified(FieldType field)
