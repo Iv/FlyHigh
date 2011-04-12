@@ -32,6 +32,7 @@
 
 Protocol5020::Protocol5020()
 {
+  m_memdump.resize(Flytec5020MemSize);
 }
 
 Protocol5020::~Protocol5020()
@@ -783,11 +784,12 @@ bool Protocol5020::recAck()
 	return valid;
 }
 
-bool Protocol5020::memoryRead(uint addr, uchar *pPage)
+bool Protocol5020::memoryRead(uint addr)
 {
   Tokenizer tokenizer;
   QString tlg;
   QString token;
+  uchar *pPage;
 	uint byteNr;
 	bool valid;
 	bool success;
@@ -799,6 +801,7 @@ bool Protocol5020::memoryRead(uint addr, uchar *pPage)
 		return false;
 	}
 
+	pPage = (u_char*)(m_memdump.data() + addr);
 	tlg = "$PBRMEMR,";
 
   // address
@@ -838,9 +841,10 @@ bool Protocol5020::memoryRead(uint addr, uchar *pPage)
 	return success;
 }
 
-bool Protocol5020::memoryWrite(uint addr, uchar *pPage)
+bool Protocol5020::memoryWrite(uint addr)
 {
   QString tlg;
+  uchar *pPage;
   uint byteNr;
   bool success;
 
@@ -850,7 +854,8 @@ bool Protocol5020::memoryWrite(uint addr, uchar *pPage)
 		return false;
 	}
 
-	tlg = "$PBRMEMW,";
+  pPage = (u_char*)(m_memdump.data() + addr);
+  tlg = "$PBRMEMW,";
 
   // address
 	tlg += QString::number(addr, 16).rightJustified(4, '0').toUpper();
@@ -868,7 +873,7 @@ bool Protocol5020::memoryWrite(uint addr, uchar *pPage)
 
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
-  usleep(100 * 1000);
+  usleep(100 * 2000);
 
   return success;
 }
@@ -885,7 +890,7 @@ bool Protocol5020::updateConfiguration()
 	return success;
 }
 
-bool Protocol5020::parWrite(QByteArray &mem, int par, FtDataType dataType, const QVariant &value)
+bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
 {
   u_int16_t ui16value;
   int16_t i16value;
@@ -895,31 +900,31 @@ bool Protocol5020::parWrite(QByteArray &mem, int par, FtDataType dataType, const
   switch(dataType)
 	{
 		case FtInt8:
-      mem[par] = (int8_t)value.toInt();
+      m_memdump[par] = (int8_t)value.toInt();
 		break;
     case FtUInt8:
-      mem[par] = (u_int8_t)value.toUInt();
+      m_memdump[par] = (u_int8_t)value.toUInt();
 		break;
     case FtInt16:
       i16value = value.toInt();
-      mem[par] = (char)(i16value >> 8);
-      mem[par + 1] = (char)(i16value & 0xFF);
+      m_memdump[par] = (char)(i16value >> 8);
+      m_memdump[par + 1] = (char)(i16value & 0xFF);
     break;
     case FtUInt16:
       ui16value = value.toUInt();
-      mem[par] = (u_char)(ui16value >> 8);
-      mem[par + 1] = (u_char)(ui16value & 0xFF);
+      m_memdump[par] = (u_char)(ui16value >> 8);
+      m_memdump[par + 1] = (u_char)(ui16value & 0xFF);
     break;
 /*
     case FtUInt32: case FtInt32:
 		break;
 */
 		case FtString:
-      pString = mem.data();
+      pString = m_memdump.data();
       qString2ftString(value.toString(), &pString[par], (int)FT_STRING_SIZE);
     break;
 		case FtArray:
-      mem.replace(par, value.toByteArray().size(), value.toByteArray());
+      m_memdump.replace(par, value.toByteArray().size(), value.toByteArray());
 		break;
 		default:
       success = false;
@@ -929,7 +934,7 @@ bool Protocol5020::parWrite(QByteArray &mem, int par, FtDataType dataType, const
 	return success;
 }
 
-QVariant Protocol5020::parRead(QByteArray &mem, int par, FtDataType dataType)
+QVariant Protocol5020::parRead(int par, FtDataType dataType)
 {
   QVariant value;
   u_int16_t ui16Value;
@@ -939,19 +944,19 @@ QVariant Protocol5020::parRead(QByteArray &mem, int par, FtDataType dataType)
   switch(dataType)
 	{
 		case FtInt8:
-      value = (int8_t)mem[par];
+      value = (int8_t)m_memdump[par];
 		break;
     case FtUInt8:
-      value = (u_int8_t)mem[par];
+      value = (u_int8_t)m_memdump[par];
 		break;
     case FtUInt16:
-      ui16Value = mem[par] << 8;
-      ui16Value += mem[par + 1];
+      ui16Value = m_memdump[par] << 8;
+      ui16Value += m_memdump[par + 1];
       value = ui16Value;
     break;
     case FtInt16:
-      i16Value = mem[par] << 8;
-      i16Value += mem[par + 1];
+      i16Value = m_memdump[par] << 8;
+      i16Value += m_memdump[par + 1];
       value = i16Value;
     break;
 /*
@@ -959,11 +964,11 @@ QVariant Protocol5020::parRead(QByteArray &mem, int par, FtDataType dataType)
 		break;
 */
 		case FtString:
-      pString = mem.constData();
+      pString = m_memdump.constData();
       value = ftString2qString(&pString[par], FT_STRING_SIZE);
     break;
 		case FtArray:
-      value = mem.mid(par, getParLen(par));
+      value = m_memdump.mid(par, getParLen(par));
 		break;
 	}
 
@@ -1126,7 +1131,7 @@ void Protocol5020::qString2ftString(const QString &qString, char *pftstr, int le
 		ftString.truncate(length);
 	}
 
-  memcpy(pftstr, ftString.data(), ftString.length());
+  memcpy(pftstr, ftString.toAscii().data(), ftString.length());
 }
 
 QString Protocol5020::ftString2qString(const char *pftstr, int length)

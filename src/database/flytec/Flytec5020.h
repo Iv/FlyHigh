@@ -79,14 +79,8 @@ class Flytec5020: public IGPSDevice
 
 		bool airspaceList(AirSpaceList &airspaceList);
 
-    // memory
-		bool memoryRead(QByteArray &arr);
-
-		bool memoryWrite(QByteArray &arr);
-
 	private:
 		Protocol5020 *m_protocol;
-    QByteArray m_confMem;
 		bool m_cancel;
 };
 

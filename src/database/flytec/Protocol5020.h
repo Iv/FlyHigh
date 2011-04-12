@@ -89,18 +89,19 @@ class Protocol5020
 		bool recAck();
 
 		/** Memory */
-		bool memoryRead(uint addr, uchar *pPage);
+		bool memoryRead(uint addr);
 
-    bool memoryWrite(uint addr, uchar *pPage);
+    bool memoryWrite(uint addr);
 
     bool updateConfiguration();
 
-    bool parWrite(QByteArray &mem, int par, FtDataType dataType, const QVariant &value);
+    bool parWrite(int par, FtDataType dataType, const QVariant &value);
 
-    QVariant parRead(QByteArray &mem, int par, FtDataType dataType);
+    QVariant parRead(int par, FtDataType dataType);
 
 	private:
 		Device5020 m_device;
+    QByteArray m_memdump;
 
 		QDate parseDate(const QString &token) const;
 

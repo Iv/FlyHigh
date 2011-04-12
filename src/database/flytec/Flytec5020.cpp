@@ -76,7 +76,6 @@ bool Flytec5020::memoryRead()
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-	m_confMem.resize(Flytec5020MemSize);
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
@@ -89,7 +88,7 @@ bool Flytec5020::memoryRead()
 		}
 
 		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+		success = m_protocol->memoryRead(pageAddr);
 
 		if(!success)
 		{
@@ -102,7 +101,7 @@ bool Flytec5020::memoryRead()
 	if(success)
 	{
 		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+		success = m_protocol->memoryRead(pageAddr);
 	}
 
 	Error::verify(success, Error::FLYTEC_CMD);
@@ -117,11 +116,6 @@ bool Flytec5020::memoryWrite()
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-	if((uint)m_confMem.size() != Flytec5020MemSize)
-	{
-		return false;
-	}
-
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
@@ -134,7 +128,7 @@ bool Flytec5020::memoryWrite()
 		}
 
 		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
+		success = m_protocol->memoryWrite(pageAddr);
 
 		if(!success)
 		{
@@ -147,7 +141,7 @@ bool Flytec5020::memoryWrite()
 	if(success)
 	{
 		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (uchar*)(m_confMem.data()+pageAddr));
+		success = m_protocol->memoryWrite(pageAddr);
 	}
 
 	if(success)
@@ -162,12 +156,12 @@ bool Flytec5020::memoryWrite()
 
 bool Flytec5020::parWrite(int par, FtDataType dataType, const QVariant &value)
 {
-  return m_protocol->parWrite(m_confMem, par, dataType, value);
+  return m_protocol->parWrite(par, dataType, value);
 }
 
 QVariant Flytec5020::parRead(int par, FtDataType dataType)
 {
-  return m_protocol->parRead(m_confMem, par, dataType);
+  return m_protocol->parRead(par, dataType);
 }
 
 void Flytec5020::cancel()
@@ -534,95 +528,4 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 	Error::verify(success, Error::FLYTEC_CMD);
 
 	return (success || !ctrAv);
-}
-
-bool Flytec5020::memoryRead(QByteArray &arr)
-{
-	uint pageNr;
-	uint pageAddr;
-	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
-	bool success = false;
-
-	m_confMem.resize(Flytec5020MemSize);
-	m_cancel = false;
-
-	for(pageNr=0; pageNr<nofPages; pageNr++)
-	{
-		emit progress(pageNr * 100 / nofPages);
-
-		if(m_cancel)
-		{
-			return false;
-		}
-
-		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
-
-		if(!success)
-		{
-			break;
-			// read Error!
-		}
-	}
-
-	// the last few bytes....
-	if(success)
-	{
-		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryRead(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
-	}
-
-	Error::verify(success, Error::FLYTEC_CMD);
-
-	return success;
-}
-
-bool Flytec5020::memoryWrite(QByteArray &arr)
-{
-	uint pageNr;
-	uint pageAddr;
-	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
-	bool success = false;
-
-	if((uint)m_confMem.size() != Flytec5020MemSize)
-	{
-		return false;
-	}
-
-	m_cancel = false;
-
-	for(pageNr=0; pageNr<nofPages; pageNr++)
-	{
-		emit progress(pageNr * 100 / nofPages);
-
-		if(m_cancel)
-		{
-			return false;
-		}
-
-		pageAddr = pageNr * Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (u_char*)(m_confMem.data()+pageAddr));
-
-		if(!success)
-		{
-			break;
-			// write Error!
-		}
-	}
-
-	// the last few bytes....
-	if(success)
-	{
-		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
-		success = m_protocol->memoryWrite(pageAddr, (uchar*)(m_confMem.data()+pageAddr));
-	}
-
-	if(success)
-	{
-		m_protocol->updateConfiguration();
-	}
-
-	Error::verify(success, Error::FLYTEC_CMD);
-
-	return success;
 }
