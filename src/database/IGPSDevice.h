@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,6 +28,7 @@ class IGPSDevice: public IDataBase
 {
 	public:
 		IGPSDevice();
+
 		virtual ~IGPSDevice();
 
 		static IGPSDevice* pInstance();
@@ -37,9 +38,9 @@ class IGPSDevice: public IDataBase
 		virtual void close();
 
 		// memory
-		virtual bool memoryRead(QByteArray &arr);
+		virtual bool memoryRead();
 
-		virtual bool memoryWrite(QByteArray &arr);
+		virtual bool memoryWrite();
 
 		// update
 		int flightsLastModified();
