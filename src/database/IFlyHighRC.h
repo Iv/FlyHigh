@@ -82,6 +82,10 @@ class IFlyHighRC
 		void setDBType(const QString& dbtype);
 		const QString& dBType();
 
+		// sqlite db file path and name
+		void setDBFile(const QString& dbfile);
+		const QString& dBFile();
+
 	private:
 		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
@@ -95,6 +99,7 @@ class IFlyHighRC
 		int m_pilotId;
 		QString m_dbHost;
 		QString m_dbType;
+		QString m_dbFile;
 
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;

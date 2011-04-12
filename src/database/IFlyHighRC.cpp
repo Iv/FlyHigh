@@ -39,6 +39,7 @@ const QString DirectoryLastVar = "last=";
 const QString DatabaseTag = "[database]\n";
 const QString DatabaseHostVar = "dbserverhost=";
 const QString DatabaseTypeVar = "dbtype=";
+const QString DatabaseFileVar = "dbfile=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
 
@@ -86,6 +87,8 @@ IFlyHighRC::IFlyHighRC()
 	m_dbTypeList += "sqlite";
 	m_dbHost = "localhost";
 	m_dbType = m_dbTypeList[0];
+	// relative to userhome or absolute:
+	m_dbFile = "Flights/flyhigh_v2.sqlite";
 }
 
 uint IFlyHighRC::deviceName()
@@ -208,6 +211,17 @@ const QString& IFlyHighRC::dBType()
 {
 	return m_dbType;
 }
+
+void IFlyHighRC::setDBFile(const QString& dbfile)
+{
+	m_dbFile = dbfile;
+}
+
+const QString& IFlyHighRC::dBFile()
+{
+	return m_dbFile;
+}
+
 
 void IFlyHighRC::loadRC()
 {
@@ -423,6 +437,10 @@ void IFlyHighRC::parseDBParam(QBuffer &buff)
 				m_dbType = m_dbTypeList[0];
 			}
 		}
+		else if (DatabaseFileVar.indexOf(var) == 0)
+		{
+			m_dbFile = val;
+		}
 	}
 }
 
@@ -431,6 +449,7 @@ void IFlyHighRC::saveDBParam(QTextStream &stream)
 	stream << DatabaseTag;
 	stream << DatabaseHostVar << m_dbHost << "\n";
 	stream << DatabaseTypeVar << m_dbType << "\n";
+	stream << DatabaseFileVar << m_dbFile << "\n";
 	stream << "\n";
 }
 
