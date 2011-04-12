@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,10 +30,12 @@ class DisplayFrameImpl: public QWidget, public Ui::DisplayFrame, public Frame
 
 	public:
 		DisplayFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+
 		~DisplayFrameImpl();
 
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
+		void update();
+
+		void store();
 
 	private:
 		void insertItems(QComboBox * pItem);

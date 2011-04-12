@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <qspinbox.h>
-
 #include "CorrFrameImpl.h"
 #include "Flytec5020.h"
 
@@ -33,7 +32,7 @@ CorrFrameImpl::~CorrFrameImpl()
 {
 }
 
-void CorrFrameImpl::update(QByteArray &arr)
+void CorrFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -52,7 +51,7 @@ void CorrFrameImpl::update(QByteArray &arr)
 */
 }
 
-void CorrFrameImpl::store(QByteArray &arr)
+void CorrFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

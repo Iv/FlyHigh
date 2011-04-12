@@ -34,7 +34,7 @@ MemoryFrameImpl::~MemoryFrameImpl()
 {
 }
 
-void MemoryFrameImpl::update(QByteArray &arr)
+void MemoryFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -47,7 +47,7 @@ void MemoryFrameImpl::update(QByteArray &arr)
 	comboBox_Mode->setCurrentIndex(pFlytec->parRead(REC_STOP_MODE_POS, FtUInt8).toUInt());
 }
 
-void MemoryFrameImpl::store(QByteArray &arr)
+void MemoryFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

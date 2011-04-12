@@ -35,7 +35,7 @@ GPSFrameImpl::~GPSFrameImpl()
 {
 }
 
-void GPSFrameImpl::update(QByteArray &arr)
+void GPSFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -53,7 +53,7 @@ void GPSFrameImpl::update(QByteArray &arr)
 //	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
 }
 
-void GPSFrameImpl::store(QByteArray &arr)
+void GPSFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

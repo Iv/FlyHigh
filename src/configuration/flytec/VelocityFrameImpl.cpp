@@ -34,7 +34,7 @@ VelocityFrameImpl::~VelocityFrameImpl()
 {
 }
 
-void VelocityFrameImpl::update(QByteArray &arr)
+void VelocityFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -56,7 +56,7 @@ void VelocityFrameImpl::update(QByteArray &arr)
 	spinBox_Stallaltitude->setValue(pFlytec->parRead(STALL_ALT_POS, FtUInt16).toUInt());
 }
 
-void VelocityFrameImpl::store(QByteArray &arr)
+void VelocityFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

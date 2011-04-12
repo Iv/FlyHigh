@@ -38,23 +38,28 @@ class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 		virtual void addPage(QWidget * pFrame, int * pPos);
 
 	protected slots:
+/**
 		void open();
+
 		void save();
+*/
 		void read();
+
 		void write();
 
 	private:
 		typedef std::vector<Frame*> FrameListType;
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
-		QByteArray m_flytecMem;
 		FrameListType m_FrameList;
 		Q3ProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
 
 //		void execThreadCmd(CmdType cmd);
+
 		void updateFrames();
+
 		void storeFrames();
 };
 

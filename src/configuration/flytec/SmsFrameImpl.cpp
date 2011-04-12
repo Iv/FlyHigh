@@ -32,9 +32,8 @@ SmsFrameImpl::~SmsFrameImpl()
 {
 }
 
-void SmsFrameImpl::update(QByteArray &arr)
+void SmsFrameImpl::update()
 {
-	(void)arr;
 /*
 	// Recieiver number
 	arr[SMS_REC_NR_POS] = 0;
@@ -51,9 +50,8 @@ void SmsFrameImpl::update(QByteArray &arr)
 */
 }
 
-void SmsFrameImpl::store(QByteArray &arr)
+void SmsFrameImpl::store()
 {
-	(void)arr;
 /*
 	// Receiver number
 	memcpy((char*)&arr[SMS_REC_NR_POS], lineEdit_RecNum->text().ascii(), lineEdit_RecNum->text().length());

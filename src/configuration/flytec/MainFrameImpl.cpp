@@ -147,6 +147,7 @@ void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
 	toolBox->addItem(pWidget,  pFrame->windowTitle());
 }
 
+/**
 void MainFrameImpl::open()
 {
 	QFile file;
@@ -202,6 +203,7 @@ void MainFrameImpl::save()
 		}
 	}
 }
+*/
 
 void MainFrameImpl::read()
 {
@@ -211,7 +213,7 @@ void MainFrameImpl::read()
 
 	if(IGPSDevice::pInstance()->open())
 	{
-		if(IGPSDevice::pInstance()->memoryRead(m_flytecMem))
+		if(IGPSDevice::pInstance()->memoryRead())
 		{
 			updateFrames();
 		}
@@ -237,7 +239,7 @@ void MainFrameImpl::write()
 		if(IGPSDevice::pInstance()->open())
 		{
 			dlg.beginProgress("write memory...", IGPSDevice::pInstance());
-			IGPSDevice::pInstance()->memoryWrite(m_flytecMem);
+			IGPSDevice::pInstance()->memoryWrite();
 			IGPSDevice::pInstance()->close();
 			dlg.endProgress();
 		}
@@ -251,7 +253,7 @@ void MainFrameImpl::storeFrames()
 	// update Frames
 	for(it=m_FrameList.begin(); it!=m_FrameList.end(); it++)
 	{
-		(*it)->store(m_flytecMem);
+		(*it)->store();
 	}
 }
 
@@ -262,6 +264,6 @@ void MainFrameImpl::updateFrames()
 	// update Frames
 	for(it=m_FrameList.begin(); it!=m_FrameList.end(); it++)
 	{
-		(*it)->update(m_flytecMem);
+		(*it)->update();
 	}
 }

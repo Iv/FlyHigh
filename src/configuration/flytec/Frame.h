@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,16 +20,15 @@
 #ifndef  Frame_h
 #define Frame_h
 
-#include <QByteArray>
-
 class  Frame
 {
 	public:
 		Frame();
 		virtual ~Frame();
 
-		virtual void update(QByteArray &arr);
-		virtual void store(QByteArray &arr);
+		virtual void update();
+
+		virtual void store();
 };
 
 #endif

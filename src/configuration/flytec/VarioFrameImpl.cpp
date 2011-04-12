@@ -33,7 +33,7 @@ VarioFrameImpl::~VarioFrameImpl()
 {
 }
 
-void VarioFrameImpl::update(QByteArray &arr)
+void VarioFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -52,7 +52,7 @@ void VarioFrameImpl::update(QByteArray &arr)
 //	spinBox_TEC->setValue(arr[TEC_POS]);
 }
 
-void VarioFrameImpl::store(QByteArray &arr)
+void VarioFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,10 +30,12 @@ class MemoryFrameImpl: public QWidget, public Ui::MemoryFrame, public Frame
 
 	public:
 		MemoryFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+
 		~MemoryFrameImpl();
 
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
+		void update();
+
+		void store();
 };
 
 #endif

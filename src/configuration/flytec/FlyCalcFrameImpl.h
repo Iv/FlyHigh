@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,6 +30,7 @@ class FlyCalcFrameImpl: public QWidget, public Ui::FlyCalcFrame, public Frame
 
 	public:
 		FlyCalcFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+
 		~FlyCalcFrameImpl();
 };
 
