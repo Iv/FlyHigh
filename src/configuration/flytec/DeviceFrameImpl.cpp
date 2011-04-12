@@ -51,7 +51,7 @@ void DeviceFrameImpl::newGlider()
 	}
 }
 
-void DeviceFrameImpl::update(QByteArray &arr)
+void DeviceFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 	Pilot dbPilot;
@@ -62,10 +62,8 @@ void DeviceFrameImpl::update(QByteArray &arr)
 	QString glider;
 	DeviceInfoType devInfo;
 	int syncRes;
-  const char* devdata;
 
   // fetch data pointer for easy access
-  devdata = arr.constData();
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
   pFlytec->open();
 
@@ -149,7 +147,7 @@ void DeviceFrameImpl::update(QByteArray &arr)
   comboBox_BattType->setCurrentIndex(pFlytec->parRead(BATT_TYPE_POS, FtUInt8).toInt());
 }
 
-void DeviceFrameImpl::store(QByteArray &arr)
+void DeviceFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 	QString pilotName;

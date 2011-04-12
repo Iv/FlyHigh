@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,18 +31,21 @@ class DeviceFrameImpl: public QWidget, public Ui::DeviceFrame, public Frame
 
 	public:
 		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+
 		~DeviceFrameImpl();
-		
-		void update(QByteArray &arr);
-		void store(QByteArray &arr);
-		
+
+		void update();
+
+		void store();
+
 	protected slots:
 		void newGlider();
-		
+
 	private:
 		Glider::GliderListType m_gliderList;
 
 		void updateGlider();
+
 		void selectGlider(const QString &name);
 };
 

@@ -60,7 +60,7 @@ DisplayFrameImpl::~DisplayFrameImpl()
 {
 }
 
-void DisplayFrameImpl::update(QByteArray &arr)
+void DisplayFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 
@@ -85,7 +85,7 @@ void DisplayFrameImpl::update(QByteArray &arr)
   comboBox_UserField_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 2, FtUInt8).toUInt());
 }
 
-void DisplayFrameImpl::store(QByteArray &arr)
+void DisplayFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 
@@ -110,7 +110,7 @@ void DisplayFrameImpl::store(QByteArray &arr)
   pFlytec->parWrite(USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_2_2->currentIndex());
 }
 
-void DisplayFrameImpl::insertItems( QComboBox * pItem )
+void DisplayFrameImpl::insertItems(QComboBox * pItem)
 {
 	pItem->clear();
   pItem->addItem( tr( "Wind spd" ) );

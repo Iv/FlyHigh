@@ -21,7 +21,6 @@
 #include <qcheckbox.h>
 #include <qslider.h>
 #include <qspinbox.h>
-
 #include "AcousticFrameImpl.h"
 #include "Flytec5020.h"
 
@@ -42,7 +41,7 @@ void AcousticFrameImpl::sinkAcousticToggled(bool b)
 	spinBox_DownFreq->setEnabled(b);
 }
 
-void AcousticFrameImpl::update(QByteArray &arr)
+void AcousticFrameImpl::update()
 {
   Flytec5020 *pFlytec;
   bool enabled;
@@ -80,7 +79,7 @@ void AcousticFrameImpl::update(QByteArray &arr)
 	spinBox_Sink->setValue(pFlytec->parRead(ACOUSTIC_SINK_POS, FtInt8).toInt());
 }
 
-void AcousticFrameImpl::store(QByteArray &arr)
+void AcousticFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 

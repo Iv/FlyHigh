@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,7 +32,7 @@ UnitFrameImpl::~UnitFrameImpl()
 {
 }
 
-void UnitFrameImpl::update(QByteArray &arr)
+void UnitFrameImpl::update()
 {
   Flytec5020 *pFlytec;
 	u_char ch;
@@ -61,7 +61,7 @@ void UnitFrameImpl::update(QByteArray &arr)
   comboBox_Temp->setCurrentIndex(index);
 }
 
-void UnitFrameImpl::store(QByteArray &arr)
+void UnitFrameImpl::store()
 {
   Flytec5020 *pFlytec;
 	u_char ch = 0;
