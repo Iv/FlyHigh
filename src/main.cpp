@@ -36,6 +36,8 @@ int main( int argc, char ** argv )
 	QApplication appl(argc, argv);
 	QString root;
 	QString pwd;
+	QString file;
+	QFileInfo dbfile;
 	Q_INIT_RESOURCE(res);
 	MainWindow* pMainWin;
 	int res;
@@ -81,19 +83,23 @@ int main( int argc, char ** argv )
 	else if (dbtype.contains("sqlite",Qt::CaseInsensitive))
 	{
     ISql::pInstance()->setDriverName("QSQLITE");
-    // suggest db location in <userhome>/Flights/
-    QString path(QDir::home().path());
-    path.append(QDir::separator()).append("Flights");
+
+		file = IFlyHighRC::pInstance()->dBFile();
+		dbfile = QFileInfo(file);
+		if (dbfile.isRelative())
+		{
+			// prepend userhome
+			file.prepend(QDir::separator()).prepend(QDir::homePath());
+		}
+		dbfile = QFileInfo(file);
 
     // create directory if necessary
-    if (!QDir(path).exists())
+		if (!dbfile.dir().exists())
     {
-      QDir().mkdir(path);
+			QDir().mkpath(dbfile.absolutePath());
     }
 
-    path.append(QDir::separator()).append("flyhigh_v2.sqlite");
-    path = QDir::toNativeSeparators(path);
-    ISql::pInstance()->setName(path);
+		ISql::pInstance()->setName(QDir::toNativeSeparators(dbfile.absoluteFilePath()));
 
     if(!ISql::pInstance()->connectDb())
     {
