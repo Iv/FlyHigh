@@ -27,7 +27,6 @@
 class QMdiArea;
 class QSignalMapper;
 class MDIWindow;
-class TrackWindow;
 
 class MainWindow: public QMainWindow
 {
