@@ -97,7 +97,7 @@ IFlyHighRC::IFlyHighRC()
 	m_dbFile = "Flights/flyhigh_v2.sqlite";
 }
 
-uint IFlyHighRC::deviceName()
+uint IFlyHighRC::deviceName() const
 {
 	return m_deviceName;
 }
@@ -107,7 +107,7 @@ void IFlyHighRC::setDeviceName(uint index)
 	m_deviceName = index;
 }
 
-const QString& IFlyHighRC::deviceLine()
+const QString& IFlyHighRC::deviceLine() const
 {
 	return m_deviceLine;
 }
@@ -117,7 +117,7 @@ void IFlyHighRC::setDeviceLine(const QString &line)
 	m_deviceLine = line;
 }
 
-uint IFlyHighRC::deviceSpeed()
+uint IFlyHighRC::deviceSpeed() const
 {
 	return m_deviceSpeed;
 }
@@ -139,7 +139,7 @@ const QString IFlyHighRC::deviceSpeedString() const
 	return speed;
 }
 
-char IFlyHighRC::utcOffset()
+char IFlyHighRC::utcOffset() const
 {
 	return m_utcOffset;
 }
@@ -158,7 +158,7 @@ void IFlyHighRC::setUtcOffset(char offset)
 	m_utcOffset = offset;
 }
 
-const QString& IFlyHighRC::lastDir()
+const QString& IFlyHighRC::lastDir() const
 {
 	return m_lastDir;
 }
@@ -168,22 +168,22 @@ void IFlyHighRC::setLastDir(const QString& name)
 	m_lastDir = name;
 }
 
-const QString& IFlyHighRC::versionInfo()
+const QString& IFlyHighRC::versionInfo() const
 {
 	return m_versionInfo;
 }
 
-const QString& IFlyHighRC::copyInfo()
+const QString& IFlyHighRC::copyInfo() const
 {
 	return m_copyInfo;
 }
 
-const QStringList& IFlyHighRC::deviceNameList()
+const QStringList& IFlyHighRC::deviceNameList() const
 {
 	return m_deviceNameList;
 }
 
-const QStringList& IFlyHighRC::deviceSpeedList()
+const QStringList& IFlyHighRC::deviceSpeedList() const
 {
 	return m_deviceSpeedList;
 }
@@ -193,7 +193,7 @@ void IFlyHighRC::setPilotId(int id)
 	m_pilotId = id;
 }
 
-int IFlyHighRC::pilotId()
+int IFlyHighRC::pilotId() const
 {
 	return m_pilotId;
 }
@@ -203,7 +203,7 @@ void IFlyHighRC::setDBHost(const QString& host)
 	m_dbHost = host;
 }
 
-const QString& IFlyHighRC::dBHost()
+const QString& IFlyHighRC::dBHost() const
 {
 	return m_dbHost;
 }
@@ -213,7 +213,7 @@ void IFlyHighRC::setDBPort(int port)
 	m_dbPort = port;
 }
 
-int IFlyHighRC::dBPort()
+int IFlyHighRC::dBPort() const
 {
 	return m_dbPort;
 }
@@ -223,7 +223,7 @@ void IFlyHighRC::setDBUser(const QString& user)
 	m_dbUser = user;
 }
 
-const QString& IFlyHighRC::dBUser()
+const QString& IFlyHighRC::dBUser() const
 {
 	return m_dbUser;
 }
@@ -233,7 +233,7 @@ void IFlyHighRC::setDBPass(const QString& pass)
 	m_dbPass = pass;
 }
 
-const QString& IFlyHighRC::dBPass()
+const QString& IFlyHighRC::dBPass() const
 {
 	return m_dbPass;
 }
@@ -243,7 +243,7 @@ void IFlyHighRC::setDBType(const QString& dbtype)
 	m_dbType = dbtype;
 }
 
-const QString& IFlyHighRC::dBType()
+const QString& IFlyHighRC::dBType() const
 {
 	return m_dbType;
 }
@@ -253,7 +253,7 @@ void IFlyHighRC::setDBFile(const QString& dbfile)
 	m_dbFile = dbfile;
 }
 
-const QString& IFlyHighRC::dBFile()
+const QString& IFlyHighRC::dBFile() const
 {
 	return m_dbFile;
 }
@@ -346,7 +346,7 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveSerialLine(QTextStream &stream)
+void IFlyHighRC::saveSerialLine(QTextStream &stream) const
 {
 	QString str;
 	
@@ -380,7 +380,7 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDateTime(QTextStream &stream)
+void IFlyHighRC::saveDateTime(QTextStream &stream) const
 {
 	QString str;
 	
@@ -411,7 +411,7 @@ void IFlyHighRC::parseDirectory(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDirectory(QTextStream &stream)
+void IFlyHighRC::saveDirectory(QTextStream &stream) const
 {
 	stream << DirectoryTag;
 	stream << DirectoryLastVar << m_lastDir << "\n";
@@ -439,7 +439,7 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::savePilot(QTextStream &stream)
+void IFlyHighRC::savePilot(QTextStream &stream) const
 {
 	stream << PilotTag;
 	stream << PilotId << m_pilotId << "\n";
@@ -492,7 +492,7 @@ void IFlyHighRC::parseDBParam(QBuffer &buff)
 	}
 }
 
-void IFlyHighRC::saveDBParam(QTextStream &stream)
+void IFlyHighRC::saveDBParam(QTextStream &stream) const
 {
 	stream << DatabaseTag;
 	stream << DatabaseHostVar << m_dbHost << "\n";
@@ -504,7 +504,7 @@ void IFlyHighRC::saveDBParam(QTextStream &stream)
 	stream << "\n";
 }
 
-void IFlyHighRC::parseValue(char *line, QString &var, QString &val)
+void IFlyHighRC::parseValue(char *line, QString &var, QString &val) const
 {
 	QString str = line;
 	int valEnd;

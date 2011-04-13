@@ -39,64 +39,64 @@ class IFlyHighRC
 
 		void saveRC();
 
-		const QString& deviceLine();
+		const QString& deviceLine() const;
 
 		void setDeviceLine(const QString &name);
 
-		uint deviceSpeed();
+		uint deviceSpeed() const;
 
 		void setDeviceSpeed(uint index);
 
 		const QString deviceSpeedString() const;
 
-		uint deviceName();
+		uint deviceName() const;
 
 		void setDeviceName(uint index);
 
-		char utcOffset();
+		char utcOffset() const;
 
 		void setUtcOffset(char offset);
 
-		const QString& lastDir();
+		const QString& lastDir() const;
 
 		void setLastDir(const QString& name);
 
-		const QString& versionInfo();
+		const QString& versionInfo() const;
 
-		const QString& copyInfo();
+		const QString& copyInfo() const;
 
-		const QStringList& deviceNameList();
+		const QStringList& deviceNameList() const;
 
-		const QStringList& deviceSpeedList();
+		const QStringList& deviceSpeedList() const;
 
 		// pilot info
 		void setPilotId(int id);
 
-		int pilotId();
+		int pilotId() const;
 
 		// mysql db sever host
 		void setDBHost(const QString& host);
-		const QString& dBHost();
+		const QString& dBHost() const;
 
 		// mysql db sever port
 		void setDBPort(int port);
-		int dBPort();
+		int dBPort() const;
 
 		// mysql db user (non-priviledged)
 		void setDBUser(const QString& user);
-		const QString& dBUser();
+		const QString& dBUser() const;
 
 		// mysql db password
 		void setDBPass(const QString& pass);
-		const QString& dBPass();
+		const QString& dBPass() const;
 
 		// db backend type
 		void setDBType(const QString& dbtype);
-		const QString& dBType();
+		const QString& dBType() const;
 
 		// sqlite db file path and name
 		void setDBFile(const QString& dbfile);
-		const QString& dBFile();
+		const QString& dBFile() const;
 
 	private:
 		QFile m_rcFile;
@@ -123,16 +123,16 @@ class IFlyHighRC
 		IFlyHighRC();
 
 		void parseSerialLine(QBuffer &buff);
-		void saveSerialLine(QTextStream &stream);
+		void saveSerialLine(QTextStream &stream) const;
 		void parseDateTime(QBuffer &buff);
-		void saveDateTime(QTextStream &stream);
+		void saveDateTime(QTextStream &stream) const;
 		void parseDirectory(QBuffer &buff);
-		void saveDirectory(QTextStream &stream);
+		void saveDirectory(QTextStream &stream) const;
 		void parsePilot(QBuffer &buff);
-		void savePilot(QTextStream &stream);
+		void savePilot(QTextStream &stream) const;
 		void parseDBParam(QBuffer &buff);
-		void saveDBParam(QTextStream &stream);
-		void parseValue(char *line, QString &var, QString &val);
+		void saveDBParam(QTextStream &stream) const;
+		void parseValue(char *line, QString &var, QString &val) const;
 };
 
 #endif
