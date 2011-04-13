@@ -67,6 +67,7 @@ int main( int argc, char ** argv )
 		}
 
     ISql::pInstance()->setDriverName("QMYSQL");
+		ISql::pInstance()->setPort(IFlyHighRC::pInstance()->dBPort());
 		ISql::pInstance()->setUserName(IFlyHighRC::pInstance()->dBUser());
 		ISql::pInstance()->setPassword(IFlyHighRC::pInstance()->dBPass());
 
