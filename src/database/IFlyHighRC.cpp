@@ -38,6 +38,8 @@ const QString PilotId = "pilotId=";
 const QString DirectoryLastVar = "last=";
 const QString DatabaseTag = "[database]\n";
 const QString DatabaseHostVar = "dbserverhost=";
+const QString DatabaseUserVar = "dbusername=";
+const QString DatabasePassVar = "dbpassword=";
 const QString DatabaseTypeVar = "dbtype=";
 const QString DatabaseFileVar = "dbfile=";
 
@@ -86,6 +88,8 @@ IFlyHighRC::IFlyHighRC()
 	m_dbTypeList += "mysql";
 	m_dbTypeList += "sqlite";
 	m_dbHost = "localhost";
+	m_dbUser = "flyhigh";
+	m_dbPass = "flyhigh";
 	m_dbType = m_dbTypeList[0];
 	// relative to userhome or absolute:
 	m_dbFile = "Flights/flyhigh_v2.sqlite";
@@ -200,6 +204,26 @@ void IFlyHighRC::setDBHost(const QString& host)
 const QString& IFlyHighRC::dBHost()
 {
 	return m_dbHost;
+}
+
+void IFlyHighRC::setDBUser(const QString& user)
+{
+	m_dbUser = user;
+}
+
+const QString& IFlyHighRC::dBUser()
+{
+	return m_dbUser;
+}
+
+void IFlyHighRC::setDBPass(const QString& pass)
+{
+	m_dbPass = pass;
+}
+
+const QString& IFlyHighRC::dBPass()
+{
+	return m_dbPass;
 }
 
 void IFlyHighRC::setDBType(const QString& dbtype)
@@ -424,6 +448,14 @@ void IFlyHighRC::parseDBParam(QBuffer &buff)
 		{
 			m_dbHost = val;
 		}
+		else if (DatabaseUserVar.indexOf(var) == 0)
+		{
+			m_dbUser = val;
+		}
+		else if (DatabasePassVar.indexOf(var) == 0)
+		{
+			m_dbPass = val;
+		}
 		else if (DatabaseTypeVar.indexOf(var) == 0)
 		{
 			// some validation
@@ -448,6 +480,8 @@ void IFlyHighRC::saveDBParam(QTextStream &stream)
 {
 	stream << DatabaseTag;
 	stream << DatabaseHostVar << m_dbHost << "\n";
+	stream << DatabaseUserVar << m_dbUser << "\n";
+	stream << DatabasePassVar << m_dbPass << "\n";
 	stream << DatabaseTypeVar << m_dbType << "\n";
 	stream << DatabaseFileVar << m_dbFile << "\n";
 	stream << "\n";

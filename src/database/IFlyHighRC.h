@@ -78,6 +78,14 @@ class IFlyHighRC
 		void setDBHost(const QString& host);
 		const QString& dBHost();
 
+		// mysql db user (non-priviledged)
+		void setDBUser(const QString& user);
+		const QString& dBUser();
+
+		// mysql db password
+		void setDBPass(const QString& pass);
+		const QString& dBPass();
+
 		// db backend type
 		void setDBType(const QString& dbtype);
 		const QString& dBType();
@@ -98,6 +106,8 @@ class IFlyHighRC
 		QString m_copyInfo;
 		int m_pilotId;
 		QString m_dbHost;
+		QString m_dbUser;
+		QString m_dbPass;
 		QString m_dbType;
 		QString m_dbFile;
 
