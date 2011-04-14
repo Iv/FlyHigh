@@ -18,25 +18,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iostream>
 #include <QApplication>
 #include <QIcon>
 #include <QTextCodec>
 #include <QHostInfo>
+#include <QInputDialog>
+#include <QDir>
+#include <QDebug>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "ISql.h"
 
-#include <QInputDialog>
-#include <QDir>
 
 int main( int argc, char ** argv ) 
 {
 	QApplication appl(argc, argv);
 	QString root;
 	QString pwd;
-	QString file;
 	QFileInfo dbfile;
 	Q_INIT_RESOURCE(res);
 	MainWindow* pMainWin;
@@ -47,30 +46,22 @@ int main( int argc, char ** argv )
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
+	// read config file
 	IFlyHighRC::pInstance()->loadRC();
 
-	// which type of db?
-	QString dbtype = IFlyHighRC::pInstance()->dBType();
-	if (dbtype.contains("mysql",Qt::CaseInsensitive))
-	{
-		QString dbhost = IFlyHighRC::pInstance()->dBHost();
-		QHostInfo info = QHostInfo::fromName(dbhost);
+	DatabaseParameters dbparam = IFlyHighRC::pInstance()->getDBParameters();
+	ISql::pInstance()->setDBParameters(dbparam);
 
-		if(info.error()==QHostInfo::NoError)
-		{
-			ISql::pInstance()->setHostName(dbhost);
-		}
-		else
+	// which type of db?
+	if (dbparam.isMySQL())
+	{
+		// check for server host
+		QHostInfo info = QHostInfo::fromName(dbparam.dBHostName());
+		if(info.error()!=QHostInfo::NoError)
 		{
 			// todo: show error dialog
-			std::cerr << info.errorString().toStdString() << std::endl;
+			qDebug() << info.errorString();
 		}
-
-    ISql::pInstance()->setDriverName("QMYSQL");
-		ISql::pInstance()->setPort(IFlyHighRC::pInstance()->dBPort());
-		ISql::pInstance()->setName(IFlyHighRC::pInstance()->dBName());
-		ISql::pInstance()->setUserName(IFlyHighRC::pInstance()->dBUser());
-		ISql::pInstance()->setPassword(IFlyHighRC::pInstance()->dBPass());
 
 		if(!ISql::pInstance()->connectDb())
 		{
@@ -84,26 +75,15 @@ int main( int argc, char ** argv )
 			}
 		}
 	}
-	else if (dbtype.contains("sqlite",Qt::CaseInsensitive))
+	else if (dbparam.isSQLite())
 	{
-    ISql::pInstance()->setDriverName("QSQLITE");
-
-		file = IFlyHighRC::pInstance()->dBFile();
-		dbfile = QFileInfo(file);
-		if (dbfile.isRelative())
-		{
-			// prepend userhome
-			file.prepend(QDir::separator()).prepend(QDir::homePath());
-		}
-		dbfile = QFileInfo(file);
+		dbfile = QFileInfo(dbparam.dBFile());
 
     // create directory if necessary
 		if (!dbfile.dir().exists())
     {
 			QDir().mkpath(dbfile.absolutePath());
     }
-
-		ISql::pInstance()->setName(QDir::toNativeSeparators(dbfile.absoluteFilePath()));
 
     if(!ISql::pInstance()->connectDb())
     {
@@ -113,7 +93,7 @@ int main( int argc, char ** argv )
 	}
 	else
 	{
-		std::cerr << "Unknown db type '" << dbtype.toStdString() << "'." << std::endl;
+		qDebug() << "Unknown db type '" << dbparam.dBType() << "'.";
 		return 1;
 	}
 	

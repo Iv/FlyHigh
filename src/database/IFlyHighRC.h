@@ -27,6 +27,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <QTextStream>
+#include "DatabaseParameters.h"
 
 class IFlyHighRC
 {
@@ -100,6 +101,8 @@ class IFlyHighRC
 		// sqlite db file path and name
 		void setDBFile(const QString& dbfile);
 		const QString& dBFile() const;
+
+		DatabaseParameters getDBParameters() const;
 
 	private:
 		QFile m_rcFile;

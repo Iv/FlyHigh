@@ -28,6 +28,7 @@
 #include "Routes.h"
 #include "Servicings.h"
 #include "Upgrade.h"
+#include "DatabaseParameters.h"
 #include "ISql.h"
 
 ISql* ISql::m_pInst = NULL;
@@ -35,12 +36,7 @@ ISql* ISql::m_pInst = NULL;
 ISql::ISql()
 {
   // set default values
-  setDriverName("QMYSQL");
-  setName("flyhigh_v2");
-  setUserName("flyhigh");
-  setPassword("flyhigh");
-  setHostName("localhost");
-  setPort(3306);
+	setDBParameters(DatabaseParameters::defaultParameters());
 
 //	m_pAirSpaces = new AirSpaces(m_DefaultDB);
 	m_pWayPoints = new WayPoints(m_DefaultDB);
@@ -175,6 +171,23 @@ void ISql::setPort(int port)
 void ISql::setDriverName(const QString& name)
 {
 	m_DriverName = name;
+}
+
+void ISql::setDBParameters(const DatabaseParameters& params)
+{
+	m_DriverName = params.dBType();
+	if (params.isMySQL())
+	{
+		m_DBName = params.dBName();
+	}
+	else
+	{
+		m_DBName = params.dBFile();
+	}
+	m_DBUserName = params.dBUserName();
+	m_DBPassword = params.dBPassword();
+	m_DBHostName = params.dBHostName();
+	m_DBPort = params.dBPort();
 }
 
 ISql* ISql::pInstance()

@@ -270,6 +270,16 @@ const QString& IFlyHighRC::dBFile() const
 	return m_dbFile;
 }
 
+DatabaseParameters IFlyHighRC::getDBParameters() const
+{
+	return DatabaseParameters(m_dbType,
+														m_dbName,
+														m_dbHost,
+														m_dbPort,
+														m_dbUser,
+														m_dbPass,
+														m_dbFile);
+}
 
 void IFlyHighRC::loadRC()
 {
