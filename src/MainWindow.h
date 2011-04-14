@@ -60,7 +60,8 @@ class MainWindow: public QMainWindow
 		void help_about();
 		void aboutToShow();
 		void setActiveSubWindow(QWidget *window);
-		
+		void preferences();
+
 	private:
 		QMdiArea* m_pMdiArea;
 		QSignalMapper* m_pWinMapper;

@@ -32,7 +32,6 @@
 #include "GliderWindow.h"
 #include "IFlytecConfig.h"
 #include "IFlytec6015Config.h"
-#include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IPortFrame.h"
 #include "FlightWindow.h"
@@ -45,6 +44,8 @@
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
+#include "PreferencesDlg.h"
+#include "MainWindow.h"
 
 MainWindow::MainWindow()
 //	:QMainWindow(0, Qt::WDestructiveClose)
@@ -74,6 +75,11 @@ MainWindow::MainWindow()
 	connect(pQuitAct,SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 	pFileMenu->addAction(pQuitAct);
 
+	// Menu Edit
+	QMenu* pEditMenu = menuBar()->addMenu(tr("&Edit"));
+	QAction* pPrefAct = new QAction(tr("&Preferences"), this);
+	connect(pPrefAct,SIGNAL(triggered()),this, SLOT(preferences()));
+	pEditMenu->addAction(pPrefAct);
 
 	// Analysis
 	QMenu* pAnalysisMenu = menuBar()->addMenu(tr("&Analysis"));
@@ -310,7 +316,17 @@ void MainWindow::airspaces_fromFile()
 void MainWindow::help_about()
 {
 	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
-			IFlyHighRC::pInstance()->copyInfo());
+	IFlyHighRC::pInstance()->copyInfo());
+}
+
+void MainWindow::preferences()
+{
+	PreferencesDlg Dlg(this);
+	if (Dlg.exec()==QDialog::Accepted)
+	{
+		// save values
+		bool save=false;
+	}
 }
 
 void MainWindow::aboutToShow()

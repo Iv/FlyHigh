@@ -20,7 +20,9 @@ set(form_SRCS AirSpaceFormImpl.cpp
               IRouteForm.cpp
               ServicingFormImpl.cpp
               IServicingForm.cpp
-              ProgressDlg.cpp)
+							ProgressDlg.cpp
+							PreferencesDlg.cpp
+							DatabaseWidget.cpp)
 
 set(form_HDRS FlightFormImpl.h
               GliderFormImpl.h
@@ -29,7 +31,9 @@ set(form_HDRS FlightFormImpl.h
               WayPointFormImpl.h
               RouteFormImpl.h
               ServicingFormImpl.h
-              ProgressDlg.h)
+							ProgressDlg.h
+							PreferencesDlg.h
+							DatabaseWidget.h)
 
 set(form_UIS
 	AirSpaceForm.ui
