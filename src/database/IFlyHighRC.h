@@ -71,7 +71,6 @@ class IFlyHighRC
 
 		// pilot info
 		void setPilotId(int id);
-
 		int pilotId() const;
 
 		// mysql db sever host
@@ -81,6 +80,10 @@ class IFlyHighRC
 		// mysql db sever port
 		void setDBPort(int port);
 		int dBPort() const;
+
+		// mysql db name (schema)
+		void setDBName(const QString& user);
+		const QString& dBName() const;
 
 		// mysql db user (non-priviledged)
 		void setDBUser(const QString& user);
@@ -111,6 +114,7 @@ class IFlyHighRC
 		int m_pilotId;
 		QString m_dbHost;
 		int m_dbPort;
+		QString m_dbName;
 		QString m_dbUser;
 		QString m_dbPass;
 		QString m_dbType;
