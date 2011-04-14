@@ -39,6 +39,7 @@ class Flights;
 class Routes;
 class Servicings;
 class Pilots;
+class DatabaseParameters;
 
 /**
 @author Alex Graf
@@ -69,6 +70,8 @@ class ISql: public IDataBase
 		void setPort(int port);
 
 		void setDriverName(const QString &name);
+
+		void setDBParameters(const DatabaseParameters& params);
 
 		bool add(WayPoint &wp);
 
