@@ -114,30 +114,35 @@ bool ISql::connectDb()
 
 bool ISql::createDb(const QString &root, const QString &pwd)
 {
-	QSqlDatabase setupDb;
 	bool success;
+	QString dbID = "root_db";
 
-	setupDb = QSqlDatabase::addDatabase(m_DriverName, "root_db");
-  if (m_DriverName == "QMYSQL")
-  {
-    setupDb.setUserName(root);
-    setupDb.setPassword(pwd);
-    setupDb.setHostName(m_DBHostName);
-    setupDb.setPort(m_DBPort);
-  }
-  else if (m_DriverName == "QSQLITE")
-  {
-    setupDb.setDatabaseName(m_DBName);
-  }
-
-	success = setupDb.open();
-
-	if(success)
+	// creating the QSqlDatabase object within a code block.
+	// Assures proper cleanup when removing the db.
 	{
-		Upgrade upgrade(setupDb);
-    upgrade.setup(m_DBName, m_DBUserName, m_DBPassword);
-		setupDb.close();
+		QSqlDatabase setupDb = QSqlDatabase::addDatabase(m_DriverName, dbID);
+		if (m_DriverName == "QMYSQL")
+		{
+			setupDb.setUserName(root);
+			setupDb.setPassword(pwd);
+			setupDb.setHostName(m_DBHostName);
+			setupDb.setPort(m_DBPort);
+		}
+		else if (m_DriverName == "QSQLITE")
+		{
+			setupDb.setDatabaseName(m_DBName);
+		}
+
+		success = setupDb.open();
+
+		if(success)
+		{
+			Upgrade upgrade(setupDb);
+			upgrade.setup(m_DBName, m_DBUserName, m_DBPassword);
+			setupDb.close();
+		}
 	}
+	QSqlDatabase::removeDatabase(dbID);
 
 	return success;
 }
