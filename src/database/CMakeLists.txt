@@ -16,7 +16,8 @@ add_subdirectory(flytec6015)
 set(database_SRCS IDataBase.cpp
                   IGPSDevice.cpp
                   ISql.cpp
-                  IFlyHighRC.cpp )
+									IFlyHighRC.cpp
+									DatabaseParameters.cpp)
 
 set(database_HDRS IDataBase.h)
 
