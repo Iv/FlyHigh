@@ -96,6 +96,29 @@ void DatabaseParameters::readFromConfig()
 	validateDBFile();
 }
 
+void DatabaseParameters::writeToConfig() const
+{
+	IFlyHighRC::pInstance()->loadRC();
+	IFlyHighRC::pInstance()->setDBName(m_dBName);
+	IFlyHighRC::pInstance()->setDBHost(m_hostName);
+	IFlyHighRC::pInstance()->setDBPort(m_port);
+	IFlyHighRC::pInstance()->setDBUser(m_userName);
+	IFlyHighRC::pInstance()->setDBPass(m_password);
+	IFlyHighRC::pInstance()->setDBFile(m_dBFile);
+
+	// db type in config is not the driver name, but
+	// a simple human-readable string
+	if (m_dBType == SQLiteDatabaseType() )
+	{
+		IFlyHighRC::pInstance()->setDBType("sqlite");
+	}
+	else
+	{
+		IFlyHighRC::pInstance()->setDBType("mysql");
+	}
+	IFlyHighRC::pInstance()->saveRC();
+}
+
 DatabaseParameters DatabaseParameters::defaultParameters()
 {
 	DatabaseParameters parameters;

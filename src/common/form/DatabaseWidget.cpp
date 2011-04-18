@@ -30,6 +30,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QApplication>
 #include "IFlyHighRC.h"
 #include "DatabaseWidget.h"
 
@@ -189,7 +190,7 @@ void DatabaseWidget::setDatabaseInputFields(const QString& currentIndexStr)
 
 void DatabaseWidget::checkDatabaseConnection()
 {
-	//kapp->setOverrideCursor(Qt::WaitCursor);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	QString databaseID("ConnectionTest");
 	DatabaseParameters paras = getDatabaseParameters();
@@ -200,9 +201,9 @@ void DatabaseWidget::checkDatabaseConnection()
 		testDatabase.setUserName(paras.dBUserName());
 		testDatabase.setPassword(paras.dBPassword());
 
-		//kapp->restoreOverrideCursor();
-
 		bool result = testDatabase.open();
+
+		QApplication::restoreOverrideCursor();
 
 		if (result)
 		{

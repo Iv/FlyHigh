@@ -48,6 +48,7 @@ public:
 	bool isMySQL() const;
 
 	void readFromConfig();
+	void writeToConfig() const;
 
 	const QString& dBType() const;
 	const QString& dBName() const;

@@ -21,9 +21,6 @@
 #include <QApplication>
 #include <QIcon>
 #include <QTextCodec>
-#include <QHostInfo>
-#include <QInputDialog>
-#include <QDir>
 #include <QDebug>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
@@ -33,14 +30,10 @@
 
 int main( int argc, char ** argv ) 
 {
+	int res;
 	QApplication appl(argc, argv);
-	QString root;
-	QString pwd;
-	QFileInfo dbfile;
 	Q_INIT_RESOURCE(res);
 	MainWindow* pMainWin;
-	int res;
-	bool ok;
 
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
@@ -49,51 +42,11 @@ int main( int argc, char ** argv )
 	// read config file
 	IFlyHighRC::pInstance()->loadRC();
 
-	DatabaseParameters dbparam = IFlyHighRC::pInstance()->getDBParameters();
-	ISql::pInstance()->setDBParameters(dbparam);
-
-	// which type of db?
-	if (dbparam.isMySQL())
+	// connect (and maybe create) database
+	ISql::pInstance()->setDBParameters(IFlyHighRC::pInstance()->getDBParameters());
+	if (!ISql::pInstance()->createAndConnect())
 	{
-		// check for server host
-		QHostInfo info = QHostInfo::fromName(dbparam.dBHostName());
-		if(info.error()!=QHostInfo::NoError)
-		{
-			// todo: show error dialog
-			qDebug() << info.errorString();
-		}
-
-		if(!ISql::pInstance()->connectDb())
-		{
-			root = QInputDialog::getText(NULL, QObject::tr("Name"), QObject::tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
-			pwd = QInputDialog::getText(NULL, QObject::tr("Password"), QObject::tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
-
-			if(ok)
-			{
-				ISql::pInstance()->createDb(root, pwd);
-				ISql::pInstance()->connectDb();
-			}
-		}
-	}
-	else if (dbparam.isSQLite())
-	{
-		dbfile = QFileInfo(dbparam.dBFile());
-
-    // create directory if necessary
-		if (!dbfile.dir().exists())
-    {
-			QDir().mkpath(dbfile.absolutePath());
-    }
-
-    if(!ISql::pInstance()->connectDb())
-    {
-      ISql::pInstance()->createDb();
-      ISql::pInstance()->connectDb();
-    }
-	}
-	else
-	{
-		qDebug() << "Unknown db type '" << dbparam.dBType() << "'.";
+		qDebug() << "Database connection failed";
 		return 1;
 	}
 	

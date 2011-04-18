@@ -26,6 +26,8 @@
 class QTabWidget;
 class QDialogButtonBox;
 class QVBoxLayout;
+class DatabaseWidget;
+class DatabaseParameters;
 
 class PreferencesDlg : public QDialog
 {
@@ -39,6 +41,11 @@ public:
 	PreferencesDlg(QWidget* parent = 0);
 
 	~PreferencesDlg();
+
+	/**
+	 * Access to the db config
+	 */
+	const DatabaseParameters getDBParameters() const;
 
 private:
 
@@ -57,6 +64,10 @@ private:
 	 */
 	QVBoxLayout* m_pLayout;
 
+	/**
+	 * Database configuration dialog
+	 */
+	DatabaseWidget* m_pDBConfig;
 };
 
 #endif

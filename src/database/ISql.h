@@ -55,9 +55,11 @@ class ISql: public IDataBase
 
 		void close();
 
-		bool connectDb();
-
-    bool createDb(const QString &root="", const QString &pwd="");
+		/**
+		 * Connects to the configured db.
+		 * If the db does not yet exist, it will be created.
+		 */
+		bool createAndConnect();
 
 		void setName(const QString &name);
 
@@ -153,6 +155,11 @@ class ISql: public IDataBase
 		Servicings* pServicingTable();
 
 		Pilots* pPilotTable();
+
+private:
+		bool connectDb();
+
+		bool createDb(const QString &root="", const QString &pwd="");
 
 	private:
 		static ISql* m_pInst;
