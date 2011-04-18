@@ -45,6 +45,7 @@
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
 #include "PreferencesDlg.h"
+#include "ISql.h"
 #include "MainWindow.h"
 
 MainWindow::MainWindow()
@@ -74,12 +75,6 @@ MainWindow::MainWindow()
 	QAction* pQuitAct = new QAction(tr("&Quit"), this);
 	connect(pQuitAct,SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 	pFileMenu->addAction(pQuitAct);
-
-	// Menu Edit
-	QMenu* pEditMenu = menuBar()->addMenu(tr("&Edit"));
-	QAction* pPrefAct = new QAction(tr("&Preferences"), this);
-	connect(pPrefAct,SIGNAL(triggered()),this, SLOT(preferences()));
-	pEditMenu->addAction(pPrefAct);
 
 	// Analysis
 	QMenu* pAnalysisMenu = menuBar()->addMenu(tr("&Analysis"));
@@ -185,6 +180,12 @@ MainWindow::MainWindow()
 	m_pWinSeparator->setSeparator(true);
 
 	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),this, SLOT(aboutToShow()));
+
+	// Menu Settings
+	QMenu* pSettingsMenu = menuBar()->addMenu(tr("&Settings"));
+	QAction* pConfigureAct = new QAction(tr("&Configure FlyHigh..."), this);
+	connect(pConfigureAct,SIGNAL(triggered()),this, SLOT(preferences()));
+	pSettingsMenu->addAction(pConfigureAct);
 
 	// Menu Help
 	menuBar()->addSeparator();
@@ -325,7 +326,14 @@ void MainWindow::preferences()
 	if (Dlg.exec()==QDialog::Accepted)
 	{
 		// save values
-		bool save=false;
+		const DatabaseParameters dbparams(Dlg.getDBParameters());
+		dbparams.writeToConfig();
+
+		// notify database mngr
+		ISql::pInstance()->setDBParameters(dbparams);
+		ISql::pInstance()->createAndConnect();
+
+		// todo: notify open windows
 	}
 }
 

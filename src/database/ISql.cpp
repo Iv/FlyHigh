@@ -17,7 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "qstringlist.h"
+#include <QStringList>
+#include <QHostInfo>
+#include <QFileInfo>
+#include <QDir>
+#include <QInputDialog>
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h"
@@ -30,6 +34,8 @@
 #include "Upgrade.h"
 #include "DatabaseParameters.h"
 #include "ISql.h"
+
+#include <QDebug>
 
 ISql* ISql::m_pInst = NULL;
 
@@ -67,6 +73,67 @@ bool ISql::open()
 
 void ISql::close()
 {
+}
+
+bool ISql::createAndConnect()
+{
+	QString root;
+	QString pwd;
+	bool ok;
+
+	// close open db first
+	if (open())
+	{
+		m_DefaultDB.close();
+		QSqlDatabase::removeDatabase(m_DefaultDB.connectionName());
+	}
+
+	// which type of db?
+	if (m_DriverName == "QMYSQL")
+	{
+		// check for server host
+		QHostInfo info = QHostInfo::fromName(m_DBHostName);
+		if(info.error()!=QHostInfo::NoError)
+		{
+			// todo: show error dialog
+			qDebug() << info.errorString();
+		}
+		ok = connectDb();
+		if(!ok)
+		{
+			root = QInputDialog::getText(NULL, tr("Name"), tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
+			pwd = QInputDialog::getText(NULL, tr("Password"), tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
+
+			if(ok)
+			{
+				createDb(root, pwd);
+				ok = connectDb();
+			}
+		}
+	}
+	else if (m_DriverName == "QSQLITE")
+	{
+		QFileInfo dbfile = QFileInfo(m_DBName);
+
+		// create directory if necessary
+		if (!dbfile.dir().exists())
+		{
+			QDir().mkpath(dbfile.absolutePath());
+		}
+
+		ok = connectDb();
+		if(!ok)
+		{
+			createDb();
+			ok = connectDb();
+		}
+	}
+	else
+	{
+		qDebug() << "Unknown db type '" << m_DriverName << "'.";
+		return false;
+	}
+	return ok;
 }
 
 bool ISql::connectDb()
