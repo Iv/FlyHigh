@@ -35,7 +35,7 @@ PreferencesDlg::PreferencesDlg(QWidget* parent)
 	m_pTabWidget = new QTabWidget();
 
 	// a tab for database preferences
-	m_pDBConfig = new DatabaseWidget();
+	m_pDBConfig = new DatabaseWidget(this,tr("Database Settings"));
 	m_pTabWidget->addTab(m_pDBConfig, tr("Database") );
 
 	// ok/cancel button

@@ -18,53 +18,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DATABASEWIDGET_H
-#define DATABASEWIDGET_H
+#ifndef MIGRATIONDLG_H
+#define MIGRATIONDLG_H
 
-#include <QWidget>
-#include "DatabaseParameters.h"
+#include <QDialog>
 
-class QComboBox;
-class QSpinBox;
-class QLineEdit;
-class QPushButton;
+class QProgressBar;
 class QLabel;
-class QGroupBox;
+class QDialogButtonBox;
+class DatabaseWidget;
+class DatabaseParameters;
 
 /**
- * Database configuration widget
+ * Dialog for migrating flyhigh databases
  * The source was lamely stolen and slipstreamed from www.digikam.org. Sorry & Thanks!
  */
-class DatabaseWidget : public QWidget
+class MigrationDlg : public QDialog
 {
 	Q_OBJECT
-
+	
 public:
 
-	DatabaseWidget(QWidget* parent=0, const QString& title="");
-	~DatabaseWidget();
-	DatabaseParameters getDatabaseParameters();
-	void setDatabaseInputFields(const QString&);
+	/**
+	 * Creates a modal db migration dialog
+	 */
+	MigrationDlg(QWidget* parent = 0);
 
-public Q_SLOTS:
+	~MigrationDlg();
+/*
+private Q_SLOTS:
 
-	void slotHandleDBTypeIndexChanged(int index);
-	void slotDBFileSelected();
-	void checkDatabaseConnection();
+		void performCopy();
+		void unlockInputFields();
+		void lockInputFields();
 
+		void handleFinish(int finishState, QString errorMsg);
+		void handleStepStarted(const QString& stepName);
+		void handleSmallStepStarted(int currValue, int maxValue);
+*/
 private:
 
-	QComboBox* m_pDBType;
-	QSpinBox* m_pDBPort;
-	QLineEdit* m_pDBName;
-	QLineEdit* m_pDBPath;
-	QLineEdit* m_pDBHostName;
-	QLineEdit* m_pDBUserName;
-	QLineEdit* m_pDBPassword;
-	QPushButton* m_pFileButton;
-	QLabel* m_pDBPathLabel;
-	QGroupBox* m_pMySQLSettings;
+	/**
+	 * Database configuration dialog
+	 */
+	DatabaseWidget* m_pFromDBConfig;
+	DatabaseWidget* m_pToDBConfig;
 
+	/**
+	 * Progress bars
+	 */
+	QProgressBar* m_pProgressBar;
+	QProgressBar* m_pProgressBarSmallStep;
+
+	/**
+	 * Buttons
+	 */
+	QPushButton* m_pMigrateButton;
+	QPushButton* m_pCancelButton;
+	QDialogButtonBox* m_pButtonBox;
+
+	/**
+	 * Label
+	 */
+	QLabel* m_pOverallStepTitle;
 };
 
 #endif

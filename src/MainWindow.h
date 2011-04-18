@@ -61,6 +61,7 @@ class MainWindow: public QMainWindow
 		void aboutToShow();
 		void setActiveSubWindow(QWidget *window);
 		void preferences();
+		void migrateDB();
 
 	private:
 		QMdiArea* m_pMdiArea;
