@@ -22,6 +22,7 @@ set(form_SRCS AirSpaceFormImpl.cpp
               IServicingForm.cpp
 							ProgressDlg.cpp
 							PreferencesDlg.cpp
+							MigrationDlg.cpp
 							DatabaseWidget.cpp)
 
 set(form_HDRS FlightFormImpl.h
@@ -33,6 +34,7 @@ set(form_HDRS FlightFormImpl.h
               ServicingFormImpl.h
 							ProgressDlg.h
 							PreferencesDlg.h
+							MigrationDlg.h
 							DatabaseWidget.h)
 
 set(form_UIS

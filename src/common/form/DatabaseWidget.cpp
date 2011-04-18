@@ -37,7 +37,7 @@
 #include "QDebug"
 
 
-DatabaseWidget::DatabaseWidget(QWidget* parent)
+DatabaseWidget::DatabaseWidget(QWidget* parent, const QString& title)
 	: QWidget(parent)
 {
 	setAutoFillBackground(false);
@@ -45,7 +45,7 @@ DatabaseWidget::DatabaseWidget(QWidget* parent)
 	QVBoxLayout* layout = new QVBoxLayout();
 	setLayout(layout);
 
-	QGroupBox* sqliteSettings = new QGroupBox();
+	QGroupBox* sqliteSettings = new QGroupBox(title);
 	QVBoxLayout* vlay    = new QVBoxLayout(sqliteSettings);
 	m_pDBPathLabel = new QLabel(tr("<p>The location where the database file will be stored on your system.<br/>"
 																 "Write access is required.</p>"),

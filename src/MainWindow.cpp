@@ -45,6 +45,7 @@
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
 #include "PreferencesDlg.h"
+#include "MigrationDlg.h"
 #include "ISql.h"
 #include "MainWindow.h"
 
@@ -186,6 +187,12 @@ MainWindow::MainWindow()
 	QAction* pConfigureAct = new QAction(tr("&Configure FlyHigh..."), this);
 	connect(pConfigureAct,SIGNAL(triggered()),this, SLOT(preferences()));
 	pSettingsMenu->addAction(pConfigureAct);
+
+	// Menu Tools
+	QMenu* pToolsMenu = menuBar()->addMenu(tr("&Tools"));
+	QAction* pMigrateAct = new QAction(tr("&Database migration..."), this);
+	connect(pMigrateAct,SIGNAL(triggered()),this, SLOT(migrateDB()));
+	pToolsMenu->addAction(pMigrateAct);
 
 	// Menu Help
 	menuBar()->addSeparator();
@@ -335,6 +342,12 @@ void MainWindow::preferences()
 
 		// todo: notify open windows
 	}
+}
+
+void MainWindow::migrateDB()
+{
+	MigrationDlg Dlg(this);
+	Dlg.exec();
 }
 
 void MainWindow::aboutToShow()
