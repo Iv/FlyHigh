@@ -18,75 +18,55 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MIGRATIONDLG_H
-#define MIGRATIONDLG_H
+#ifndef MIGRATOR_H
+#define MIGRATOR_H
 
-#include <QDialog>
-
-class QProgressBar;
-class QLabel;
-class QDialogButtonBox;
-class DatabaseWidget;
-class DatabaseParameters;
-class MigratorThread;
+#include <QObject>
+#include <QSqlDatabase>
+#include "DatabaseParameters.h"
 
 /**
- * Dialog for migrating flyhigh databases
- * The source was lamely stolen and slipstreamed from www.digikam.org. Sorry & Thanks!
+ * Facilities for database migration
  */
-class MigrationDlg : public QDialog
+class Migrator : public QObject
 {
-	Q_OBJECT
-	
+    Q_OBJECT
+
 public:
 
-	/**
-	 * Creates a modal db migration dialog
-	 */
-	MigrationDlg(QWidget* parent = 0);
+    enum FinishStates
+    {
+        success,
+        failed,
+        canceled
+    };
 
-	~MigrationDlg();
+public:
 
-private Q_SLOTS:
+		Migrator();
+		~Migrator();
 
-		void performCopy();
-		void unlockInputFields();
-		void lockInputFields();
+    void copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters);
 
-		void handleFinish(int finishState, QString errorMsg);
-		void handleStepStarted(const QString& stepName);
-		void handleSmallStepStarted(int currValue, int maxValue);
+Q_SIGNALS:
+
+    void stepStarted(QString stepName);
+    void smallStepStarted(int currValue, int maxValue);
+    void finished(int finishState, QString errorMsg);
+
+public Q_SLOTS:
+
+    void stopProcessing();
 
 private:
 
-	/**
-	 * Database configuration dialog
-	 */
-	DatabaseWidget* m_pFromDBConfig;
-	DatabaseWidget* m_pToDBConfig;
+		void handleClosing(bool isstopThread);
 
-	/**
-	 * Progress bars
-	 */
-	QProgressBar* m_pProgressBar;
-	QProgressBar* m_pProgressBarSmallStep;
+private:
 
-	/**
-	 * Buttons
-	 */
-	QPushButton* m_pMigrateButton;
-	QPushButton* m_pCancelButton;
-	QDialogButtonBox* m_pButtonBox;
-
-	/**
-	 * Label
-	 */
-	QLabel* m_pOverallStepTitle;
-
-	/**
-	 * thread that does the work
-	 */
-	MigratorThread* m_pMigratorThread;
+		QSqlDatabase m_FromDB;
+		QSqlDatabase m_ToDB;
+		bool m_stopProcessing;
 };
 
 #endif
