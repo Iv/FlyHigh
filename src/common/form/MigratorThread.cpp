@@ -18,75 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MIGRATIONDLG_H
-#define MIGRATIONDLG_H
+#include "Migrator.h"
+#include "MigratorThread.h"
 
-#include <QDialog>
-
-class QProgressBar;
-class QLabel;
-class QDialogButtonBox;
-class DatabaseWidget;
-class DatabaseParameters;
-class MigratorThread;
-
-/**
- * Dialog for migrating flyhigh databases
- * The source was lamely stolen and slipstreamed from www.digikam.org. Sorry & Thanks!
- */
-class MigrationDlg : public QDialog
+MigratorThread::MigratorThread(QWidget* parent)
+: QThread((QObject*)parent)
 {
-	Q_OBJECT
-	
-public:
+	m_pDBMigrator = new Migrator();
+}
 
-	/**
-	 * Creates a modal db migration dialog
-	 */
-	MigrationDlg(QWidget* parent = 0);
+MigratorThread::~MigratorThread()
+{
+	delete m_pDBMigrator;
+}
 
-	~MigrationDlg();
+void MigratorThread::run()
+{
+	m_pDBMigrator->copyDatabases(m_FromDBParameters, m_ToDBParameters);
+}
 
-private Q_SLOTS:
+void MigratorThread::init(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters)
+{
+	m_FromDBParameters = fromDBParameters;
+	m_ToDBParameters = toDBParameters;
+}
 
-		void performCopy();
-		void unlockInputFields();
-		void lockInputFields();
-
-		void handleFinish(int finishState, QString errorMsg);
-		void handleStepStarted(const QString& stepName);
-		void handleSmallStepStarted(int currValue, int maxValue);
-
-private:
-
-	/**
-	 * Database configuration dialog
-	 */
-	DatabaseWidget* m_pFromDBConfig;
-	DatabaseWidget* m_pToDBConfig;
-
-	/**
-	 * Progress bars
-	 */
-	QProgressBar* m_pProgressBar;
-	QProgressBar* m_pProgressBarSmallStep;
-
-	/**
-	 * Buttons
-	 */
-	QPushButton* m_pMigrateButton;
-	QPushButton* m_pCancelButton;
-	QDialogButtonBox* m_pButtonBox;
-
-	/**
-	 * Label
-	 */
-	QLabel* m_pOverallStepTitle;
-
-	/**
-	 * thread that does the work
-	 */
-	MigratorThread* m_pMigratorThread;
-};
-
-#endif
+Migrator* MigratorThread::migrator() const
+{
+	return m_pDBMigrator;
+}

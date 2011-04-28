@@ -13,6 +13,11 @@ set(dbsql_SRCS DataBaseSub.cpp
                Servicings.cpp
                AirSpaces.cpp
                Upgrade.cpp
+							 Migrator.cpp
                Pilots.cpp)
 
-add_library(dbsql ${dbsql_SRCS})
+set(dbsql_HDRS Migrator.h)
+
+QT4_WRAP_CPP(dbsql_SRCS ${dbsql_HDRS})
+
+add_library(dbsql ${dbsql_SRCS} ${dbsql_HDRS})

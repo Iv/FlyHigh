@@ -24,17 +24,20 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QMessageBox>
 #include "DatabaseWidget.h"
 #include "DatabaseParameters.h"
+#include "Migrator.h"
+#include "MigratorThread.h"
 #include "MigrationDlg.h"
 
 MigrationDlg::MigrationDlg(QWidget* parent)
 	:QDialog(parent)
 {
+	m_pMigratorThread = new MigratorThread(this);
+
 	setWindowTitle(tr("FlyHigh Database Migration"));
 	setWindowModality(Qt::ApplicationModal);
-
-	//copyThread = new DatabaseCopyThread(this);
 
 	// db configuration widgets
 	m_pFromDBConfig = new DatabaseWidget(this, tr("From:"));
@@ -48,7 +51,7 @@ MigrationDlg::MigrationDlg(QWidget* parent)
 	QVBoxLayout* vlay = new QVBoxLayout(progressBox);
 	m_pProgressBar = new QProgressBar(progressBox);
 	m_pProgressBar->setTextVisible(true);
-	m_pProgressBar->setRange(0,13);
+	m_pProgressBar->setRange(0,10); // 10 steps
 	m_pProgressBarSmallStep = new QProgressBar(progressBox);
 	m_pProgressBarSmallStep->setTextVisible(true);
 	m_pOverallStepTitle = new QLabel(tr("Step Progress"), progressBox);
@@ -77,8 +80,98 @@ MigrationDlg::MigrationDlg(QWidget* parent)
 
 	// insert into dialog
 	setLayout(vbox);
+
+	connect(m_pMigrateButton, SIGNAL(clicked()), this, SLOT(performCopy()));
+
+	connect(m_pMigratorThread->migrator(),
+					SIGNAL(finished(int, QString)),
+					this,
+					SLOT(handleFinish(int, QString)));
+
+	connect(m_pMigratorThread->migrator(),
+					SIGNAL(stepStarted(QString)),
+					this,
+					SLOT(handleStepStarted(QString)));
+
+	connect(m_pMigratorThread->migrator(),
+					SIGNAL(smallStepStarted(int, int)),
+					this,
+					SLOT(handleSmallStepStarted(int, int)));
+
+	connect(m_pButtonBox,
+					SIGNAL(rejected()),
+					m_pMigratorThread->migrator(),
+					SLOT(stopProcessing()));
+
+	connect(m_pCancelButton,
+					SIGNAL(clicked()),
+					m_pMigratorThread->migrator(),
+					SLOT(stopProcessing()));
+
 }
 
 MigrationDlg::~MigrationDlg()
 {
+	m_pMigratorThread->terminate();
+	delete m_pMigratorThread;
+}
+
+void MigrationDlg::performCopy()
+{
+	m_pMigratorThread->init(m_pFromDBConfig->getDatabaseParameters(),
+													m_pToDBConfig->getDatabaseParameters());
+
+	lockInputFields();
+	m_pMigratorThread->start();
+}
+
+void MigrationDlg::unlockInputFields()
+{
+	m_pFromDBConfig->setEnabled(true);
+	m_pToDBConfig->setEnabled(true);
+	m_pMigrateButton->setEnabled(true);
+	m_pProgressBar->setValue(0);
+	m_pProgressBarSmallStep->setValue(0);
+	m_pCancelButton->setEnabled(false);
+}
+
+void MigrationDlg::lockInputFields()
+{
+	m_pFromDBConfig->setEnabled(false);
+	m_pToDBConfig->setEnabled(false);
+	m_pMigrateButton->setEnabled(false);
+	m_pCancelButton->setEnabled(true);
+}
+
+void MigrationDlg::handleFinish(int finishState, QString errorMsg)
+{
+	switch (finishState)
+	{
+	case Migrator::failed:
+		QMessageBox::critical(this, tr("Database migrator"), errorMsg );
+		unlockInputFields();
+		break;
+	case Migrator::success:
+		QMessageBox::information(this, tr("Database migrator"), tr("Database copied successfully.") );
+		unlockInputFields();
+		break;
+	case Migrator::canceled:
+		QMessageBox::information(this, tr("Database migrator"), tr("Database conversion canceled.") );
+		unlockInputFields();
+		break;
+	}
+}
+
+void MigrationDlg::handleStepStarted(const QString& stepName)
+{
+	int progressBarValue = m_pProgressBar->value();
+	QString txt = tr("Step Progress (%1)");
+	m_pOverallStepTitle->setText(txt.arg(stepName));
+	m_pProgressBar->setValue(++progressBarValue);
+}
+
+void MigrationDlg::handleSmallStepStarted(int currentValue, int maxValue)
+{
+	m_pProgressBarSmallStep->setMaximum(maxValue);
+	m_pProgressBarSmallStep->setValue(currentValue);
 }
