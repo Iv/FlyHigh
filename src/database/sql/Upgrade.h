@@ -20,6 +20,7 @@
 #ifndef Upgrade_h
 #define Upgrade_h
 
+#include <QDateTime>
 #include "DataBaseSub.h"
 
 class Upgrade: public DataBaseSub
@@ -27,9 +28,9 @@ class Upgrade: public DataBaseSub
 	public:
 		Upgrade(QSqlDatabase DB);
 
-		void setup(const QString &dbname, const QString &user, const QString &pwd);
+		bool setup(const QString &dbname, const QString &user, const QString &pwd);
 
-		void upgrade();
+		bool upgrade();
 
 	private:
 		typedef QDateTime DataBaseVersion;
