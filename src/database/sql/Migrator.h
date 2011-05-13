@@ -61,6 +61,7 @@ public Q_SLOTS:
 private:
 
 		void handleClosing(bool isstopThread);
+		bool copyTable(const QString& name, const QString& fromAct, const QString& toAct);
 
 private:
 

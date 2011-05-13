@@ -153,366 +153,70 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	}
 
 	// copy tables
+	if (!copyTable(tr("Copy RouteItems..."),
+								 "SELECT Id, RouteId, WayPointId FROM RouteItems",
+								 "INSERT INTO RouteItems (Id, RouteId, WayPointId) VALUES (?,?,?)"))
 	{
-		// route items
-		emit stepStarted(tr("Copy RouteItems..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, RouteId, WayPointId FROM RouteItems",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO RouteItems (Id, RouteId, WayPointId) VALUES (:Id, :RouteId, :WayPointId)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":RouteId",fetch.value(1));
-			insert.bindValue(":WayPointId",fetch.value(2));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
+		qDebug() << "Error";
+		return;
 	}
 
+	if (!copyTable(tr("Copy WayPoints..."),
+								 "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description FROM WayPoints",
+								 "INSERT INTO WayPoints (Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description) VALUES (?,?,?,?,?,?,?,?)"))
 	{
-		// waypoints
-		emit stepStarted(tr("Copy WayPoints..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description FROM WayPoints",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO WayPoints (Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description) VALUES (:Id, :Name, :Spot, :Country, :Longitude, :Latitude, :Altitude, :Description)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":Name",fetch.value(1));
-			insert.bindValue(":Spot",fetch.value(2));
-			insert.bindValue(":Country",fetch.value(3));
-			insert.bindValue(":Longitude",fetch.value(4));
-			insert.bindValue(":Latitude",fetch.value(5));
-			insert.bindValue(":Altitude",fetch.value(6));
-			insert.bindValue(":Description",fetch.value(7));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
-	}
-	{
-		// gliders
-		emit stepStarted(tr("Copy Gliders..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, Manufacturer, Model, Serial FROM Gliders",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO Gliders (Id, Manufacturer, Model, Serial) VALUES (:Id, :Manufacturer, :Model, :Serial)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":Manufacturer",fetch.value(1));
-			insert.bindValue(":Model",fetch.value(2));
-			insert.bindValue(":Serial",fetch.value(3));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
-	}
-	{
-		// servicings
-		emit stepStarted(tr("Copy Servicings..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, GliderId, Date, Responsibility, Comment FROM Servicings",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) VALUES (:Id, :GliderId, :Date, :Responsibility, :Comment)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":GliderId",fetch.value(1));
-			insert.bindValue(":Date",fetch.value(2));
-			insert.bindValue(":Responsibility",fetch.value(3));
-			insert.bindValue(":Comment",fetch.value(4));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
-	}
-	{
-		// pilots
-		emit stepStarted(tr("Copy Pilots..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId FROM Pilots",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO Pilots (Id, FirstName, LastName, BirthDate, CallSign, GliderId) VALUES (:Id, :FirstName, :LastName, :BirthDate, :CallSign, :GliderId)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":FirstName",fetch.value(1));
-			insert.bindValue(":LastName",fetch.value(2));
-			insert.bindValue(":BirthDate",fetch.value(3));
-			insert.bindValue(":CallSign",fetch.value(4));
-			insert.bindValue(":GliderId",fetch.value(5));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
-	}
-	{
-		// last modified?
-		emit stepStarted(tr("Copy LastModified..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, Name, Time FROM LastModified",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-
-		//		while(fetch.next())
-		// insert would fail, already set in setup()/upgrade()
-		while(false)
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO LastModified (Id, Name, Time) VALUES (:Id, :Name, :Time)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":Name",fetch.value(1));
-			insert.bindValue(":Time",fetch.value(2));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
-	}
-	{
-		// routes
-		emit stepStarted(tr("Copy Routes..."));
-		bool res = true;
-		int resultsize;
-
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, Name, Type FROM Routes",
-										m_FromDB);
-
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
-
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
-
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO Routes (Id, Name, Type) VALUES (:Id, :Name, :Type)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":Name",fetch.value(1));
-			insert.bindValue(":Type",fetch.value(2));
-			res &= insert.exec();
-		}
-
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
+		qDebug() << "Error in WayPoints";
+		return;
 	}
 
+	if (!copyTable(tr("Copy Gliders..."),
+								 "SELECT Id, Manufacturer, Model, Serial FROM Gliders",
+								 "INSERT INTO Gliders (Id, Manufacturer, Model, Serial) VALUES (?,?,?,?)"))
 	{
-		// flights
-		emit stepStarted(tr("Copy Flights..."));
-		bool res = true;
-		int resultsize;
+		qDebug() << "Error in Gliders";
+		return;
+	}
 
-		// this acutally runs the query!
-		QSqlQuery fetch("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile FROM Flights",
-										m_FromDB);
+	if (!copyTable(tr("Copy Servicings..."),
+								 "SELECT Id, GliderId, Date, Responsibility, Comment FROM Servicings",
+								 "INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) VALUES (?,?,?,?,?)"))
+	{
+		qDebug() << "Error in Servicings";
+		return;
+	}
 
-		if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
-		{
-			resultsize = fetch.size();
-		}
-		else
-		{
-			qDebug() << "The sql driver does not return query result size";
-			// we try something different...
-			fetch.last();
-			resultsize = fetch.at()<0 ? 0 : fetch.at();
-			fetch.first();
-		}
+	if (!copyTable(tr("Copy Pilots..."),
+								 "SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId FROM Pilots",
+								 "INSERT INTO Pilots (Id, FirstName, LastName, BirthDate, CallSign, GliderId) VALUES (?,?,?,?,?,?)"))
+	{
+		qDebug() << "Error in Pilots";
+		return;
+	}
 
-		int resultcounter = 0;
-		while(fetch.next())
-		{
-			emit smallStepStarted(++resultcounter, resultsize);
+	/*
+	if (!copyTable(tr("Copy LastModified..."),
+			 "SELECT Id, Name, Time FROM LastModified",
+			 "INSERT INTO LastModified (Id, Name, Time) VALUES (?,?,?)"))
+	{
+	 qDebug() << "Error in LastModified";
+	 return;
+	}
+	*/
 
-			QSqlQuery insert(m_ToDB);
-			insert.prepare("INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile) VALUES (:Id, :Number, :PilotId, :Date, :Time, :GliderId, :StartPtId, :LandPtId, :Duration, :Distance, :Comment, :IGCFile)");
-			insert.bindValue(":Id",fetch.value(0));
-			insert.bindValue(":Number",fetch.value(1));
-			insert.bindValue(":PilotId",fetch.value(2));
-			insert.bindValue(":Date",fetch.value(3));
-			insert.bindValue(":Time",fetch.value(4));
-			insert.bindValue(":GliderId",fetch.value(5));
-			insert.bindValue(":StartPtId",fetch.value(6));
-			insert.bindValue(":LandPtId",fetch.value(7));
-			insert.bindValue(":Duration",fetch.value(8));
-			insert.bindValue(":Distance",fetch.value(9));
-			insert.bindValue(":Comment",fetch.value(10));
-			insert.bindValue(":IGCFile",fetch.value(11));
-			insert.exec();
-		}
+	if (!copyTable(tr("Copy Routes..."),
+								 "SELECT Id, Name, Type FROM Routes",
+								 "INSERT INTO Routes (Id, Name, Type) VALUES (?,?,?)"))
+	{
+		qDebug() << "Error in Routes";
+		return;
+	}
 
-		if (m_stopProcessing || !res)
-		{
-			handleClosing(m_stopProcessing);
-			return;
-		}
+	if (!copyTable(tr("Copy Flights..."),
+								 "SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile FROM Flights",
+								 "INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"))
+	{
+		qDebug() << "Error in Flights";
+		return;
 	}
 
 	m_FromDB.close();
@@ -532,3 +236,53 @@ void Migrator::handleClosing(bool isStopThread)
 	m_ToDB.close();
 }
 
+bool Migrator::copyTable(const QString& name, const QString& fromAct, const QString& toAct)
+{
+	// route items
+	emit stepStarted(name);
+	bool res = true;
+	int resultcounter = 0;
+	int resultsize;
+
+	// this acutally runs the query!
+	QSqlQuery fetch(fromAct,m_FromDB);
+
+	if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
+	{
+		resultsize = fetch.size();
+	}
+	else
+	{
+		// The sql driver does not return query result size
+		// we try something different...
+		fetch.last();
+		resultsize = fetch.at()<0 ? 0 : fetch.at();
+		// set the result pointer _before_ the first record
+		fetch.seek(-1);
+	}
+
+	while(fetch.next())
+	{
+		emit smallStepStarted(++resultcounter, resultsize);
+
+		QSqlQuery insert(m_ToDB);
+		insert.prepare(toAct);
+
+		int cols = fetch.record().count();
+		for(int i=0; i<cols; ++i)
+		{
+			insert.addBindValue(fetch.value(i));
+		}
+		res &= insert.exec();
+	}
+
+	if (m_stopProcessing || !res)
+	{
+		// error or aborted
+		handleClosing(m_stopProcessing);
+		return false;
+	}
+
+	// success
+	return res;
+}
