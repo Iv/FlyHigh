@@ -20,10 +20,12 @@
 
 #include <QSqlQuery>
 #include <QSqlDriver>
+#include <QSqlError>
 #include <QVariant>
 
 #include <QDebug>
 
+#include "QueryStore.h"
 #include "Upgrade.h"
 #include "Migrator.h"
 
@@ -43,6 +45,8 @@ void Migrator::stopProcessing()
 void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters)
 {
 	m_stopProcessing = false;
+
+	QueryStore* pQueryStore = QueryStore::pInstance();
 
 	// create source connection
 	m_FromDB = QSqlDatabase::addDatabase(fromDBParameters.dBType(),"MigrationFromDatabase");
@@ -92,32 +96,14 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 		emit stepStarted(tr("Clean Target..."));
 
 		QSqlQuery query(m_ToDB);
-		QString sqls;
-		// flights
-		sqls = "DROP TABLE IF EXISTS `Flights`";
-		res &= query.exec(sqls);
-		// routes
-		sqls = "DROP TABLE IF EXISTS `Routes`";
-		res &= query.exec(sqls);
-		// LastModified
-		sqls = "DROP TABLE IF EXISTS `LastModified`";
-		res &= query.exec(sqls);
-		// pilots
-		sqls = "DROP TABLE IF EXISTS `Pilots`";
-		res &= query.exec(sqls);
-		// servicings
-		sqls = "DROP TABLE IF EXISTS `Servicings`";
-		res &= query.exec(sqls);
-		// gliders
-		sqls = "DROP TABLE IF EXISTS `Gliders`";
-		res &= query.exec(sqls);
-		// waypoints
-		sqls = "DROP TABLE IF EXISTS `WayPoints`";
-		res &= query.exec(sqls);
-		// route items
-		sqls = "DROP TABLE IF EXISTS `RouteItems`";
-		res &= query.exec(sqls);
-
+		res = query.exec(pQueryStore->getQuery("migrate-drop-flights",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-routes",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-lastmodified",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-pilots",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-servicings",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-gliders",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-waypoints",m_ToDB));
+		res = query.exec(pQueryStore->getQuery("migrate-drop-routeitems",m_ToDB));
 		if (!res)
 		{
 			emit finished(Migrator::failed, tr("Error while scrubbing the target database."));
@@ -154,40 +140,40 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	// copy tables
 	if (!copyTable(tr("Copy RouteItems..."),
-								 "SELECT Id, RouteId, WayPointId FROM RouteItems",
-								 "INSERT INTO RouteItems (Id, RouteId, WayPointId) VALUES (?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-routeitems",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-routeitems",m_ToDB)))
 	{
-		qDebug() << "Error";
+		qDebug() << "Error in RouteItems";
 		return;
 	}
 
 	if (!copyTable(tr("Copy WayPoints..."),
-								 "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description FROM WayPoints",
-								 "INSERT INTO WayPoints (Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description) VALUES (?,?,?,?,?,?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-waypoints",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-waypoints",m_ToDB)))
 	{
 		qDebug() << "Error in WayPoints";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Gliders..."),
-								 "SELECT Id, Manufacturer, Model, Serial FROM Gliders",
-								 "INSERT INTO Gliders (Id, Manufacturer, Model, Serial) VALUES (?,?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-gliders",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-gliders",m_ToDB)))
 	{
 		qDebug() << "Error in Gliders";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Servicings..."),
-								 "SELECT Id, GliderId, Date, Responsibility, Comment FROM Servicings",
-								 "INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) VALUES (?,?,?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-servicings",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-servicings",m_ToDB)))
 	{
 		qDebug() << "Error in Servicings";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Pilots..."),
-								 "SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId FROM Pilots",
-								 "INSERT INTO Pilots (Id, FirstName, LastName, BirthDate, CallSign, GliderId) VALUES (?,?,?,?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-pilots",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-pilots",m_ToDB)))
 	{
 		qDebug() << "Error in Pilots";
 		return;
@@ -195,8 +181,8 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	/*
 	if (!copyTable(tr("Copy LastModified..."),
-			 "SELECT Id, Name, Time FROM LastModified",
-			 "INSERT INTO LastModified (Id, Name, Time) VALUES (?,?,?)"))
+				 pQueryStore->getQuery("migrate-read-lastmodified",m_FromDB),
+				 pQueryStore->getQuery("migrate-write-lastmodified",m_ToDB)))
 	{
 	 qDebug() << "Error in LastModified";
 	 return;
@@ -204,16 +190,16 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	*/
 
 	if (!copyTable(tr("Copy Routes..."),
-								 "SELECT Id, Name, Type FROM Routes",
-								 "INSERT INTO Routes (Id, Name, Type) VALUES (?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-routes",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-routes",m_ToDB)))
 	{
 		qDebug() << "Error in Routes";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Flights..."),
-								 "SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile FROM Flights",
-								 "INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"))
+								 pQueryStore->getQuery("migrate-read-flights",m_FromDB),
+								 pQueryStore->getQuery("migrate-write-flights",m_ToDB)))
 	{
 		qDebug() << "Error in Flights";
 		return;

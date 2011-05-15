@@ -14,7 +14,8 @@ set(dbsql_SRCS DataBaseSub.cpp
                AirSpaces.cpp
                Upgrade.cpp
 							 Migrator.cpp
-               Pilots.cpp)
+							 Pilots.cpp
+							 QueryStore.cpp)
 
 set(dbsql_HDRS Migrator.h)
 
