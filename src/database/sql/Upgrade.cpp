@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <qdatetime.h>
+
+#include <QDateTime>
 #include <q3sqlcursor.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <stdlib.h>
+#include <QSqlError>
 #include "QueryExecutor.h"
 #include "Error.h"
 #include "Upgrade.h"
@@ -41,36 +43,23 @@ Upgrade::Upgrade(QSqlDatabase DB)
 
 bool Upgrade::setup(const QString &dbname, const QString &user, const QString &pwd)
 {
-	QSqlQuery query(db());
-	QString sqls;
 	bool res = true;
+	QueryExecutor::TReplaceMap replacements;
 
 	// prepare db
-  if (db().driverName()=="QMYSQL")
-  {
-    // setup mysql db
-    sqls = "CREATE DATABASE `%1` DEFAULT CHARSET=utf8 COLLATE=utf8_bin;";
-		res &= query.exec(sqls.arg(dbname));
+	// we need db name, username and password as replacement tokens
+	replacements["%dbname"] = dbname;
+	replacements["%username"] = user;
+	replacements["%password"] = pwd;
 
-    sqls = "CREATE USER '%1'@'localhost' IDENTIFIED BY '%2';";
-		res &= query.exec(sqls.arg(user).arg(pwd));
+	QSqlQuery query = m_pExecutor->executeQuery("setup-prepare-db",
+																							QueryExecutor::TBindMap(),
+																							replacements,
+																							db());
 
-    sqls = "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %1.* TO '%2'@'localhost' IDENTIFIED BY '%3';";
-		res &= query.exec(sqls.arg(dbname).arg(user).arg(pwd));
-
-    sqls = "USE `%1`;";
-		res &= query.exec(sqls.arg(dbname));
-	}
-	else if (db().driverName()=="QSQLITE")
+	if (query.lastError().type()!=QSqlError::NoError)
 	{
-		// setup sqlite db
-
-		// this replaces the 'CHARSET=utf8' clause in mysql
-		sqls = "PRAGMA encoding = 'UTF-8'";
-		res &= query.exec(sqls);
-	}
-	else
-	{
+		// something failed
 		return false;
 	}
 
@@ -84,43 +73,15 @@ bool Upgrade::setup(const QString &dbname, const QString &user, const QString &p
 	m_pExecutor->executeQuery("setup-create-servicings", db());
 	m_pExecutor->executeQuery("setup-create-lastmodified", db());
 
-	// finish db
-	if (db().driverName()=="QMYSQL")
-	{
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(1, 'Pilots', '1970-01-01 01:01:00'),"
-				"(2, 'Flights', '1970-01-01 01:01:00'),"
-				"(3, 'Gliders', '1970-01-01 01:01:00'),"
-				"(4, 'Servicings', '1970-01-01 01:01:00'),"
-				"(5, 'WayPoints', '1970-01-01 01:01:00'),"
-				"(6, 'DataBaseVersion', '2011-01-18 00:00:00'),"
-				"(7, 'Routes', '1970-01-01 01:01:00');";
-		res &= query.exec(sqls);
-	}
-	else if (db().driverName()=="QSQLITE")
-	{
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(1, 'Pilots', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(2, 'Flights', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(3, 'Gliders', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(4, 'Servicings', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(5, 'WayPoints', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(6, 'DataBaseVersion', '2011-01-18 00:00:00')";
-		res &= query.exec(sqls);
-		sqls = "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
-				"(7, 'Routes', '1970-01-01 01:01:00')";
-		res &= query.exec(sqls);
-	}
+	// finalize db setup
+	replacements.clear();
+	replacements["%versiontimestamp"] = "2011-01-18 00:00:00";
+
+	m_pExecutor->executeQuery("setup-set-lastmodified",
+														QueryExecutor::TBindMap(),
+														replacements,
+														db());
+
 	return res;
 }
 

@@ -48,6 +48,8 @@ void Migrator::stopProcessing()
 void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters)
 {
 	m_stopProcessing = false;
+	bool res = true;
+	QString err;
 
 	// create source connection
 	m_FromDB = QSqlDatabase::addDatabase(fromDBParameters.dBType(),"MigrationFromDatabase");
@@ -88,26 +90,26 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	if (!m_ToDB.open())
 	{
 		emit finished(Migrator::failed, tr("Error while opening the target database."));
+		m_FromDB.close();
 		return;
 	}
 
 	// Delete all tables
+	if (res)
 	{
 		emit stepStarted(tr("Clean Target..."));
-		QSqlQuery res = m_pExecutor->executeQuery("migrate-drop-tables",m_ToDB);
+		QSqlQuery del = m_pExecutor->executeQuery("migrate-drop-tables",m_ToDB);
 
-		if (res.lastError().type()!=QSqlError::NoError)
+		if (del.lastError().type()!=QSqlError::NoError)
 		{
-			emit finished(Migrator::failed, tr("Error while scrubbing the target database."));
-			m_FromDB.close();
-			m_ToDB.close();
-			return;
+			err = tr("Error while scrubbing the target database.");
+			res = false;
 		}
 	}
 
 	// then create the schema
+	if (res)
 	{
-		bool res = true;
 		emit stepStarted(tr("Create Schema..."));
 
 		Upgrade creator(m_ToDB);
@@ -123,84 +125,92 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 		if (!res)
 		{
-			emit finished(Migrator::failed, tr("Error while creating the database schema."));
-			m_FromDB.close();
-			m_ToDB.close();
-			return;
+			err = tr("Error while creating the database schema.");
 		}
 	}
 
 	// copy tables
-	if (!copyTable(tr("Copy RouteItems..."),
+	if (res && !copyTable(tr("Copy RouteItems..."),
 								 "migrate-read-routeitems",
 								 "migrate-write-routeitems"))
 	{
-		qDebug() << "Error in RouteItems";
-		return;
+		err =  tr("Error while migrating RouteItems");
+		res = false;
 	}
 
-	if (!copyTable(tr("Copy WayPoints..."),
+	if (res && !copyTable(tr("Copy WayPoints..."),
 								 "migrate-read-waypoints",
 								 "migrate-write-waypoints"))
 	{
-		qDebug() << "Error in WayPoints";
-		return;
+		err = tr("Error while migrating WayPoints");
+		res = false;
 	}
 
-	if (!copyTable(tr("Copy Gliders..."),
+	if (res && !copyTable(tr("Copy Gliders..."),
 								 "migrate-read-gliders",
 								 "migrate-write-gliders"))
 	{
-		qDebug() << "Error in Gliders";
-		return;
+		err = tr("Error while migrating Gliders");
+		res = false;
 	}
 
-	if (!copyTable(tr("Copy Servicings..."),
+	if (res && !copyTable(tr("Copy Servicings..."),
 								 "migrate-read-servicings",
 								 "migrate-write-servicings"))
 	{
-		qDebug() << "Error in Servicings";
-		return;
+		err = tr("Error while migrating Servicings");
+		res = false;
 	}
 
-	if (!copyTable(tr("Copy Pilots..."),
+	if (res && !copyTable(tr("Copy Pilots..."),
 								 "migrate-read-pilots",
 								 "migrate-write-pilots"))
 	{
-		qDebug() << "Error in Pilots";
-		return;
+		err = tr("Error while migrating Pilots");
+		res = false;
 	}
 
 	/*
-	if (!copyTable(tr("Copy LastModified..."),
-				 pQueryStore->getQuery("migrate-read-lastmodified",m_FromDB),
-				 pQueryStore->getQuery("migrate-write-lastmodified",m_ToDB)))
+		@todo
+		copying LastModified will fail, since it was
+		already populated in the setup part.
+		dont know yet if this is ok
+	if (res && !copyTable(tr("Copy LastModified..."),
+								 "migrate-read-lastmodified",
+								 "migrate-write-lastmodified"))
 	{
-	 qDebug() << "Error in LastModified";
-	 return;
+	 err = tr("Error while migrating LastModified");
+	 res = false;
 	}
 	*/
 
-	if (!copyTable(tr("Copy Routes..."),
+	if (res && !copyTable(tr("Copy Routes..."),
 								 "migrate-read-routes",
 								 "migrate-write-routes"))
 	{
-		qDebug() << "Error in Routes";
-		return;
+		err = tr("Error while migrating Routes");
+		res = false;
 	}
 
-	if (!copyTable(tr("Copy Flights..."),
+	if (res && !copyTable(tr("Copy Flights..."),
 								 "migrate-read-flights",
 								 "migrate-write-flights"))
 	{
-		qDebug() << "Error in Flights";
-		return;
+		err = tr("Error while migrating Flights");
+		res = false;
 	}
 
 	m_FromDB.close();
 	m_ToDB.close();
 
-	emit finished(Migrator::success, QString());
+	if (res)
+	{
+		emit finished(Migrator::success, QString());
+	}
+	else
+	{
+		emit finished(Migrator::failed, err);
+	}
 }
 
 void Migrator::handleClosing(bool isStopThread)
@@ -222,9 +232,17 @@ bool Migrator::copyTable(const QString& name, const QString& fromAct, const QStr
 	int resultcounter = 0;
 	int resultsize;
 
-
 	// read table
 	QSqlQuery fetch = m_pExecutor->executeQuery(fromAct,m_FromDB);
+
+	if (fetch.lastError().type()!=QSqlError::NoError)
+	{
+		// continueing is useless
+		qDebug() << "running query '" << fromAct << "' failed.";
+		emit finished(Migrator::failed, tr("Error while reading table."));
+		handleClosing(m_stopProcessing);
+		return false;
+	}
 
 	if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
 	{
@@ -269,7 +287,7 @@ bool Migrator::copyTable(const QString& name, const QString& fromAct, const QStr
 
 		if (insert.lastError().type()!=QSqlError::NoError)
 		{
-			qDebug() << "Errors while inserting";
+			qDebug() << "running query '" << toAct << "' failed";
 			res = false;
 		}
 	}

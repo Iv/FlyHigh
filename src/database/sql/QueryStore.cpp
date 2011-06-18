@@ -311,6 +311,40 @@ void QueryStore::init()
 					 "`Id` INTEGER PRIMARY KEY AUTOINCREMENT,"
 					 "`Name` VARCHAR(16) NOT NULL,"
 					 "`Time` datetime NOT NULL)");
+
+	QStringList prepdb;
+	prepdb << "CREATE DATABASE `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin" <<
+						"CREATE USER '%username'@'localhost' IDENTIFIED BY '%password'" <<
+						"GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'localhost' IDENTIFIED BY '%password'" <<
+						"USE `%dbname`";
+	addQuery("setup-prepare-db",
+					 "QMYSQL",
+					 prepdb);
+	addQuery("setup-prepare-db",
+					 "QSQLITE",
+					 "PRAGMA encoding = 'UTF-8'");
+
+	addQuery("setup-set-lastmodified",
+					 "QMYSQL",
+					 "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES"
+									 "(1, 'Pilots',          '1970-01-01 01:01:00'),"
+									 "(2, 'Flights',         '1970-01-01 01:01:00'),"
+									 "(3, 'Gliders',         '1970-01-01 01:01:00'),"
+									 "(4, 'Servicings',      '1970-01-01 01:01:00'),"
+									 "(5, 'WayPoints',       '1970-01-01 01:01:00'),"
+									 "(6, 'DataBaseVersion', '%versiontimestamp'),"
+									 "(7, 'Routes',          '1970-01-01 01:01:00')");
+	QStringList setlastmod;
+	setlastmod << "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (1, 'Pilots',          '1970-01-01 01:01:00')" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (2, 'Flights',         '1970-01-01 01:01:00')" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (3, 'Gliders',         '1970-01-01 01:01:00')" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (4, 'Servicings',      '1970-01-01 01:01:00')" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (5, 'WayPoints',       '1970-01-01 01:01:00')" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (6, 'DataBaseVersion', '%versiontimestamp'  )" <<
+								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (7, 'Routes',          '1970-01-01 01:01:00')";
+	addQuery("setup-set-lastmodified",
+					 "QSQLITE",
+					 setlastmod);
 }
 
 void QueryStore::addQuery(const QString& name, const QString& driver, const Query& query)
