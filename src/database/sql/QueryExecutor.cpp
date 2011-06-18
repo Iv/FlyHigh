@@ -133,7 +133,11 @@ QSqlQuery QueryExecutor::executeStatement(const QString& sql,
 	}
 
 	// run the query
-	query.exec();
+	if (!query.exec())
+	{
+		qDebug() << "Executing the query '" << query.executedQuery() << "' failed. DB says " <<
+								query.lastError().databaseText();
+	}
 
 	return query;
 }
