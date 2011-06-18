@@ -152,6 +152,8 @@ void MigrationDlg::handleFinish(int finishState, QString errorMsg)
 		unlockInputFields();
 		break;
 	case Migrator::success:
+		m_pProgressBar->setValue(m_pProgressBar->maximum());
+		m_pProgressBarSmallStep->setValue(m_pProgressBarSmallStep->maximum());
 		QMessageBox::information(this, tr("Database migrator"), tr("Database copied successfully.") );
 		unlockInputFields();
 		break;
