@@ -18,59 +18,75 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MIGRATOR_H
-#define MIGRATOR_H
+#ifndef QUERY_H
+#define QUERY_H
 
-#include <QObject>
-#include <QSqlDatabase>
-#include "DatabaseParameters.h"
-
-class QueryExecutor;
+#include <QString>
+#include <QStringList>
 
 /**
- * Facilities for database migration
+ * Represents a list of sql statements.
  */
-class Migrator : public QObject
+class Query
 {
-    Q_OBJECT
 
 public:
 
-    enum FinishStates
-    {
-        success,
-        failed,
-        canceled
-    };
+	/**
+	 * Default construction.
+	 * Creates an query without statements
+	 */
+	Query();
 
-public:
+	/**
+	 * Construction.
+	 * Creates an query with the given list of statements
+	 */
+	Query(const QStringList& list);
 
-		Migrator();
-		~Migrator();
+	/**
+	 * Returns the associated list of sql statements
+	 * @return the list of statements
+	 */
+	const QStringList& getStatements() const;
 
-    void copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters);
+	/**
+	 * Adds a sql statement.
+	 * Statements will be run in the order of addition.
+	 * @param statement - the sql statement
+	 */
+	void addStatement(const QString& statement);
 
-Q_SIGNALS:
+	/**
+	 * Adds a list of sql statements
+	 * @param statements - the sql statements
+	 */
+	void addStatements(const QStringList& statements);
 
-    void stepStarted(QString stepName);
-    void smallStepStarted(int currValue, int maxValue);
-    void finished(int finishState, QString errorMsg);
+	/**
+	 * Sets the transaction mode. Set to true if the query
+	 * is to be run in a single transaction.
+	 * @param trans - transaction
+	 */
+	void setTransaction(bool trans);
 
-public Q_SLOTS:
-
-    void stopProcessing();
+	/**
+	 * If the query should run as a transaction
+	 * @return true if the query should run as a transaction
+	 */
+	bool isTransaction() const;
 
 private:
 
-		void handleClosing(bool isstopThread);
-		bool copyTable(const QString& name, const QString& fromAct, const QString& toAct);
+	/**
+	 * The list of statements
+	 */
+	QStringList m_Statements;
 
-private:
-
-		QSqlDatabase m_FromDB;
-		QSqlDatabase m_ToDB;
-		QueryExecutor* m_pExecutor;
-		bool m_stopProcessing;
+	/**
+	 * The transaction mode
+	 */
+	bool m_Transaction;
 };
 
 #endif

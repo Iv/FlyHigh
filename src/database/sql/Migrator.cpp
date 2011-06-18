@@ -25,16 +25,19 @@
 
 #include <QDebug>
 
-#include "QueryStore.h"
+#include "QueryExecutor.h"
 #include "Upgrade.h"
 #include "Migrator.h"
 
 Migrator::Migrator()
+	: m_pExecutor(new QueryExecutor())
 {
 }
 
 Migrator::~Migrator()
 {
+	delete m_pExecutor;
+	m_pExecutor = NULL;
 }
 
 void Migrator::stopProcessing()
@@ -45,8 +48,6 @@ void Migrator::stopProcessing()
 void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters)
 {
 	m_stopProcessing = false;
-
-	QueryStore* pQueryStore = QueryStore::pInstance();
 
 	// create source connection
 	m_FromDB = QSqlDatabase::addDatabase(fromDBParameters.dBType(),"MigrationFromDatabase");
@@ -92,19 +93,10 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	// Delete all tables
 	{
-		bool res = true;
 		emit stepStarted(tr("Clean Target..."));
+		QSqlQuery res = m_pExecutor->executeQuery("migrate-drop-tables",m_ToDB);
 
-		QSqlQuery query(m_ToDB);
-		res = query.exec(pQueryStore->getQuery("migrate-drop-flights",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-routes",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-lastmodified",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-pilots",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-servicings",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-gliders",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-waypoints",m_ToDB));
-		res = query.exec(pQueryStore->getQuery("migrate-drop-routeitems",m_ToDB));
-		if (!res)
+		if (res.lastError().type()!=QSqlError::NoError)
 		{
 			emit finished(Migrator::failed, tr("Error while scrubbing the target database."));
 			m_FromDB.close();
@@ -140,40 +132,40 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	// copy tables
 	if (!copyTable(tr("Copy RouteItems..."),
-								 pQueryStore->getQuery("migrate-read-routeitems",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-routeitems",m_ToDB)))
+								 "migrate-read-routeitems",
+								 "migrate-write-routeitems"))
 	{
 		qDebug() << "Error in RouteItems";
 		return;
 	}
 
 	if (!copyTable(tr("Copy WayPoints..."),
-								 pQueryStore->getQuery("migrate-read-waypoints",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-waypoints",m_ToDB)))
+								 "migrate-read-waypoints",
+								 "migrate-write-waypoints"))
 	{
 		qDebug() << "Error in WayPoints";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Gliders..."),
-								 pQueryStore->getQuery("migrate-read-gliders",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-gliders",m_ToDB)))
+								 "migrate-read-gliders",
+								 "migrate-write-gliders"))
 	{
 		qDebug() << "Error in Gliders";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Servicings..."),
-								 pQueryStore->getQuery("migrate-read-servicings",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-servicings",m_ToDB)))
+								 "migrate-read-servicings",
+								 "migrate-write-servicings"))
 	{
 		qDebug() << "Error in Servicings";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Pilots..."),
-								 pQueryStore->getQuery("migrate-read-pilots",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-pilots",m_ToDB)))
+								 "migrate-read-pilots",
+								 "migrate-write-pilots"))
 	{
 		qDebug() << "Error in Pilots";
 		return;
@@ -190,16 +182,16 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	*/
 
 	if (!copyTable(tr("Copy Routes..."),
-								 pQueryStore->getQuery("migrate-read-routes",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-routes",m_ToDB)))
+								 "migrate-read-routes",
+								 "migrate-write-routes"))
 	{
 		qDebug() << "Error in Routes";
 		return;
 	}
 
 	if (!copyTable(tr("Copy Flights..."),
-								 pQueryStore->getQuery("migrate-read-flights",m_FromDB),
-								 pQueryStore->getQuery("migrate-write-flights",m_ToDB)))
+								 "migrate-read-flights",
+								 "migrate-write-flights"))
 	{
 		qDebug() << "Error in Flights";
 		return;
@@ -230,8 +222,9 @@ bool Migrator::copyTable(const QString& name, const QString& fromAct, const QStr
 	int resultcounter = 0;
 	int resultsize;
 
-	// this acutally runs the query!
-	QSqlQuery fetch(fromAct,m_FromDB);
+
+	// read table
+	QSqlQuery fetch = m_pExecutor->executeQuery(fromAct,m_FromDB);
 
 	if (fetch.driver()->hasFeature(QSqlDriver::QuerySize))
 	{
@@ -247,19 +240,38 @@ bool Migrator::copyTable(const QString& name, const QString& fromAct, const QStr
 		fetch.seek(-1);
 	}
 
+	// create a list of the column names
+	int cols = fetch.record().count();
+	QStringList columnames;
+	for(int i=0; i<cols; ++i)
+	{
+		columnames.append(fetch.record().fieldName(i));
+	}
+
+	// loop over results
 	while(fetch.next())
 	{
 		emit smallStepStarted(++resultcounter, resultsize);
 
-		QSqlQuery insert(m_ToDB);
-		insert.prepare(toAct);
-
-		int cols = fetch.record().count();
-		for(int i=0; i<cols; ++i)
+		// create bindings
+		QueryExecutor::TBindMap bindings;
+		int i=0;
+		for(QStringList::const_iterator iter = columnames.constBegin(); iter != columnames.constEnd(); ++iter)
 		{
-			insert.addBindValue(fetch.value(i));
+			QString col = *iter;
+			// prepend ':' to column names
+			bindings[col.insert(0,':')] = fetch.value(i);
+			i++;
 		}
-		res &= insert.exec();
+
+		// write to new table
+		QSqlQuery insert = m_pExecutor->executeQuery(toAct,bindings,m_ToDB);
+
+		if (insert.lastError().type()!=QSqlError::NoError)
+		{
+			qDebug() << "Errors while inserting";
+			res = false;
+		}
 	}
 
 	if (m_stopProcessing || !res)

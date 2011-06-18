@@ -22,7 +22,7 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <stdlib.h>
-#include "QueryStore.h"
+#include "QueryExecutor.h"
 #include "Error.h"
 #include "Upgrade.h"
 
@@ -35,6 +35,7 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_2 = QDateTime(QDate(
 
 Upgrade::Upgrade(QSqlDatabase DB)
 	:DataBaseSub(DB)
+	,m_pExecutor(new QueryExecutor())
 {
 }
 
@@ -43,7 +44,6 @@ bool Upgrade::setup(const QString &dbname, const QString &user, const QString &p
 	QSqlQuery query(db());
 	QString sqls;
 	bool res = true;
-	QueryStore* pQueryStore = QueryStore::pInstance();
 
 	// prepare db
   if (db().driverName()=="QMYSQL")
@@ -75,14 +75,14 @@ bool Upgrade::setup(const QString &dbname, const QString &user, const QString &p
 	}
 
 	// create tables
-	res &= query.exec(pQueryStore->getQuery("setup-create-gliders", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-pilots", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-waypoints", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-flights", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-routes", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-routeitems", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-servicings", db()));
-	res &= query.exec(pQueryStore->getQuery("setup-create-lastmodified", db()));
+	m_pExecutor->executeQuery("setup-create-gliders", db());
+	m_pExecutor->executeQuery("setup-create-pilots", db());
+	m_pExecutor->executeQuery("setup-create-waypoints", db());
+	m_pExecutor->executeQuery("setup-create-flights", db());
+	m_pExecutor->executeQuery("setup-create-routes", db());
+	m_pExecutor->executeQuery("setup-create-routeitems", db());
+	m_pExecutor->executeQuery("setup-create-servicings", db());
+	m_pExecutor->executeQuery("setup-create-lastmodified", db());
 
 	// finish db
 	if (db().driverName()=="QMYSQL")
