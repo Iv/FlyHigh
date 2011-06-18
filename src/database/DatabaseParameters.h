@@ -22,6 +22,7 @@
 #define DATABASEPARAMETERS_H
 
 #include <QString>
+#include <QSqlDatabase>
 
 /**
  * Encapsulates database parameters.
@@ -57,6 +58,19 @@ public:
 	const QString& dBPassword() const;
 	const QString& dBFile() const;
 	int dBPort() const;
+
+	/**
+	 * applies connection parameters to the given db
+	 * @param db - the database on which to apply the parameters
+	 */
+	void apply(QSqlDatabase db) const;
+
+	/**
+	 * Checks if the db parameters are (almost) equal
+	 * Only db type and db name or file are considered.
+	 * @param other - the other db
+	 */
+	bool match(const DatabaseParameters& other) const;
 
 	static QString SQLiteDatabaseType();
 	static QString MySQLDatabaseType();

@@ -20,6 +20,7 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <QHostInfo>
 #include "IFlyHighRC.h"
 #include "DatabaseParameters.h"
 
@@ -80,6 +81,56 @@ QString DatabaseParameters::SQLiteDatabaseType()
 QString DatabaseParameters::MySQLDatabaseType()
 {
 	return "QMYSQL";
+}
+
+void DatabaseParameters::apply(QSqlDatabase db) const
+{
+	if (isMySQL())
+	{
+		db.setDatabaseName(m_dBName);
+		db.setUserName(m_userName);
+		db.setPassword(m_password);
+		db.setHostName(m_hostName);
+		db.setPort(m_port);
+	}
+	else if (isSQLite())
+	{
+		db.setDatabaseName(m_dBFile);
+	}
+}
+
+bool DatabaseParameters::match(const DatabaseParameters& other) const
+{
+	bool res = (m_dBType == other.m_dBType);
+	if (res && isMySQL())
+	{
+		res &= (m_dBName == other.m_dBName);
+		// compare port numbers as well. it's improbable that
+		// different ports lead to the same db
+		res &= (m_port == other.m_port);
+		// hostname lookup can take some time, so just do it if necessary
+		if (res)
+		{
+			// hostnames are not unique and so are ip's. but ip's may
+			// be more reliable
+			QHostInfo here = QHostInfo::fromName(m_hostName);
+			QHostInfo there = QHostInfo::fromName(other.m_hostName);
+			// just comparing one address
+			if (!here.addresses().empty()&&
+					!there.addresses().empty())
+			{
+				res &= (here.addresses().first() == there.addresses().first());
+			}
+		}
+	}
+	else
+	{
+		// check a bit better than just filenames
+		QFileInfo here(m_dBFile);
+		QFileInfo there(other.m_dBFile);
+		res &= (here == there);
+	}
+	return res;
 }
 
 void DatabaseParameters::readFromConfig()
@@ -191,4 +242,3 @@ int DatabaseParameters::dBPort() const
 {
 	return m_port;
 }
-

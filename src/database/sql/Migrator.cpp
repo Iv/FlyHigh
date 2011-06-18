@@ -51,20 +51,16 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	bool res = true;
 	QString err;
 
+	// reject overwriting own db
+	if (fromDBParameters.match(toDBParameters))
+	{
+		emit finished(Migrator::failed, tr("Source and target are equal. Refusing migration!"));
+		return;
+	}
+
 	// create source connection
 	m_FromDB = QSqlDatabase::addDatabase(fromDBParameters.dBType(),"MigrationFromDatabase");
-	if (fromDBParameters.isMySQL())
-	{
-		m_FromDB.setDatabaseName(fromDBParameters.dBName());
-		m_FromDB.setUserName(fromDBParameters.dBUserName());
-		m_FromDB.setPassword(fromDBParameters.dBPassword());
-		m_FromDB.setHostName(fromDBParameters.dBHostName());
-		m_FromDB.setPort(fromDBParameters.dBPort());
-	}
-	else if (fromDBParameters.isSQLite())
-	{
-		m_FromDB.setDatabaseName(fromDBParameters.dBFile());
-	}
+	fromDBParameters.apply(m_FromDB);
 
 	if (!m_FromDB.open())
 	{
@@ -74,18 +70,7 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	// create target connection
 	m_ToDB = QSqlDatabase::addDatabase(toDBParameters.dBType(),"MigrationToDatabase");
-	if (toDBParameters.isMySQL())
-	{
-		m_ToDB.setDatabaseName(toDBParameters.dBName());
-		m_ToDB.setUserName(toDBParameters.dBUserName());
-		m_ToDB.setPassword(toDBParameters.dBPassword());
-		m_ToDB.setHostName(toDBParameters.dBHostName());
-		m_ToDB.setPort(toDBParameters.dBPort());
-	}
-	else if (toDBParameters.isSQLite())
-	{
-		m_ToDB.setDatabaseName(toDBParameters.dBFile());
-	}
+	toDBParameters.apply(m_ToDB);
 
 	if (!m_ToDB.open())
 	{
