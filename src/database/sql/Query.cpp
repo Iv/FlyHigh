@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2011 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,36 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef Upgrade_h
-#define Upgrade_h
 
-#include <QDateTime>
-#include "DataBaseSub.h"
+#include "Query.h"
 
-class QueryExecutor;
 
-class Upgrade: public DataBaseSub
+Query::Query()
+	: m_Transaction(false)
 {
-	public:
-		Upgrade(QSqlDatabase DB);
+}
 
-		bool setup(const QString &dbname, const QString &user, const QString &pwd);
+Query::Query(const QStringList& list)
+	: m_Transaction(false)
+{
+	addStatements(list);
+}
 
-		bool upgrade();
+void Query::addStatement(const QString& statement)
+{
+	m_Statements.append(statement);
+}
 
-	private:
-		typedef QDateTime DataBaseVersion;
-		static const DataBaseVersion DataBaseVersion_0_3_0;
-		static const DataBaseVersion DataBaseVersion_0_3_1;
-		static const DataBaseVersion DataBaseVersion_0_3_2;
-		static const DataBaseVersion DataBaseVersion_0_5_0;
-		static const DataBaseVersion DataBaseVersion_0_8_1;
-		static const DataBaseVersion DataBaseVersion_0_8_2;
+void Query::addStatements(const QStringList& list)
+{
+	m_Statements.append(list);
+}
 
-		QueryExecutor* m_pExecutor;
+const QStringList& Query::getStatements() const
+{
+	return m_Statements;
+}
 
-		DataBaseVersion dataBaseVersion();
-		void setDataBaseVersion(const DataBaseVersion &vers);
-};
+void Query::setTransaction(bool trans)
+{
+	m_Transaction = trans;
+}
 
-#endif
+bool Query::isTransaction() const
+{
+	return m_Transaction;
+}

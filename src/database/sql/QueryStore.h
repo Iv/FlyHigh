@@ -23,6 +23,7 @@
 
 #include <QMap>
 #include <QString>
+#include "Query.h"
 
 
 class QSqlDatabase;
@@ -30,6 +31,11 @@ class QSqlDatabase;
 /**
  * Central store for sql queries.
  * Goal is to encapsulate database-dependent queries.
+ * Queries are store in a 'map of maps'. The outer map
+ * associates driver names to the query container, while
+ * the inner map associates query names to the actual queries.
+ * Database-independent queries are associated with 'common'
+ * as driver name.
  */
 class QueryStore
 {
@@ -63,35 +69,61 @@ public:
 	 * @param db - the target database
 	 * @return the associated query
 	 */
-	QString getQuery(const QString& name, const QSqlDatabase& db) const;
+	Query getQuery(const QString& name, const QSqlDatabase& db) const;
+
+private:
+
+	/**
+	 * Adds a query.
+	 * If the query is driver-independent, use 'common' as driver name.
+	 * @param name - name of the query
+	 * @param driver - the driver name (or 'common')
+	 * @param query - the query
+	 */
+	void addQuery(const QString& name, const QString& driver, const Query& query);
+
+	/**
+	 * Adds a query. This is a conveinience method for adding
+	 * queries consisting of just one single statement.
+	 * If the query is driver-independent, use 'common' as driver name.
+	 * @param name - name of the query
+	 * @param driver - the driver name (or 'common')
+	 * @param sql - the query string
+	 */
+	void addQuery(const QString& name, const QString& driver, const QString& sql);
+
+	/**
+	* Returns the associated query, depending on the driver name.
+	* @param name - name of the query to look up
+	* @param driver - the driver name (or 'common')
+	* @return the associated query
+	*/
+	Query getQuery(const QString& name, const QString& driver) const;
 
 private:
 
 	/**
 	 * Type definition for an associative container,
-	 * mapping query names to query strings
+	 * mapping query names to queries
 	 */
-	typedef QMap<QString,QString> TQueryMap;
+	typedef QMap<QString,Query> TQueryMap;
 
 	/**
-	 * Map of queries common to all drivers
+	 * Type	definition for an associative container,
+	 * mapping driver names to query maps
 	 */
-	 TQueryMap m_QueryMap;
+	typedef QMap<QString,TQueryMap> TDriverMap;
 
 	/**
-	 * Map of queries specific to sqlite
+	 * Map of query maps
 	 */
-	 TQueryMap m_QueryMapSqlite;
-
-	/**
-	 * Map of queries specific to mysql
-	 */
-	 TQueryMap m_QueryMapMysql;
+	 TDriverMap m_QueryMap;
 
 	/**
 	 * Singleton instance pointer
 	 */
 	static QueryStore* m_pInst;
+
 };
 
 #endif

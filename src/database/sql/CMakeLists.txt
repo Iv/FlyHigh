@@ -15,7 +15,9 @@ set(dbsql_SRCS DataBaseSub.cpp
                Upgrade.cpp
 							 Migrator.cpp
 							 Pilots.cpp
-							 QueryStore.cpp)
+							 QueryExecutor.cpp
+							 QueryStore.cpp
+							 Query.cpp)
 
 set(dbsql_HDRS Migrator.h)
 
