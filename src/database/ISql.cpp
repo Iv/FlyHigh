@@ -32,7 +32,6 @@
 #include "Routes.h"
 #include "Servicings.h"
 #include "Upgrade.h"
-#include "DatabaseParameters.h"
 #include "ISql.h"
 
 #include <QDebug>
@@ -89,10 +88,10 @@ bool ISql::createAndConnect()
 	}
 
 	// which type of db?
-	if (m_DriverName == "QMYSQL")
+	if (m_dbParameters.isMySQL())
 	{
 		// check for server host
-		QHostInfo info = QHostInfo::fromName(m_DBHostName);
+		QHostInfo info = QHostInfo::fromName(m_dbParameters.dBHostName());
 		if(info.error()!=QHostInfo::NoError)
 		{
 			// todo: show error dialog
@@ -101,8 +100,8 @@ bool ISql::createAndConnect()
 		ok = connectDb();
 		if(!ok)
 		{
-			root = QInputDialog::getText(NULL, tr("Name"), tr("MySQL root name:"), QLineEdit::Normal, "root", &ok);
-			pwd = QInputDialog::getText(NULL, tr("Password"), tr("MySQL root pwd:"), QLineEdit::Password, "", &ok);
+			root = QInputDialog::getText(NULL, tr("Name"), tr("MySQL administrator name:"), QLineEdit::Normal, "root", &ok);
+			pwd = QInputDialog::getText(NULL, tr("Password"), tr("MySQL administrator password:"), QLineEdit::Password, "", &ok);
 
 			if(ok)
 			{
@@ -111,9 +110,9 @@ bool ISql::createAndConnect()
 			}
 		}
 	}
-	else if (m_DriverName == "QSQLITE")
+	else if (m_dbParameters.isSQLite())
 	{
-		QFileInfo dbfile = QFileInfo(m_DBName);
+		QFileInfo dbfile = QFileInfo(m_dbParameters.dBName());
 
 		// create directory if necessary
 		if (!dbfile.dir().exists())
@@ -130,7 +129,7 @@ bool ISql::createAndConnect()
 	}
 	else
 	{
-		qDebug() << "Unknown db type '" << m_DriverName << "'.";
+		qDebug() << "Unknown db type '" << m_dbParameters.dBType() << "'.";
 		return false;
 	}
 	return ok;
@@ -141,19 +140,8 @@ bool ISql::connectDb()
 	bool success;
 
   // create default db connection
-  m_DefaultDB = QSqlDatabase::addDatabase(m_DriverName);
-
-  // set mysql db name or sqlite filename
-  m_DefaultDB.setDatabaseName(m_DBName);
-
-  // mysql needs additional configuration
-  if (m_DriverName == "QMYSQL")
-  {
-    m_DefaultDB.setUserName(m_DBUserName);
-    m_DefaultDB.setPassword(m_DBPassword);
-    m_DefaultDB.setHostName(m_DBHostName);
-    m_DefaultDB.setPort(m_DBPort);
-  }
+	m_DefaultDB = QSqlDatabase::addDatabase(m_dbParameters.dBType());
+	m_dbParameters.apply(m_DefaultDB);
 
   success = m_DefaultDB.open();
 	Error::verify(success, Error::SQL_OPEN);
@@ -183,25 +171,20 @@ bool ISql::createDb(const QString &root, const QString &pwd)
 	// creating the QSqlDatabase object within a code block.
 	// Assures proper cleanup when removing the db.
 	{
-		QSqlDatabase setupDb = QSqlDatabase::addDatabase(m_DriverName, dbID);
-		if (m_DriverName == "QMYSQL")
-		{
-			setupDb.setUserName(root);
-			setupDb.setPassword(pwd);
-			setupDb.setHostName(m_DBHostName);
-			setupDb.setPort(m_DBPort);
-		}
-		else if (m_DriverName == "QSQLITE")
-		{
-			setupDb.setDatabaseName(m_DBName);
-		}
-
+		// create a parameter object with db admin credentials
+		DatabaseParameters setupdbparams = m_dbParameters;
+		setupdbparams.setDBUserName(root);
+		setupdbparams.setDBPassword(pwd);
+		// create a connection to a root db (using admin credentials)
+		QSqlDatabase setupDb = QSqlDatabase::addDatabase(setupdbparams.dBType(), dbID);
+		setupdbparams.apply(setupDb,true);
+		// try accessing
 		success = setupDb.open();
-
 		if(success)
 		{
+			// create schema
 			Upgrade upgrade(setupDb);
-			upgrade.setup(m_DBName, m_DBUserName, m_DBPassword);
+			upgrade.setup(m_dbParameters);
 			setupDb.close();
 		}
 	}
@@ -210,51 +193,9 @@ bool ISql::createDb(const QString &root, const QString &pwd)
 	return success;
 }
 
-void ISql::setName(const QString &name)
-{
-  m_DBName = name;
-}
-
-void ISql::setUserName(const QString &userName)
-{
-  m_DBUserName = userName;
-}
-
-void ISql::setPassword(const QString &passwd)
-{
-  m_DBPassword = passwd;
-}
-
-void ISql::setHostName(const QString &hostName)
-{
-  m_DBHostName = hostName;
-}
-
-void ISql::setPort(int port)
-{
-  m_DBPort = port;
-}
-
-void ISql::setDriverName(const QString& name)
-{
-	m_DriverName = name;
-}
-
 void ISql::setDBParameters(const DatabaseParameters& params)
 {
-	m_DriverName = params.dBType();
-	if (params.isMySQL())
-	{
-		m_DBName = params.dBName();
-	}
-	else
-	{
-		m_DBName = params.dBFile();
-	}
-	m_DBUserName = params.dBUserName();
-	m_DBPassword = params.dBPassword();
-	m_DBHostName = params.dBHostName();
-	m_DBPort = params.dBPort();
+	m_dbParameters = params;
 }
 
 ISql* ISql::pInstance()

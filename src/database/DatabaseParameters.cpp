@@ -83,11 +83,15 @@ QString DatabaseParameters::MySQLDatabaseType()
 	return "QMYSQL";
 }
 
-void DatabaseParameters::apply(QSqlDatabase db) const
+void DatabaseParameters::apply(QSqlDatabase db, bool root) const
 {
 	if (isMySQL())
 	{
-		db.setDatabaseName(m_dBName);
+		// don't set a name for root db's
+		if (!root)
+		{
+			db.setDatabaseName(m_dBName);
+		}
 		db.setUserName(m_userName);
 		db.setPassword(m_password);
 		db.setHostName(m_hostName);
@@ -228,9 +232,19 @@ const QString& DatabaseParameters::dBUserName() const
 	return m_userName;
 }
 
+void DatabaseParameters::setDBUserName(const QString& user)
+{
+	m_userName = user;
+}
+
 const QString& DatabaseParameters::dBPassword() const
 {
 	return m_password;
+}
+
+void DatabaseParameters::setDBPassword(const QString& pwd)
+{
+	m_password = pwd;
 }
 
 const QString& DatabaseParameters::dBFile() const

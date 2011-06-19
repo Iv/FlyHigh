@@ -31,6 +31,8 @@
 #include "Route.h"
 #include "Pilot.h"
 #include "Servicing.h"
+#include "DatabaseParameters.h"
+
 
 //class AirSpaces;
 class WayPoints;
@@ -39,7 +41,6 @@ class Flights;
 class Routes;
 class Servicings;
 class Pilots;
-class DatabaseParameters;
 
 /**
 @author Alex Graf
@@ -60,18 +61,6 @@ class ISql: public IDataBase
 		 * If the db does not yet exist, it will be created.
 		 */
 		bool createAndConnect();
-
-		void setName(const QString &name);
-
-		void setUserName(const QString &userName);
-
-		void setPassword(const QString &passwd);
-
-		void setHostName(const QString &hostName);
-
-		void setPort(int port);
-
-		void setDriverName(const QString &name);
 
 		void setDBParameters(const DatabaseParameters& params);
 
@@ -172,38 +161,10 @@ private:
 		Pilots* m_pPilots;
 		QSqlDatabase m_DefaultDB;
 
-    /**
-     * Driver name, either QMYSQL or QSQLITE
-     */
-		QString m_DriverName;
-
-    /**
-     * DB name.
-     * mysql: DB name
-     * sqlite: file name and path
-     */
-    QString m_DBName;
-
-    /**
-     * Non-priviledged db user. Applies to mysql only.
-     */
-    QString m_DBUserName;
-
-    /**
-     * password (urrrgh!). Applies to mysql only.
-     * @todo don't store plaintext pw
-     */
-    QString m_DBPassword;
-
-    /**
-     * DB server hostname. Applies to mysql only.
-     */
-    QString m_DBHostName;
-
-    /**
-     * DB server listening port. Applies to mysql only.
-     */
-    int m_DBPort;
+		/**
+		 * database connection parameters
+		 */
+		DatabaseParameters m_dbParameters;
 
 		ISql();
 
