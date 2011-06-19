@@ -32,6 +32,7 @@
 #include "Routes.h"
 #include "Servicings.h"
 #include "Upgrade.h"
+#include "DatabaseUtilities.h"
 #include "ISql.h"
 
 #include <QDebug>
@@ -100,12 +101,13 @@ bool ISql::createAndConnect()
 		ok = connectDb();
 		if(!ok)
 		{
+			// failed, we might need to create it
 			root = QInputDialog::getText(NULL, tr("Name"), tr("MySQL administrator name:"), QLineEdit::Normal, "root", &ok);
 			pwd = QInputDialog::getText(NULL, tr("Password"), tr("MySQL administrator password:"), QLineEdit::Password, "", &ok);
 
 			if(ok)
 			{
-				createDb(root, pwd);
+				DatabaseUtilities::createDb(m_dbParameters, root, pwd);
 				ok = connectDb();
 			}
 		}
@@ -123,7 +125,7 @@ bool ISql::createAndConnect()
 		ok = connectDb();
 		if(!ok)
 		{
-			createDb();
+			DatabaseUtilities::createDb(m_dbParameters);
 			ok = connectDb();
 		}
 	}
@@ -159,36 +161,6 @@ bool ISql::connectDb()
       success = false;
     }
 	}
-
-	return success;
-}
-
-bool ISql::createDb(const QString &root, const QString &pwd)
-{
-	bool success;
-	QString dbID = "root_db";
-
-	// creating the QSqlDatabase object within a code block.
-	// Assures proper cleanup when removing the db.
-	{
-		// create a parameter object with db admin credentials
-		DatabaseParameters setupdbparams = m_dbParameters;
-		setupdbparams.setDBUserName(root);
-		setupdbparams.setDBPassword(pwd);
-		// create a connection to a root db (using admin credentials)
-		QSqlDatabase setupDb = QSqlDatabase::addDatabase(setupdbparams.dBType(), dbID);
-		setupdbparams.apply(setupDb,true);
-		// try accessing
-		success = setupDb.open();
-		if(success)
-		{
-			// create schema
-			Upgrade upgrade(setupDb);
-			upgrade.setup(m_dbParameters);
-			setupDb.close();
-		}
-	}
-	QSqlDatabase::removeDatabase(dbID);
 
 	return success;
 }

@@ -18,79 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MIGRATOR_H
-#define MIGRATOR_H
-
-#include <QObject>
 #include <QSqlDatabase>
+#include "Upgrade.h"
 #include "DatabaseParameters.h"
+#include "DatabaseUtilities.h"
 
-class QueryExecutor;
-class QSemaphore;
 
-/**
- * Facilities for database migration
- */
-class Migrator : public QObject
+bool DatabaseUtilities::createDb(const DatabaseParameters& params,
+																 const QString& root,
+																 const QString& pwd)
 {
-    Q_OBJECT
+	bool success;
+	QString dbID = "root_db";
 
-public:
+	// creating the QSqlDatabase object within a code block.
+	// Assures proper cleanup when removing the db.
+	{
+		// create a parameter object with db admin credentials
+		DatabaseParameters setupdbparams = params;
+		setupdbparams.setDBUserName(root);
+		setupdbparams.setDBPassword(pwd);
+		// create a connection to a root db (using admin credentials)
+		QSqlDatabase setupDb = QSqlDatabase::addDatabase(setupdbparams.dBType(), dbID);
+		setupdbparams.apply(setupDb,true);
+		// try accessing
+		success = setupDb.open();
+		if(success)
+		{
+			// create schema
+			Upgrade upgrade(setupDb);
+			upgrade.setup(params);
+			setupDb.close();
+		}
+	}
+	QSqlDatabase::removeDatabase(dbID);
 
-    enum FinishStates
-    {
-        success,
-        failed,
-        canceled
-    };
-
-public:
-
-		Migrator();
-		~Migrator();
-
-    void copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters);
-
-Q_SIGNALS:
-
-    void stepStarted(QString stepName);
-    void smallStepStarted(int currValue, int maxValue);
-    void finished(int finishState, QString errorMsg);
-
-		/**
-		 * Migrator thread may not show any dialog, since it's not
-		 * a gui thread. This signal asks for a input dialog which
-		 * should provide db admin credentials
-		 */
-		void requestCredentials();
-
-public Q_SLOTS:
-
-    void stopProcessing();
-
-		/**
-		 * User entered db admin credentials in dialog box
-		 * @param root - administrators username
-		 * @param pwd - administrators password
-		 * @param ok - true if dialog closed with 'ok' (false for 'cancel')
-		 */
-		void handleCredentialsEntered(QString root, QString pwd, bool ok);
-
-private:
-
-		void handleClosing(bool isstopThread);
-		bool copyTable(const QString& name, const QString& fromAct, const QString& toAct);
-
-private:
-
-		QSqlDatabase m_FromDB;
-		QSqlDatabase m_ToDB;
-		QueryExecutor* m_pExecutor;
-		bool m_stopProcessing;
-		QSemaphore* m_pCredSemaphore;
-		QString m_Root;
-		QString m_Pwd;
-		bool m_CredOk;
-};
-
-#endif
+	return success;
+}

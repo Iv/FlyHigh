@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QInputDialog>
 #include "DatabaseWidget.h"
 #include "DatabaseParameters.h"
 #include "Migrator.h"
@@ -108,6 +109,15 @@ MigrationDlg::MigrationDlg(QWidget* parent)
 					m_pMigratorThread->migrator(),
 					SLOT(stopProcessing()));
 
+	connect(m_pMigratorThread->migrator(),
+					SIGNAL(requestCredentials()),
+					this,
+					SLOT(handleRequestCredentials()));
+
+	connect(this,
+					SIGNAL(credentialsEntered(QString,QString,bool)),
+					m_pMigratorThread->migrator(),
+					SLOT(handleCredentialsEntered(QString,QString,bool)));
 }
 
 MigrationDlg::~MigrationDlg()
@@ -176,4 +186,15 @@ void MigrationDlg::handleSmallStepStarted(int currentValue, int maxValue)
 {
 	m_pProgressBarSmallStep->setMaximum(maxValue);
 	m_pProgressBarSmallStep->setValue(currentValue);
+}
+
+void MigrationDlg::handleRequestCredentials()
+{
+	bool ok=true;
+	QString root;
+	QString pwd;
+	root = QInputDialog::getText(this, tr("Name"), tr("MySQL administrator name:"), QLineEdit::Normal, "root", &ok);
+	pwd = QInputDialog::getText(this, tr("Password"), tr("MySQL administrator password:"), QLineEdit::Password, "", &ok);
+
+	emit credentialsEntered(root,pwd,ok);
 }

@@ -148,8 +148,6 @@ class ISql: public IDataBase
 private:
 		bool connectDb();
 
-		bool createDb(const QString &root="", const QString &pwd="");
-
 	private:
 		static ISql* m_pInst;
 //		AirSpaces* m_pAirSpaces;
