@@ -24,7 +24,9 @@
 #include <QSqlQuery>
 #include <stdlib.h>
 #include <QSqlError>
+#include <QMessageBox>
 #include "QueryExecutor.h"
+#include "DatabaseParameters.h"
 #include "Error.h"
 #include "Upgrade.h"
 
@@ -41,21 +43,61 @@ Upgrade::Upgrade(QSqlDatabase DB)
 {
 }
 
-bool Upgrade::setup(const QString &dbname, const QString &user, const QString &pwd)
+bool Upgrade::setup(const DatabaseParameters& params)
 {
 	bool res = true;
 	QueryExecutor::TReplaceMap replacements;
 
-	// prepare db
 	// we need db name, username and password as replacement tokens
-	replacements["%dbname"] = dbname;
-	replacements["%username"] = user;
-	replacements["%password"] = pwd;
+	replacements["%dbname"] = params.dBName();
+	replacements["%username"] = params.dBUserName();
+	replacements["%password"] = params.dBPassword();
 
-	QSqlQuery query = m_pExecutor->executeQuery("setup-prepare-db",
+	// create the db
+	QSqlQuery query = m_pExecutor->executeQuery("setup-create-db",
 																							QueryExecutor::TBindMap(),
 																							replacements,
 																							db());
+
+	// only mysql cares about user management and permissions
+	if (params.isMySQL())
+	{
+		// check if there's already a user
+		QSqlQuery user = m_pExecutor->executeQuery("setup-get-user",
+																							 QueryExecutor::TBindMap(),
+																							 replacements,
+																							 db());
+
+		// if the user already exists, it won't be touched
+		// which means the user keeps his former password
+		if (user.size()==0)
+		{
+			// no user with this name
+			m_pExecutor->executeQuery("setup-create-user",
+																QueryExecutor::TBindMap(),
+																replacements,
+																db());
+		}
+		else
+		{
+			// warn user
+			QMessageBox::warning(0,
+													 "Database Setup",
+													 "The user '" + params.dBUserName() +
+													 "' already exists.\nHis password remains unchanged!");
+		}
+		// grant permissions unconditionally, the db is probably new
+		m_pExecutor->executeQuery("setup-privileges",
+															QueryExecutor::TBindMap(),
+															replacements,
+															db());
+
+		// and the 'USE' clause
+		m_pExecutor->executeQuery("setup-finalize",
+															QueryExecutor::TBindMap(),
+															replacements,
+															db());
+	}
 
 	if (query.lastError().type()!=QSqlError::NoError)
 	{

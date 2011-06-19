@@ -312,17 +312,30 @@ void QueryStore::init()
 					 "`Name` VARCHAR(16) NOT NULL,"
 					 "`Time` datetime NOT NULL)");
 
-	QStringList prepdb;
-	prepdb << "CREATE DATABASE `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin" <<
-						"CREATE USER '%username'@'localhost' IDENTIFIED BY '%password'" <<
-						"GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'localhost' IDENTIFIED BY '%password'" <<
-						"USE `%dbname`";
-	addQuery("setup-prepare-db",
+	addQuery("setup-create-db",
 					 "QMYSQL",
-					 prepdb);
-	addQuery("setup-prepare-db",
+					 "CREATE DATABASE `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
+	addQuery("setup-create-db",
 					 "QSQLITE",
 					 "PRAGMA encoding = 'UTF-8'");
+
+	addQuery("setup-create-user",
+					 "QMYSQL",
+					 "CREATE USER '%username'@'localhost' IDENTIFIED BY '%password'");
+
+	addQuery("setup-privileges",
+					 "QMYSQL",
+					 "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'localhost'");
+
+	addQuery("setup-get-user",
+					 "QMYSQL",
+					 "SELECT user FROM mysql.user where user='%username'");
+
+	addQuery("setup-finalize",
+					 "QMYSQL",
+					 "USE `%dbname`");
+
+	// missing for sqlite: setup-finalize, setup-get-user setup-privileges, setup-create-user
 
 	addQuery("setup-set-lastmodified",
 					 "QMYSQL",

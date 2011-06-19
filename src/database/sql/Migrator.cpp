@@ -74,6 +74,7 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 
 	if (!m_ToDB.open())
 	{
+		qDebug() << "Opening target db failed. Error: " << m_ToDB.lastError().databaseText();
 		emit finished(Migrator::failed, tr("Error while opening the target database."));
 		m_FromDB.close();
 		return;
@@ -96,16 +97,8 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	if (res)
 	{
 		emit stepStarted(tr("Create Schema..."));
-
 		Upgrade creator(m_ToDB);
-		if (toDBParameters.isMySQL())
-		{
-			res &= creator.setup(toDBParameters.dBName(),toDBParameters.dBUserName(),toDBParameters.dBPassword());
-		}
-		else if (toDBParameters.isSQLite())
-		{
-			res &= creator.setup(toDBParameters.dBFile(),toDBParameters.dBUserName(),toDBParameters.dBPassword());
-		}
+		res &= creator.setup(toDBParameters);
 		res &= creator.upgrade();
 
 		if (!res)

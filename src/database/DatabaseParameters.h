@@ -55,15 +55,18 @@ public:
 	const QString& dBName() const;
 	const QString& dBHostName() const;
 	const QString& dBUserName() const;
+	void setDBUserName(const QString& user);
 	const QString& dBPassword() const;
+	void setDBPassword(const QString& pwd);
 	const QString& dBFile() const;
 	int dBPort() const;
 
 	/**
 	 * applies connection parameters to the given db
 	 * @param db - the database on which to apply the parameters
+	 * @param root - if db is a root database
 	 */
-	void apply(QSqlDatabase db) const;
+	void apply(QSqlDatabase db, bool root=false) const;
 
 	/**
 	 * Checks if the db parameters are (almost) equal

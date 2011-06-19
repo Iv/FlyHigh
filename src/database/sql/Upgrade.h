@@ -24,13 +24,19 @@
 #include "DataBaseSub.h"
 
 class QueryExecutor;
+class DatabaseParameters;
 
 class Upgrade: public DataBaseSub
 {
 	public:
 		Upgrade(QSqlDatabase DB);
 
-		bool setup(const QString &dbname, const QString &user, const QString &pwd);
+		/**
+		 * Creates the database schema
+		 * @param params - db connection parameters
+		 * @return true if the schema was created successfully
+		 */
+		bool setup(const DatabaseParameters& params);
 
 		bool upgrade();
 
