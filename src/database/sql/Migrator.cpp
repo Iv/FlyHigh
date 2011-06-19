@@ -22,15 +22,19 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QVariant>
+#include <QSemaphore>
 
 #include <QDebug>
 
+#include "ISql.h"
+#include "DatabaseUtilities.h"
 #include "QueryExecutor.h"
 #include "Upgrade.h"
 #include "Migrator.h"
 
 Migrator::Migrator()
 	: m_pExecutor(new QueryExecutor())
+	, m_pCredSemaphore(new QSemaphore(0))
 {
 }
 
@@ -38,11 +42,21 @@ Migrator::~Migrator()
 {
 	delete m_pExecutor;
 	m_pExecutor = NULL;
+	delete m_pCredSemaphore;
+	m_pCredSemaphore = NULL;
 }
 
 void Migrator::stopProcessing()
 {
 	m_stopProcessing=true;
+}
+
+void Migrator::handleCredentialsEntered(QString root, QString pwd, bool ok)
+{
+	m_Root=root;
+	m_Pwd=pwd;
+	m_CredOk=ok;
+	m_pCredSemaphore->release();
 }
 
 void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters)
@@ -71,17 +85,44 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	// create target connection
 	m_ToDB = QSqlDatabase::addDatabase(toDBParameters.dBType(),"MigrationToDatabase");
 	toDBParameters.apply(m_ToDB);
+	bool freshdb=false;
 
 	if (!m_ToDB.open())
 	{
-		qDebug() << "Opening target db failed. Error: " << m_ToDB.lastError().databaseText();
-		emit finished(Migrator::failed, tr("Error while opening the target database."));
-		m_FromDB.close();
-		return;
+		// the target db may not yet exist
+		if (toDBParameters.isMySQL())
+		{
+			m_Root = "";
+			m_Pwd = "";
+			m_CredOk = true;
+
+			emit requestCredentials();
+			// wait for user input
+			m_pCredSemaphore->acquire();
+		}
+		if (m_CredOk)
+		{
+			res = DatabaseUtilities::createDb(toDBParameters,m_Root,m_Pwd);
+			res = m_ToDB.open();
+			freshdb=true;
+		}
+		else
+		{
+			res = false;
+		}
+
+		if (!res)
+		{
+			qDebug() << "Opening target db failed. Error: " << m_ToDB.lastError().databaseText();
+			emit finished(Migrator::failed, tr("Error while opening the target database."));
+			m_FromDB.close();
+			return;
+		}
 	}
 
 	// Delete all tables
-	if (res)
+	// no need if db was created above
+	if (res && !freshdb)
 	{
 		emit stepStarted(tr("Clean Target..."));
 		QSqlQuery del = m_pExecutor->executeQuery("migrate-drop-tables",m_ToDB);
@@ -94,7 +135,8 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	}
 
 	// then create the schema
-	if (res)
+	// no need if db was created above
+	if (res && !freshdb)
 	{
 		emit stepStarted(tr("Create Schema..."));
 		Upgrade creator(m_ToDB);
@@ -107,12 +149,11 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 		}
 	}
 
-	// copy tables
-	if (res && !copyTable(tr("Copy RouteItems..."),
-								 "migrate-read-routeitems",
-								 "migrate-write-routeitems"))
+	if (res && !copyTable(tr("Copy Routes..."),
+								 "migrate-read-routes",
+								 "migrate-write-routes"))
 	{
-		err =  tr("Error while migrating RouteItems");
+		err = tr("Error while migrating Routes");
 		res = false;
 	}
 
@@ -121,6 +162,15 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 								 "migrate-write-waypoints"))
 	{
 		err = tr("Error while migrating WayPoints");
+		res = false;
+	}
+
+	// copy tables
+	if (res && !copyTable(tr("Copy RouteItems..."),
+								 "migrate-read-routeitems",
+								 "migrate-write-routeitems"))
+	{
+		err =  tr("Error while migrating RouteItems");
 		res = false;
 	}
 
@@ -161,14 +211,6 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 	 res = false;
 	}
 	*/
-
-	if (res && !copyTable(tr("Copy Routes..."),
-								 "migrate-read-routes",
-								 "migrate-write-routes"))
-	{
-		err = tr("Error while migrating Routes");
-		res = false;
-	}
 
 	if (res && !copyTable(tr("Copy Flights..."),
 								 "migrate-read-flights",

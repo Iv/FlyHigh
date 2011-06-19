@@ -19,12 +19,10 @@
  ***************************************************************************/
 
 #include <QDateTime>
-#include <q3sqlcursor.h>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <stdlib.h>
 #include <QSqlError>
-#include <QMessageBox>
 #include "QueryExecutor.h"
 #include "DatabaseParameters.h"
 #include "Error.h"
@@ -78,14 +76,7 @@ bool Upgrade::setup(const DatabaseParameters& params)
 																replacements,
 																db());
 		}
-		else
-		{
-			// warn user
-			QMessageBox::warning(0,
-													 "Database Setup",
-													 "The user '" + params.dBUserName() +
-													 "' already exists.\nHis password remains unchanged!");
-		}
+
 		// grant permissions unconditionally, the db is probably new
 		m_pExecutor->executeQuery("setup-privileges",
 															QueryExecutor::TBindMap(),

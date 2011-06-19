@@ -18,79 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MIGRATOR_H
-#define MIGRATOR_H
+#ifndef DATABASEUTILITIES_H
+#define DATABASEUTILITIES_H
 
-#include <QObject>
-#include <QSqlDatabase>
-#include "DatabaseParameters.h"
+#include <QString>
 
-class QueryExecutor;
-class QSemaphore;
+class DatabaseParameters;
 
 /**
- * Facilities for database migration
+ * A collection of utilities for db management and manipulation.
  */
-class Migrator : public QObject
+class DatabaseUtilities
 {
-    Q_OBJECT
-
 public:
 
-    enum FinishStates
-    {
-        success,
-        failed,
-        canceled
-    };
-
-public:
-
-		Migrator();
-		~Migrator();
-
-    void copyDatabases(DatabaseParameters fromDBParameters, DatabaseParameters toDBParameters);
-
-Q_SIGNALS:
-
-    void stepStarted(QString stepName);
-    void smallStepStarted(int currValue, int maxValue);
-    void finished(int finishState, QString errorMsg);
-
-		/**
-		 * Migrator thread may not show any dialog, since it's not
-		 * a gui thread. This signal asks for a input dialog which
-		 * should provide db admin credentials
-		 */
-		void requestCredentials();
-
-public Q_SLOTS:
-
-    void stopProcessing();
-
-		/**
-		 * User entered db admin credentials in dialog box
-		 * @param root - administrators username
-		 * @param pwd - administrators password
-		 * @param ok - true if dialog closed with 'ok' (false for 'cancel')
-		 */
-		void handleCredentialsEntered(QString root, QString pwd, bool ok);
-
-private:
-
-		void handleClosing(bool isstopThread);
-		bool copyTable(const QString& name, const QString& fromAct, const QString& toAct);
-
-private:
-
-		QSqlDatabase m_FromDB;
-		QSqlDatabase m_ToDB;
-		QueryExecutor* m_pExecutor;
-		bool m_stopProcessing;
-		QSemaphore* m_pCredSemaphore;
-		QString m_Root;
-		QString m_Pwd;
-		bool m_CredOk;
+	/**
+	 * Creates a database for the given parameters.
+	 * @param params - parameters for the new DB
+	 * @param root - db administrator username
+	 * @param pwd - db administrator password
+	 * @return True if successful
+	 */
+	static bool createDb(const DatabaseParameters& params,
+											 const QString& root="",
+											 const QString& pwd="");
 };
 
 #endif

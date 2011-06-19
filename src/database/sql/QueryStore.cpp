@@ -95,13 +95,13 @@ void QueryStore::init()
 	// therefore we need to use a list of statements
 	QStringList droptables;
 	droptables << "DROP TABLE IF EXISTS Flights" <<
+								"DROP TABLE IF EXISTS RouteItems" <<
 								"DROP TABLE IF EXISTS Routes" <<
 								"DROP TABLE IF EXISTS LastModified" <<
 								"DROP TABLE IF EXISTS Pilots" <<
 								"DROP TABLE IF EXISTS Servicings" <<
 								"DROP TABLE IF EXISTS Gliders" <<
-								"DROP TABLE IF EXISTS WayPoints" <<
-								"DROP TABLE IF EXISTS RouteItems";
+								"DROP TABLE IF EXISTS WayPoints";
 	addQuery("migrate-drop-tables",
 					 "common",
 					 droptables);
@@ -321,11 +321,11 @@ void QueryStore::init()
 
 	addQuery("setup-create-user",
 					 "QMYSQL",
-					 "CREATE USER '%username'@'localhost' IDENTIFIED BY '%password'");
+					 "CREATE USER '%username'@'%' IDENTIFIED BY '%password'");
 
 	addQuery("setup-privileges",
 					 "QMYSQL",
-					 "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'localhost'");
+					 "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'%'");
 
 	addQuery("setup-get-user",
 					 "QMYSQL",

@@ -57,6 +57,18 @@ private Q_SLOTS:
 		void handleStepStarted(const QString& stepName);
 		void handleSmallStepStarted(int currValue, int maxValue);
 
+		/**
+		 * Show a input dialog which provides db admin credentials
+		 */
+		void handleRequestCredentials();
+
+Q_SIGNALS:
+
+		/**
+		 * User entered db admin credentials in dialog box
+		 */
+		void credentialsEntered(QString,QString,bool);
+
 private:
 
 	/**
