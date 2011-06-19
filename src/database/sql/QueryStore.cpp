@@ -314,7 +314,7 @@ void QueryStore::init()
 
 	addQuery("setup-create-db",
 					 "QMYSQL",
-					 "CREATE DATABASE `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
+					 "CREATE DATABASE IF NOT EXISTS `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
 	addQuery("setup-create-db",
 					 "QSQLITE",
 					 "PRAGMA encoding = 'UTF-8'");
