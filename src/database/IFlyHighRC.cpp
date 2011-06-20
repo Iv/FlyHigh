@@ -51,7 +51,7 @@ IFlyHighRC* IFlyHighRC::pInstance()
 {
 	if(m_pInstance == NULL)
 	{
-		m_pInstance = new IFlyHighRC;
+		m_pInstance = new IFlyHighRC();
 	}
 
 	return m_pInstance;
