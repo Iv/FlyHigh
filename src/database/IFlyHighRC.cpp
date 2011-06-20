@@ -34,7 +34,7 @@ const QString DateTimeTag = "[datetime]\n";
 const QString DateTimeUtcVar = "utc=";
 const QString DirectoryTag = "[directory]\n";
 const QString PilotTag = "[pilot]\n";
-const QString PilotId = "pilotId="; 
+const QString PilotId = "pilotId=";
 const QString DirectoryLastVar = "last=";
 const QString DatabaseTag = "[database]\n";
 const QString DatabaseHostVar = "dbserverhost=";
@@ -53,7 +53,7 @@ IFlyHighRC* IFlyHighRC::pInstance()
 	{
 		m_pInstance = new IFlyHighRC;
 	}
-	
+
 	return m_pInstance;
 }
 
@@ -61,13 +61,14 @@ IFlyHighRC::IFlyHighRC()
 {
 	m_deviceNameList += "5020 / Competino";
 	m_deviceNameList += "6015 / IQ Basic";
+	m_deviceNameList += "6020 / Competino+";
 //	m_deviceNameList += "Garmin";
 
 /*	m_deviceSpeedList = "9600";
 	m_deviceSpeedList += "19200";
 	m_deviceSpeedList += "38400";*/
 	m_deviceSpeedList += "57600";
-	
+
 	m_deviceName = 0;
 	m_deviceLine = "/dev/ttyS0";
 	m_deviceSpeed = 0;
@@ -156,7 +157,7 @@ void IFlyHighRC::setUtcOffset(char offset)
 	{
 		offset = -12;
 	}
-	
+
 	m_utcOffset = offset;
 }
 
@@ -286,14 +287,14 @@ void IFlyHighRC::loadRC()
 	QByteArray rcFileData;
 	QBuffer buff;
 	char line[MAX_LINE_SIZE];
-	
+
 	if(m_rcFile.open(QIODevice::ReadOnly))
 	{
 		rcFileData = m_rcFile.readAll();
 		m_rcFile.close();
 		buff.setBuffer(&rcFileData);
 		buff.open(QIODevice::ReadOnly);
-		
+
 		while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 		{
 			if(line == DeviceTag)
@@ -326,7 +327,7 @@ void IFlyHighRC::saveRC()
 	if(m_rcFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
 	{
 		QTextStream stream(&m_rcFile);
-		
+
 		saveSerialLine(stream);
 		saveDateTime(stream);
 		saveDirectory(stream);
@@ -334,7 +335,7 @@ void IFlyHighRC::saveRC()
 		saveDBParam(stream);
 
 		stream.flush();
-		
+
 		m_rcFile.close();
 	}
 }
@@ -344,11 +345,11 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 	char line[MAX_LINE_SIZE];
 	QString var;
 	QString val;
-	
+
 	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 	{
 		parseValue(line, var, val);
-		
+
 		if(DeviceLineVar.indexOf(var) == 0)
 		{
 			setDeviceLine(val);
@@ -371,7 +372,7 @@ void IFlyHighRC::parseSerialLine(QBuffer &buff)
 void IFlyHighRC::saveSerialLine(QTextStream &stream) const
 {
 	QString str;
-	
+
 	stream << DeviceTag;
 	str = m_deviceNameList[m_deviceName];
 	stream << DeviceNameVar << str << "\n";
@@ -386,11 +387,11 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 	char line[MAX_LINE_SIZE];
 	QString var;
 	QString val;
-	
+
 	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 	{
 		parseValue(line, var, val);
-		
+
 		if(DateTimeUtcVar.indexOf(var) == 0)
 		{
 			setUtcOffset(val.toInt());
@@ -405,7 +406,7 @@ void IFlyHighRC::parseDateTime(QBuffer &buff)
 void IFlyHighRC::saveDateTime(QTextStream &stream) const
 {
 	QString str;
-	
+
 	stream << DateTimeTag;
 	str.sprintf("%i", m_utcOffset);
 	stream << DateTimeUtcVar << str << "\n";
@@ -417,11 +418,11 @@ void IFlyHighRC::parseDirectory(QBuffer &buff)
 	char line[MAX_LINE_SIZE];
 	QString var;
 	QString val;
-	
+
 	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 	{
 		parseValue(line, var, val);
-		
+
                 if(DirectoryLastVar.indexOf(var) == 0)
 		{
 			m_lastDir = val;
@@ -445,11 +446,11 @@ void IFlyHighRC::parsePilot(QBuffer &buff)
 	char line[MAX_LINE_SIZE];
 	QString var;
 	QString val;
-	
+
 	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
 	{
 		parseValue(line, var, val);
-		
+
 		if(PilotId.indexOf(var) == 0)
 		{
 			setPilotId(val.toInt());
@@ -536,7 +537,7 @@ void IFlyHighRC::parseValue(char *line, QString &var, QString &val) const
 	QString str = line;
 	int valEnd;
 	int varEnd;
-	
+
 	varEnd = str.indexOf('=');
 	valEnd = str.indexOf('\n');
 	var = str.left(varEnd);
