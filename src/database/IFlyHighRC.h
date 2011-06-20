@@ -32,7 +32,7 @@
 class IFlyHighRC
 {
 	public:
-		enum {DevFlytec5020 = 0, DevFlytec6015 = 1};
+		enum {DevFlytec5020 = 0, DevFlytec6015 = 1, DevFlytec6020 = 2};
 
 		static IFlyHighRC* pInstance();
 
