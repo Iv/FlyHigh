@@ -308,8 +308,11 @@ function XCLoad() {
 	geocoder = new GClientGeocoder();
 	map = new GMap2($("map"));
 //	map.setUIToDefault();
-	map.enableScrollWheelZoom();
+  map.addControl(new GMapTypeControl())
+  map.removeMapType(G_SATELLITE_MAP);
+  map.addMapType(G_PHYSICAL_MAP);
 	map.setMapType(G_PHYSICAL_MAP);
+  map.enableScrollWheelZoom();
 	var copyright = new GCopyrightCollection("\u00a9 ");
 	copyright.addCopyright(new GCopyright("XContest", new GLatLngBounds(new GLatLng(-90, -180), new GLatLng(90, 180)), 0, "\u00a9 XContest"));
 	var tileLayer = new GTileLayer(copyright);
