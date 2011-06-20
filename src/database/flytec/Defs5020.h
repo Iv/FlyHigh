@@ -28,9 +28,11 @@
 #define PILOT_NAME_POS 0
 #define LCD_CONTRAST_POS 32
 #define QNH_CORR_A1_POS 54
+#define VARIO_DELAY 73 // Vario/Spd Delay F2
 #define BASE_VOL_BEEP_POS 74
 #define ACOUSTIC_LIFT_THR_POS 76
 #define ACOUSTIC_SINK_POS 77
+#define VARIO_FILT 79 // Vario/Spd Delay F1
 #define REC_STOP_MODE_POS 89
 #define UTC_OFFSET_POS 92
 #define STALL_SPEED_POS 94
@@ -41,7 +43,7 @@
 #define DOWN_BASE_FRQ_POS 104
 #define FRQ_MODULATION_POS 110
 #define SINC_ACOUSTIC_EN_POS 119
-#define I_TIME_POS 121
+#define I_TIME_POS 121 // Digit. Variomode Aver.time
 #define SPEED_GAIN_WHEEL_POS 128
 #define UNITS_POS 141
 #define GRID_SYS_POS 142
@@ -64,6 +66,8 @@
 static const uint Flytec5020PageSize = 8;
 
 static const uint Flytec5020MemSize = 385;
+
+static const uint Flytec6020MemSize = 453;
 
 typedef enum FtDataType{FtInt8, FtUInt8, FtInt16, FtUInt16, FtString, FtArray}FtDataType;
 
