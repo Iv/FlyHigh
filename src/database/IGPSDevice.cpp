@@ -64,10 +64,11 @@ IGPSDevice* IGPSDevice::pInstance()
 	{
 		switch(curDevice)
 		{
-			case 0:
+		  case IFlyHighRC::DevFlytec5020:
+			case IFlyHighRC::DevFlytec6020:
 				m_pGPSDevice = new Flytec5020();
 			break;
-			case 1:
+			case IFlyHighRC::DevFlytec6015:
 				m_pGPSDevice = new Flytec6015();
 			break;
 			default:
