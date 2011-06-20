@@ -32,6 +32,8 @@ IGPSDevice::IGPSDevice()
 {
 	uint fieldNr;
 
+	m_deviceId = IFlyHighRC::DevFlytec5020;
+
 	for(fieldNr=0; fieldNr<NofFields; fieldNr++)
 	{
 		setLastModified((FieldType)fieldNr);
@@ -44,15 +46,15 @@ IGPSDevice::~IGPSDevice()
 
 IGPSDevice* IGPSDevice::pInstance()
 {
-	uint curDevice;
+	IFlyHighRC::DeviceId curDevice;
 	bool newDevice = false;
 
-	curDevice = IFlyHighRC::pInstance()->deviceName();
+	curDevice = (IFlyHighRC::DeviceId)IFlyHighRC::pInstance()->deviceName();
 	newDevice = (m_pGPSDevice == NULL);
 
 	if(!newDevice)
 	{
-		newDevice = (curDevice != m_pGPSDevice->oldDevice());
+		newDevice = (curDevice != m_pGPSDevice->deviceId());
 
 		if(newDevice)
 		{
@@ -73,11 +75,11 @@ IGPSDevice* IGPSDevice::pInstance()
 			break;
 			default:
 				m_pGPSDevice = new Flytec5020();
-				IFlyHighRC::pInstance()->setDeviceName(0);
+				IFlyHighRC::pInstance()->setDeviceName(IFlyHighRC::DevFlytec5020);
 			break;
 		}
 
-		m_pGPSDevice->setOldDevice(curDevice);
+		m_pGPSDevice->setDeviceId(curDevice);
 	}
 
 	return m_pGPSDevice;
@@ -135,12 +137,12 @@ int IGPSDevice::airspacesLastModified()
 	return m_lastModifiedList[AirSpaces];
 }
 
-void IGPSDevice::setOldDevice(uint devNr)
+void IGPSDevice::setDeviceId(IFlyHighRC::DeviceId id)
 {
-	m_oldDevice = devNr;
+  m_deviceId = id;
 }
 
-uint IGPSDevice::oldDevice()
+IFlyHighRC::DeviceId IGPSDevice::deviceId()
 {
-	return m_oldDevice;
+  return m_deviceId;
 }

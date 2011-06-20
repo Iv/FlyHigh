@@ -22,6 +22,7 @@
 #define IGPSDevice_h
 
 #include <qdatetime.h>
+#include "IFlyHighRC.h"
 #include "IDataBase.h"
 
 class IGPSDevice: public IDataBase
@@ -51,6 +52,8 @@ class IGPSDevice: public IDataBase
 
 		int airspacesLastModified();
 
+    IFlyHighRC::DeviceId deviceId();
+
 	protected:
 		typedef enum {Flights, WayPoints, Routes, AirSpaces, NofFields}FieldType;
 
@@ -59,11 +62,9 @@ class IGPSDevice: public IDataBase
 	private:
 		static IGPSDevice *m_pGPSDevice;
 		int m_lastModifiedList[NofFields];
-		uint m_oldDevice;
+		IFlyHighRC::DeviceId m_deviceId;
 
-		uint oldDevice();
-
-		void setOldDevice(uint devNr);
+    void setDeviceId(IFlyHighRC::DeviceId id);
 };
 
 #endif
