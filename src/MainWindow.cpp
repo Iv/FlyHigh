@@ -511,6 +511,7 @@ void MainWindow::settings_configure_device()
 	switch(IFlyHighRC::pInstance()->deviceName())
 	{
 		case IFlyHighRC::DevFlytec5020:
+		case IFlyHighRC::DevFlytec6020:
 			pFrame = new IFlytecConfig();
 			pFrame->show();
 		break;
