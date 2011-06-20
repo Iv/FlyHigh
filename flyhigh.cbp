@@ -256,28 +256,16 @@
 		<Unit filename="src/database/IGPSDevice.h" />
 		<Unit filename="src/database/ISql.cpp" />
 		<Unit filename="src/database/ISql.h" />
+		<Unit filename="src/database/flytec/Address.cpp" />
+		<Unit filename="src/database/flytec/Address.h" />
 		<Unit filename="src/database/flytec/CMakeLists.txt" />
 		<Unit filename="src/database/flytec/Defs5020.h" />
 		<Unit filename="src/database/flytec/Device5020.cpp" />
 		<Unit filename="src/database/flytec/Device5020.h" />
 		<Unit filename="src/database/flytec/Flytec5020.cpp" />
 		<Unit filename="src/database/flytec/Flytec5020.h" />
-		<Unit filename="src/database/flytec/FlytecDevice.cpp" />
-		<Unit filename="src/database/flytec/FlytecDevice.h" />
 		<Unit filename="src/database/flytec/Protocol5020.cpp" />
 		<Unit filename="src/database/flytec/Protocol5020.h" />
-		<Unit filename="src/database/flytec/flytec_al.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/database/flytec/flytec_al.h" />
-		<Unit filename="src/database/flytec/flytec_ll.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/database/flytec/flytec_ll.h" />
-		<Unit filename="src/database/flytec/flytec_pl.h" />
-		<Unit filename="src/database/flytec/flytec_pl_rs232.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/database/flytec6015/CMakeLists.txt" />
 		<Unit filename="src/database/flytec6015/Defs6015.h" />
 		<Unit filename="src/database/flytec6015/Device6015.cpp" />
