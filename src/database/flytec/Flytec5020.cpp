@@ -72,9 +72,28 @@ bool Flytec5020::deviceInfo(DeviceInfo &info)
 bool Flytec5020::memoryRead()
 {
 	uint pageNr;
+  uint memSize;
+	uint pageSize;
 	uint pageAddr;
-	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
+	uint nofPages;
 	bool success = false;
+
+	switch(deviceId())
+	{
+	  case IFlyHighRC::DevFlytec5020:
+      memSize = Flytec5020MemSize;
+      pageSize = Flytec5020PageSize;
+      nofPages = memSize / pageSize;
+	  break;
+	  case IFlyHighRC::DevFlytec6020:
+      memSize = Flytec6020MemSize;
+      pageSize = Flytec5020PageSize;
+      nofPages = memSize / pageSize;
+	  break;
+	  default:
+      return false;
+	  break;
+	}
 
 	m_cancel = false;
 
@@ -87,7 +106,7 @@ bool Flytec5020::memoryRead()
 			return false;
 		}
 
-		pageAddr = pageNr * Flytec5020PageSize;
+		pageAddr = pageNr * pageSize;
 		success = m_protocol->memoryRead(pageAddr);
 
 		if(!success)
@@ -100,7 +119,7 @@ bool Flytec5020::memoryRead()
 	// the last few bytes....
 	if(success)
 	{
-		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		pageAddr = memSize - pageSize;
 		success = m_protocol->memoryRead(pageAddr);
 	}
 
@@ -112,9 +131,28 @@ bool Flytec5020::memoryRead()
 bool Flytec5020::memoryWrite()
 {
 	uint pageNr;
+  uint memSize;
+	uint pageSize;
 	uint pageAddr;
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
+
+  switch(deviceId())
+	{
+	  case IFlyHighRC::DevFlytec5020:
+      memSize = Flytec5020MemSize;
+      pageSize = Flytec5020PageSize;
+      nofPages = memSize / pageSize;
+	  break;
+	  case IFlyHighRC::DevFlytec6020:
+      memSize = Flytec6020MemSize;
+      pageSize = Flytec5020PageSize;
+      nofPages = memSize / pageSize;
+	  break;
+	  default:
+      return false;
+	  break;
+	}
 
 	m_cancel = false;
 
@@ -127,7 +165,7 @@ bool Flytec5020::memoryWrite()
 			return false;
 		}
 
-		pageAddr = pageNr * Flytec5020PageSize;
+		pageAddr = pageNr * pageSize;
 		success = m_protocol->memoryWrite(pageAddr);
 
 		if(!success)
@@ -140,7 +178,7 @@ bool Flytec5020::memoryWrite()
 	// the last few bytes....
 	if(success)
 	{
-		pageAddr = Flytec5020MemSize - Flytec5020PageSize;
+		pageAddr = memSize - pageSize;
 		success = m_protocol->memoryWrite(pageAddr);
 	}
 
