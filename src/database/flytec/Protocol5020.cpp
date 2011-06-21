@@ -28,11 +28,15 @@
 #include "Tokenizer.h"
 #include "WayPoint.h"
 
-#include <QtDebug>
+// #define _DEBUG
+
+#ifdef _DEBUG
+  #include <QtDebug>
+#endif
 
 Protocol5020::Protocol5020()
 {
-  m_memdump.resize(Flytec5020MemSize);
+  m_memdump.resize(qMax(Flytec5020MemSize, Flytec6020MemSize));
 }
 
 Protocol5020::~Protocol5020()
@@ -262,7 +266,9 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	success = m_device.sendTlg(tlg);
 	usleep(100*1000);
 
-qDebug() << tlg;
+#ifdef _DEBUG
+  qDebug() << tlg;
+#endif
 
 	return success;
 }
@@ -276,7 +282,9 @@ bool Protocol5020::wpDel(const QString &name)
 	tlg += qString2ftString(name, 17);
 	addTail(tlg);
 
-qDebug() << tlg;
+#ifdef _DEBUG
+  qDebug() << tlg;
+#endif
 
 	success = m_device.sendTlg(tlg);
 	usleep(2000*1000);
@@ -750,7 +758,9 @@ bool Protocol5020::ctrDel(const QString &name)
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
 
-qDebug() << tlg;
+#ifdef _DEBUG
+  qDebug() << tlg;
+#endif
 
 	usleep(2000*1000);
 
@@ -791,15 +801,8 @@ bool Protocol5020::memoryRead(uint addr)
   QString token;
   uchar *pPage;
 	uint byteNr;
-	bool valid;
 	bool success;
 	bool ok;
-
-	// valid address?
-	if((addr + Flytec5020PageSize) > Flytec5020MemSize)
-	{
-		return false;
-	}
 
 	pPage = (u_char*)(m_memdump.data() + addr);
 	tlg = "$PBRMEMR,";
@@ -809,20 +812,29 @@ bool Protocol5020::memoryRead(uint addr)
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
 
+#ifdef _DEBUG
+  qDebug() << "snd" << tlg;
+#endif
+
   if(success)
   {
     if(m_device.recieveTlg(3000))
     {
       tlg = m_device.getTlg();
+
+#ifdef _DEBUG
+  qDebug() << "rec" << tlg;
+#endif
+
       tokenizer.getFirstToken(tlg, ',', token);
-      valid = (token == "$PBRMEMR");
-      valid &= validateCheckSum(tlg);
+      success = (token == "$PBRMEMR");
+      success &= validateCheckSum(tlg);
 
       // address
       tokenizer.getNextToken(tlg, ',', token);
-      valid &= (token.toUInt(&ok, 16) == addr);
+      success &= (token.toUInt(&ok, 16) == addr);
 
-      if(valid)
+      if(success)
       {
         for(byteNr=0; byteNr<(Flytec5020PageSize - 1); byteNr++)
         {
@@ -847,12 +859,6 @@ bool Protocol5020::memoryWrite(uint addr)
   uchar *pPage;
   uint byteNr;
   bool success;
-
-  // valid address?
-	if((addr + Flytec5020PageSize) > Flytec5020MemSize)
-	{
-		return false;
-	}
 
   pPage = (u_char*)(m_memdump.data() + addr);
   tlg = "$PBRMEMW,";
