@@ -12,3 +12,15 @@ The simplest way to compile this package is:
 
   4. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.
+
+Windows
+=======
+Install Qt Windows SDK, cmake, mingw, sqlite
+
+Start>Programme>Qt>Qt command prompt
+
+`cd' to the directory containing the package's source code.
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+mingw32-make
