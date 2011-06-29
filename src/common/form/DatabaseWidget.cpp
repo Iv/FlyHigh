@@ -74,7 +74,8 @@ DatabaseWidget::DatabaseWidget(QWidget* parent, const QString& title)
 	m_pDBPassword = new QLineEdit();
 	m_pDBPassword->setEchoMode(QLineEdit::Password);
 
-	QPushButton* checkDatabaseConnectionButton = new QPushButton(tr("Check DB Connection"));
+	QPushButton* checkDatabaseConnectionButton = new QPushButton(tr("Check"));
+	checkDatabaseConnectionButton->setToolTip(tr("Checks database connectivity"));
 
 	m_pMySQLSettings = new QGroupBox();
 	m_pMySQLSettings->setFlat(true);
