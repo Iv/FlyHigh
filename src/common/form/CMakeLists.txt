@@ -25,7 +25,8 @@ set(form_SRCS AirSpaceFormImpl.cpp
 							PreferencesDlg.cpp
 							MigrationDlg.cpp
 							MigratorThread.cpp
-							DatabaseWidget.cpp)
+							DatabaseWidget.cpp
+							CredentialsDlg.cpp)
 
 set(form_HDRS FlightFormImpl.h
               GliderFormImpl.h
@@ -38,7 +39,8 @@ set(form_HDRS FlightFormImpl.h
 							PreferencesDlg.h
 							MigrationDlg.h
 							MigratorThread.h
-							DatabaseWidget.h)
+							DatabaseWidget.h
+							CredentialsDlg.h)
 
 set(form_UIS
 	AirSpaceForm.ui

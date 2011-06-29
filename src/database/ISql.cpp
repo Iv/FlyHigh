@@ -21,7 +21,6 @@
 #include <QHostInfo>
 #include <QFileInfo>
 #include <QDir>
-#include <QInputDialog>
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h"
@@ -33,6 +32,7 @@
 #include "Servicings.h"
 #include "Upgrade.h"
 #include "DatabaseUtilities.h"
+#include "CredentialsDlg.h"
 #include "ISql.h"
 
 #include <QDebug>
@@ -77,8 +77,6 @@ void ISql::close()
 
 bool ISql::createAndConnect()
 {
-	QString root;
-	QString pwd;
 	bool ok;
 
 	// close open db first
@@ -102,12 +100,12 @@ bool ISql::createAndConnect()
 		if(!ok)
 		{
 			// failed, we might need to create it
-			root = QInputDialog::getText(NULL, tr("Name"), tr("MySQL administrator name:"), QLineEdit::Normal, "root", &ok);
-			pwd = QInputDialog::getText(NULL, tr("Password"), tr("MySQL administrator password:"), QLineEdit::Password, "", &ok);
-
-			if(ok)
+			CredentialsDlg dlg(NULL,tr("Please enter MySQL administrator credentials"));
+			dlg.setUsername("root");
+			int ret = dlg.exec();
+			if (ret == QDialog::Accepted)
 			{
-				DatabaseUtilities::createDb(m_dbParameters, root, pwd);
+				DatabaseUtilities::createDb(m_dbParameters, dlg.getUsername(), dlg.getPassword());
 				ok = connectDb();
 			}
 		}

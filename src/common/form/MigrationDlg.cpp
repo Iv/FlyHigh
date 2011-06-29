@@ -25,9 +25,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMessageBox>
-#include <QInputDialog>
 #include "ISql.h"
 #include "DatabaseWidget.h"
+#include "CredentialsDlg.h"
 #include "DatabaseParameters.h"
 #include "Migrator.h"
 #include "MigratorThread.h"
@@ -217,11 +217,11 @@ void MigrationDlg::handleSmallStepStarted(int currentValue, int maxValue)
 
 void MigrationDlg::handleRequestCredentials()
 {
-	bool ok=true;
-	QString root;
-	QString pwd;
-	root = QInputDialog::getText(this, tr("Name"), tr("MySQL administrator name:"), QLineEdit::Normal, "root", &ok);
-	pwd = QInputDialog::getText(this, tr("Password"), tr("MySQL administrator password:"), QLineEdit::Password, "", &ok);
+	CredentialsDlg dlg(this,tr("Please enter MySQL administrator credentials"));
+	dlg.setUsername("root");
+	int ret = dlg.exec();
 
-	emit credentialsEntered(root,pwd,ok);
+	emit credentialsEntered(dlg.getUsername(),
+													dlg.getPassword(),
+													ret == QDialog::Accepted);
 }
