@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QInputDialog>
+#include "ISql.h"
 #include "DatabaseWidget.h"
 #include "DatabaseParameters.h"
 #include "Migrator.h"
@@ -162,10 +163,36 @@ void MigrationDlg::handleFinish(int finishState, QString errorMsg)
 		unlockInputFields();
 		break;
 	case Migrator::success:
+	{
 		m_pProgressBar->setValue(m_pProgressBar->maximum());
 		m_pProgressBarSmallStep->setValue(m_pProgressBarSmallStep->maximum());
-		QMessageBox::information(this, tr("Database migrator"), tr("Database copied successfully.") );
+		QMessageBox msg;
+		msg.setText(tr("Database copied successfully."));
+		msg.setInformativeText(tr("Do you want to use the new database immediately?"));
+		msg.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+		msg.setDefaultButton(QMessageBox::No);
+		msg.setIcon(QMessageBox::Question);
+
+		int ret = msg.exec();
+		if (ret == QMessageBox::Yes)
+		{
+			// apply new settings...
+			const DatabaseParameters dbparams(m_pToDBConfig->getDatabaseParameters());
+			dbparams.writeToConfig();
+
+			// notify database mngr
+			ISql::pInstance()->setDBParameters(dbparams);
+			ISql::pInstance()->createAndConnect();
+
+			// inform user
+			QMessageBox::information(this, tr("Database migrator"), tr("New database settings applied successfully.") );
+
+			// close migration dialog (emulates the 'close' button - is this the proper way?)
+			reject();
+		}
+
 		unlockInputFields();
+	}
 		break;
 	case Migrator::canceled:
 		QMessageBox::information(this, tr("Database migrator"), tr("Database conversion canceled.") );
