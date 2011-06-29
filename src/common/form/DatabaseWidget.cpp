@@ -147,17 +147,25 @@ DatabaseWidget::~DatabaseWidget()
 
 void DatabaseWidget::slotDBFileSelected()
 {
-	QString file = QFileDialog::getOpenFileName(this,
-																							tr("Select file"),
-																							IFlyHighRC::pInstance()->lastDir(),
-																							tr("DB files (*.sqlite *.db)"),
-																							0,
-																							QFileDialog::DontUseNativeDialog);
-	// ok or cancel?
-	if (file != "")
+	QFileDialog dlg(this,
+									tr("Select file"),
+									IFlyHighRC::pInstance()->lastDir(),
+									tr("DB files (*.sqlite *.db)"));
+	dlg.setFileMode(QFileDialog::AnyFile);
+	dlg.setNameFilterDetailsVisible(true);
+	dlg.setOptions(QFileDialog::DontUseNativeDialog);
+	// show dialog
+	int ret = dlg.exec();
+
+	// ok or cancel pressed?
+	if (ret == QFileDialog::Accepted)
 	{
 		// update entry field
-		m_pDBPath->setText(file);
+		QStringList files = dlg.selectedFiles();
+		if (!files.empty())
+		{
+			m_pDBPath->setText(files.at(0));
+		}
 	}
 }
 
