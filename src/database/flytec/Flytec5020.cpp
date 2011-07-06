@@ -364,7 +364,7 @@ bool Flytec5020::add(Route &route)
 	uint totalSent;
 	uint wpNr;
 	uint nofWp;
-	bool success;
+	bool success = false;
 
 	// make sure all waypoints exist on GPS
 	nofWp = route.wayPointList().size();
