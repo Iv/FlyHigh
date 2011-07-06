@@ -35,7 +35,7 @@ UnitFrameImpl::~UnitFrameImpl()
 void UnitFrameImpl::update()
 {
   Flytec5020 *pFlytec;
-	u_char ch;
+	uint8_t ch;
 	int index;
 
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
@@ -64,7 +64,7 @@ void UnitFrameImpl::update()
 void UnitFrameImpl::store()
 {
   Flytec5020 *pFlytec;
-	u_char ch = 0;
+	uint8_t ch = 0;
 	int index;
 
 	pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
