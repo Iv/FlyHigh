@@ -364,6 +364,7 @@ void GnuPlot::setOutput(const QString &name)
 bool GnuPlot::openTmpFile(QFile &file)
 {
 	char name[] = "/tmp/gnuplotiXXXXXX";
+	char* tmpName;
 	bool success;
 
 	success = (m_filesToDel.size() < GP_MAX_TMP_FILES);
@@ -371,11 +372,11 @@ bool GnuPlot::openTmpFile(QFile &file)
 	if(success)
 	{
 		// create temporary files for output
-		success = (mkstemp(name) > 0);
+		tmpName = mktemp(name);
 
 		if(success)
 		{
-                        file.setFileName(name);
+			file.setFileName(tmpName);
 			success = file.open(QIODevice::WriteOnly);
 
 			if(success)
