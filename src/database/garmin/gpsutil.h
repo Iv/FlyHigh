@@ -19,8 +19,6 @@ double GPS_Util_Get_Double(const UC *s);
 void   GPS_Util_Put_Double(UC *s, const double v);
 float  GPS_Util_Get_Float(const UC *s);
 void   GPS_Util_Put_Float(UC *s, const float v);
-void   GPS_Util_Canon(int32 state);
-int32  GPS_Util_Block(int32 fd, int32 state);
 void   GPS_Util_Put_Uint(UC *s, const uint32 v);
 uint32 GPS_Util_Get_Uint(const UC *s);
 
