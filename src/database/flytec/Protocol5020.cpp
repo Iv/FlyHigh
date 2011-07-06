@@ -20,6 +20,7 @@
 
 #include <QVariant>
 #include <math.h>
+#include <unistd.h>
 #include "AirSpace.h"
 #include "AirSpaceItem.h"
 #include "Flight.h"
@@ -804,7 +805,7 @@ bool Protocol5020::memoryRead(uint addr)
 	bool success;
 	bool ok;
 
-	pPage = (u_char*)(m_memdump.data() + addr);
+	pPage = (uint8_t*)(m_memdump.data() + addr);
 	tlg = "$PBRMEMR,";
 
   // address
@@ -860,7 +861,7 @@ bool Protocol5020::memoryWrite(uint addr)
   uint byteNr;
   bool success;
 
-  pPage = (u_char*)(m_memdump.data() + addr);
+  pPage = (uint8_t*)(m_memdump.data() + addr);
   tlg = "$PBRMEMW,";
 
   // address
@@ -898,7 +899,7 @@ bool Protocol5020::updateConfiguration()
 
 bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
 {
-  u_int16_t ui16value;
+  uint16_t ui16value;
   int16_t i16value;
   char* pString;
   bool success = true;
@@ -909,7 +910,7 @@ bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
       m_memdump[par] = (int8_t)value.toInt();
 		break;
     case FtUInt8:
-      m_memdump[par] = (u_int8_t)value.toUInt();
+      m_memdump[par] = (uint8_t)value.toUInt();
 		break;
     case FtInt16:
       i16value = value.toInt();
@@ -918,8 +919,8 @@ bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
     break;
     case FtUInt16:
       ui16value = value.toUInt();
-      m_memdump[par] = (u_char)(ui16value >> 8);
-      m_memdump[par + 1] = (u_char)(ui16value & 0xFF);
+      m_memdump[par] = (uint8_t)(ui16value >> 8);
+      m_memdump[par + 1] = (uint8_t)(ui16value & 0xFF);
     break;
 /*
     case FtUInt32: case FtInt32:
@@ -943,7 +944,7 @@ bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
 QVariant Protocol5020::parRead(int par, FtDataType dataType)
 {
   QVariant value;
-  u_int16_t ui16Value;
+  uint16_t ui16Value;
   int16_t i16Value;
   const char* pString;
 
@@ -953,7 +954,7 @@ QVariant Protocol5020::parRead(int par, FtDataType dataType)
       value = (int8_t)m_memdump[par];
 		break;
     case FtUInt8:
-      value = (u_int8_t)m_memdump[par];
+      value = (uint8_t)m_memdump[par];
 		break;
     case FtUInt16:
       ui16Value = m_memdump[par] << 8;
