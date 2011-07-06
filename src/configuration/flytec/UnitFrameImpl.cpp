@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <qcombobox.h>
+#include <stdint.h>
 #include "UnitFrameImpl.h"
 #include "Flytec5020.h"
 
