@@ -23,19 +23,21 @@
 ** Boston, MA  02111-1307, USA.
 ********************************************************************/
 #include "gps.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
 
-static struct termios gps_ttysave;
+#ifdef __LINUX__
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
+	#include <sys/ioctl.h>
+	#include <termios.h>
+	#include <errno.h>
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <time.h>
+	#include <sys/time.h>
 
+	static struct termios gps_ttysave;
+#endif
 
 /* @func GPS_Serial_Restoretty ***********************************************
 **
@@ -48,6 +50,7 @@ static struct termios gps_ttysave;
 
 int32 GPS_Serial_Savetty(const char *port)
 {
+#ifdef __LINUX__
     int32 fd;
     
     if((fd = open(port, O_RDWR|O_NDELAY))==-1)
@@ -73,7 +76,7 @@ int32 GPS_Serial_Savetty(const char *port)
 	GPS_Error("GPS_Serial_Savetty: Close error");
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -89,6 +92,7 @@ int32 GPS_Serial_Savetty(const char *port)
 
 int32 GPS_Serial_Restoretty(const char *port)
 {
+#ifdef __LINUX__
     int32 fd;
     
     if((fd = open(port, O_RDWR|O_NDELAY))==-1)
@@ -106,7 +110,7 @@ int32 GPS_Serial_Restoretty(const char *port)
 	GPS_Error("SERIAL: tcsetattr error");
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -124,6 +128,7 @@ int32 GPS_Serial_Restoretty(const char *port)
 
 int32 GPS_Serial_Open(int32 *fd, const char *port)
 {
+#ifdef __LINUX__
     struct termios tty;
     
 
@@ -159,7 +164,7 @@ int32 GPS_Serial_Open(int32 *fd, const char *port)
 	GPS_Error("SERIAL: tcsetattr error");
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -175,7 +180,7 @@ int32 GPS_Serial_Open(int32 *fd, const char *port)
 ************************************************************************/
 int32 GPS_Serial_Flush(int32 fd)
 {
-    
+#ifdef __LINUX__
     if(tcflush(fd,TCIOFLUSH))
     {
 	perror("tcflush");
@@ -183,7 +188,7 @@ int32 GPS_Serial_Flush(int32 fd)
 	gps_errno = SERIAL_ERROR;
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -201,6 +206,7 @@ int32 GPS_Serial_Flush(int32 fd)
 
 int32 GPS_Serial_Close(int32 fd)
 {
+#ifdef __LINUX__
     if(close(fd)==-1)
     {
 	perror("close");
@@ -208,7 +214,7 @@ int32 GPS_Serial_Close(int32 fd)
 	gps_errno = SERIAL_ERROR;
 	return 0;
     }
-    
+#endif
     return 1;
 }
 
@@ -224,6 +230,7 @@ int32 GPS_Serial_Close(int32 fd)
 
 int32 GPS_Serial_Chars_Ready(int32 fd)
 {
+#ifdef __LINUX__
     fd_set rec;
     struct timeval t;
 
@@ -236,7 +243,7 @@ int32 GPS_Serial_Chars_Ready(int32 fd)
     (void) select(fd+1,&rec,NULL,NULL,&t);
     if(FD_ISSET(fd,&rec))
 	return 1;
-
+#endif
     return 0;
 }
 
@@ -255,6 +262,7 @@ int32 GPS_Serial_Chars_Ready(int32 fd)
 
 int32 GPS_Serial_Wait(int32 fd)
 {
+#ifdef __LINUX__
     fd_set rec;
     struct timeval t;
 
@@ -267,7 +275,7 @@ int32 GPS_Serial_Wait(int32 fd)
     (void) select(fd+1,&rec,NULL,NULL,&t);
     if(FD_ISSET(fd,&rec))
 	return 1;
-
+#endif
     return 0;
 }
 
@@ -285,7 +293,7 @@ int32 GPS_Serial_Wait(int32 fd)
 
 int32 GPS_Serial_On(const char *port, int32 *fd)
 {
-
+#ifdef __LINUX__
     if(!GPS_Serial_Savetty(port))
     {
 	GPS_Error("Cannot access serial port");
@@ -299,7 +307,7 @@ int32 GPS_Serial_On(const char *port, int32 *fd)
 	gps_errno = SERIAL_ERROR;
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -317,6 +325,7 @@ int32 GPS_Serial_On(const char *port, int32 *fd)
 
 int32 GPS_Serial_Off(const char *port, int32 fd)
 {
+#ifdef __LINUX__
     if(!GPS_Serial_Close(fd))
     {
 	GPS_Error("Error Closing port");
@@ -330,7 +339,7 @@ int32 GPS_Serial_Off(const char *port, int32 fd)
 	gps_errno = HARDWARE_ERROR;
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -352,6 +361,7 @@ int32 GPS_Serial_Off(const char *port, int32 fd)
 
 int32 GPS_Serial_Open_NMEA(int32 *fd, const char *port)
 {
+#ifdef __LINUX__
     struct termios tty;
     
 
@@ -388,7 +398,7 @@ int32 GPS_Serial_Open_NMEA(int32 *fd, const char *port)
 	GPS_Error("SERIAL: tcsetattr error");
 	return 0;
     }
-
+#endif
     return 1;
 }
 
@@ -409,7 +419,7 @@ int32 GPS_Serial_Open_NMEA(int32 *fd, const char *port)
 ************************************************************************/
 int32 GPS_Serial_On_NMEA(const char *port, int32 *fd)
 {
-
+#ifdef __LINUX__
     if(!GPS_Serial_Savetty(port))
     {
 	GPS_Error("Cannot access serial port");
@@ -423,6 +433,6 @@ int32 GPS_Serial_On_NMEA(const char *port, int32 *fd)
 	gps_errno = SERIAL_ERROR;
 	return 0;
     }
-
+#endif
     return 1;
 }
