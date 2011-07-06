@@ -20,6 +20,7 @@
 
 #include <QVariant>
 #include <math.h>
+#include <stdint.h>
 #include <unistd.h>
 #include "AirSpace.h"
 #include "AirSpaceItem.h"
