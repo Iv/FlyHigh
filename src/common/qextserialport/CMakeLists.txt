@@ -5,7 +5,7 @@ include_directories(${QT_INCLUDES})
 IF(WIN32)
 	set(qextserialport_SRCS
 		win_qextserialport.cpp
-		qextserialenumerator_unix.cpp
+#		qextserialenumerator_win.cpp
 		qextserialport.cpp)
 ELSE(WIN32) # unix systems
 	set(qextserialport_SRCS
