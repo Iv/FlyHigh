@@ -19,10 +19,16 @@
  ***************************************************************************/
 
 #include <math.h>
-#include <byteswap.h>
 #include "Protocol6015.h"
 #include "Tokenizer.h"
 #include "WayPoint.h"
+
+#define bswap_16(x) \
+     ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8))
+
+#define bswap_32(x) \
+     ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) |               \
+      (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
 
 Protocol6015::Protocol6015()
 {
@@ -555,7 +561,7 @@ QString Protocol6015::ftString2qString(const QString &ftString)
 bool Protocol6015::writeEnableFa()
 {
 	QString tlg = "ACT_82_00\r\n";
-	bool success;
+	bool success = false;
 
 	m_device.flush();
 	m_device.sendTlg(tlg);
