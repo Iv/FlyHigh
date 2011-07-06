@@ -50,12 +50,12 @@ void PolyLineEncoder::dpEncode(const WayPoint::WayPointListType &points, QString
 	std::stack<StackItem> stack;
 	StackItem current;
 	StackItem tmpStackItem;
-	double absMaxDist;
+	double absMaxDist = 0;
 	DistsType dists;
 	double maxDist;
 	double temp;
 	double segmentLength;
-	int maxLoc;
+	int maxLoc = 0;
 	int i;
 
 	if(points.size() > 2)
