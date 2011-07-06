@@ -372,7 +372,12 @@ bool GnuPlot::openTmpFile(QFile &file)
 	if(success)
 	{
 		// create temporary files for output
+#ifdef _WIN32
 		tmpName = mktemp(name);
+#else
+		mkstemp(name);
+		tmpName = name;
+#endif
 
 		if(success)
 		{
