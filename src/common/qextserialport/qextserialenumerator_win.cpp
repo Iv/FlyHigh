@@ -10,6 +10,12 @@
 #include "qextserialport.h"
 #include <QRegExp>
 
+#define _WIN32_WINNT 0x0500
+#define _WIN32_WINDOWS 0x0500
+#define WINVER 0x0500
+#include <windows.h>
+#include <dbt.h>
+
 QextSerialEnumerator::QextSerialEnumerator( )
 {
     if( !QMetaType::isRegistered( QMetaType::type("QextPortInfo") ) )
@@ -43,8 +49,8 @@ QextSerialEnumerator::~QextSerialEnumerator( )
 #else
     #define QStringToTCHAR(x)     x.local8Bit().constData()
     #define PQStringToTCHAR(x)    x->local8Bit().constData()
-    #define TCHARToQString(x)     QString::fromLocal8Bit((x))
-    #define TCHARToQStringN(x,y)  QString::fromLocal8Bit((x),(y))
+    #define TCHARToQString(x)     QString::fromLocal8Bit((char*)(x))
+    #define TCHARToQStringN(x,y)  QString::fromLocal8Bit((char*)(x),(y))
 #endif /*UNICODE*/
 
 
