@@ -5,15 +5,12 @@
 	Copyright (C) 2007 by JFS electronic AG, Rotkreuz, Switzerland
 */
 
-#include <sys/ioctl.h>
-#include <linux/serial.h>
 #include <sys/timeb.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <termios.h>
 #include <unistd.h>
+
 #include "qextserialport.h"
 #include "Device6015.h"
 
