@@ -210,7 +210,7 @@ bool Flytec6015::add(Route &route)
 {
 	uint wpNr;
 	uint nofWp;
-	bool success;
+	bool success = false;
 
 	nofWp = route.wayPointList().size();
 
