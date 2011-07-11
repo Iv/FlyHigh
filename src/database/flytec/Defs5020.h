@@ -28,11 +28,11 @@
 #define PILOT_NAME_POS 0
 #define LCD_CONTRAST_POS 32
 #define QNH_CORR_A1_POS 54
-#define VARIO_DELAY 73 // Vario/Spd Delay F2
+#define VARIO_DELAY 73 // Vario/Spd Delay F2 (not used)
 #define BASE_VOL_BEEP_POS 74
 #define ACOUSTIC_LIFT_THR_POS 76
 #define ACOUSTIC_SINK_POS 77
-#define VARIO_FILT 79 // Vario/Spd Delay F1
+#define VARIO_FILT 79 // Vario/Spd Delay F1 (not used)
 #define REC_STOP_MODE_POS 89
 #define UTC_OFFSET_POS 92
 #define STALL_SPEED_POS 94
@@ -49,7 +49,7 @@
 #define GRID_SYS_POS 142
 #define QNH_CORR_A2_POS 147
 #define ACOUSTIC_PITCH_POS 158
-#define SW_VERSION_POS 159
+#define SW_VERSION_POS 159 // read with deviceInfo()
 #define LAST_THERM_THERS_POS 185
 #define COMPANY_POS 186
 #define LANGUAGE_POS 187
