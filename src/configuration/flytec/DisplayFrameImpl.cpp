@@ -30,9 +30,26 @@
 #include "Flytec5020.h"
 
 DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
-: QWidget(parent)
+  :QWidget(parent)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
   setupUi(this);
+
+  // contrast max
+  switch(pFlytec->deviceId())
+	{
+	  case IFlyHighRC::DevFlytec5020:
+      slider_Contrast->setMaximum(1000);
+    break;
+    case IFlyHighRC::DevFlytec6020:
+      slider_Contrast->setMaximum(100);
+    break;
+    default:
+    break;
+	}
 
 	// not supported by 5020
 	comboBox_Font->setEnabled(false);
@@ -67,7 +84,17 @@ void DisplayFrameImpl::update()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// LCD Contrast
-	slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtInt16).toInt());
+	switch(pFlytec->deviceId())
+	{
+	  case IFlyHighRC::DevFlytec5020:
+      slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtInt16).toInt());
+    break;
+    case IFlyHighRC::DevFlytec6020:
+      slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtUInt8).toUInt());
+    break;
+    default:
+    break;
+	}
 
 	// User Field 0
   comboBox_UserField_0_0->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS, FtUInt8).toUInt());
@@ -92,7 +119,17 @@ void DisplayFrameImpl::store()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// LCD Contrast
-	pFlytec->parWrite(LCD_CONTRAST_POS, FtInt16, slider_Contrast->value());
+	switch(pFlytec->deviceId())
+	{
+	  case IFlyHighRC::DevFlytec5020:
+      pFlytec->parWrite(LCD_CONTRAST_POS, FtInt16, slider_Contrast->value());
+    break;
+    case IFlyHighRC::DevFlytec6020:
+      pFlytec->parWrite(LCD_CONTRAST_POS, FtUInt8, slider_Contrast->value());
+    break;
+    default:
+    break;
+	}
 
 	// User Field 0
   pFlytec->parWrite(USERFIELD_0_POS, FtUInt8, comboBox_UserField_0_0->currentIndex());

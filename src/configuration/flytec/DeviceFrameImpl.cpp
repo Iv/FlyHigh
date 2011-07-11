@@ -31,8 +31,13 @@
 DeviceFrameImpl::DeviceFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
 {
+  Flytec5020 *pFlytec;
+
+  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+
   setupUi(this);
-	updateGlider();
+  comboBox_Language->setEnabled(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020);
+  updateGlider();
 }
 
 DeviceFrameImpl::~DeviceFrameImpl()
@@ -145,6 +150,12 @@ void DeviceFrameImpl::update()
 
 	// battery type
   comboBox_BattType->setCurrentIndex(pFlytec->parRead(BATT_TYPE_POS, FtUInt8).toInt());
+
+  // language
+  if(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020)
+  {
+    comboBox_Language->setCurrentIndex(pFlytec->parRead(LANGUAGE_POS, FtUInt8).toInt());
+  }
 }
 
 void DeviceFrameImpl::store()
@@ -239,6 +250,12 @@ void DeviceFrameImpl::store()
 
 	// battery type
 	pFlytec->parWrite(BATT_TYPE_POS, FtUInt8, comboBox_BattType->currentIndex());
+
+  // language
+  if(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020)
+  {
+    pFlytec->parWrite(LANGUAGE_POS, FtUInt8, comboBox_Language->currentIndex());
+  }
 }
 
 void DeviceFrameImpl::updateGlider()
