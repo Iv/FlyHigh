@@ -149,34 +149,82 @@ void DisplayFrameImpl::store()
 
 void DisplayFrameImpl::insertItems(QComboBox * pItem)
 {
+  Flytec5020 *pFlytec;
+
+	pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 	pItem->clear();
-  pItem->addItem( tr( "Wind spd" ) );
-  pItem->addItem( tr( "Time" ) );
-  pItem->addItem( tr( "Fl.Time" ) );
-  pItem->addItem( tr( "Gnd spd" ) );
-  pItem->addItem( tr( "Speed diff" ) );
-  pItem->addItem( tr( "Dist WP" ) );
-  pItem->addItem( tr( "Bearing" ) );
-  pItem->addItem( tr( "Track" ) );
-  pItem->addItem( tr( "Temp" ) );
-  pItem->addItem( tr( "Alt 2" ) );
-  pItem->addItem( tr( "Alt 3" ) );
-  pItem->addItem( tr( "QNH hPa" ) );
-  pItem->addItem( tr( "L/D Gnd" ) );
-  pItem->addItem( tr( "L/D air" ) );
-  pItem->addItem( tr( "L/D Req" ) );
-  pItem->addItem( tr( "Dist to ^" ) );
-  pItem->addItem( QString::null );
-  pItem->addItem( tr( "Alt @ BG" ) );
-  pItem->addItem( tr( "FL (ft)" ) );
-  pItem->addItem( tr( "Air spd" ) );
-  pItem->addItem( tr( "Alt @ goal" ) );
-  pItem->addItem( tr( "Dist goal" ) );
-  pItem->addItem( tr( "Vario" ) );
-  pItem->addItem( tr( "Alt 1" ) );
-  pItem->addItem( tr( "SMS p/t" ) );
-  pItem->addItem( tr( "Dist toff" ) );
-  pItem->addItem( tr( "Dist cyl" ) );
-  pItem->addItem( tr( "L/D rel goal" ) );
-  pItem->addItem( tr( "Race start" ) );
+
+	switch(pFlytec->deviceId())
+	{
+    case IFlyHighRC::DevFlytec5020:
+      pItem->addItem( tr( "Wind spd" ) );
+      pItem->addItem( tr( "Time" ) );
+      pItem->addItem( tr( "Fl.Time" ) );
+      pItem->addItem( tr( "Gnd spd" ) );
+      pItem->addItem( tr( "Speed diff" ) );
+      pItem->addItem( tr( "Dist WP" ) );
+      pItem->addItem( tr( "Bearing" ) );
+      pItem->addItem( tr( "Track" ) );
+      pItem->addItem( tr( "Temp" ) );
+      pItem->addItem( tr( "Alt 2" ) );
+      pItem->addItem( tr( "Alt 3" ) );
+      pItem->addItem( tr( "QNH hPa" ) );
+      pItem->addItem( tr( "L/D Gnd" ) );
+      pItem->addItem( tr( "L/D air" ) );
+      pItem->addItem( tr( "L/D Req" ) );
+      pItem->addItem( tr( "Dist to ^" ) );
+      pItem->addItem( QString::null );
+      pItem->addItem( tr( "Alt @ BG" ) );
+      pItem->addItem( tr( "FL (ft)" ) );
+      pItem->addItem( tr( "Air spd" ) );
+      pItem->addItem( tr( "Alt @ goal" ) );
+      pItem->addItem( tr( "Dist goal" ) );
+      pItem->addItem( tr( "Vario" ) );
+      pItem->addItem( tr( "Alt 1" ) );
+      pItem->addItem( tr( "SMS p/t" ) );
+      pItem->addItem( tr( "Dist toff" ) );
+      pItem->addItem( tr( "Dist cyl" ) );
+      pItem->addItem( tr( "L/D rel goal" ) );
+      pItem->addItem( tr( "Race start" ) );
+    break;
+    case IFlyHighRC::DevFlytec6020:
+      pItem->addItem( tr( "Time" ) );
+      pItem->addItem( tr( "Fl.Time" ) );
+      pItem->addItem( tr( "Vario" ) );
+      pItem->addItem( tr( "Alt 1" ) );
+      pItem->addItem( tr( "Alt 1 (ft)" ) );
+      pItem->addItem( tr( "Alt 2" ) );
+      pItem->addItem( tr( "Alt 3" ) );
+      pItem->addItem( tr( "FL (ft)" ) );
+      pItem->addItem( tr( "QNH hPa" ) );
+      pItem->addItem( tr( "Gnd Spd" ) );
+      pItem->addItem( tr( "Air Spd" ) );
+      pItem->addItem( tr( "Wind Spd" ) );
+      pItem->addItem( tr( "Wind Comp" ) );
+      pItem->addItem( tr( "Track" ) );
+      pItem->addItem( tr( "Bearing" ) );
+      pItem->addItem( tr( "Dist WP" ) );
+      pItem->addItem( tr( "Dist goal" ) );
+      pItem->addItem( tr( "Dist Toff" ) );
+      pItem->addItem( tr( "Dist Cyl" ) );
+      pItem->addItem( tr( "Dist therm" ) );
+      pItem->addItem( tr( "L/D gnd" ) );
+      pItem->addItem( tr( "L/D air" ) );
+      pItem->addItem( tr( "L/D req" ) );
+      pItem->addItem( tr( "Alt BG WP" ) );
+      pItem->addItem( tr( "Alt BG Goal" ) );
+      pItem->addItem( tr( "Temp" ) );
+      pItem->addItem( tr( "SMS p/t" ) );
+      pItem->addItem( QString::null );
+      pItem->addItem( tr( "Start Race" ) );
+      pItem->addItem( tr( "Alt GPS" ) );
+      pItem->addItem( tr( "L/D goal" ) );
+      pItem->addItem( tr( "Dist CTR" ) );
+      pItem->addItem("FLARM");
+      pItem->addItem( tr( "Dist opt WP" ) );
+      pItem->addItem( tr( "XT Error" ) );
+    break;
+    default:
+    break;
+	}
 }
