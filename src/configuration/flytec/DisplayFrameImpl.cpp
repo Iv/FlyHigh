@@ -54,23 +54,45 @@ DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags
 	// not supported by 5020
 	comboBox_Font->setEnabled(false);
 
-	// Screen 1
-  pixmapLabel_Display->setPixmap(QPixmap(":/ft_5020.png"));
-	insertItems(comboBox_UserField_0_0);
-	insertItems(comboBox_UserField_0_1);
-	insertItems(comboBox_UserField_0_2);
+  /* page 1 */
 
-	// Screen 2
-  pixmapLabel_Display_2->setPixmap(QPixmap(":/ft_5020.png"));
-	insertItems(comboBox_UserField_1_0);
-	insertItems(comboBox_UserField_1_1);
-	insertItems(comboBox_UserField_1_2);
+	// screen 1
+  pixmapLabel_Display_1_1->setPixmap(QPixmap(":/ft_6020_p1.png"));
+	insertItems(comboBox_UserField_1_1_1);
+	insertItems(comboBox_UserField_1_1_2);
+	insertItems(comboBox_UserField_1_1_3);
 
-	// Screen 3
-  pixmapLabel_Display_3->setPixmap(QPixmap(":/ft_5020.png"));
-	insertItems(comboBox_UserField_2_0);
-	insertItems(comboBox_UserField_2_1);
-	insertItems(comboBox_UserField_2_2);
+	// screen 2
+  pixmapLabel_Display_1_2->setPixmap(QPixmap(":/ft_6020_p1.png"));
+	insertItems(comboBox_UserField_1_2_1);
+	insertItems(comboBox_UserField_1_2_2);
+	insertItems(comboBox_UserField_1_2_3);
+
+	// screen 3
+  pixmapLabel_Display_1_3->setPixmap(QPixmap(":/ft_6020_p1.png"));
+	insertItems(comboBox_UserField_1_3_1);
+	insertItems(comboBox_UserField_1_3_2);
+	insertItems(comboBox_UserField_1_3_3);
+
+	/* page 3 */
+
+  // screen 1
+  pixmapLabel_Display_3_1->setPixmap(QPixmap(":/ft_6020_p3.png"));
+	insertItems(comboBox_UserField_3_1_1);
+	insertItems(comboBox_UserField_3_1_2);
+	insertItems(comboBox_UserField_3_1_3);
+
+	// screen 2
+  pixmapLabel_Display_3_2->setPixmap(QPixmap(":/ft_6020_p3.png"));
+	insertItems(comboBox_UserField_3_2_1);
+	insertItems(comboBox_UserField_3_2_2);
+	insertItems(comboBox_UserField_3_2_3);
+
+	// screen 3
+  pixmapLabel_Display_3_3->setPixmap(QPixmap(":/ft_6020_p3.png"));
+	insertItems(comboBox_UserField_3_3_1);
+	insertItems(comboBox_UserField_3_3_2);
+	insertItems(comboBox_UserField_3_3_3);
 }
 
 DisplayFrameImpl::~DisplayFrameImpl()
@@ -96,20 +118,39 @@ void DisplayFrameImpl::update()
     break;
 	}
 
+	/* page 1 */
+
 	// User Field 0
-  comboBox_UserField_0_0->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS, FtUInt8).toUInt());
-  comboBox_UserField_0_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_0_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_1_3->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 2, FtUInt8).toUInt());
 
 	// User Field 1
-  comboBox_UserField_1_0->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS, FtUInt8).toUInt());
-  comboBox_UserField_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_2_3->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 2, FtUInt8).toUInt());
 
 	// User Field 2
-  comboBox_UserField_2_0->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS, FtUInt8).toUInt());
-  comboBox_UserField_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_3_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_3_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_3_3->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 2, FtUInt8).toUInt());
+
+  /* page 3 */
+
+  // User Field 0
+  comboBox_UserField_3_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_1_3->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 5, FtUInt8).toUInt());
+
+	// User Field 1
+  comboBox_UserField_3_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_2_3->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 5, FtUInt8).toUInt());
+
+	// User Field 2
+  comboBox_UserField_3_3_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_3_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_3_3->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 5, FtUInt8).toUInt());
 }
 
 void DisplayFrameImpl::store()
@@ -131,20 +172,39 @@ void DisplayFrameImpl::store()
     break;
 	}
 
+	/* page 1 */
+
 	// User Field 0
-  pFlytec->parWrite(USERFIELD_0_POS, FtUInt8, comboBox_UserField_0_0->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 1, FtUInt8, comboBox_UserField_0_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 2, FtUInt8, comboBox_UserField_0_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS, FtUInt8, comboBox_UserField_1_1_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 1, FtUInt8, comboBox_UserField_1_1_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 2, FtUInt8, comboBox_UserField_1_1_3->currentIndex());
 
 	// User Field 1
-  pFlytec->parWrite(USERFIELD_1_POS, FtUInt8, comboBox_UserField_1_0->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 1, FtUInt8, comboBox_UserField_1_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 2, FtUInt8, comboBox_UserField_1_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS, FtUInt8, comboBox_UserField_1_2_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 1, FtUInt8, comboBox_UserField_1_2_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 2, FtUInt8, comboBox_UserField_1_2_3->currentIndex());
 
 	// User Field 2
-  pFlytec->parWrite(USERFIELD_2_POS, FtUInt8, comboBox_UserField_2_0->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 1, FtUInt8, comboBox_UserField_2_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_2_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS, FtUInt8, comboBox_UserField_1_3_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 1, FtUInt8, comboBox_UserField_1_3_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_1_3_3->currentIndex());
+
+  /* page 3 */
+
+  // User Field 0
+  pFlytec->parWrite(USERFIELD_0_POS + 3, FtUInt8, comboBox_UserField_3_1_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 4, FtUInt8, comboBox_UserField_3_1_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_0_POS + 5, FtUInt8, comboBox_UserField_3_1_3->currentIndex());
+
+	// User Field 1
+  pFlytec->parWrite(USERFIELD_1_POS + 3, FtUInt8, comboBox_UserField_3_2_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 4, FtUInt8, comboBox_UserField_3_2_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_1_POS + 5, FtUInt8, comboBox_UserField_3_2_3->currentIndex());
+
+	// User Field 2
+  pFlytec->parWrite(USERFIELD_2_POS + 3, FtUInt8, comboBox_UserField_3_3_1->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 4, FtUInt8, comboBox_UserField_3_3_2->currentIndex());
+  pFlytec->parWrite(USERFIELD_2_POS + 5, FtUInt8, comboBox_UserField_3_3_3->currentIndex());
 }
 
 void DisplayFrameImpl::insertItems(QComboBox * pItem)
