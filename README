@@ -1,12 +1,128 @@
+
+==== What is flyhigh ====
+flyhigh is a unique software for Linux and Windows
+It helps paraglider pilots to 
+- configure gps-enabled flight instruments
+- manage and visualize flights, waypoints and routes
+- plan and optimize their next awesome FAI triangles!
+
+
+==== Features ====
+- SQL database for waypoints, routes, flights, gliders, airspaces
+- Flight preparation: sync waypoints and routes with database and GPS
+- Flight analysis: 2D plots with OLC optimization (gnuplot)
+- Flight export in IGC or KML (GoogleEarth) file format
+- Statistics (servicings, flights per year)
+- Import airspaces from OpenAir
+- Show flights on map (Google Maps, Swiss Map 100)
+- Plan flights on Google Maps
+
+
+==== Supported devices ====
+Fully supported are
+- Flytec 5020, 6015
+- Bäuninger Competino, IQ Basic
+Supported, but with limited configuration are
+- Flytec 5030, 6020, 6030
+- Bräuniger Competino+, Compeo, Compeo+
+
+
+==== Supported OS ====
+Any fairly recent Linux distribution should be ok. flyhigh is well tested on
+debian and openSUSE.
+We provide Windows binaries as well, but be aware that your are using those
+at your own risk.
+
+
+==== Binary packages ====
+Binary packages are provided through the Open Build Service (http://openbuildservice.org/).
+You may look for rpm and deb based packages for Your Favorite Linux Distribution (TM) at 
+http://software.opensuse.org/search?q=flyhigh&baseproject=ALL&include_home=true
+A Windows installer is available from http://sourceforge.net/projects/flyhigh/files/
+
+
+==== Installation ====
+Linux: Look for a fitting package at http://software.opensuse.org/search?q=flyhigh&include_home=true
+       You may wish to add the obs repository to your package manager for automatic
+       updates. Check http://en.opensuse.org//Portal:Build_Service for guidance.
+Windows: Download and install gnuplot first! You'll find instructions how to do so
+         at http://www.gnuplot.info/
+         After that, download the latest flyhigh for windows installer from 
+         http://sourceforge.net/projects/flyhigh and run it. That's it.
+
+
+==== Database migration ====
 Attention users of version 0.5 or below:
 WARNING: Database model was totally redesigned in version 0.5.
-There is a script to migrate to database version 2.
-database version 2 will be new created. The old one stays untouched. But it's
-recommended to backup your flights!!!
-The new model has the advantage of more and complexer waypoint and flight information.
+There is a script to migrate to database version 2, without touching the old one.
+But it's always a good thing to back up your data _in advance_!!!
+For migration execute as root: # ./migrate2dbv2
+For later versions, the database is migrated automagically on the first start
+of flyhigh. Again, doing a backup first keeps you in good humour.
 
-For migration execute as root
-# ./migrate2dbv2
 
-The German OLC is no longer supported. The new score point factors have been implemented
-equal like http://www.xcontest.org/
+==== Requirements ====
+Qt 4.3 or newer, including QtWebkit!
+For storing data locally: sqlite3 3.6.19 or newer
+For use with a dedicated SQL server: mysql 5.0 or newer should be fine
+
+
+==== Why using mysql? ====
+flyhigh supports 2 kinds of data storage: Either a local, file based storage or
+a SQL database. If you want to share your waypoints and routes among colleagues,
+you need to use a mysql database server. It can be located just anywhere, be it
+locally on your machine, on your NAS (many of them are already equiped with a fully-
+featured mysql server) or even "in the cloud".
+If you intend to use flyhigh on your own, you are probably better off using
+the sqlite configuration. But no worries, you can change to or from mysql
+later on without any loss of data.
+
+
+==== Roadmap ====
+We plan to provide Mac packages. But don't ask for dates!
+
+
+==== License ====
+flyhigh is distributed under GPLv2.
+See http://www.gnu.org/licenses/gpl-2.0.html for details.
+
+
+==== Who we are ====
+We are 
+- Paraglider pilots
+- Linux enthusiasts
+- Software engineers
+Furthermore, we have
+- 40 hour-per-week jobs
+- a social life
+Considering the facts above, please be indulgent if we don't reply to
+your request within 5 minutes.
+
+
+==== Donations? ====
+Would be welcome, of course! Most appreciated are
+- patches
+- testing and filing bug reports
+- helping out with documentation
+- artwork, e.g. fancy icons
+- translations
+- every kind of (constructive) feedback
+
+
+==== Contact ====
+Post to http://sourceforge.net/projects/flyhigh/forums
+If your wish to PM us directly, write to
+grafal<<at-nospam>>sourceforge<<dot-nospam>>net or
+ja_kern<<at-nospam>>sourceforge<<dot-nospam>>net
+For news, just visit our web page at http://flyhigh.sourceforge.net/
+
+
+==== Thanks ====
+To our social environment for patiently accepting our passion.
+http://www.flytec.ch/
+http://qt.nokia.com/
+http://www.mysql.com/
+http://www.sqlite.org/
+http://www.gnuplot.info/
+http://code.google.com/p/qextserialport/
+http://www.digikam.org/ Amazing work, guys!
