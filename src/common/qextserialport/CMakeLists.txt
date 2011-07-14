@@ -15,7 +15,6 @@ ELSE(WIN32) # unix systems
 ENDIF(WIN32)
 
 set(qextserialport_HDRS
-	qextserialport_global.h
 	qextserialenumerator.h
 	qextserialport.h)
 
