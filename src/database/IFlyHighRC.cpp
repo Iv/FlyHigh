@@ -18,32 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qdir.h>
-#include <qstringlist.h>
-#include <stdlib.h>
+#include <QDir>
+#include <QStringList>
+#include <QSettings>
 #include "IFlyHighRC.h"
 
-#define MAX_LINE_SIZE 255
-#define MAX_VAR_SIZE 20
+// definition of ini entries in the form <section>/<key>
+const QString DeviceNameKey    = "device/name";
+const QString DeviceLineKey    = "device/line";
+const QString DeviceSpeedKey   = "device/speed";
+const QString DateTimeUtcKey   = "datetime/utc";
+const QString PilotIdKey       = "pilot/pilotId";
+const QString DirectoryLastKey = "directory/last";
+const QString DatabaseHostKey  = "database/dbserverhost";
+const QString DatabasePortKey  = "database/dbserverport";
+const QString DatabaseNameKey  = "database/dbname";
+const QString DatabaseUserKey  = "database/dbusername";
+const QString DatabasePassKey  = "database/dbpassword";
+const QString DatabaseTypeKey  = "database/dbtype";
+const QString DatabaseFileKey  = "database/dbfile";
 
-const QString DeviceTag = "[device]\n";
-const QString DeviceNameVar = "name=";
-const QString DeviceLineVar = "line=";
-const QString DeviceSpeedVar = "speed=";
-const QString DateTimeTag = "[datetime]\n";
-const QString DateTimeUtcVar = "utc=";
-const QString DirectoryTag = "[directory]\n";
-const QString PilotTag = "[pilot]\n";
-const QString PilotId = "pilotId=";
-const QString DirectoryLastVar = "last=";
-const QString DatabaseTag = "[database]\n";
-const QString DatabaseHostVar = "dbserverhost=";
-const QString DatabasePortVar = "dbserverport=";
-const QString DatabaseNameVar = "dbname=";
-const QString DatabaseUserVar = "dbusername=";
-const QString DatabasePassVar = "dbpassword=";
-const QString DatabaseTypeVar = "dbtype=";
-const QString DatabaseFileVar = "dbfile=";
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
 
@@ -59,6 +53,14 @@ IFlyHighRC* IFlyHighRC::pInstance()
 
 IFlyHighRC::IFlyHighRC()
 {
+	// settings stored at
+	// Linux: /home/<user>/.config/flyhigh/flyhigh.ini
+	// windoze: c:\Documents and Settings\<user>\Application Data\flyhigh\flyhigh.ini
+	m_pSettings = new QSettings(QSettings::IniFormat,
+															QSettings::UserScope,
+															"flyhigh",
+															"flyhigh");
+
 	m_deviceNameList += "5020 / Competino";
 	m_deviceNameList += "6015 / IQ Basic";
 	m_deviceNameList += "6020 / Competino+";
@@ -86,10 +88,8 @@ IFlyHighRC::IFlyHighRC()
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL). Visit www.gnu.org for more information.\n";
 
-	m_rcFile.setFileName(QDir::homePath() + "/.flyhighrc");
-
-	m_dbTypeList += "mysql";
 	m_dbTypeList += "sqlite";
+	m_dbTypeList += "mysql";
 	m_dbHost = "localhost";
 	m_dbPort = 3306;
 	m_dbName = "flyhigh_v2";
@@ -98,6 +98,13 @@ IFlyHighRC::IFlyHighRC()
 	m_dbType = m_dbTypeList[0];
 	// relative to userhome or absolute:
 	m_dbFile = "Flights/flyhigh_v2.sqlite";
+}
+
+IFlyHighRC::~IFlyHighRC()
+{
+	m_pSettings->sync();
+	delete m_pSettings;
+	m_pSettings = NULL;
 }
 
 uint IFlyHighRC::deviceName() const
@@ -284,262 +291,106 @@ DatabaseParameters IFlyHighRC::getDBParameters() const
 
 void IFlyHighRC::loadRC()
 {
-	QByteArray rcFileData;
-	QBuffer buff;
-	char line[MAX_LINE_SIZE];
+	QSettings* pSettings=NULL;
+	QString legacyfile;
 
-	if(m_rcFile.open(QIODevice::ReadOnly))
+	// check if file exists at default location
+	if (!QFile::exists(m_pSettings->fileName()))
 	{
-		rcFileData = m_rcFile.readAll();
-		m_rcFile.close();
-		buff.setBuffer(&rcFileData);
-		buff.open(QIODevice::ReadOnly);
-
-		while(buff.readLine(line, MAX_LINE_SIZE) > 0)
+		// no. check the former location ~/.flyhighrc
+		legacyfile = QDir::homePath() + "/.flyhighrc";
+		if (QFile::exists(legacyfile))
 		{
-			if(line == DeviceTag)
-			{
-				parseSerialLine(buff);
-			}
-			else if(line ==  DateTimeTag)
-			{
-				parseDateTime(buff);
-			}
-			else if(line == DirectoryTag)
-			{
-				parseDirectory(buff);
-			}
-			else if(line == PilotTag)
-			{
-				parsePilot(buff);
-			}
-			else if(line == DatabaseTag)
-			{
-				parseDBParam(buff);
-			}
+			// yes, exists.
+			// we'll try to read the old settings, but store
+			// them at the new location
+			// create new QSettings object, but keep old pointer
+			pSettings = m_pSettings;
+			m_pSettings = new QSettings(legacyfile,QSettings::IniFormat);
 		}
-		buff.close();
+	}
+
+	// database settings
+	m_dbType = m_pSettings->value(DatabaseTypeKey,m_dbType).toString();
+	m_dbHost = m_pSettings->value(DatabaseHostKey,m_dbHost).toString();
+	m_dbPort = m_pSettings->value(DatabasePortKey,m_dbPort).toInt();
+	m_dbName = m_pSettings->value(DatabaseNameKey,m_dbName).toString();
+	m_dbUser = m_pSettings->value(DatabaseUserKey,m_dbUser).toString();
+	m_dbPass = m_pSettings->value(DatabasePassKey,m_dbPass).toString();
+	m_dbFile = m_pSettings->value(DatabaseFileKey,m_dbFile).toString();
+
+	// device settings
+	m_deviceLine = m_pSettings->value(DeviceLineKey,m_deviceLine).toString();
+	QString currDevName = m_pSettings->value(DeviceNameKey,m_deviceNameList.at(0)).toString();
+	m_deviceName = m_deviceNameList.indexOf(currDevName);
+	QString currDevSpeed = m_pSettings->value(DeviceSpeedKey,m_deviceSpeedList.at(0)).toString();
+	m_deviceSpeed = m_deviceSpeedList.indexOf(currDevSpeed);
+
+	// directory settings
+	m_lastDir = m_pSettings->value(DirectoryLastKey,QDir::homePath()).toString();
+
+	// date/time settings
+	m_utcOffset = m_pSettings->value(DateTimeUtcKey,m_utcOffset).toChar().toAscii();
+
+	// pilot settings
+	m_pilotId = m_pSettings->value(PilotIdKey,m_pilotId).toInt();
+
+	// a bit of validation
+	if (!m_dbTypeList.contains(m_dbType))
+	{
+		// invalid db type. revert to default
+		m_dbType = m_dbTypeList.at(0);
+	}
+
+	// check if we've been reading from legacy rc file
+	if (pSettings)
+	{
+		// the QSettings object pointing to legacy file is not needed anymore
+		delete m_pSettings;
+		// revert to original QSettings object
+		m_pSettings = pSettings;
+		pSettings = NULL;
+		// store settings at new location
+		saveRC();
+		// check for errors
+		if (m_pSettings->status()==QSettings::NoError)
+		{
+			// success. now remove legacy file
+			QFile::remove(legacyfile);
+			// does not matter much if removing fails. the file would just
+			// remain in place, but is ignored.
+		}
 	}
 }
 
 void IFlyHighRC::saveRC()
 {
-	if(m_rcFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+	if (m_pSettings && m_pSettings->isWritable())
 	{
-		QTextStream stream(&m_rcFile);
+		// database settings
+		m_pSettings->setValue(DatabaseTypeKey,m_dbType);
+		m_pSettings->setValue(DatabaseHostKey,m_dbHost);
+		m_pSettings->setValue(DatabasePortKey,m_dbPort);
+		m_pSettings->setValue(DatabaseNameKey,m_dbName);
+		m_pSettings->setValue(DatabaseUserKey,m_dbUser);
+		m_pSettings->setValue(DatabasePassKey,m_dbPass);
+		m_pSettings->setValue(DatabaseFileKey,m_dbFile);
 
-		saveSerialLine(stream);
-		saveDateTime(stream);
-		saveDirectory(stream);
-		savePilot(stream);
-		saveDBParam(stream);
+		// device settings
+		m_pSettings->setValue(DeviceLineKey,m_deviceLine);
+		m_pSettings->setValue(DeviceNameKey,m_deviceNameList.at(m_deviceName));
+		m_pSettings->setValue(DeviceSpeedKey,m_deviceSpeedList.at(m_deviceSpeed));
 
-		stream.flush();
+		// directory settings
+		m_pSettings->setValue(DirectoryLastKey,m_lastDir);
 
-		m_rcFile.close();
+		// date/time settings
+		m_pSettings->setValue(DateTimeUtcKey,m_utcOffset);
+
+		// pilot settings
+		m_pSettings->setValue(PilotIdKey,m_pilotId);
+
+		// flush
+		m_pSettings->sync();
 	}
-}
-
-void IFlyHighRC::parseSerialLine(QBuffer &buff)
-{
-	char line[MAX_LINE_SIZE];
-	QString var;
-	QString val;
-
-	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
-	{
-		parseValue(line, var, val);
-
-		if(DeviceLineVar.indexOf(var) == 0)
-		{
-			setDeviceLine(val);
-		}
-		else if(DeviceSpeedVar.indexOf(var) == 0)
-		{
-			setDeviceSpeed(m_deviceSpeedList.indexOf(val));
-		}
-		else if(DeviceNameVar.indexOf(var) == 0)
-		{
-			setDeviceName(m_deviceNameList.indexOf(val));
-		}
-		else
-		{
-			break;
-		}
-	}
-}
-
-void IFlyHighRC::saveSerialLine(QTextStream &stream) const
-{
-	QString str;
-
-	stream << DeviceTag;
-	str = m_deviceNameList[m_deviceName];
-	stream << DeviceNameVar << str << "\n";
-	stream << DeviceLineVar << m_deviceLine << "\n";
-	str = m_deviceSpeedList[m_deviceSpeed];
-	stream << DeviceSpeedVar << str << "\n";
-	stream << "\n";
-}
-
-void IFlyHighRC::parseDateTime(QBuffer &buff)
-{
-	char line[MAX_LINE_SIZE];
-	QString var;
-	QString val;
-
-	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
-	{
-		parseValue(line, var, val);
-
-		if(DateTimeUtcVar.indexOf(var) == 0)
-		{
-			setUtcOffset(val.toInt());
-		}
-		else
-		{
-			break;
-		}
-	}
-}
-
-void IFlyHighRC::saveDateTime(QTextStream &stream) const
-{
-	QString str;
-
-	stream << DateTimeTag;
-	str.sprintf("%i", m_utcOffset);
-	stream << DateTimeUtcVar << str << "\n";
-	stream << "\n";
-}
-
-void IFlyHighRC::parseDirectory(QBuffer &buff)
-{
-	char line[MAX_LINE_SIZE];
-	QString var;
-	QString val;
-
-	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
-	{
-		parseValue(line, var, val);
-
-                if(DirectoryLastVar.indexOf(var) == 0)
-		{
-			m_lastDir = val;
-		}
-		else
-		{
-			break;
-		}
-	}
-}
-
-void IFlyHighRC::saveDirectory(QTextStream &stream) const
-{
-	stream << DirectoryTag;
-	stream << DirectoryLastVar << m_lastDir << "\n";
-	stream << "\n";
-}
-
-void IFlyHighRC::parsePilot(QBuffer &buff)
-{
-	char line[MAX_LINE_SIZE];
-	QString var;
-	QString val;
-
-	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
-	{
-		parseValue(line, var, val);
-
-		if(PilotId.indexOf(var) == 0)
-		{
-			setPilotId(val.toInt());
-		}
-		else
-		{
-			break;
-		}
-	}
-}
-
-void IFlyHighRC::savePilot(QTextStream &stream) const
-{
-	stream << PilotTag;
-	stream << PilotId << m_pilotId << "\n";
-	stream << "\n";
-}
-
-void IFlyHighRC::parseDBParam(QBuffer &buff)
-{
-	char line[MAX_LINE_SIZE];
-	QString var;
-	QString val;
-
-	while(buff.readLine(line, MAX_LINE_SIZE) > 0)
-	{
-		parseValue(line, var, val);
-
-		if(DatabaseHostVar.indexOf(var) == 0)
-		{
-			m_dbHost = val;
-		}
-		else if (DatabasePortVar.indexOf(var) == 0)
-		{
-			m_dbPort = val.toInt();
-		}
-		else if (DatabaseNameVar.indexOf(var) == 0)
-		{
-			m_dbName = val;
-		}
-		else if (DatabaseUserVar.indexOf(var) == 0)
-		{
-			m_dbUser = val;
-		}
-		else if (DatabasePassVar.indexOf(var) == 0)
-		{
-			m_dbPass = val;
-		}
-		else if (DatabaseTypeVar.indexOf(var) == 0)
-		{
-			// some validation
-			if (m_dbTypeList.contains(val))
-			{
-				m_dbType = val;
-			}
-			else
-			{
-				// unknown db type - defaulting to mysql
-				m_dbType = m_dbTypeList[0];
-			}
-		}
-		else if (DatabaseFileVar.indexOf(var) == 0)
-		{
-			m_dbFile = val;
-		}
-	}
-}
-
-void IFlyHighRC::saveDBParam(QTextStream &stream) const
-{
-	stream << DatabaseTag;
-	stream << DatabaseHostVar << m_dbHost << "\n";
-	stream << DatabasePortVar << m_dbPort << "\n";
-	stream << DatabaseNameVar << m_dbName << "\n";
-	stream << DatabaseUserVar << m_dbUser << "\n";
-	stream << DatabasePassVar << m_dbPass << "\n";
-	stream << DatabaseTypeVar << m_dbType << "\n";
-	stream << DatabaseFileVar << m_dbFile << "\n";
-	stream << "\n";
-}
-
-void IFlyHighRC::parseValue(char *line, QString &var, QString &val) const
-{
-	QString str = line;
-	int valEnd;
-	int varEnd;
-
-	varEnd = str.indexOf('=');
-	valEnd = str.indexOf('\n');
-	var = str.left(varEnd);
-	val = str.mid(varEnd + 1, valEnd -  varEnd - 1);
 }

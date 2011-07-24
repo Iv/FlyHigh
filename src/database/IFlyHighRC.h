@@ -21,20 +21,33 @@
 #ifndef IFlyHighRC_h
 #define IFlyHighRC_h
 
-#include <qbuffer.h>
-#include <qdatetime.h>
-#include <qfile.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <QTextStream>
+#include <QString>
+#include <QStringList>
 #include "DatabaseParameters.h"
 
+class QSettings;
+
+/**
+ * Encapsulates the flyhigh configuration file
+ *
+ * Settings are stored in ini file format. The file location depends on OS:
+ *	Linux: /home/<user>/.config/flyhigh/flyhigh.ini
+ *  Windoze: c:\Documents and Settings\<user>\Application Data\flyhigh\flyhigh.ini
+ *
+ * Until version 0.8.2, the configuration file was /home/<user>/.flyhighrc
+ * This file will be move to the new location upon the first start of flyhigh
+ *
+ * If no config file can be found at neither old nor new location, a default
+ * will be created.
+ */
 class IFlyHighRC
 {
 	public:
 		typedef enum DeviceId{DevFlytec5020 = 0, DevFlytec6015 = 1, DevFlytec6020 = 2}DeviceId;
 
 		static IFlyHighRC* pInstance();
+
+		~IFlyHighRC();
 
 		void loadRC();
 
@@ -105,8 +118,8 @@ class IFlyHighRC
 		DatabaseParameters getDBParameters() const;
 
 	private:
-		QFile m_rcFile;
 		static IFlyHighRC *m_pInstance;
+		QSettings* m_pSettings;
 		uint m_deviceName;
 		int m_deviceSpeed;
 		QString m_deviceLine;
@@ -128,18 +141,6 @@ class IFlyHighRC
 		QStringList m_dbTypeList;
 
 		IFlyHighRC();
-
-		void parseSerialLine(QBuffer &buff);
-		void saveSerialLine(QTextStream &stream) const;
-		void parseDateTime(QBuffer &buff);
-		void saveDateTime(QTextStream &stream) const;
-		void parseDirectory(QBuffer &buff);
-		void saveDirectory(QTextStream &stream) const;
-		void parsePilot(QBuffer &buff);
-		void savePilot(QTextStream &stream) const;
-		void parseDBParam(QBuffer &buff);
-		void saveDBParam(QTextStream &stream) const;
-		void parseValue(char *line, QString &var, QString &val) const;
 };
 
 #endif
