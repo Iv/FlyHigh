@@ -11,6 +11,7 @@
 #include <q3table.h>
 #include <q3header.h>
 #include <QStringList>
+#include <QTextStream>
 #include "IFlyHighRC.h"
 #include "TableWindow.h"
 
