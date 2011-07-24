@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QVariant>
+#include <QBuffer>
 #include "AirSpace.h"
 #include "AirSpaceList.h"
 #include "Error.h"
