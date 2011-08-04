@@ -103,13 +103,16 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	m_airSpaceView.setGeometry(QRect(0, 0, 500, 500));
 	m_airSpaceView.setWindowTitle("AirSpace View");
 	connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+
+	// read db
+	emit dataChanged();
 }
 
 AirSpaceWindow::~AirSpaceWindow()
 {
 }
 
-bool AirSpaceWindow::periodicalUpdate()
+void AirSpaceWindow::refresh()
 {
 	int lastModified;
 
@@ -119,12 +122,15 @@ bool AirSpaceWindow::periodicalUpdate()
 
 		if(m_lastModified < lastModified)
 		{
-			file_update();
+			populateTable();
 			m_lastModified = lastModified;
 		}
 	}
+}
 
-	return true;
+void AirSpaceWindow::file_update()
+{
+	populateTable();
 }
 
 void AirSpaceWindow::file_open()
@@ -187,9 +193,11 @@ void AirSpaceWindow::file_delete()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
-void AirSpaceWindow::file_update()
+void AirSpaceWindow::populateTable()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
@@ -237,6 +245,8 @@ void AirSpaceWindow::file_AddToGPS()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void AirSpaceWindow::selectionChanged()

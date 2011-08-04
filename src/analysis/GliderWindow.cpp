@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qmenubar.h>
-#include <qstringlist.h>
+#include <QCursor>
+#include <QMenuBar>
+#include <QStringList>
 #include <q3table.h>
-#include <qwidget.h>
+#include <QWidget>
 #include "ContainerDef.h"
 #include "GliderWindow.h"
 #include "IDataBase.h"
@@ -36,20 +36,20 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
-        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
-        QAction* pNewAct = new QAction(tr("&New..."), this);
-        connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
-        pFileMenu->addAction(pNewAct);
-        QAction* pDelAct = new QAction(tr("&Delete"), this);
-        connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-        pFileMenu->addAction(pDelAct);
-        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-        pFileMenu->addAction(pExpAllAct);
+	QAction* pNewAct = new QAction(tr("&New..."), this);
+	connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
+	pFileMenu->addAction(pNewAct);
+	QAction* pDelAct = new QAction(tr("&Delete"), this);
+	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+	pFileMenu->addAction(pDelAct);
+	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+	connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+	pFileMenu->addAction(pExpAllAct);
 
-        TableWindow::setWindowTitle("Gliders");
-        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
+	TableWindow::setWindowTitle("Gliders");
+	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	
 	// configure the table
 	pTable->setReadOnly(true);
@@ -73,9 +73,12 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 
 	m_glidersLastModified = 0;
 	m_flightsLastModified = 0;
+
+	// read db
+	emit dataChanged();
 }
 
-bool GliderWindow::periodicalUpdate()
+void GliderWindow::refresh()
 {
 	int glidersLastModified;
 	int flightsLastModified;
@@ -86,12 +89,10 @@ bool GliderWindow::periodicalUpdate()
 	if((m_glidersLastModified < glidersLastModified) ||
 			(m_flightsLastModified < flightsLastModified))
 	{
-		file_update();
+		populateTable();
 		m_glidersLastModified = glidersLastModified;
 		m_flightsLastModified = flightsLastModified;
 	}
-	
-	return true;
 }
 
 void GliderWindow::file_new()
@@ -103,6 +104,8 @@ void GliderWindow::file_new()
 	{
 		ISql::pInstance()->add(glider);
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void GliderWindow::file_delete()
@@ -115,9 +118,16 @@ void GliderWindow::file_delete()
 	{
 		m_pDb->delGlider(m_gliderList[row]);
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void GliderWindow::file_update()
+{
+	populateTable();
+}
+
+void GliderWindow::populateTable()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
@@ -140,7 +150,6 @@ void GliderWindow::file_update()
 	
 	progDlg.endProgress();
 }
-
 
 void GliderWindow::setGliderToRow(uint row, Glider &glider)
 {

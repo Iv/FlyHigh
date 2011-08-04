@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <qcursor.h>
-#include <qmenubar.h>
+#include <QCursor>
+#include <QMenuBar>
 #include <q3table.h>
 #include "ISql.h"
 #include "Servicing.h"
@@ -66,9 +66,12 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
 	pTable->setColumnWidth(Comment, 1000);
 	
 	m_lastModified = 0;
+
+	// read db
+	emit dataChanged();
 }
 
-bool ServicingWindow::periodicalUpdate()
+void ServicingWindow::refresh()
 {
 	int lastModified;
 	
@@ -76,14 +79,17 @@ bool ServicingWindow::periodicalUpdate()
 	
 	if(m_lastModified < lastModified)
 	{
-		file_update();
+		populateTable();
 		m_lastModified = lastModified;
 	}
-	
-	return true;
 }
 
 void ServicingWindow::file_update()
+{
+	populateTable();
+}
+
+void ServicingWindow::populateTable()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	QString gliderName;
@@ -122,6 +128,8 @@ void ServicingWindow::file_new()
 		ISql::pInstance()->add(serv);
 		TableWindow::unsetCursor();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void ServicingWindow::file_delete()
@@ -136,4 +144,6 @@ void ServicingWindow::file_delete()
 		m_pDb->delServicing(m_servicingsList[row]);
 		TableWindow::unsetCursor();
 	}
+	// refill table
+	emit dataChanged();
 }

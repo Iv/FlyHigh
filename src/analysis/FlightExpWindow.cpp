@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qmenubar.h>
-#include <qstringlist.h>
+#include <QCursor>
+#include <QMenuBar>
+#include <QStringList>
 #include <q3table.h>
-#include <qwidget.h>
+#include <QWidget>
 #include "ContainerDef.h"
 #include "FlightExpWindow.h"
 #include "IDataBase.h"
@@ -61,9 +61,12 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 	pTable->setColumnWidth(Airtime, 100);
 
 	m_lastModified = 0;
+
+	// read db
+	emit dataChanged();
 }
 
-bool FlightExpWindow::periodicalUpdate()
+void FlightExpWindow::refresh()
 {
 	int lastModified;
 	
@@ -71,14 +74,17 @@ bool FlightExpWindow::periodicalUpdate()
 	
 	if(m_lastModified < lastModified)
 	{
-		file_update();
+		populateTable();
 		m_lastModified = lastModified;
 	}
-	
-	return true;
 }
 
 void FlightExpWindow::file_update()
+{
+	populateTable();
+}
+
+void FlightExpWindow::populateTable()
 {
 	FlightsPerYearListType fpyList;
 	Pilot pilot;
@@ -134,5 +140,3 @@ void FlightExpWindow::file_update()
 	
 	TableWindow::unsetCursor();
 }
-
-//#include "moc_FlightExpWindow.cxx"

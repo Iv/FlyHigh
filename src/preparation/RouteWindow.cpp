@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qmenubar.h>
-#include <qstring.h>
+#include <QCursor>
+#include <QMenuBar>
+#include <QString>
 #include <q3table.h>
 #include "IGPSDevice.h"
 #include "ProgressDlg.h"
@@ -116,9 +116,12 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	pTable->setColumnWidth(Type, 300);
 
 	m_lastModified = 0;
+
+	// read db
+	emit dataChanged();
 }
 
-bool RouteWindow::periodicalUpdate()
+void RouteWindow::refresh()
 {
 	int lastModified;
 
@@ -126,11 +129,9 @@ bool RouteWindow::periodicalUpdate()
 
 	if(m_lastModified < lastModified)
 	{
-		file_update();
+		populateTable();
 		m_lastModified = lastModified;
 	}
-
-	return true;
 }
 
 void RouteWindow::file_delete()
@@ -146,9 +147,16 @@ void RouteWindow::file_delete()
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void RouteWindow::file_update()
+{
+	populateTable();
+}
+
+void RouteWindow::populateTable()
 {
 	ProgressDlg progDlg(this);
 	Q3Table *pTable = TableWindow::getTable();
@@ -188,6 +196,8 @@ void RouteWindow::file_new()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void RouteWindow::file_newWebMap()

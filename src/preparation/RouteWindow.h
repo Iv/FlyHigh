@@ -34,38 +34,30 @@ class RouteWindow : public TableWindow
 		RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	protected:
-		bool periodicalUpdate();
+		virtual void refresh();
+
+	private:
+		void setRouteToRow(uint row, Route &route);
+		void newWebMap(Route &route);
+		virtual void populateTable();
 
 	private slots:
 		void file_new();
-
 		void file_newWebMap();
-
 		void file_view();
-
     void file_viewWebMap();
-
 		void file_copyFrom();
-
 		void file_delete();
-
 		void file_update();
-
 		void file_AddToGPS();
-
 		void file_AddToSqlDB();
 
 	private:
 		enum Fields{Name, Type};
 
 		Route::RouteListType m_routeList;
-
 		IDataBase *m_pDb;
 		int m_lastModified;
-
-		void setRouteToRow(uint row, Route &route);
-
-		void newWebMap(Route &route);
 };
 
 #endif

@@ -7,11 +7,10 @@
 #ifndef _MDIWindow_h_
 #define _MDIWindow_h_
 
-#include <qmainwindow.h>
+#include <QMainWindow>
 
 class QWidget;
 class QString;
-class QTimer;
 
 class MDIWindow: public QMainWindow
 {
@@ -21,15 +20,18 @@ class MDIWindow: public QMainWindow
 		
 	signals:
 		void message(const QString&, int);
+
+		/**
+		 * Emit this signal if underlying data has changed
+		 */
+		void dataChanged();
 		
-	protected:
-		virtual bool periodicalUpdate();
-		
-	private slots:
-		void updateTimeout();
-		
-	private:
-		QTimer *m_pUpdateTimer;
+	protected slots:
+		/**
+		 * Refresh displayed data.
+		 * Called when a dataChanged() signal was received
+		 */
+		virtual void refresh()=0;
 };
 
 #endif

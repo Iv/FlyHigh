@@ -30,11 +30,15 @@ class GliderWindow: public TableWindow
 {
 	Q_OBJECT
 	public:
-          GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 	
 	protected:
-		bool periodicalUpdate();
-	
+		virtual void refresh();
+
+	private:
+		void setGliderToRow(uint row, Glider &glider);
+		virtual void populateTable();
+
 	private slots:
 		void file_new();
 		void file_delete();
@@ -47,8 +51,6 @@ class GliderWindow: public TableWindow
 		int m_flightsLastModified;
 		IDataBase *m_pDb;
 		Glider::GliderListType m_gliderList;
-
-		void setGliderToRow(uint row, Glider &glider);
 };
 
 #endif

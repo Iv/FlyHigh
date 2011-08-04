@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qcursor.h>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QCursor>
+#include <QString>
+#include <QStringList>
 #include <q3table.h>
-#include <qdatetime.h>
-#include <qmenubar.h>
+#include <QDateTime>
+#include <QMenuBar>
 #include "IDataBase.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
@@ -107,9 +107,11 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Description, 500);
 
 	m_lastModified = 0;
+	// read db
+	emit dataChanged();
 }
 
-bool WayPointWindow::periodicalUpdate()
+void WayPointWindow::refresh()
 {
 	int lastModified;
 
@@ -117,16 +119,18 @@ bool WayPointWindow::periodicalUpdate()
 
 	if(m_lastModified < lastModified)
 	{
-		file_update();
+		populateTable();
 		m_lastModified = lastModified;
 	}
-
-	return true;
 }
 
 void WayPointWindow::file_update()
 {
-	WayPoint wp;
+	populateTable();
+}
+
+void WayPointWindow::populateTable()
+{
 	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint wpNr;
@@ -180,6 +184,8 @@ void WayPointWindow::file_AddToGps()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void WayPointWindow::file_delete()
@@ -210,6 +216,8 @@ void WayPointWindow::file_delete()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void WayPointWindow::file_addNewWp()
@@ -222,6 +230,8 @@ void WayPointWindow::file_addNewWp()
 		m_pDb->add(wp);
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void WayPointWindow::file_AddToSqlDB()
@@ -243,6 +253,8 @@ void WayPointWindow::file_AddToSqlDB()
 
 		ISql::pInstance()->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void WayPointWindow::file_Edit()
@@ -261,6 +273,8 @@ void WayPointWindow::file_Edit()
       m_pDb->close();
     }
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
