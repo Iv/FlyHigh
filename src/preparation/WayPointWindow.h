@@ -34,28 +34,26 @@ class WayPointWindow: public TableWindow
 		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	protected:
-		bool periodicalUpdate();
+		virtual void refresh();
+
+	private:
+		void setWpToRow(uint row, WayPoint &wp);
+		virtual void populateTable();
 
 	private slots:
 		void file_update();
-
 		void file_AddToSqlDB();
-
 		void file_AddToGps();
-
 		void file_delete();
-
 		void file_addNewWp();
-
 		void file_Edit();
 
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
+
 		WayPoint::WayPointListType m_wpList;
 		IDataBase *m_pDb;
 		int m_lastModified;
-
-		void setWpToRow(uint row, WayPoint &wp);
 };
 
 #endif

@@ -7,8 +7,8 @@
 #ifndef _TableWindow_h_
 #define _TableWindow_h_
 
-#include <qdom.h>
-#include <qprinter.h>
+#include <QDomDocument>
+#include <QPrinter>
 #include "MDIWindow.h"
 
 class QStringList;
@@ -19,22 +19,26 @@ class TableWindow: public MDIWindow
 	Q_OBJECT
 	
 	public:
-          TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 		virtual ~TableWindow();
-
 		void tableAsHTML(QDomDocument &doc);
 
-	protected slots:
-		void exportTable();
-
-		virtual void selectionChanged();
-		
 	protected:
 		Q3Table* getTable();
 		void setupHeader(const QStringList &colNameList);
 
-private:
-	Q3Table* m_pTable;
+	private:
+		/**
+		 * Fills in data into the table object
+		 */
+		virtual void populateTable()=0;
+
+	protected slots:
+		void exportTable();
+		virtual void selectionChanged();
+		
+	private:
+		Q3Table* m_pTable;
 };
 
 #endif

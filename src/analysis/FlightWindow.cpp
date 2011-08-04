@@ -155,9 +155,12 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	
 	m_fileName = "";
 	m_lastModified = 0;
+
+	// read db
+	emit dataChanged();
 }
 
-bool FlightWindow::periodicalUpdate()
+void FlightWindow::refresh()
 {
 	int lastModified;
 
@@ -165,14 +168,17 @@ bool FlightWindow::periodicalUpdate()
 	
 	if(m_lastModified < lastModified)
 	{
-		file_update();
+		populateTable();
 		m_lastModified = lastModified;
 	}
-	
-	return true;
 }
 
 void FlightWindow::file_update()
+{
+	populateTable();
+}
+
+void FlightWindow::populateTable()
 {
 	Pilot pilot;
 	Q3Table *pTable = TableWindow::getTable();
@@ -240,13 +246,10 @@ void FlightWindow::file_AddToSqlDB()
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	QTime time;
-	QDate date;
-	Flight flight;
 	Glider glider;
 	Pilot pilot;
 	WayPoint wp;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
-	QString str;
 	int row;
 	uint gpsFlightNr;
 	uint newFlightNr;
@@ -358,6 +361,9 @@ void FlightWindow::file_AddToSqlDB()
 		}
 
 		m_pDb->close();
+
+		// refill table
+		emit dataChanged();
 	}
 }
 
@@ -487,6 +493,8 @@ void FlightWindow::file_import()
 				m_pDb->close();
 			}
 		}
+		// refill table
+		emit dataChanged();
 	}
 }
 
@@ -731,6 +739,8 @@ void FlightWindow::file_new()
 		ISql::pInstance()->add(flight);
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void FlightWindow::file_delete()
@@ -744,6 +754,8 @@ void FlightWindow::file_delete()
 		m_pDb->delFlight(m_flightList[row]);
 		m_pDb->close();
 	}
+	// refill table
+	emit dataChanged();
 }
 
 void FlightWindow::plot_speedVsTime()

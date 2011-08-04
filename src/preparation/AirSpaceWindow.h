@@ -33,23 +33,23 @@ class AirSpaceWindow: public TableWindow
 	Q_OBJECT
 
 	public:
-          AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 		~AirSpaceWindow();
 
+	protected:
+		virtual void refresh();
+		void selectionChanged();
+
+	private:
+		void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
+		virtual void populateTable();
+
 	private slots:
 		void file_open();
-
 		void file_delete();
-
 		void file_update();
-
 		void file_AddToGPS();
-
-	protected:
-		bool periodicalUpdate();
-
-		void selectionChanged();
 
 	private:
 		enum Fields{Name, Low, High, Class};
@@ -58,8 +58,6 @@ class AirSpaceWindow: public TableWindow
 		int m_lastModified;
 		AirSpaceList m_airSpaceList;
 		AirSpaceView m_airSpaceView;
-
-		void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
 };
 
 #endif

@@ -30,11 +30,14 @@ class ServicingWindow: public TableWindow
 	Q_OBJECT
 
 	public:
-          ServicingWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		ServicingWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
 		
 	protected:
-		bool periodicalUpdate();
-	
+		virtual void refresh();
+
+	private:
+		virtual void populateTable();
+
 	private slots:
 		void file_update();
 		void file_new();
