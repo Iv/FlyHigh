@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "IFlyHighRC.h"
 #include "Error.h"
 #include "GnuPlot.h"
 
@@ -50,15 +51,15 @@
 
 GnuPlot::GnuPlot(void)
 {
-	char gnuplotExec[] = "/usr/bin/gnuplot";
+	QString gnuplot = IFlyHighRC::pInstance()->gnuplotPath();
 	bool exist;
 
 	m_nplots = 0;
-	exist = (access(gnuplotExec, X_OK) == 0);
+	exist = (access(gnuplot.toStdString().c_str(), X_OK) == 0);
 
 	if(exist)
 	{
-		m_pGnuPipe = popen(gnuplotExec, "w");
+		m_pGnuPipe = popen(gnuplot.toStdString().c_str(), "w");
 	}
 	else
 	{
