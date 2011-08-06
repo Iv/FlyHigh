@@ -25,3 +25,6 @@ set(dbsql_HDRS Migrator.h)
 QT4_WRAP_CPP(dbsql_SRCS ${dbsql_HDRS})
 
 add_library(dbsql ${dbsql_SRCS} ${dbsql_HDRS})
+
+# This line fixes the strange linking problem on Windoze/mingw32. Don't ask...
+target_link_libraries(dbsql ${QT_LIBRARIES})
