@@ -38,7 +38,7 @@
 
 Protocol5020::Protocol5020()
 {
-  m_memdump.resize(qMax(Flytec5020MemSize, Flytec6020MemSize));
+  m_memdump.resize(Flytec5020MemSize);
 }
 
 Protocol5020::~Protocol5020()
