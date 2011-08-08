@@ -79,23 +79,9 @@ bool Flytec5020::memoryRead()
 	uint nofPages;
 	bool success = false;
 
-	switch(deviceId())
-	{
-	  case IFlyHighRC::DevFlytec5020:
-      memSize = Flytec5020MemSize;
-      pageSize = Flytec5020PageSize;
-      nofPages = memSize / pageSize;
-	  break;
-	  case IFlyHighRC::DevFlytec6020:
-      memSize = Flytec6020MemSize;
-      pageSize = Flytec5020PageSize;
-      nofPages = memSize / pageSize;
-	  break;
-	  default:
-      return false;
-	  break;
-	}
-
+  memSize = Flytec5020MemSize;
+  pageSize = Flytec5020PageSize;
+  nofPages = memSize / pageSize;
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
@@ -138,23 +124,9 @@ bool Flytec5020::memoryWrite()
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-  switch(deviceId())
-	{
-	  case IFlyHighRC::DevFlytec5020:
-      memSize = Flytec5020MemSize;
-      pageSize = Flytec5020PageSize;
-      nofPages = memSize / pageSize;
-	  break;
-	  case IFlyHighRC::DevFlytec6020:
-      memSize = Flytec6020MemSize;
-      pageSize = Flytec5020PageSize;
-      nofPages = memSize / pageSize;
-	  break;
-	  default:
-      return false;
-	  break;
-	}
-
+  memSize = Flytec5020MemSize;
+  pageSize = Flytec5020PageSize;
+  nofPages = memSize / pageSize;
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
