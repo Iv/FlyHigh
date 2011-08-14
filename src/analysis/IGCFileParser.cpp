@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <qbuffer.h>
 #include <qfile.h>
 #include "IGCFileParser.h"
@@ -86,7 +86,7 @@ void IGCFileParser::parseHRecord(const char *record)
 	int y;
 	int m;
 	int d;
-	
+
 	if(strncmp(record, "HFPLTPILOT", 10) == 0) // Pilot
 	{
 		colonValue(record, m_pilot);
@@ -97,7 +97,7 @@ void IGCFileParser::parseHRecord(const char *record)
 /*		// HFGTYGLIDERTYPE:Spirit
                 start = rec.indexOf(':') + 1;
 		length = rec.length() - 2; // without \r\n
-		
+
 		// strip white space @ end
 		for(end=length;end>0;end--)
 		{
@@ -151,25 +151,25 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 	{
 		// time
 		flightPoint.time.setHMS(hh, mm, ss);
-		
+
 		// latitude
 		lat = ((double) latdeg + ((double) latminute / 60.0) + ((double) latmindec / 60000.0));
-		
+
 		if(northsouth == 'S')
 		{
 			lat *= -1.0;
 		}
-		
+
 		// longitude
 		lon = ((double) londeg + ((double) lonminute / 60.0) + ((double) lonmindec / 60000.0));
-		
+
 		if(eastwest == 'W')
 		{
 			lon *= -1.0;
 		}
-		
+
 		// altitude
-		if(gpsAlt)
+		if(gpsAlt && (valid == 'A'))
 		{
 			alt = altGPS;
 		}
@@ -189,10 +189,10 @@ void IGCFileParser::colonValue(const char *record, QString &str)
 	int length;
 	int start;
 	int end;
-	
+
         start = rec.indexOf(':') + 1;
 	length = rec.length() - 2; // without \r\n
-	
+
 	// strip white space @ end
 	for(end=length;end>0;end--)
 	{
@@ -201,6 +201,6 @@ void IGCFileParser::colonValue(const char *record, QString &str)
 			break;
 		}
 	}
-	
+
 	str = rec.mid(start, end-start);
 }
