@@ -112,7 +112,7 @@ bool ISql::createAndConnect()
 	}
 	else if (m_dbParameters.isSQLite())
 	{
-		QFileInfo dbfile = QFileInfo(m_dbParameters.dBName());
+                QFileInfo dbfile = QFileInfo(m_dbParameters.dBFile());
 
 		// create directory if necessary
 		if (!dbfile.dir().exists())
