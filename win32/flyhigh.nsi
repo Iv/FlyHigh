@@ -78,8 +78,26 @@ Section "files" SEC01
   ; flyhigh binary is expected to reside there:
   File "..\build\src\flyhigh.exe"
   File "flyhigh.ico"
-  ; not in svn, download a recent version from www.sqlite.org first
-  File "sqlite3.dll"
+  ; Qt libraries, just the required ones (from Qt SDK)
+  File "lib\QtCore4.dll"
+  File "lib\QtGui4.dll"
+  File "lib\QtNetwork4.dll"
+  File "lib\QtSql4.dll"
+  File "lib\QtXml4.dll"
+  File "lib\QtWebKit4.dll"
+  File "lib\Qt3Support4.dll"
+  File "lib\phonon4.dll"
+  ; sql driver plugins (sqlite from Qt SDK, mysql homebrewed)
+  File "lib\qsqlmysql4.dll"
+  File "lib\qsqlite4.dll"
+  ; some mingw32 libraries (from Qt SDK)
+  File "lib\mingwm10.dll"
+  File "lib\libgcc_s_dw2-1.dll"
+  ; sqlite library, available from www.sqlite.org
+  File "lib\sqlite3.dll"
+  ; mysql library, availabel from www.mysql.com
+  File "lib\libmysql.dll"
+  ; famous readme file
   File "..\README"
   ; convert to dos line-ends
   Push "$INSTDIR\README"
@@ -125,9 +143,23 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\flyhigh.exe"
-  Delete "$INSTDIR\sqlite3.dll"
   Delete "$INSTDIR\flyhigh.ico"
   Delete "$INSTDIR\README.txt"
+  Delete "$INSTDIR\QtCore4.dll"
+  Delete "$INSTDIR\QtGui4.dll"
+  Delete "$INSTDIR\QtNetwork4.dll"
+  Delete "$INSTDIR\QtSql4.dll"
+  Delete "$INSTDIR\QtXml4.dll"
+  Delete "$INSTDIR\QtWebKit4.dll"
+  Delete "$INSTDIR\Qt3Support4.dll"
+  Delete "$INSTDIR\phonon4.dll"
+  Delete "$INSTDIR\qsqlmysql4.dll"
+  Delete "$INSTDIR\qsqlite4.dll"
+  Delete "$INSTDIR\mingwm10.dll"
+  Delete "$INSTDIR\libgcc_s_dw2-1.dll"
+  Delete "$INSTDIR\sqlite3.dll"
+  Delete "$INSTDIR\libmysql.dll"
+  
   RMDir "$INSTDIR"
   
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
