@@ -15,12 +15,84 @@ The simplest way to compile this package is:
 
 Windows
 =======
-Install Qt Windows SDK, cmake, mingw, sqlite
 
-Start>Programme>Qt>Qt command prompt
+Building flyhigh for windows includes these steps:
 
-`cd' to the directory containing the package's source code.
-mkdir build
-cd build
-cmake -G "MinGW Makefiles" ..
-mingw32-make
+1. Install Qt SDK
+2. Install sqlite
+3. Install cmake
+4. Install Perl (optional)
+5. Install mysql development files (optional)
+6. Build the qt mysql plugin (optional)
+7. Do a quirk for qextserial
+8. Build flyhigh
+
+Steps in detail:
+
+1. Install Qt Windows SDK, cmake, mingw
+	 Easiest way may be downloading the Qt SDK online installer for windows,
+	 available at http://qt.nokia.com/downloads/sdk-windows-cpp
+	 Tested: Version 1.1.2, Qt 4.7.3
+	 It is assumed that the Qt SDK is installed at the default location C:/QtSDK
+
+2. Install sqlite
+	 Download zip from www.sqlite.org and extract sqlite3.dll to C:\Windows\system32
+	 Tested: Version 3.7.7.1
+
+3. Install cmake
+	 Download and install cmake from www.cmake.org.
+	 Tested: Version 2.8.5
+
+4. Install Perl
+	 Surprise! If you forget to install perl, compiling qt will fail miserably,
+	 without any decent error message.
+	 There is a binary distribution of perl for windows at www.perl.org.
+	 Install it and add the bin directory to the PATH variable.
+	 Tested: 5.1.2.4
+
+5. Install mysql headers and library
+	 You can find a zip package of the community edition at www.mysql.com.
+	 I didn't care for the fully blown mysql server on my Windows box, so
+	 I just extracted the include and lib folders into C:\mysql.
+	 Tested: Version 5.5.15
+
+6. Build the Qt mysql plugin
+	 This is only required if you intend to use a mysql database.
+	 Easiest (but maybe not the fastest) way to get the Qt mysql plugin is
+	 to recompile the entire Qt library. Be warned: this takes, depending
+	 on your box, up to several hours and eats at least 3 Gigs of disk space!
+	 Here it goes:
+	 In the Start>Programme>Qt>Qt command prompt enter these commands:
+	 - cd C:\QtSDK\QtSources\4.7.3
+	 - configure -debug-and-release -opensource -qt-sql-mysql -plugin-sql-mysql -qt-sql-sqlite -plugin-sql-sqlite -I C:\mysql\include -L C:\mysql\lib
+	 - mingw32-make
+	 - (go sleeping)
+	 The file you're looking for is C:\QtSDK\QtSources\4.7.3\plugins\sqldrivers\qsqlmysql4.dll
+
+7. Workaround for Qextserial uglyness
+	 Qextserial uses a Qt header which is private by now. A (admitedly ugly)
+	 workaround is copying this header to a location where the compiler
+	 may pick it up: Create a directory C:\QtSDK\Desktop\Qt\4.7.3\mingw\include\QtCore\private
+	 and copy qwineventnotifier_p.h there.
+
+8. Building flyhigh - finally
+	 In the Start>Programme>Qt>Qt command prompt enter these commands:
+	 - `cd' to the directory containing the package's source code
+	 - mkdir build
+	 - cd build
+	 - cmake -G "MinGW Makefiles" ..
+	 - mingw32-make
+
+
+Creating the Windows installer
+==============================
+
+Windows users need installers, don't they? Here's how:
+
+1. Install nsis (Get it from http://nsis.sourceforge.net/). Tested: Version 2.46.
+2. Place all needed dll's (Qt, mysql, sqlite, mingw) in the win32/lib folder
+3. Start nsis and run flyhigh.nsi script in the win32 folder
+4. Test the installer!
+
+We'll provide a Windows installer at our project page as soon as we are ready
+with the windows version of flyhigh.
