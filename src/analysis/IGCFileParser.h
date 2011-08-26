@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef IGCFileParser_h
 #define IGCFileParser_h
 
@@ -31,12 +31,17 @@ class IGCFileParser
 {
 	public:
 		IGCFileParser();
-		
+
 		void parse(const QByteArray &igcData);
+
 		const QString& pilot();
+
 		const QString& model();
+
 		const QString& gliderId();
+
 		const QDate& date();
+
 		FlightPointList& flightPointList();
 
 	private:
@@ -45,9 +50,12 @@ class IGCFileParser
 		QString m_gliderId;
 		QDate m_date;
 		FlightPointList m_flightPointList;
-		
+		int m_prevAlt;
+
 		void parseHRecord(const char *record);
+
 		void parseBRecord(const char *record, bool gpsAlt);
+
 		void colonValue(const char *record, QString &str);
 };
 

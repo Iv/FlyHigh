@@ -25,6 +25,7 @@
 IGCFileParser::IGCFileParser()
 {
 	m_model = "";
+	m_prevAlt = 0;
 }
 
 void IGCFileParser::parse(const QByteArray &igcData)
@@ -169,9 +170,17 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 		}
 
 		// altitude
-		if(gpsAlt && (valid == 'A'))
+		if(gpsAlt)
 		{
-			alt = altGPS;
+		  if(valid == 'A')
+		  {
+        alt = altGPS;
+        m_prevAlt = altGPS;
+		  }
+		  else
+		  {
+        alt = m_prevAlt;
+		  }
 		}
 		else
 		{
