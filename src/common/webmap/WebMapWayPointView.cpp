@@ -19,74 +19,87 @@
  ***************************************************************************/
 
 #include "WebMap.h"
-#include "WebMapFlightView.h"
+#include "WebMapWayPointView.h"
 
-WebMapFlightView::WebMapFlightView(const QString &name)
+WebMapWayPointView::WebMapWayPointView(const QString &name)
 {
 	QWidget::setWindowTitle(name);
-	resize(1000, 800);
+	resize(1000, 850);
 
-	m_pWebMap = new WebMap(this, WebMap::MapFlight);
-	m_location = "";
+	m_pWpList = NULL;
+	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
-	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
+	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
 }
 
-WebMapFlightView::~WebMapFlightView()
+WebMapWayPointView::~WebMapWayPointView()
 {
 	delete m_pWebMap;
 }
 
-void WebMapFlightView::setTurnPointList(const WayPoint::WayPointListType &tpList)
+void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
 {
-	m_tpList = tpList;
+	m_pWpList = pWpList;
 }
 
-void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
+void WebMapWayPointView::loadMap()
 {
-	m_wpList = wpList;
+	m_pWebMap->loadMap("qrc:/waypoint.html");
 }
 
-void WebMapFlightView::setLocation(const QString &location)
-{
-	m_location = location;
-}
-
-void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
-{
-	m_fpList = fpList;
-}
-
-void WebMapFlightView::setSogList(const FlightPointList::SogListType &sogList)
-{
-	m_sogList = sogList;
-}
-
-void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioList)
-{
-	m_varioList = varioList;
-}
-
-void WebMapFlightView::loadMap()
-{
-	m_pWebMap->loadMap("qrc:/webmap_flight.html");
-}
-
-void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
+void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 }
 
-void WebMapFlightView::mapReady()
+void WebMapWayPointView::mapReady()
 {
-	m_pWebMap->setTurnPointList(m_tpList);
-	m_pWebMap->setTurnPointsDragable(true);
-	m_pWebMap->setFlightType("xc5");
-	m_pWebMap->setLocation(m_location);
-	m_pWebMap->XCLoad();
+	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 
-	m_pWebMap->setFlightPointList(m_fpList);
-	m_pWebMap->setSogList(m_sogList);
-	m_pWebMap->setVarioList(m_varioList);
-	m_pWebMap->showPlot();
+	if(m_pWpList != NULL)
+	{
+		m_pWebMap->setWayPointList(*m_pWpList);
+	}
+
+	m_pWebMap->XCLoad();
+}
+
+void WebMapWayPointView::finished(int res)
+{
+/**
+	QString type;
+
+	if(m_pRoute != NULL)
+	{
+		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
+		m_pRoute->setName(m_pWebMap->getName());
+		type = m_pWebMap->getFlightType();
+
+		if(type == "xc2")
+		{
+			m_pRoute->setType(Route::Free);
+		}
+		else if(type == "xc3")
+		{
+			m_pRoute->setType(Route::Free1Tp);
+		}
+		else if(type == "xc4")
+		{
+			m_pRoute->setType(Route::Free2Tp);
+		}
+		else if(type == "xc5")
+		{
+			m_pRoute->setType(Route::Free3Tp);
+		}
+		else if(type == "xc3c")
+		{
+			m_pRoute->setType(Route::FlatOrFaiTri);
+		}
+		else
+		{
+			m_pRoute->setType(Route::Undefined);
+		}
+	}
+*/
+	done(res);
 }

@@ -28,7 +28,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	resize(1000, 850);
 
 	m_pRoute = NULL;
-	m_pWebMap = new WebMap(this);
+	m_pWebMap = new WebMap(this, WebMap::MapRoute);
 	m_tpDrag = true;
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));

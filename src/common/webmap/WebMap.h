@@ -30,6 +30,8 @@ class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
 
+class AirSpaceList;
+
 /**
 	@author Alex Graf <grafal@sourceforge.net>
 */
@@ -40,7 +42,9 @@ class WebMap: public QWebView
 	public:
 		typedef enum MarkerType{MarkerStart, MarkerLand, MarkerTp1, MarkerTp2, MarkerTp3, MarkerDefault}MarkerType;
 
-		WebMap(QWidget *pParent);
+		typedef enum MapType{MapFlight, MapRoute, MapWayPoint, MapAirSpace}MapType;
+
+		WebMap(QWidget *pParent, MapType type);
 
 		~WebMap();
 
@@ -74,6 +78,12 @@ class WebMap: public QWebView
 
 		void setVarioList(const FlightPointList::VarioListType &varioList);
 
+void setWayPointList(const WayPoint::WayPointListType &wpList);
+
+void setAirSpaceList(AirSpaceList &airSpaceList);
+
+void selectAirSpace(int nr);
+
 		void showPlot();
 
 		void setPlotEnable(bool en);
@@ -85,17 +95,22 @@ class WebMap: public QWebView
 
 		void finished(int result);
 
+		void lineChanged(int line);
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
 	protected slots:
 		void setOk(bool ok);
 
+		void setLine(int line);
+
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
+		MapType m_mapType;
 		uint m_plotEn;
 		bool m_mapReady;
 
