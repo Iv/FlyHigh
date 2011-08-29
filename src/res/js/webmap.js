@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Alex Graf                                       *
+ *   Copyright (C) 2011 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,6 +16,9 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ *                                                                         *
+ *   It is prohibited to server or run this code over network p.e. as web  *
+ *   service in combination with closed source.                            *
  ***************************************************************************/
 
 var FlightData={
@@ -46,7 +49,7 @@ var glider;
 function setTurnPointList(tps)
 {
 	var tpInput;
-	
+
 	tpInput = document.getElementById("defaultTurnpoints");
 	tpInput.value = tps;
 }
@@ -87,7 +90,7 @@ function setTurnPointsDragable(drag)
 function setLocation(loc)
 {
 	var locInput;
-	
+
 	locInput = document.getElementById("defaultLocation");
 	locInput.value = loc;
 }
@@ -95,7 +98,7 @@ function setLocation(loc)
 function getLocation()
 {
 	var locInput;
-	
+
 	locInput = document.getElementById("location");
 
 	return locInput.value;
@@ -104,7 +107,7 @@ function getLocation()
 function setName(name)
 {
 	var nameInput;
-	
+
 	nameInput = document.getElementById("name");
 	nameInput.value = name;
 }
@@ -112,7 +115,7 @@ function setName(name)
 function getName()
 {
 	var nameInput;
-	
+
 	nameInput = document.getElementById("name");
 
 	return nameInput.value;
@@ -121,7 +124,7 @@ function getName()
 function setFlightType(flightType)
 {
 	var typeInput;
-	
+
 	typeInput = document.getElementById("defaultFlightType");
 	typeInput.value = flightType;
 }
@@ -129,10 +132,20 @@ function setFlightType(flightType)
 function getFlightType()
 {
 	var typeInput;
-	
+
 	typeInput = document.getElementById("flightType");
 
 	return typeInput.value;
+}
+
+function setMapPos(top, left)
+{
+	var div;
+
+	div = document.getElementById("map");
+	div.style.top = top + "px";
+	div.style.left = left + "px";
+	map.checkResize();
 }
 
 function setMapSize(width, height)
