@@ -19,74 +19,63 @@
  ***************************************************************************/
 
 #include "WebMap.h"
-#include "WebMapFlightView.h"
+#include "WebMapAirSpaceView.h"
 
-WebMapFlightView::WebMapFlightView(const QString &name)
+WebMapAirSpaceView::WebMapAirSpaceView(const QString &name)
 {
 	QWidget::setWindowTitle(name);
-	resize(1000, 800);
+	resize(1000, 850);
 
-	m_pWebMap = new WebMap(this, WebMap::MapFlight);
-	m_location = "";
+	m_pAirSpaceList = NULL;
+	m_pWebMap = new WebMap(this, WebMap::MapAirSpace);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
-	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
+	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
+  connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SLOT(lineChanged(int)));
 }
 
-WebMapFlightView::~WebMapFlightView()
+WebMapAirSpaceView::~WebMapAirSpaceView()
 {
 	delete m_pWebMap;
 }
 
-void WebMapFlightView::setTurnPointList(const WayPoint::WayPointListType &tpList)
+void WebMapAirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList)
 {
-	m_tpList = tpList;
+	m_pAirSpaceList = pAirSpaceList;
 }
 
-void WebMapFlightView::setWayPointList(const WayPoint::WayPointListType &wpList)
+void WebMapAirSpaceView::loadMap()
 {
-	m_wpList = wpList;
+	m_pWebMap->loadMap("qrc:/airspace.html");
 }
 
-void WebMapFlightView::setLocation(const QString &location)
+void WebMapAirSpaceView::selectAirSpace(int nr)
 {
-	m_location = location;
+	m_pWebMap->selectAirSpace(nr);
 }
 
-void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
-{
-	m_fpList = fpList;
-}
-
-void WebMapFlightView::setSogList(const FlightPointList::SogListType &sogList)
-{
-	m_sogList = sogList;
-}
-
-void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioList)
-{
-	m_varioList = varioList;
-}
-
-void WebMapFlightView::loadMap()
-{
-	m_pWebMap->loadMap("qrc:/webmap_flight.html");
-}
-
-void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
+void WebMapAirSpaceView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 }
 
-void WebMapFlightView::mapReady()
+void WebMapAirSpaceView::mapReady()
 {
-	m_pWebMap->setTurnPointList(m_tpList);
-	m_pWebMap->setTurnPointsDragable(true);
-	m_pWebMap->setFlightType("xc5");
-	m_pWebMap->setLocation(m_location);
-	m_pWebMap->XCLoad();
+	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 
-	m_pWebMap->setFlightPointList(m_fpList);
-	m_pWebMap->setSogList(m_sogList);
-	m_pWebMap->setVarioList(m_varioList);
-	m_pWebMap->showPlot();
+	if(m_pAirSpaceList != NULL)
+	{
+		m_pWebMap->setAirSpaceList(*m_pAirSpaceList);
+	}
+
+	m_pWebMap->XCLoad();
+}
+
+void WebMapAirSpaceView::finished(int res)
+{
+	done(res);
+}
+
+void WebMapAirSpaceView::lineChanged(int line)
+{
+  emit airSpaceChanged(line);
 }

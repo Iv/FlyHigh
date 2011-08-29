@@ -23,17 +23,20 @@
 #include <QProgressBar>
 #include <QWebFrame>
 #include <math.h>
+#include "AirSpace.h"
+#include "AirSpaceList.h"
 #include "FlightPointList.h"
 #include "PolyLineEncoder.h"
 #include "WebMap.h"
 
-WebMap::WebMap(QWidget *pParent)
+WebMap::WebMap(QWidget *pParent, MapType type)
 	:QWebView(pParent)
 {
 	QWebFrame *pFrame;
 
 	m_mapReady = false;
 	m_plotEn = false;
+	m_mapType = type;
 	m_pNetMgr = new QNetworkAccessManager(this);
 	m_pProgress = new QProgressBar(this);
 	m_pProgress->setGeometry(LeftWidth, 0, ProgressW, ProgressH);
@@ -345,6 +348,99 @@ void WebMap::setVarioList(const FlightPointList::VarioListType &varioList)
 	}
 }
 
+void WebMap::setWayPointList(const WayPoint::WayPointListType &wpList)
+{
+// setWayPoint(name, lat, lon, alt)
+
+	QString code = "setWayPoint('%1', %2, %3, %4);";
+	QWebFrame *pFrame;
+	uint itemNr;
+	uint listSize;
+	QString name;
+	float lat;
+	float lon;
+	int alt;
+
+	listSize = wpList.size();
+
+	if(listSize > 0)
+	{
+    pFrame = page()->mainFrame();
+
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+      name = wpList.at(itemNr).name();
+		  lat = wpList.at(itemNr).latitude();
+		  lon = wpList.at(itemNr).longitude();
+      alt = wpList.at(itemNr).altitude();
+      pFrame->evaluateJavaScript(code.arg(name).arg(lat).arg(lon).arg(alt));
+		}
+	}
+}
+
+void WebMap::setAirSpaceList(AirSpaceList &airSpaceList)
+{
+	QString code = "setAirSpace('%1', [%2], [%3]);";
+	QString value = "%1";
+	QWebFrame *pFrame;
+	AirSpace *pAirSpace;
+	uint airSpaceNr;
+	uint wpNr;
+	uint airSpaceListSize;
+	uint wpListSize;
+	QString name;
+	QString strLat;
+	QString strLon;
+	float lat;
+	float lon;
+	bool first;
+
+	airSpaceListSize = airSpaceList.size();
+
+	if(airSpaceListSize > 0)
+	{
+    pFrame = page()->mainFrame();
+
+		for(airSpaceNr=0; airSpaceNr<airSpaceListSize; airSpaceNr++)
+		{
+		  first = true;
+		  strLat = "";
+		  strLon = "";
+
+		  pAirSpace = airSpaceList[airSpaceNr];
+		  pAirSpace->createPointList();
+		  wpListSize = pAirSpace->pointList().size();
+
+		  for(wpNr=0; wpNr<wpListSize; wpNr++)
+		  {
+        if(!first)
+        {
+          strLat += ",";
+          strLon += ",";
+        }
+
+        first = false;
+        lat = pAirSpace->pointList().at(wpNr).latitude();
+        lon = pAirSpace->pointList().at(wpNr).longitude();
+        strLat += value.arg(lat);
+        strLon += value.arg(lon);
+		  }
+
+		  name = pAirSpace->name();
+      pFrame->evaluateJavaScript(code.arg(name).arg(strLat).arg(strLon));
+		}
+	}
+}
+
+void WebMap::selectAirSpace(int nr)
+{
+	QString code = "selectAirSpace(%1);";
+	QWebFrame *pFrame;
+
+  pFrame = page()->mainFrame();
+  pFrame->evaluateJavaScript(code.arg(nr));
+}
+
 void WebMap::showPlot()
 {
 	QString code = "showPlot();";
@@ -380,17 +476,25 @@ void WebMap::setSize(uint width, uint height)
 
 	pFrame = page()->mainFrame();
 
-	if(m_plotEn)
+	switch(m_mapType)
 	{
-		code = "setMapSize(%1, %2);";
-		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
-		code = "setPlotSize(%1, %2);";
-		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
-	}
-	else
-	{
-		code = "setMapSize(%1, %2);";
-		pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+	  case MapFlight:
+      code = "setMapSize(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
+      code = "setPlotSize(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
+	  break;
+	  case MapRoute:
+      code = "setMapSize(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+	  break;
+	  case MapWayPoint:
+	  case MapAirSpace:
+      code = "setMapPos(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(0).arg(0));
+	  	code = "setMapSize(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(width).arg(height));
+	  break;
 	}
 }
 
@@ -402,8 +506,7 @@ void WebMap::loadFinished(bool ok)
 	m_pProgress->hide();
 }
 
-void WebMap::replyFinished(QNetworkReply *pReply)
-{
+void WebMap::replyFinished(QNetworkReply *pReply){
 /*
 	QString replyStr(pReply->readAll());
 	QStringList latLonStrList = replyStr.split(",");
@@ -431,4 +534,9 @@ void WebMap::setOk(bool ok)
 	{
 		emit finished(QDialog::Rejected);
 	}
+}
+
+void WebMap::setLine(int line)
+{
+  emit lineChanged(line);
 }
