@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <QWebFrame>
 
 #include "WebMap.h"
 #include "WebMapWayPointView.h"
@@ -27,6 +28,7 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
 	resize(1000, 850);
 
 	m_pWpList = NULL;
+	m_editItem = 0;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
@@ -42,6 +44,11 @@ void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
 	m_pWpList = pWpList;
 }
 
+void WebMapWayPointView::setEditItem(uint nr)
+{
+  m_editItem = nr;
+}
+
 void WebMapWayPointView::loadMap()
 {
 	m_pWebMap->loadMap("qrc:/waypoint.html");
@@ -55,51 +62,48 @@ void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 void WebMapWayPointView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-
-	if(m_pWpList != NULL)
-	{
-		m_pWebMap->setWayPointList(*m_pWpList);
-	}
-
-	m_pWebMap->XCLoad();
+  setWayPointList();
+	load();
 }
 
 void WebMapWayPointView::finished(int res)
 {
-/**
-	QString type;
+	done(res);
+}
 
-	if(m_pRoute != NULL)
+void WebMapWayPointView::load()
+{
+	QString code = "wp_load();";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
+}
+
+void WebMapWayPointView::setWayPointList()
+{
+	QString code = "wp_pushWayPoint('%1', %2, %3, %4);";
+	QWebFrame *pFrame;
+	uint itemNr;
+	uint listSize;
+	QString name;
+	float lat;
+	float lon;
+	int alt;
+
+	listSize = m_pWpList->size();
+
+	if(listSize > 0)
 	{
-		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
-		m_pRoute->setName(m_pWebMap->getName());
-		type = m_pWebMap->getFlightType();
+    pFrame = m_pWebMap->page()->mainFrame();
 
-		if(type == "xc2")
+		for(itemNr=0; itemNr<listSize; itemNr++)
 		{
-			m_pRoute->setType(Route::Free);
-		}
-		else if(type == "xc3")
-		{
-			m_pRoute->setType(Route::Free1Tp);
-		}
-		else if(type == "xc4")
-		{
-			m_pRoute->setType(Route::Free2Tp);
-		}
-		else if(type == "xc5")
-		{
-			m_pRoute->setType(Route::Free3Tp);
-		}
-		else if(type == "xc3c")
-		{
-			m_pRoute->setType(Route::FlatOrFaiTri);
-		}
-		else
-		{
-			m_pRoute->setType(Route::Undefined);
+      name = m_pWpList->at(itemNr).name();
+		  lat = m_pWpList->at(itemNr).latitude();
+		  lon = m_pWpList->at(itemNr).longitude();
+      alt = m_pWpList->at(itemNr).altitude();
+      pFrame->evaluateJavaScript(code.arg(name).arg(lat).arg(lon).arg(alt));
 		}
 	}
-*/
-	done(res);
 }
