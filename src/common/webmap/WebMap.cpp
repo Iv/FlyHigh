@@ -348,36 +348,6 @@ void WebMap::setVarioList(const FlightPointList::VarioListType &varioList)
 	}
 }
 
-void WebMap::setWayPointList(const WayPoint::WayPointListType &wpList)
-{
-// setWayPoint(name, lat, lon, alt)
-
-	QString code = "setWayPoint('%1', %2, %3, %4);";
-	QWebFrame *pFrame;
-	uint itemNr;
-	uint listSize;
-	QString name;
-	float lat;
-	float lon;
-	int alt;
-
-	listSize = wpList.size();
-
-	if(listSize > 0)
-	{
-    pFrame = page()->mainFrame();
-
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
-      name = wpList.at(itemNr).name();
-		  lat = wpList.at(itemNr).latitude();
-		  lon = wpList.at(itemNr).longitude();
-      alt = wpList.at(itemNr).altitude();
-      pFrame->evaluateJavaScript(code.arg(name).arg(lat).arg(lon).arg(alt));
-		}
-	}
-}
-
 void WebMap::setAirSpaceList(AirSpaceList &airSpaceList)
 {
 	QString code = "setAirSpace('%1', [%2], [%3]);";
@@ -489,6 +459,9 @@ void WebMap::setSize(uint width, uint height)
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
 	  break;
 	  case MapWayPoint:
+      code = "setMapSize(%1, %2);";
+      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+	  break;
 	  case MapAirSpace:
       code = "setMapPos(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(0).arg(0));
