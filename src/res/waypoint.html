@@ -10,7 +10,49 @@
 		<script type="text/javascript" src="js/markerclusterer.js"></script>
 	</head>
 	<body onunload="XCUnload()" onresize="XCResize()" scroll="no">
-    <div id="left"></div>
+    <div id="left">
+			<table>
+				<tr>
+					<td>Name</td>
+					<td>
+						<input id="name" type="text" maxlength="17" size="17" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td>Spot</td>
+					<td>
+						<input id="spot" type="text" maxlength="17" size="17" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td>Country</td>
+					<td>
+						<input id="country" type="text" maxlength="2" size="17" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td>Latitude</td>
+					<td>
+						<input id="lat" type="text" maxlength="8" size="17" value="" onkeypress="validateNum(event);"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Longitude</td>
+					<td>
+						<input id="lon" type="text" maxlength="9" size="17" value="" onkeypress="validateNum(event);"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Altitude</td>
+					<td>
+						<input id="alt" type="text" maxlength="5" size="17" value=""/>
+					</td>
+				</tr>
+			</table>
+			<hr/>
+			<input type="submit" onclick="WebMap.setOk(true);" value="OK"/>
+			<input type="submit" onclick="WebMap.setOk(false);" value="Cancel"/>
+		</div>
     <div id="right"></div>
     <div id="map"></div>
 	</body>
