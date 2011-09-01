@@ -78,8 +78,6 @@ class WebMap: public QWebView
 
 		void setVarioList(const FlightPointList::VarioListType &varioList);
 
-void setWayPointList(const WayPoint::WayPointListType &wpList);
-
 void setAirSpaceList(AirSpaceList &airSpaceList);
 
 void selectAirSpace(int nr);
