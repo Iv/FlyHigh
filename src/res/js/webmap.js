@@ -340,3 +340,22 @@ function setLegend(idx)
 	varioDiv.innerHTML = "Vario: " + FlightData.vario[idx] + " m/s";
 	timeDiv.innerHTML = "Time: " + FlightData.time[idx];
 }
+
+function validateNum(event)
+{
+	var theEvent = event || window.event;
+	var key = theEvent.keyCode || theEvent.which;
+	var regex = /[0-9]|\./;
+
+	key = String.fromCharCode(key);
+
+	if(!regex.test(key))
+	{
+		theEvent.returnValue = false;
+
+		if(theEvent.preventDefault)
+		{
+			theEvent.preventDefault();
+		}
+	}
+}
