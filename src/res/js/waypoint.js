@@ -26,7 +26,7 @@ var map = null;
 var icon;
 var markers = [];
 
-function XCLoad()
+function wp_load()
 {
 	if(GBrowserIsCompatible()) {
 		map = new GMap2(document.getElementById('map'));
@@ -45,16 +45,61 @@ function XCLoad()
 	}
 }
 
-function XCUnload()
+function wp_unload()
 {
 	geocoder = null;
 	map = null;
 	GUnload();
 }
 
-function setWayPoint(name, lat, lon, alt)
+function wp_pushWayPoint(name, lat, lon, alt)
 {
 	var latlng = new GLatLng(lat, lon);
 	var marker = new GMarker(latlng, {title: name, icon: icon});
 	markers.push(marker);
+}
+
+function wp_getName()
+{
+	var locInput;
+
+	locInput = document.getElementById("name");
+
+	return locInput.value;
+}
+
+function wp_getSpot()
+{
+	var locInput;
+
+	locInput = document.getElementById("spot");
+
+	return locInput.value;
+}
+
+function wp_getCountry()
+{
+	var locInput;
+
+	locInput = document.getElementById("country");
+
+	return locInput.value;
+}
+
+function wp_getLatLng()
+{
+	var wp;
+
+	wp = [markers[0].getLatLng().lat(), markers[0].getLatLng().lng()];
+
+	return wp;
+}
+
+function wp_getAlt()
+{
+	var locInput;
+
+	locInput = document.getElementById("alt");
+
+	return locInput.value;
 }
