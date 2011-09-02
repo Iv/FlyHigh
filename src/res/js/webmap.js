@@ -359,3 +359,13 @@ function validateNum(event)
 		}
 	}
 }
+
+// Extended GMarker
+Marker.prototype = new GMarker(new GLatLng(0, 0));
+ 
+function Marker(point, opts)
+{
+	this.id = opts.id;
+	this.alt = opts.alt;
+	GMarker.call(this, point, opts);
+}
