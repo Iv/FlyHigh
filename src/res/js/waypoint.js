@@ -52,10 +52,28 @@ function wp_unload()
 	GUnload();
 }
 
-function wp_pushWayPoint(name, lat, lon, alt)
+function wp_pushWayPoint(id, name, lat, lon, alt)
 {
 	var latlng = new GLatLng(lat, lon);
-	var marker = new GMarker(latlng, {title: name, icon: icon});
+	var marker = new Marker(latlng, {id: id, title: name, icon: icon, alt: alt});
+
+	GEvent.addListener(marker, "click", function(latlng)
+	{ 
+		var locInput; 
+		
+		locInput = document.getElementById("name");
+		locInput.value = this.getTitle();
+
+		locInput = document.getElementById("lat");
+		locInput.value = this.getLatLng().lat();
+		
+		locInput = document.getElementById("lon");
+		locInput.value = this.getLatLng().lng();
+
+		locInput = document.getElementById("alt");
+		locInput.value = this.alt;
+	}); 
+
 	markers.push(marker);
 }
 
