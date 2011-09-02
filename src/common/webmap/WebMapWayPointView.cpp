@@ -82,13 +82,14 @@ void WebMapWayPointView::load()
 
 void WebMapWayPointView::setWayPointList()
 {
-	QString code = "wp_pushWayPoint('%1', %2, %3, %4);";
+	QString code = "wp_pushWayPoint(%1, '%2', %3, %4, %5);";
 	QWebFrame *pFrame;
 	uint itemNr;
 	uint listSize;
 	QString name;
 	float lat;
 	float lon;
+	int id;
 	int alt;
 
 	listSize = m_pWpList->size();
@@ -99,11 +100,12 @@ void WebMapWayPointView::setWayPointList()
 
 		for(itemNr=0; itemNr<listSize; itemNr++)
 		{
+		  id = m_pWpList->at(itemNr).id();
       name = m_pWpList->at(itemNr).name();
 		  lat = m_pWpList->at(itemNr).latitude();
 		  lon = m_pWpList->at(itemNr).longitude();
       alt = m_pWpList->at(itemNr).altitude();
-      pFrame->evaluateJavaScript(code.arg(name).arg(lat).arg(lon).arg(alt));
+      pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(lat).arg(lon).arg(alt));
 		}
 	}
 }
