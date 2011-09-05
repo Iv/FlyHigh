@@ -27,6 +27,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 	resize(1000, 800);
 
 	m_pWebMap = new WebMap(this, WebMap::MapFlight);
+	m_pWebMap->setPlotEnable(true);
 	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
