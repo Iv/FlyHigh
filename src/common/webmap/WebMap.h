@@ -111,6 +111,7 @@ void selectAirSpace(int nr);
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
 		MapType m_mapType;
+		QNetworkReply *m_pAltReply;
 		uint m_plotEn;
 		bool m_mapReady;
 
@@ -119,7 +120,7 @@ void selectAirSpace(int nr);
 	private slots:
 		void loadFinished(bool ok);
 
-		void replyFinished(QNetworkReply *pReply);
+		void loadAltFinished();
 
 		void populateJavaScriptWindowObject();
 };
