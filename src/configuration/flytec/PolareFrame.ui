@@ -28,7 +28,7 @@
    <property name="currentIndex">
     <number>1</number>
    </property>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="tab_1">
     <attribute name="title">
      <string>Polare Set 1</string>
     </attribute>
@@ -265,7 +265,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="tab_2">
     <attribute name="title">
      <string>Polare Set 2</string>
     </attribute>
