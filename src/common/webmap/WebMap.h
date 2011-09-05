@@ -103,6 +103,8 @@ void selectAirSpace(int nr);
 
 		void setLine(int line);
 
+		void loadAlt(float lat, float lon);
+
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 

@@ -29,6 +29,8 @@
 #include "PolyLineEncoder.h"
 #include "WebMap.h"
 
+#include <QDebug>
+
 WebMap::WebMap(QWidget *pParent, MapType type)
 	:QWebView(pParent)
 {
@@ -479,7 +481,17 @@ void WebMap::loadFinished(bool ok)
 	m_pProgress->hide();
 }
 
-void WebMap::replyFinished(QNetworkReply *pReply){
+void WebMap::replyFinished(QNetworkReply *pReply)
+{
+  QString code = "wp_setAlt(%1);";
+  QString replyStr(pReply->readAll());
+  QWebFrame *pFrame;
+
+qDebug() << replyStr;
+
+	pFrame = page()->mainFrame();
+  pFrame->evaluateJavaScript(code.arg(replyStr.toInt()));
+
 /*
 	QString replyStr(pReply->readAll());
 	QStringList latLonStrList = replyStr.split(",");
@@ -512,4 +524,16 @@ void WebMap::setOk(bool ok)
 void WebMap::setLine(int line)
 {
   emit lineChanged(line);
+}
+
+void WebMap::loadAlt(float lat, float lon)
+{
+  QString url = "http://api.geonames.org/astergdem?lat=%1&lng=%2&username=demo ";
+  QNetworkRequest request(url.arg(lat).arg(lon));
+  QNetworkReply *pReply;
+
+  pReply = m_pNetMgr->get(request);
+
+QString replyStr = pReply->readAll();
+qDebug() << replyStr;
 }
