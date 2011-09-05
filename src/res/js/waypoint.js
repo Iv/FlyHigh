@@ -55,9 +55,9 @@ function wp_unload()
 function wp_pushWayPoint(id, name, lat, lon, alt)
 {
 	var latlng = new GLatLng(lat, lon);
-	var marker = new Marker(latlng, {id: id, title: name, icon: icon, alt: alt});
+	var marker = new Marker(latlng, {id: id, title: name, icon: icon, alt: alt, draggable: true});
 
-	GEvent.addListener(marker, "click", function(latlng)
+	GEvent.addListener(marker, "mousedown", function(latlng)
 	{ 
 		var locInput; 
 		
@@ -73,6 +73,24 @@ function wp_pushWayPoint(id, name, lat, lon, alt)
 		locInput = document.getElementById("alt");
 		locInput.value = this.alt;
 	}); 
+
+	GEvent.addListener(marker, "drag", function(latlng)
+	{
+		var locInput; 
+
+		locInput = document.getElementById("lat");
+		locInput.value = latlng.lat();
+
+		locInput = document.getElementById("lon");
+		locInput.value = latlng.lng();
+	});
+	
+	GEvent.addListener(marker, "dragend", function(latlng)
+	{ 
+		var locInput; 
+
+		WebMap.loadAlt(latlng.lat(), latlng.lng());
+	});
 
 	markers.push(marker);
 }
@@ -111,6 +129,15 @@ function wp_getLatLng()
 	wp = [markers[0].getLatLng().lat(), markers[0].getLatLng().lng()];
 
 	return wp;
+}
+
+function wp_setAlt(alt)
+{
+	var locInput;
+
+	locInput = document.getElementById("alt");
+
+	locInput.value = alt;
 }
 
 function wp_getAlt()
