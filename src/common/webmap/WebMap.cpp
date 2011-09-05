@@ -49,7 +49,6 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 	pFrame->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-	connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 	connect(this, SIGNAL(loadProgress(int)), m_pProgress, SLOT(setValue(int)));
 	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 }
@@ -481,27 +480,16 @@ void WebMap::loadFinished(bool ok)
 	m_pProgress->hide();
 }
 
-void WebMap::replyFinished(QNetworkReply *pReply)
+void WebMap::loadAltFinished()
 {
   QString code = "wp_setAlt(%1);";
-  QString replyStr(pReply->readAll());
+  QString replyStr(m_pAltReply->readAll());
   QWebFrame *pFrame;
 
 qDebug() << replyStr;
 
 	pFrame = page()->mainFrame();
   pFrame->evaluateJavaScript(code.arg(replyStr.toInt()));
-
-/*
-	QString replyStr(pReply->readAll());
-	QStringList latLonStrList = replyStr.split(",");
-
-	if(latLonStrList.size() == 4)
-	{
-		setCenter(latLonStrList[2].toFloat(), latLonStrList[3].toFloat());
-		emit mapReady();
-	}
-*/
 }
 
 void WebMap::populateJavaScriptWindowObject()
@@ -530,10 +518,7 @@ void WebMap::loadAlt(float lat, float lon)
 {
   QString url = "http://api.geonames.org/astergdem?lat=%1&lng=%2&username=demo ";
   QNetworkRequest request(url.arg(lat).arg(lon));
-  QNetworkReply *pReply;
 
-  pReply = m_pNetMgr->get(request);
-
-QString replyStr = pReply->readAll();
-qDebug() << replyStr;
+  m_pAltReply = m_pNetMgr->get(request);
+  connect(m_pAltReply, SIGNAL(finished()), this, SLOT(loadAltFinished()));
 }
