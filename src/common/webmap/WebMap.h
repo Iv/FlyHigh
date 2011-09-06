@@ -103,7 +103,7 @@ void selectAirSpace(int nr);
 
 		void setLine(int line);
 
-		void loadAlt(float lat, float lon);
+		void netRequest(const QString &request, const QString &callback);
 
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
@@ -111,7 +111,7 @@ void selectAirSpace(int nr);
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
 		MapType m_mapType;
-		QNetworkReply *m_pAltReply;
+		QString m_netReqCb;
 		uint m_plotEn;
 		bool m_mapReady;
 
@@ -120,7 +120,7 @@ void selectAirSpace(int nr);
 	private slots:
 		void loadFinished(bool ok);
 
-		void loadAltFinished();
+		void netReply(QNetworkReply *pReply);
 
 		void populateJavaScriptWindowObject();
 };

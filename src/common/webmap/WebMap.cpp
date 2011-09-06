@@ -50,6 +50,7 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	connect(this, SIGNAL(loadProgress(int)), m_pProgress, SLOT(setValue(int)));
+connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
 	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 }
 
@@ -480,16 +481,15 @@ void WebMap::loadFinished(bool ok)
 	m_pProgress->hide();
 }
 
-void WebMap::loadAltFinished()
+void WebMap::netReply(QNetworkReply *pReply)
 {
-  QString code = "wp_setAlt(%1);";
-  QString replyStr(m_pAltReply->readAll());
+  QString code;
+  QString replyStr(pReply->readAll());
   QWebFrame *pFrame;
 
-qDebug() << replyStr;
-
+  code = m_netReqCb + "(%1);";
 	pFrame = page()->mainFrame();
-  pFrame->evaluateJavaScript(code.arg(replyStr.toInt()));
+  pFrame->evaluateJavaScript(code.arg(replyStr));
 }
 
 void WebMap::populateJavaScriptWindowObject()
@@ -514,11 +514,10 @@ void WebMap::setLine(int line)
   emit lineChanged(line);
 }
 
-void WebMap::loadAlt(float lat, float lon)
+void WebMap::netRequest(const QString &request, const QString &callback)
 {
-  QString url = "http://api.geonames.org/astergdem?lat=%1&lng=%2&username=demo ";
-  QNetworkRequest request(url.arg(lat).arg(lon));
+  QNetworkRequest netReq(request);
 
-  m_pAltReply = m_pNetMgr->get(request);
-  connect(m_pAltReply, SIGNAL(finished()), this, SLOT(loadAltFinished()));
+  m_netReqCb = callback;
+  m_pNetMgr->get(netReq);
 }
