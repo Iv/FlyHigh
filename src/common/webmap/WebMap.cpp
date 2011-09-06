@@ -50,7 +50,7 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	connect(this, SIGNAL(loadProgress(int)), m_pProgress, SLOT(setValue(int)));
-connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
+  connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
 	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 }
 
@@ -487,9 +487,9 @@ void WebMap::netReply(QNetworkReply *pReply)
   QString replyStr(pReply->readAll());
   QWebFrame *pFrame;
 
-  code = m_netReqCb + "(%1);";
+  code = m_netReqCb + "(%1, %2);";
 	pFrame = page()->mainFrame();
-  pFrame->evaluateJavaScript(code.arg(replyStr));
+  pFrame->evaluateJavaScript(code.arg(m_netReqId).arg(replyStr));
 }
 
 void WebMap::populateJavaScriptWindowObject()
@@ -514,10 +514,11 @@ void WebMap::setLine(int line)
   emit lineChanged(line);
 }
 
-void WebMap::netRequest(const QString &request, const QString &callback)
+void WebMap::netRequest(int id, const QString &request, const QString &callback)
 {
   QNetworkRequest netReq(request);
 
+  m_netReqId = id;
   m_netReqCb = callback;
   m_pNetMgr->get(netReq);
 }
