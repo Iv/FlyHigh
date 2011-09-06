@@ -103,7 +103,7 @@ void selectAirSpace(int nr);
 
 		void setLine(int line);
 
-		void netRequest(const QString &request, const QString &callback);
+		void netRequest(int id, const QString &request, const QString &callback);
 
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
@@ -112,6 +112,7 @@ void selectAirSpace(int nr);
 		QProgressBar *m_pProgress;
 		MapType m_mapType;
 		QString m_netReqCb;
+		int m_netReqId;
 		uint m_plotEn;
 		bool m_mapReady;
 
