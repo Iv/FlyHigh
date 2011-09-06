@@ -367,5 +367,34 @@ function Marker(point, opts)
 {
 	this.id = opts.id;
 	this.alt = opts.alt;
+	this.modified = false;
+	opts.icon = new GIcon(G_DEFAULT_ICON);
+	opts.icon.image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png";
 	GMarker.call(this, point, opts);
+}
+
+Marker.prototype.setSelect = function(select)
+{
+	if(select)
+	{
+		if(this.modified)
+		{
+			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=EE0000,FFFF00,000000&ext=.png");
+		}
+		else
+		{
+			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=00EE00,FFFF00,000000&ext=.png");
+		}
+	}
+	else
+	{
+		if(this.modified)
+		{
+			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,EE0000,000000&ext=.png");
+		}
+		else
+		{
+			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png");
+		}
+	}
 }

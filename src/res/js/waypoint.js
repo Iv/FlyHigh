@@ -23,8 +23,8 @@
 
 var geocoder = null;
 var map = null;
-var icon;
 var markers = [];
+var prevMarker = null;
 
 function wp_load()
 {
@@ -36,9 +36,6 @@ function wp_load()
 		map.addMapType(G_PHYSICAL_MAP);
 		map.setMapType(G_PHYSICAL_MAP);
 		map.enableScrollWheelZoom();
-
-		icon = new GIcon(G_DEFAULT_ICON);
-		icon.image = "http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=FFFFFF,008CFF,000000&ext=.png";
 
 		// markers are set before
 		var markerCluster = new MarkerClusterer(map, markers);
@@ -55,34 +52,34 @@ function wp_unload()
 function wp_pushWayPoint(id, name, lat, lon, alt)
 {
 	var latlng = new GLatLng(lat, lon);
-	var marker = new Marker(latlng, {id: id, title: name, icon: icon, alt: alt, draggable: true});
+	var marker;
+
+	marker = new Marker(latlng, {id: id, title: name, alt: alt, draggable: true});
 
 	GEvent.addListener(marker, "mousedown", function(latlng)
 	{ 
-		var locInput; 
+		wp_setName(this.getTitle());
+		wp_setLatLng(latlng.lat(), latlng.lng());
+		wp_setAlt(this.alt);
 		
-		locInput = document.getElementById("name");
-		locInput.value = this.getTitle();
+		if(prevMarker)
+		{
+			prevMarker.setSelect(false);
+		}
 
-		locInput = document.getElementById("lat");
-		locInput.value = this.getLatLng().lat();
-		
-		locInput = document.getElementById("lon");
-		locInput.value = this.getLatLng().lng();
-
-		locInput = document.getElementById("alt");
-		locInput.value = this.alt;
+		this.setSelect(true);
+		prevMarker = this;
 	}); 
+
+	GEvent.addListener(marker, "dragstart", function(latlng)
+	{
+		this.modified = true;
+		this.setSelect(true);
+	});
 
 	GEvent.addListener(marker, "drag", function(latlng)
 	{
-		var locInput; 
-
-		locInput = document.getElementById("lat");
-		locInput.value = latlng.lat();
-
-		locInput = document.getElementById("lon");
-		locInput.value = latlng.lng();
+		wp_setLatLng(latlng.lat(), latlng.lng());
 	});
 	
 	GEvent.addListener(marker, "dragend", function(latlng)
@@ -95,10 +92,19 @@ function wp_pushWayPoint(id, name, lat, lon, alt)
 		req += latlng.lng();
 		req += "&sensor=false";
 
-		WebMap.netRequest(req, "wp_altReply");
+		WebMap.netRequest(this.id, req, "wp_altReply");
 	});
 
 	markers.push(marker);
+}
+
+function wp_setName(name)
+{
+	var locInput;
+
+	locInput = document.getElementById("name");
+
+	locInput.value = name;
 }
 
 function wp_getName()
@@ -128,6 +134,17 @@ function wp_getCountry()
 	return locInput.value;
 }
 
+function wp_setLatLng(lat, lng)
+{
+	var locInput;
+
+	locInput = document.getElementById("lat");
+	locInput.value = lat;
+	
+	locInput = document.getElementById("lon");
+	locInput.value = lng;
+}
+
 function wp_getLatLng()
 {
 	var wp;
@@ -137,12 +154,24 @@ function wp_getLatLng()
 	return wp;
 }
 
-function wp_altReply(param)
+function wp_altReply(id, param)
 {
+	var alt;
+	var nr;
+
 	if(param.status == "OK")
 	{
-		alert("wp_altReply! " + param.results[0].elevation);
-		wp_setAlt(Math.round(param.results[0].elevation));
+		alt = Math.round(param.results[0].elevation);
+		wp_setAlt(alt);
+		
+		for(nr=0; nr<markers.length; nr++)
+		{
+			if(markers[nr].id == id)
+			{
+				markers[nr].alt = alt;
+				break;
+			}
+		}
 	}
 }
 
