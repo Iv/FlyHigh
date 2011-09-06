@@ -86,10 +86,16 @@ function wp_pushWayPoint(id, name, lat, lon, alt)
 	});
 	
 	GEvent.addListener(marker, "dragend", function(latlng)
-	{ 
-		var locInput; 
+	{
+		var req;
 
-		WebMap.loadAlt(latlng.lat(), latlng.lng());
+		req = "http://maps.googleapis.com/maps/api/elevation/json?locations="
+		req += latlng.lat();
+		req += ",";
+		req += latlng.lng();
+		req += "&sensor=false";
+
+		WebMap.netRequest(req, "wp_altReply");
 	});
 
 	markers.push(marker);
@@ -129,6 +135,15 @@ function wp_getLatLng()
 	wp = [markers[0].getLatLng().lat(), markers[0].getLatLng().lng()];
 
 	return wp;
+}
+
+function wp_altReply(param)
+{
+	if(param.status == "OK")
+	{
+		alert("wp_altReply! " + param.results[0].elevation);
+		wp_setAlt(Math.round(param.results[0].elevation));
+	}
 }
 
 function wp_setAlt(alt)
