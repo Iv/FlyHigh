@@ -24,7 +24,7 @@
 var geocoder = null;
 var map = null;
 var markers = [];
-var prevMarker = null;
+var curMarker = null;
 
 function wp_load()
 {
@@ -49,26 +49,29 @@ function wp_unload()
 	GUnload();
 }
 
-function wp_pushWayPoint(id, name, lat, lon, alt)
+function wp_pushWayPoint(opts)
 {
-	var latlng = new GLatLng(lat, lon);
+	var latlng = new GLatLng(opts.lat, opts.lon);
 	var marker;
 
-	marker = new Marker(latlng, {id: id, title: name, alt: alt, draggable: true});
+	marker = new Marker(latlng, {id: opts.id, title: opts.name, spot: opts.spot,
+											country: opts.country, alt: opts.alt, draggable: true});
 
 	GEvent.addListener(marker, "mousedown", function(latlng)
 	{ 
 		wp_setName(this.getTitle());
+		wp_setSpot(this.spot);
+		wp_setCountry(this.country);
 		wp_setLatLng(latlng.lat(), latlng.lng());
 		wp_setAlt(this.alt);
 		
-		if(prevMarker)
+		if(curMarker)
 		{
-			prevMarker.setSelect(false);
+			curMarker.setSelect(false);
 		}
 
 		this.setSelect(true);
-		prevMarker = this;
+		curMarker = this;
 	}); 
 
 	GEvent.addListener(marker, "dragstart", function(latlng)
@@ -98,6 +101,14 @@ function wp_pushWayPoint(id, name, lat, lon, alt)
 	markers.push(marker);
 }
 
+function wp_setMarkerName(name)
+{
+	if(curMarker)
+	{
+		curMarker.setName(name);
+	}
+}
+
 function wp_setName(name)
 {
 	var locInput;
@@ -116,6 +127,23 @@ function wp_getName()
 	return locInput.value;
 }
 
+function wp_setMarkerSpot(spot)
+{
+	if(curMarker)
+	{
+		curMarker.setSpot(spot);
+	}
+}
+
+function wp_setSpot(spot)
+{
+	var locInput;
+
+	locInput = document.getElementById("spot");
+
+	locInput.value = spot;
+}
+
 function wp_getSpot()
 {
 	var locInput;
@@ -125,6 +153,23 @@ function wp_getSpot()
 	return locInput.value;
 }
 
+function wp_setMarkerCountry(country)
+{
+	if(curMarker)
+	{
+		curMarker.setCountry(country);
+	}
+}
+
+function wp_setCountry(country)
+{
+	var locInput;
+
+	locInput = document.getElementById("country");
+
+	locInput.value = country;
+}
+
 function wp_getCountry()
 {
 	var locInput;
@@ -132,6 +177,22 @@ function wp_getCountry()
 	locInput = document.getElementById("country");
 
 	return locInput.value;
+}
+
+function wp_setMarkerLat(lat)
+{
+	if(curMarker)
+	{
+		curMarker.setLat(lat);
+	}
+}
+
+function wp_setMarkerLon(lon)
+{
+	if(curMarker)
+	{
+		curMarker.setLon(lon);
+	}
 }
 
 function wp_setLatLng(lat, lng)
@@ -172,6 +233,14 @@ function wp_altReply(id, param)
 				break;
 			}
 		}
+	}
+}
+
+function wp_setMarkerAlt(alt)
+{
+	if(curMarker)
+	{
+		curMarker.setAlt(alt);
 	}
 }
 
