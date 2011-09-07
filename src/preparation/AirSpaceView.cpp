@@ -70,11 +70,6 @@ void AirSpaceView::paintEvent(QPaintEvent *pEvent)
 	drawAirspace();
 }
 
-void AirSpaceView::closeEvent(QCloseEvent *pEvent)
-{
-	pEvent->ignore();
-}
-
 void AirSpaceView::mousePressEvent(QMouseEvent *pEvent)
 {
 	if(pEvent->button() == Qt::LeftButton)

@@ -43,8 +43,6 @@ class AirSpaceView: public QWidget
 	protected:
 		void paintEvent(QPaintEvent *pEvent);
 
-		void closeEvent(QCloseEvent *pEvent);
-
 		void mousePressEvent(QMouseEvent *pEvent);
 
 		void mouseReleaseEvent(QMouseEvent *pEvent);
