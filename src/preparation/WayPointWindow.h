@@ -38,15 +38,25 @@ class WayPointWindow: public TableWindow
 
 	private:
 		void setWpToRow(uint row, WayPoint &wp);
+
 		virtual void populateTable();
 
 	private slots:
 		void file_update();
+
 		void file_AddToSqlDB();
+
 		void file_AddToGps();
+
 		void file_delete();
+
 		void file_addNewWp();
+
 		void file_Edit();
+
+		void file_editWebMap();
+
+		void file_viewWebMap();
 
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};

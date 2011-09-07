@@ -26,6 +26,7 @@
 #include <QStringList>
 #include <q3table.h>
 #include "AirSpace.h"
+#include "WebMapAirSpaceView.h"
 #include "AirSpaceWindow.h"
 #include "IGPSDevice.h"
 #include "IAirSpaceForm.h"
@@ -41,6 +42,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
+  m_pWebMapView = NULL;
+  m_pAirSpaceView = NULL;
 	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
 	switch(src)
@@ -79,6 +82,16 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pExpAct,SIGNAL(triggered()), this, SLOT(exportTable()));
 	pFileMenu->addAction(pExpAct);
 
+  QAction* pAirSpaceViewAct = new QAction(tr("View Airspace..."), this);
+	connect(pAirSpaceViewAct,SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
+	pFileMenu->addAction(pAirSpaceViewAct);
+
+/**
+  QAction* pWebMapAct = new QAction(tr("View Webmap..."), this);
+	connect(pWebMapAct,SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+	pFileMenu->addAction(pWebMapAct);
+*/
+
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
@@ -98,11 +111,9 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
 
-	m_lastModified = 0;
+  connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 
-	m_airSpaceView.setGeometry(QRect(0, 0, 500, 500));
-	m_airSpaceView.setWindowTitle("AirSpace View");
-	connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+	m_lastModified = 0;
 
 	// read db
 	emit dataChanged();
@@ -110,6 +121,19 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 
 AirSpaceWindow::~AirSpaceWindow()
 {
+}
+
+void AirSpaceWindow::closeEvent(QCloseEvent *pEvent)
+{
+  if(m_pAirSpaceView != NULL)
+  {
+    delete m_pAirSpaceView;
+  }
+
+  if(m_pWebMapView != NULL)
+  {
+    delete m_pWebMapView;
+  }
 }
 
 void AirSpaceWindow::refresh()
@@ -170,8 +194,6 @@ void AirSpaceWindow::file_open()
 				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 			}
 
-			m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
-			m_airSpaceView.show();
 			pTable->selectRow(0);
 			selectionChanged();
 		}
@@ -221,9 +243,8 @@ void AirSpaceWindow::populateTable()
 			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 		}
 
-		m_airSpaceView.setAirSpaceList(&m_airSpaceList, 0);
-		m_airSpaceView.show();
 		pTable->selectRow(0);
+		selectionChanged();
 		m_pDb->close();
 		TableWindow::unsetCursor();
 	}
@@ -249,9 +270,46 @@ void AirSpaceWindow::file_AddToGPS()
 	emit dataChanged();
 }
 
+void AirSpaceWindow::file_viewAirSpace()
+{
+	if((m_airSpaceList.size() > 0) && (m_pAirSpaceView == NULL))
+	{
+	  m_pAirSpaceView = new AirSpaceView();
+    m_pAirSpaceView->setGeometry(QRect(0, 0, 500, 500));
+    m_pAirSpaceView->setWindowTitle(tr("View AirSpaces"));
+    m_pAirSpaceView->setAirSpaceList(&m_airSpaceList, 0);
+    connect(m_pAirSpaceView, SIGNAL(finished(int)), this, SLOT(airSpaceViewFinished(int)));
+    m_pAirSpaceView->show();
+    selectionChanged();
+	}
+}
+
+void AirSpaceWindow::file_viewWebMap()
+{
+	if((m_airSpaceList.size() > 0) && (m_pWebMapView == NULL))
+	{
+		m_pWebMapView = new WebMapAirSpaceView(tr("View AirSpaces"));
+		m_pWebMapView->setAirSpaceList(&m_airSpaceList);
+		m_pWebMapView->loadMap();
+    connect(m_pWebMapView, SIGNAL(airSpaceChanged(int)), this, SLOT(airSpaceChanged(int)));
+    connect(m_pWebMapView, SIGNAL(finished(int)), this, SLOT(webMapFinished(int)));
+    m_pWebMapView->setWindowModality(Qt::NonModal);
+		m_pWebMapView->show();
+		selectionChanged();
+	}
+}
+
 void AirSpaceWindow::selectionChanged()
 {
-	m_airSpaceView.setSelected(getTable()->currentRow());
+  if(m_pAirSpaceView != NULL)
+  {
+    m_pAirSpaceView->setSelected(getTable()->currentRow());
+  }
+
+	if(m_pWebMapView != NULL)
+	{
+	  m_pWebMapView->selectAirSpace(getTable()->currentRow());
+	}
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
@@ -262,4 +320,24 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 	pTable->setText(row, High, pAirSpace->high());
 	pTable->setText(row, Low, pAirSpace->low());
 	pTable->setText(row, Class, pAirSpace->airspaceClass());
+}
+
+void AirSpaceWindow::airSpaceViewFinished(int res)
+{
+  m_pAirSpaceView = NULL;
+}
+
+void AirSpaceWindow::webMapFinished(int res)
+{
+  m_pWebMapView = NULL;
+}
+
+void AirSpaceWindow::airSpaceChanged(int line)
+{
+  getTable()->selectRow(line);
+
+  if(m_pAirSpaceView != NULL)
+  {
+    m_pAirSpaceView->setSelected(getTable()->currentRow());
+  }
 }
