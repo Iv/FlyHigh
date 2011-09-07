@@ -15,37 +15,37 @@
 				<tr>
 					<td>Name</td>
 					<td>
-						<input id="name" type="text" maxlength="17" size="17" value=""/>
+						<input id="name" type="text" onchange="wp_setMarkerName(this.value)" maxlength="17" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Spot</td>
 					<td>
-						<input id="spot" type="text" maxlength="17" size="17" value=""/>
+						<input id="spot" type="text" onchange="wp_setMarkerSpot(this.value)" maxlength="17" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Country</td>
 					<td>
-						<input id="country" type="text" maxlength="2" size="17" value=""/>
+						<input id="country" type="text" onchange="wp_setMarkerCountry(this.value)" maxlength="2" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Latitude</td>
 					<td>
-						<input id="lat" type="text" maxlength="8" size="17" value="" onkeypress="validateNum(event);"/>
+						<input id="lat" type="text" onchange="wp_setMarkerLat(this.value)" maxlength="8" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Longitude</td>
 					<td>
-						<input id="lon" type="text" maxlength="9" size="17" value="" onkeypress="validateNum(event);"/>
+						<input id="lon" type="text" onchange="wp_setMarkerLon(this.value)" maxlength="9" size="17" value="" onkeypress="validateNum(event);"/>
 					</td>
 				</tr>
 				<tr>
 					<td>Altitude</td>
 					<td>
-						<input id="alt" type="text" maxlength="5" size="17" value=""/>
+						<input id="alt" type="text" onchange="wp_setMarkerAlt(this.value)" maxlength="5" size="17" value=""/>
 					</td>
 				</tr>
 			</table>
