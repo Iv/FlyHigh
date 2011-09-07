@@ -31,6 +31,7 @@
 #include "IWayPointForm.h"
 #include "WayPointWindow.h"
 #include "WayPoint.h"
+#include "WebMapWayPointView.h"
 
 #include <stdio.h>
 
@@ -80,6 +81,15 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pDelAct = new QAction(tr("Delete"), this);
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
+	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
+	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+	pFileMenu->addAction(pViewWebMapAct);
+
+/**
+	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
+	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
+	pFileMenu->addAction(pEditWebMapAct);
+*/
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -275,6 +285,42 @@ void WayPointWindow::file_Edit()
 	}
 	// refill table
 	emit dataChanged();
+}
+
+void WayPointWindow::file_editWebMap()
+{
+  WebMapWayPointView *pView;
+	int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    pView = new WebMapWayPointView(tr("Edit WayPoint"));
+		pView->setWayPointList(&m_wpList);
+
+    if((pView->exec() == QDialog::Accepted) && m_pDb->open())
+    {
+      m_pDb->update(m_wpList[row]);
+      m_pDb->close();
+    }
+	}
+
+	// refill table
+	emit dataChanged();
+}
+
+void WayPointWindow::file_viewWebMap()
+{
+	WebMapWayPointView *pView;
+
+	if(m_wpList.size() >= 0)
+	{
+		pView = new WebMapWayPointView(tr("View WayPoints"));
+		pView->setWayPointList(&m_wpList);
+		pView->loadMap();
+		pView->exec();
+	}
 }
 
 void WayPointWindow::setWpToRow(uint row, WayPoint &wp)

@@ -27,6 +27,7 @@
 #include "TableWindow.h"
 
 class QWidget;
+class WebMapAirSpaceView;
 
 class AirSpaceWindow: public TableWindow
 {
@@ -38,18 +39,35 @@ class AirSpaceWindow: public TableWindow
 		~AirSpaceWindow();
 
 	protected:
+    void closeEvent(QCloseEvent *pEvent);
+
 		virtual void refresh();
+
 		void selectionChanged();
 
 	private:
 		void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
+
 		virtual void populateTable();
 
 	private slots:
 		void file_open();
+
 		void file_delete();
+
 		void file_update();
+
 		void file_AddToGPS();
+
+    void file_viewAirSpace();
+
+		void file_viewWebMap();
+
+    void airSpaceViewFinished(int);
+
+		void webMapFinished(int res);
+
+    void airSpaceChanged(int line);
 
 	private:
 		enum Fields{Name, Low, High, Class};
@@ -57,7 +75,8 @@ class AirSpaceWindow: public TableWindow
 		IDataBase *m_pDb;
 		int m_lastModified;
 		AirSpaceList m_airSpaceList;
-		AirSpaceView m_airSpaceView;
+		AirSpaceView *m_pAirSpaceView;
+    WebMapAirSpaceView *m_pWebMapView;
 };
 
 #endif
