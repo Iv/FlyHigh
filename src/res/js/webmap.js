@@ -366,16 +366,74 @@ Marker.prototype = new GMarker(new GLatLng(0, 0));
 function Marker(point, opts)
 {
 	this.id = opts.id;
+	this.spot = opts.spot;
+	this.country = opts.country;
 	this.alt = opts.alt;
 	this.modified = false;
+	this.select = false;
 	opts.icon = new GIcon(G_DEFAULT_ICON);
 	opts.icon.image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png";
 	GMarker.call(this, point, opts);
 }
 
+Marker.prototype.setName = function(name)
+{
+alert("setTitle not defined");
+	this.setTitle(name);
+	this.modified = true;
+	this.update();
+}
+
+Marker.prototype.setSpot = function(spot)
+{
+	this.spot = spot;
+	this.modified = true;
+	this.update();
+}
+
+Marker.prototype.setCountry = function(country)
+{
+	this.country = country;
+	this.modified = true;
+	this.update();
+}
+
+Marker.prototype.setLat = function(lat)
+{
+	var latlng;
+
+	latlng = new GLatLng(lat, this.getLatLng().lng());
+	this.setLatLng(latlng);
+	this.modified = true;
+	this.update();
+}
+
+Marker.prototype.setLon = function(lon)
+{
+	var latlng;
+
+	latlng = new GLatLng(this.getLatLng().lat(), lon);
+	this.setLatLng(latlng);
+	this.modified = true;
+	this.update();
+}
+
+Marker.prototype.setAlt = function(alt)
+{
+	this.alt = alt;
+	this.modified = true;
+	this.update();
+}
+
 Marker.prototype.setSelect = function(select)
 {
-	if(select)
+	this.select = select;
+	this.update();
+}
+
+Marker.prototype.update = function()
+{
+	if(this.select)
 	{
 		if(this.modified)
 		{
