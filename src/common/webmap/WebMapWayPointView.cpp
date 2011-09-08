@@ -19,19 +19,24 @@
  ***************************************************************************/
 #include <QWebFrame>
 
+#include <QDebug>
+
 #include "WebMap.h"
 #include "WebMapWayPointView.h"
 
 WebMapWayPointView::WebMapWayPointView(const QString &name)
 {
+  QWebFrame *pFrame;
 	QWidget::setWindowTitle(name);
 	resize(1000, 850);
 
 	m_pWpList = NULL;
 	m_editItem = 0;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
+  pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
+  connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMapWayPointView::~WebMapWayPointView()
@@ -59,6 +64,23 @@ void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 }
 
+void WebMapWayPointView::saveWayPoint(int id, const QString &name, const QString &spot,
+                                      const QString &country, double lat, double lon,
+                                      int alt)
+{
+  WayPoint wp;
+
+  wp.setId(id);
+  wp.setName(name);
+  wp.setSpot(spot);
+  wp.setCountry(country);
+  wp.setLatitude(lat);
+  wp.setLongitude(lon);
+  wp.setAltitude(alt);
+
+  emit changedWayPoint(wp);
+}
+
 void WebMapWayPointView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
@@ -82,11 +104,14 @@ void WebMapWayPointView::load()
 
 void WebMapWayPointView::setWayPointList()
 {
-	QString code = "wp_pushWayPoint(%1, '%2', %3, %4, %5);";
+	QString code = "wp_pushWayPoint({id: %1, name: '%2', spot: '%3', country: '%4',"
+                 " lat: %5, lon: %6, alt: %7});";
 	QWebFrame *pFrame;
 	uint itemNr;
 	uint listSize;
 	QString name;
+	QString country;
+	QString spot;
 	float lat;
 	float lon;
 	int id;
@@ -102,10 +127,18 @@ void WebMapWayPointView::setWayPointList()
 		{
 		  id = m_pWpList->at(itemNr).id();
       name = m_pWpList->at(itemNr).name();
+      spot = m_pWpList->at(itemNr).spot();
+      country = m_pWpList->at(itemNr).country();
 		  lat = m_pWpList->at(itemNr).latitude();
 		  lon = m_pWpList->at(itemNr).longitude();
       alt = m_pWpList->at(itemNr).altitude();
-      pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(lat).arg(lon).arg(alt));
+      pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(spot).arg(country)
+                                 .arg(lat).arg(lon).arg(alt));
 		}
 	}
+}
+
+void WebMapWayPointView::populateJavaScriptWindowObject()
+{
+	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPointView", this);
 }

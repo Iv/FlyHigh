@@ -42,8 +42,15 @@ class WebMapWayPointView: public QDialog
 
 		void loadMap();
 
+	signals:
+		void changedWayPoint(const WayPoint &wp);
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
+
+	protected slots:
+		void saveWayPoint(int id, const QString &name, const QString &spot, const QString &country,
+                      double lat, double lon, int alt);
 
 	private:
 		WebMap *m_pWebMap;
@@ -58,6 +65,8 @@ class WebMapWayPointView: public QDialog
 		void mapReady();
 
 		void finished(int res);
+
+		void populateJavaScriptWindowObject();
 };
 
 #endif
