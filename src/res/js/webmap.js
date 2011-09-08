@@ -384,6 +384,16 @@ alert("setTitle not defined");
 	this.update();
 }
 
+Marker.prototype.getId = function()
+{
+	return this.id;
+}
+
+Marker.prototype.getName = function()
+{
+	return this.getTitle();
+}
+
 Marker.prototype.setSpot = function(spot)
 {
 	this.spot = spot;
@@ -391,11 +401,21 @@ Marker.prototype.setSpot = function(spot)
 	this.update();
 }
 
+Marker.prototype.getSpot = function()
+{
+	return this.spot;
+}
+
 Marker.prototype.setCountry = function(country)
 {
 	this.country = country;
 	this.modified = true;
 	this.update();
+}
+
+Marker.prototype.getCountry = function()
+{
+	return this.country;
 }
 
 Marker.prototype.setLat = function(lat)
@@ -408,6 +428,11 @@ Marker.prototype.setLat = function(lat)
 	this.update();
 }
 
+Marker.prototype.getLat = function()
+{
+	return this.getLatLng().lat();
+}
+
 Marker.prototype.setLon = function(lon)
 {
 	var latlng;
@@ -418,6 +443,11 @@ Marker.prototype.setLon = function(lon)
 	this.update();
 }
 
+Marker.prototype.getLon = function()
+{
+	return this.getLatLng().lng();
+}
+
 Marker.prototype.setAlt = function(alt)
 {
 	this.alt = alt;
@@ -425,10 +455,20 @@ Marker.prototype.setAlt = function(alt)
 	this.update();
 }
 
+Marker.prototype.getAlt = function()
+{
+	return this.alt;
+}
+
 Marker.prototype.setSelect = function(select)
 {
 	this.select = select;
 	this.update();
+}
+
+Marker.prototype.getModified = function()
+{
+	return this.modified;
 }
 
 Marker.prototype.update = function()
