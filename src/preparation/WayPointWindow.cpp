@@ -35,6 +35,8 @@
 
 #include <stdio.h>
 
+#include <QDebug>
+
 WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
@@ -81,11 +83,11 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pDelAct = new QAction(tr("Delete"), this);
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
+
+/**
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
-
-/**
 	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
 	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
 	pFileMenu->addAction(pEditWebMapAct);
@@ -317,10 +319,37 @@ void WayPointWindow::file_viewWebMap()
 	if(m_wpList.size() >= 0)
 	{
 		pView = new WebMapWayPointView(tr("View WayPoints"));
+		connect(pView, SIGNAL(changedWayPoint(const WayPoint&)), this,
+            SLOT(updateWayPoint(const WayPoint&)));
 		pView->setWayPointList(&m_wpList);
 		pView->loadMap();
-		pView->exec();
+
+    if((pView->exec() == QDialog::Accepted) && m_pDb->open())
+    {
+//      m_pDb->update(m_wpList[row]);
+      m_pDb->close();
+    }
 	}
+}
+
+void WayPointWindow::updateWayPoint(const WayPoint &wp)
+{
+  WayPoint locWp;
+
+  locWp = wp;
+
+  qDebug() << "WayPointWindow::changedWayPoint " << locWp.id() << locWp.name()
+    << locWp.country() << locWp.spot()
+    << locWp.altitude() << locWp.latitude() << locWp.longitude();
+
+  if(m_pDb->open())
+  {
+    m_pDb->update(locWp);
+    m_pDb->close();
+
+  	// refill table
+    emit dataChanged();
+  }
 }
 
 void WayPointWindow::setWpToRow(uint row, WayPoint &wp)

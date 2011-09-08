@@ -58,6 +58,8 @@ class WayPointWindow: public TableWindow
 
 		void file_viewWebMap();
 
+		void updateWayPoint(const WayPoint &wp);
+
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 
