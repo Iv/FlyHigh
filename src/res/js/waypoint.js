@@ -261,3 +261,22 @@ function wp_getAlt()
 
 	return locInput.value;
 }
+
+function wp_saveWayPoints()
+{
+	var marker;
+
+	for(nr=0; nr<markers.length; nr++)
+	{
+		marker = markers[nr];
+
+		if(marker.getModified())
+		{
+			WebMapWayPointView.saveWayPoint(marker.getId(),
+				marker.getName(), marker.getSpot(), marker.getCountry(),
+				marker.getLat(), marker.getLon(), marker.getAlt());
+		}
+	}
+
+	WebMap.setOk(true);
+}
