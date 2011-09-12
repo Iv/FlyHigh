@@ -54,12 +54,12 @@ function wp_pushWayPoint(opts)
 	var latlng = new GLatLng(opts.lat, opts.lon);
 	var marker;
 
-	marker = new Marker(latlng, {id: opts.id, title: opts.name, spot: opts.spot,
+	marker = new Marker(latlng, {id: opts.id, name: opts.name, spot: opts.spot,
 											country: opts.country, alt: opts.alt, draggable: true});
 
 	GEvent.addListener(marker, "mousedown", function(latlng)
 	{ 
-		wp_setName(this.getTitle());
+		wp_setName(this.getName());
 		wp_setSpot(this.spot);
 		wp_setCountry(this.country);
 		wp_setLatLng(latlng.lat(), latlng.lng());
@@ -181,17 +181,39 @@ function wp_getCountry()
 
 function wp_setMarkerLat(lat)
 {
+	var numValue;
+
 	if(curMarker)
 	{
-		curMarker.setLat(lat);
+		numValue = parseFloat(lat);
+
+		if((numValue >= -90) && (numValue <= 90))
+		{
+			curMarker.setLat(numValue);
+		}
+		else
+		{
+			wp_setLatLng(curMarker.getLat(), curMarker.getLon());
+		}
 	}
 }
 
 function wp_setMarkerLon(lon)
 {
+	var numValue;
+
 	if(curMarker)
 	{
-		curMarker.setLon(lon);
+		numValue = parseFloat(lon);
+
+		if((numValue >= -180) && (numValue <= 180))
+		{
+			curMarker.setLon(numValue);
+		}
+		else
+		{
+			wp_setLatLng(curMarker.getLat(), curMarker.getLon());
+		}
 	}
 }
 
@@ -238,9 +260,20 @@ function wp_altReply(id, param)
 
 function wp_setMarkerAlt(alt)
 {
+	var numValue;
+
 	if(curMarker)
 	{
-		curMarker.setAlt(alt);
+		numValue = parseInt(alt);
+
+		if((numValue >= -500) && (numValue <= 8000))
+		{
+			curMarker.setAlt(numValue);
+		}
+		else
+		{
+			wp_setAlt(curMarker.getAlt());
+		}
 	}
 }
 
