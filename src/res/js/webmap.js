@@ -341,31 +341,13 @@ function setLegend(idx)
 	timeDiv.innerHTML = "Time: " + FlightData.time[idx];
 }
 
-function validateNum(event)
-{
-	var theEvent = event || window.event;
-	var key = theEvent.keyCode || theEvent.which;
-	var regex = /[0-9]|\./;
-
-	key = String.fromCharCode(key);
-
-	if(!regex.test(key))
-	{
-		theEvent.returnValue = false;
-
-		if(theEvent.preventDefault)
-		{
-			theEvent.preventDefault();
-		}
-	}
-}
-
 // Extended GMarker
 Marker.prototype = new GMarker(new GLatLng(0, 0));
  
 function Marker(point, opts)
 {
 	this.id = opts.id;
+	this.name = opts.name;
 	this.spot = opts.spot;
 	this.country = opts.country;
 	this.alt = opts.alt;
@@ -376,22 +358,21 @@ function Marker(point, opts)
 	GMarker.call(this, point, opts);
 }
 
-Marker.prototype.setName = function(name)
-{
-alert("setTitle not defined");
-	this.setTitle(name);
-	this.modified = true;
-	this.update();
-}
-
 Marker.prototype.getId = function()
 {
 	return this.id;
 }
 
+Marker.prototype.setName = function(name)
+{
+	this.name = name;
+	this.modified = true;
+	this.update();
+}
+
 Marker.prototype.getName = function()
 {
-	return this.getTitle();
+	return this.name;
 }
 
 Marker.prototype.setSpot = function(spot)
