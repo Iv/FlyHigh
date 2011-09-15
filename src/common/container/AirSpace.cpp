@@ -25,6 +25,7 @@
 
 AirSpace::AirSpace()
 {
+  m_id = -1;
 	m_name = "";
 	m_airspaceClass = "";
 	m_high = "";
@@ -35,6 +36,16 @@ AirSpace::AirSpace()
 
 AirSpace::~AirSpace()
 {
+}
+
+int AirSpace::id() const
+{
+  return m_id;
+}
+
+void AirSpace::setId(int id)
+{
+  m_id = id;
 }
 
 const QString& AirSpace::name() const
