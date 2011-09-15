@@ -35,6 +35,10 @@ class AirSpace
 
 		virtual ~AirSpace();
 
+    int id() const;
+
+		void setId(int id);
+
 		const QString& name() const;
 
 		void setName(const QString &name);
@@ -70,6 +74,7 @@ class AirSpace
 		bool isInside(const WayPoint &wp) const;
 
 	private:
+    int m_id;
 		QString m_name;
 		QString m_airspaceClass;
 		QString m_high;
