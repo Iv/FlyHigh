@@ -44,6 +44,8 @@ class AirSpaceList
 
 		AirSpace* operator[] (int index);
 
+		AirSpace* at(int index);
+
 		const AirSpace* at(int index) const;
 
 		iterator begin();

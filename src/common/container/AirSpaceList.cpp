@@ -58,6 +58,11 @@ AirSpace* AirSpaceList::operator[] (int index)
 	return m_airSpaceList[index];
 }
 
+AirSpace* AirSpaceList::at(int index)
+{
+	return m_airSpaceList[index];
+}
+
 const AirSpace* AirSpaceList::at(int index) const
 {
 	return m_airSpaceList.at(index);
