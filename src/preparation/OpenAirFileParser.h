@@ -36,6 +36,7 @@ class OpenAirFileParser
 	private:
 		double m_arcCenterLat;
 		double m_arcCenterLon;
+    int m_id;
 		bool m_arcDir;
 
 		void parseString(char *pRecord, QString &str);
