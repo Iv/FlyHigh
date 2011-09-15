@@ -33,6 +33,7 @@
 
 OpenAirFileParser::OpenAirFileParser()
 {
+  m_id = 0;
 }
 
 void OpenAirFileParser::parse(QByteArray &openAirData, AirSpaceList &airspaceList)
@@ -51,7 +52,9 @@ void OpenAirFileParser::parse(QByteArray &openAirData, AirSpaceList &airspaceLis
 		{
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
-				pAirspace = new AirSpace;
+				pAirspace = new AirSpace();
+        m_id++;
+				pAirspace->setId(m_id);
 				airspaceList.push_back(pAirspace);
 				parseString(pRecord, strValue);
 				pAirspace->setAirspaceClass(strValue);
