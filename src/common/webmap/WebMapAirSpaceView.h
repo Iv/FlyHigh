@@ -51,6 +51,8 @@ class WebMapAirSpaceView: public QDialog
 		WebMap *m_pWebMap;
 		AirSpaceList *m_pAirSpaceList;
 
+		void setAirSpaceList();
+
 	private slots:
 		void mapReady();
 
