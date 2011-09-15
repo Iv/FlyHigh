@@ -9,8 +9,9 @@
      <file>webmap_flight.html</file>
      <file>webmap_route.html</file>
      <file>waypoint.html</file>
-		 <file>airspace.html</file>
+     <file>airspace.html</file>
      <file>css/webmap.css</file>
+     <file>js/flight.js</file>
      <file>js/webmap.js</file>
      <file>js/jscoord-1.1.1.js</file>
      <file>js/json2.js</file>
@@ -18,6 +19,7 @@
      <file>js/prototype.js</file>
      <file>js/airspace.js</file>
      <file>js/waypoint.js</file>
+     <file>js/route.js</file>
      <file>js/xcplanner.js</file>
      <file>js/chartFX/canvaschart.css</file>
      <file>js/chartFX/canvaschartpainter.js</file>
