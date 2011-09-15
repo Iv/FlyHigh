@@ -44,6 +44,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 
   m_pWebMapView = NULL;
   m_pAirSpaceView = NULL;
+  m_externSelect = false;
 	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
 	switch(src)
@@ -306,10 +307,15 @@ void AirSpaceWindow::selectionChanged()
     m_pAirSpaceView->setSelected(getTable()->currentRow());
   }
 
-	if(m_pWebMapView != NULL)
+	if((m_pWebMapView != NULL) && (m_externSelect == 0))
 	{
 	  m_pWebMapView->selectAirSpace(getTable()->currentRow());
 	}
+
+  if(m_externSelect > 0)
+  {
+    m_externSelect--;
+  }
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
@@ -334,10 +340,6 @@ void AirSpaceWindow::webMapFinished(int res)
 
 void AirSpaceWindow::airSpaceChanged(int line)
 {
+  m_externSelect = 2;
   getTable()->selectRow(line);
-
-  if(m_pAirSpaceView != NULL)
-  {
-    m_pAirSpaceView->setSelected(getTable()->currentRow());
-  }
 }
