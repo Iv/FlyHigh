@@ -23,12 +23,12 @@
 
 var map = null;
 var airspaces = [];
-var polygons = [];
-var labels = [];
 var oldSelect = -1;
 
 function XCLoad()
 {
+	var airspaceNr;
+
 	if(GBrowserIsCompatible())
 	{
 		map = new GMap2(document.getElementById('map'));
@@ -40,28 +40,31 @@ function XCLoad()
 		map.enableScrollWheelZoom();
 
 		// add polygons
-		for(polyNr=0; polyNr<airspaces.length; polyNr++)
+		for(airspaceNr=0; airspaceNr<airspaces.length; airspaceNr++)
 		{
-			var poly = new GPolygon(airspaces[polyNr],"#000000", 1, 1, "#ff0000", 0.1, {clickable:false});
-			map.addOverlay(poly);
-			polygons.push(poly);
+			map.addOverlay(airspaces[airspaceNr].getPolygon());
 		}
 
-		selectAirSpace(0);
+		as_selectAirSpace(0);
 
 		GEvent.addListener(map, "click", function(overlay, point)
 		{
 			if(!overlay)
 			{
+				// select next airspace
+				airspaceNr = oldSelect;
+
 				for(var i=0; i<airspaces.length; i++)
 				{
-					if(isInsidePolygon(airspaces[i], point))
+					airspaceNr = (airspaceNr + 1) % airspaces.length;
+
+					if(airspaces[airspaceNr].isInside(point))
 					{
-						if(i != oldSelect)
+						if(airspaceNr != oldSelect)
 						{
-							selectAirSpace(i);
-							WebMap.setLine(i);
-							break; // Jump out of loop
+							as_selectAirSpace(airspaceNr);
+							WebMap.setLine(airspaceNr);
+							break; // jump out of loop
 						}
 					}
 				}
@@ -76,63 +79,82 @@ function XCUnload()
 	GUnload();
 }
 
-function setAirSpace(label, lat, lon)
+function as_pushAirSpace(lat, lon, opts)
 {
-	var coordNr;
-	var airspace = [];
-	var latlngs = [];
-	var point;
+	var airspace;
 
-	if(lat.length == lon.length)
-	{
-		for(coordNr=0; coordNr<lat.length; coordNr++)
-		{
-			point = new GLatLng(lat[coordNr], lon[coordNr]);
-			airspace.push(point);
-		}
-
-		airspaces.push(airspace);
-		labels.push(label);
-	}
+	airspace = new AirSpace(lat, lon, {id: opts.id});
+	airspaces.push(airspace);
 }
 
-function selectAirSpace(num)
+function as_selectAirSpace(num)
 {
-	if(num < polygons.length)
+	if(num < airspaces.length)
 	{
 		if(oldSelect >= 0)
 		{
-			polygons[oldSelect].setFillStyle({weight: 1, color: "#ff0000", opacity: 0.1});
+			airspaces[oldSelect].setSelect(false);
 		}
 
-		polygons[num].setFillStyle({weight: 1, color: "#ffff00", opacity: 0.5});
+		airspaces[num].setSelect(true);
+		oldSelect = num;
 	}
-
-	oldSelect = num;
 }
 
-function isInsidePolygon(polygon, point)
+// class AirSpace
+function AirSpace(lat, lon, opts)
 {
-  var j = 0;
-  var oddNodes = false;
-  var x = point.lng();
-  var y = point.lat();
+	var vertexNr;
+	var vertex;
 
-	for(var i=0; i < polygon.length; i++)
+	this.id = opts.id;
+	this.vertexes = [];
+	this.polygon = null;
+
+	if(lat.length == lon.length)
+	{
+		for(vertexNr=0; vertexNr<lat.length; vertexNr++)
+		{
+			vertex = new GLatLng(lat[vertexNr], lon[vertexNr]);
+			this.vertexes.push(vertex);
+		}
+	}
+}
+
+AirSpace.prototype.getId = function()
+{
+	return this.id;
+}
+
+AirSpace.prototype.getPolygon = function()
+{
+	this.polygon = new GPolygon(this.vertexes, "#000000", 1, 1, "#ff0000", 0.1, {clickable:false});
+
+	return this.polygon;
+}
+
+AirSpace.prototype.isInside = function(point)
+{
+	var j = 0;
+	var oddNodes = false;
+	var x = point.lng();
+	var y = point.lat();
+
+	for(var i=0; i < this.vertexes.length; i++)
 	{
 		j++;
 
-		if(j == polygon.length)
+		if(j == this.vertexes.length)
 		{
 			j = 0;
 		}
 
-		if(((polygon[i].lat() < y) && (polygon[j].lat() >= y)) ||
-			 ((polygon[j].lat() < y) && (polygon[i].lat() >= y)))
+		if(((this.vertexes[i].lat() < y) && (this.vertexes[j].lat() >= y)) ||
+			 ((this.vertexes[j].lat() < y) && (this.vertexes[i].lat() >= y)))
 		{
-			if(polygon[i].lng() + (y - polygon[i].lat()) /
-				(polygon[j].lat()-polygon[i].lat()) *
-				(polygon[j].lng() - polygon[i].lng()) < x)
+			if(this.vertexes[i].lng() + (y - this.vertexes[i].lat()) /
+				(this.vertexes[j].lat() - this.vertexes[i].lat()) *
+				(this.vertexes[j].lng() - this.vertexes[i].lng()) < x)
 			{
 				oddNodes = !oddNodes
 			}
@@ -140,4 +162,16 @@ function isInsidePolygon(polygon, point)
 	}
 
 	return oddNodes;
+}
+
+AirSpace.prototype.setSelect = function(select)
+{
+	if(select)
+	{
+		this.polygon.setFillStyle({weight: 1, color: "#ffff00", opacity: 0.5});
+	}
+	else
+	{
+		this.polygon.setFillStyle({weight: 1, color: "#ff0000", opacity: 0.1});
+	}
 }
