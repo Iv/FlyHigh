@@ -350,69 +350,6 @@ void WebMap::setVarioList(const FlightPointList::VarioListType &varioList)
 	}
 }
 
-void WebMap::setAirSpaceList(AirSpaceList &airSpaceList)
-{
-	QString code = "setAirSpace('%1', [%2], [%3]);";
-	QString value = "%1";
-	QWebFrame *pFrame;
-	AirSpace *pAirSpace;
-	uint airSpaceNr;
-	uint wpNr;
-	uint airSpaceListSize;
-	uint wpListSize;
-	QString name;
-	QString strLat;
-	QString strLon;
-	float lat;
-	float lon;
-	bool first;
-
-	airSpaceListSize = airSpaceList.size();
-
-	if(airSpaceListSize > 0)
-	{
-    pFrame = page()->mainFrame();
-
-		for(airSpaceNr=0; airSpaceNr<airSpaceListSize; airSpaceNr++)
-		{
-		  first = true;
-		  strLat = "";
-		  strLon = "";
-
-		  pAirSpace = airSpaceList[airSpaceNr];
-		  pAirSpace->createPointList();
-		  wpListSize = pAirSpace->pointList().size();
-
-		  for(wpNr=0; wpNr<wpListSize; wpNr++)
-		  {
-        if(!first)
-        {
-          strLat += ",";
-          strLon += ",";
-        }
-
-        first = false;
-        lat = pAirSpace->pointList().at(wpNr).latitude();
-        lon = pAirSpace->pointList().at(wpNr).longitude();
-        strLat += value.arg(lat);
-        strLon += value.arg(lon);
-		  }
-
-		  name = pAirSpace->name();
-      pFrame->evaluateJavaScript(code.arg(name).arg(strLat).arg(strLon));
-		}
-	}
-}
-
-void WebMap::selectAirSpace(int nr)
-{
-	QString code = "selectAirSpace(%1);";
-	QWebFrame *pFrame;
-
-  pFrame = page()->mainFrame();
-  pFrame->evaluateJavaScript(code.arg(nr));
-}
-
 void WebMap::showPlot()
 {
 	QString code = "showPlot();";
