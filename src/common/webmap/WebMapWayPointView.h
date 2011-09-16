@@ -55,11 +55,6 @@ class WebMapWayPointView: public QDialog
 	private:
 		WebMap *m_pWebMap;
 		WayPoint::WayPointListType *m_pWpList;
-		uint m_editItem;
-
-		void load();
-
-		void setWayPointList();
 
 	private slots:
 		void mapReady();
