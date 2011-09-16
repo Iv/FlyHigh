@@ -104,6 +104,15 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
   pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon).arg(id));
 }
 
+void WebMapAirSpace::selectAirSpace(int nr)
+{
+	QString code = "as_selectAirSpace(%1);";
+	QWebFrame *pFrame;
+
+  pFrame = m_pWebMap->page()->mainFrame();
+  pFrame->evaluateJavaScript(code.arg(nr));
+}
+
 void WebMapAirSpace::populateJavaScriptWindowObject()
 {
 	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapAirSpace", this);

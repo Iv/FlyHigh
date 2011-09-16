@@ -35,9 +35,9 @@ class WebMapAirSpaceView: public QDialog
 
 		~WebMapAirSpaceView();
 
-		void setAirSpaceList(AirSpaceList *pAirSpaceList);
-
 		void loadMap();
+
+		void setAirSpaceList(AirSpaceList *pAirSpaceList);
 
 		void selectAirSpace(int nr);
 
