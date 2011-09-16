@@ -25,8 +25,10 @@
 
 class QNetworkAccessManager;
 class QProgressBar;
+class WebMapAirSpace;
 class WebMapFlight;
 class WebMapRoute;
+class WebMapWayPoint;
 
 class WebMap: public QWebView
 {
@@ -41,11 +43,15 @@ class WebMap: public QWebView
 
 		~WebMap();
 
+		WebMapAirSpace* getAirSpace();
+
 		WebMapFlight* getFlight();
 
 		WebMapRoute* getRoute();
 
-		void loadMap(const QString &url);
+		WebMapWayPoint* getWayPoint();
+
+		void loadUrl(const QString &url);
 
 		void XCLoad();
 
@@ -71,8 +77,10 @@ class WebMap: public QWebView
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 
+    WebMapAirSpace *m_pAirSpace;
     WebMapFlight *m_pFlight;
     WebMapRoute *m_pRoute;
+    WebMapWayPoint *m_pWayPoint;
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
 		MapType m_mapType;

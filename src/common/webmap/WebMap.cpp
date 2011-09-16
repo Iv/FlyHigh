@@ -24,8 +24,10 @@
 #include <QWebFrame>
 #include <math.h>
 #include "WebMap.h"
+#include "WebMapAirSpace.h"
 #include "WebMapFlight.h"
 #include "WebMapRoute.h"
+#include "WebMapWayPoint.h"
 
 #include <QDebug>
 
@@ -34,8 +36,10 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 {
 	QWebFrame *pFrame;
 
+  m_pAirSpace = NULL;
   m_pFlight = NULL;
   m_pRoute = NULL;
+  m_pWayPoint = NULL;
 	m_mapReady = false;
 	m_mapType = type;
 	m_pNetMgr = new QNetworkAccessManager(this);
@@ -55,10 +59,35 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 
 WebMap::~WebMap()
 {
+  if(m_pAirSpace != NULL)
+  {
+    delete m_pAirSpace;
+  }
+
   if(m_pFlight != NULL)
   {
     delete m_pFlight;
   }
+
+  if(m_pRoute != NULL)
+  {
+    delete m_pRoute;
+  }
+
+  if(m_pWayPoint != NULL)
+  {
+    delete m_pWayPoint;
+  }
+}
+
+WebMapAirSpace* WebMap::getAirSpace()
+{
+  if(m_pAirSpace == NULL)
+  {
+    m_pAirSpace = new WebMapAirSpace(this);
+  }
+
+  return m_pAirSpace;
 }
 
 WebMapFlight* WebMap::getFlight()
@@ -81,7 +110,17 @@ WebMapRoute* WebMap::getRoute()
   return m_pRoute;
 }
 
-void WebMap::loadMap(const QString &url)
+WebMapWayPoint* WebMap::getWayPoint()
+{
+  if(m_pWayPoint == NULL)
+  {
+    m_pWayPoint = new WebMapWayPoint(this);
+  }
+
+  return m_pWayPoint;
+}
+
+void WebMap::loadUrl(const QString &url)
 {
 	m_mapReady = false;
 	load(QUrl(url));
