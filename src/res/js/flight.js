@@ -58,23 +58,6 @@ function setWayPointList(encTrack, encLevels, weight, color)
 	map.addOverlay(polyline);
 }
 
-function setFlightType(flightType)
-{
-	var typeInput;
-
-	typeInput = document.getElementById("defaultFlightType");
-	typeInput.value = flightType;
-}
-
-function getFlightType()
-{
-	var typeInput;
-
-	typeInput = document.getElementById("flightType");
-
-	return typeInput.value;
-}
-
 function setPlotSize(width, height)
 {
 	var div;
