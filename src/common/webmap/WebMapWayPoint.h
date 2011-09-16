@@ -37,7 +37,7 @@ class WebMapWayPoint: public QObject
 
 		void init();
 
-		void setWayPointList(WayPoint::WayPointListType *pWpList);
+		void pushWayPoint(const WayPoint &wp);
 
 	private:
 		WebMap *m_pWebMap;
