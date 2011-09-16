@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QObject>
 #include <QWebFrame>
 #include "WebMap.h"
 #include "WebMapWayPoint.h"
@@ -27,12 +26,7 @@
 
 WebMapWayPoint::WebMapWayPoint(WebMap *pWebMap)
 {
-	QWebFrame *pFrame;
-
 	m_pWebMap = pWebMap;
-	pFrame = m_pWebMap->page()->mainFrame();
-	QObject::connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this,
-                   SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMapWayPoint::~WebMapWayPoint()
@@ -46,6 +40,12 @@ void WebMapWayPoint::init()
 
 	pFrame = m_pWebMap->page()->mainFrame();
 	pFrame->evaluateJavaScript(code);
+}
+
+void WebMapWayPoint::populateObject()
+{
+qDebug() << "populateJavaScriptWindowObject";
+	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
 }
 
 void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
@@ -73,7 +73,19 @@ void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
                              .arg(lat).arg(lon).arg(alt));
 }
 
-void WebMapWayPoint::populateJavaScriptWindowObject()
+void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &spot,
+                                      const QString &country, double lat, double lon,
+                                      int alt)
 {
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
+  WayPoint wp;
+
+  wp.setId(id);
+  wp.setName(name);
+  wp.setSpot(spot);
+  wp.setCountry(country);
+  wp.setLatitude(lat);
+  wp.setLongitude(lon);
+  wp.setAltitude(alt);
+
+  emit changeWayPoint(wp);
 }

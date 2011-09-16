@@ -72,7 +72,7 @@ void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioL
 
 void WebMapFlightView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/webmap_flight.html");
+	m_pWebMap->loadUrl("qrc:/flight.html");
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
@@ -86,8 +86,8 @@ void WebMapFlightView::mapReady()
 	m_pWebMap->getRoute()->setTurnPointsDragable(true);
 	m_pWebMap->getRoute()->setFlightType("xc5");
 	m_pWebMap->getRoute()->setLocation(m_location);
-	m_pWebMap->XCLoad();
 
+	m_pWebMap->getFlight()->init();
 	m_pWebMap->getFlight()->setFlightPointList(m_fpList);
 	m_pWebMap->getFlight()->setSogList(m_sogList);
 	m_pWebMap->getFlight()->setVarioList(m_varioList);

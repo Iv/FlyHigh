@@ -36,6 +36,8 @@ class WebMapRoute: public QObject
 
 		~WebMapRoute();
 
+		void init();
+
     void setName(const QString &name);
 
 		QString getName();
@@ -56,9 +58,6 @@ class WebMapRoute: public QObject
 
 	private:
 		WebMap *m_pWebMap;
-
-	private slots:
-		void populateJavaScriptWindowObject();
 };
 
 #endif

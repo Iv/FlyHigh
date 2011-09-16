@@ -89,7 +89,7 @@ void WebMapAirSpaceView::mapReady()
 		setAirSpaceList();
 	}
 
-	m_pWebMap->XCLoad();
+	m_pWebMap->getAirSpace()->init();
 }
 
 void WebMapAirSpaceView::finished(int res)

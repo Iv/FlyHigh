@@ -47,7 +47,7 @@ void WebMapRouteView::setRoute(Route *pRoute)
 
 void WebMapRouteView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/webmap_route.html");
+	m_pWebMap->loadUrl("qrc:/route.html");
 }
 
 void WebMapRouteView::setTurnPointsDragable(bool drag)
@@ -110,7 +110,7 @@ void WebMapRouteView::mapReady()
 		}
 	}
 
-	m_pWebMap->XCLoad();
+	m_pWebMap->getRoute()->init();
 }
 
 void WebMapRouteView::finished(int res)

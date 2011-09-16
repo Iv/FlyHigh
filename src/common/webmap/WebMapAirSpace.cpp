@@ -28,12 +28,7 @@
 
 WebMapAirSpace::WebMapAirSpace(WebMap *pWebMap)
 {
-	QWebFrame *pFrame;
-
 	m_pWebMap = pWebMap;
-	pFrame = m_pWebMap->page()->mainFrame();
-	QObject::connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this,
-                   SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMapAirSpace::~WebMapAirSpace()
@@ -111,9 +106,4 @@ void WebMapAirSpace::selectAirSpace(int nr)
 
   pFrame = m_pWebMap->page()->mainFrame();
   pFrame->evaluateJavaScript(code.arg(nr));
-}
-
-void WebMapAirSpace::populateJavaScriptWindowObject()
-{
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapAirSpace", this);
 }

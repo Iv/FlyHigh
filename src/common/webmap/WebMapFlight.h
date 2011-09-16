@@ -35,6 +35,8 @@ class WebMapFlight: public QObject
 
 		~WebMapFlight();
 
+		void init();
+
     void setFlightPointList(const FlightPointList &fpList);
 
 		void setSogList(const FlightPointList::SogListType &sogList);
@@ -51,9 +53,6 @@ class WebMapFlight: public QObject
 
     void setWayPointList(const QString &encPoints, const QString &encLevels,
                          uint weight, const QString &color);
-
-	private slots:
-		void populateJavaScriptWindowObject();
 };
 
 #endif

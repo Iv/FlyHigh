@@ -35,7 +35,9 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
   pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
-  connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
+  connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
+  connect(m_pWebMap->getWayPoint(), SIGNAL(changeWayPoint(const WayPoint&)), this,
+          SLOT(saveWayPoint(const WayPoint&)));
 }
 
 WebMapWayPointView::~WebMapWayPointView()
@@ -56,23 +58,6 @@ void WebMapWayPointView::loadMap()
 void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-}
-
-void WebMapWayPointView::saveWayPoint(int id, const QString &name, const QString &spot,
-                                      const QString &country, double lat, double lon,
-                                      int alt)
-{
-  WayPoint wp;
-
-  wp.setId(id);
-  wp.setName(name);
-  wp.setSpot(spot);
-  wp.setCountry(country);
-  wp.setLatitude(lat);
-  wp.setLongitude(lon);
-  wp.setAltitude(alt);
-
-  emit changedWayPoint(wp);
 }
 
 void WebMapWayPointView::setWayPointList()
@@ -108,7 +93,12 @@ void WebMapWayPointView::finished(int res)
 	done(res);
 }
 
-void WebMapWayPointView::populateJavaScriptWindowObject()
+void WebMapWayPointView::populateObject()
 {
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPointView", this);
+  m_pWebMap->getWayPoint()->populateObject();
+}
+
+void WebMapWayPointView::saveWayPoint(const WayPoint &wp)
+{
+  emit updateWayPoint(wp);
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Alex Graf                                       *
+ *   Copyright (C) 2011 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -54,7 +54,7 @@ WebMap::WebMap(QWidget *pParent, MapType type)
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	connect(this, SIGNAL(loadProgress(int)), m_pProgress, SLOT(setValue(int)));
   connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
-	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
+	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
 }
 
 WebMap::~WebMap()
@@ -126,15 +126,6 @@ void WebMap::loadUrl(const QString &url)
 	load(QUrl(url));
 }
 
-void WebMap::XCLoad()
-{
-	QString code = "XCLoad();";
-	QWebFrame *pFrame;
-
-	pFrame = page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
-}
-
 bool WebMap::isMapReady() const
 {
 	return m_mapReady;
@@ -158,7 +149,7 @@ void WebMap::setSize(uint width, uint height)
 	  case MapFlight:
       code = "setMapSize(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
-      code = "setPlotSize(%1, %2);";
+      code = "fl_setPlotSize(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
 	  break;
 	  case MapRoute:
@@ -197,7 +188,7 @@ void WebMap::netReply(QNetworkReply *pReply)
   pFrame->evaluateJavaScript(code.arg(m_netReqId).arg(replyStr));
 }
 
-void WebMap::populateJavaScriptWindowObject()
+void WebMap::populateObject()
 {
 	page()->mainFrame()->addToJavaScriptWindowObject("WebMap", this);
 }

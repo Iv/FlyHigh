@@ -29,17 +29,21 @@
 
 WebMapFlight::WebMapFlight(WebMap *pWebMap)
 {
-	QWebFrame *pFrame;
-
 	m_pWebMap = pWebMap;
 	m_plotEn = false;
-	pFrame = m_pWebMap->page()->mainFrame();
-	QObject::connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this,
-                   SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMapFlight::~WebMapFlight()
 {
+}
+
+void WebMapFlight::init()
+{
+	QString code = "fl_init();";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
 }
 
 void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
@@ -114,18 +118,18 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 		setWayPointList(encPoints, encLevels, 3, "#FF0000");
 
 		pFrame = m_pWebMap->page()->mainFrame();
-		code = "setFlightTime([%1], %2, %3);";
+		code = "fl_setFlightTime([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
-		code = "setFlightAlt([%1], %2, %3);";
+		code = "fl_setFlightAlt([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
-		code = "setFlightLatLon([%1], [%2]);";
+		code = "fl_setFlightLatLon([%1], [%2]);";
 		pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon));
 	}
 }
 
 void WebMapFlight::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
 {
-	QString code = "setWayPointList('%1', '%2', %3, '%4');";
+	QString code = "fl_setTrack('%1', '%2', %3, '%4');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -134,7 +138,7 @@ void WebMapFlight::setWayPointList(const QString &encPoints, const QString &encL
 
 void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList)
 {
-	QString code = "setSog([%1]);";
+	QString code = "fl_setSog([%1]);";
 	QWebFrame *pFrame;
 	QString value = "%1";
 	QString strSog = "";
@@ -166,7 +170,7 @@ void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList)
 
 void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList)
 {
-	QString code = "setVario([%1]);";
+	QString code = "fl_setVario([%1]);";
 	QWebFrame *pFrame;
 	QString value = "%1";
 	QString strVario = "";
@@ -198,7 +202,7 @@ void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList)
 
 void WebMapFlight::showPlot()
 {
-	QString code = "showPlot();";
+	QString code = "fl_showPlot();";
 	QWebFrame *pFrame;
 
 	if(m_plotEn)
@@ -211,9 +215,4 @@ void WebMapFlight::showPlot()
 void WebMapFlight::setPlotEnable(bool en)
 {
 	m_plotEn = en;
-}
-
-void WebMapFlight::populateJavaScriptWindowObject()
-{
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapFlight", this);
 }
