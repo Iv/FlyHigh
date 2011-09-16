@@ -26,6 +26,7 @@
 #include "WayPoint.h"
 
 class WebMap;
+class WebMapFlight;
 
 class WebMapFlightView: public QDialog
 {

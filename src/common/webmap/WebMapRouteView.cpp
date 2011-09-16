@@ -21,6 +21,7 @@
 #include "Route.h"
 #include "WebMap.h"
 #include "WebMapRouteView.h"
+#include "WebMapRoute.h"
 
 WebMapRouteView::WebMapRouteView(const QString &name)
 {
@@ -62,47 +63,47 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 void WebMapRouteView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-	m_pWebMap->setTurnPointsDragable(m_tpDrag);
+	m_pWebMap->getRoute()->setTurnPointsDragable(m_tpDrag);
 
 	if(m_pRoute != NULL)
 	{
-		m_pWebMap->setTurnPointList(m_pRoute->wayPointList());
-		m_pWebMap->setName(m_pRoute->name());
+		m_pWebMap->getRoute()->setName(m_pRoute->name());
+		m_pWebMap->getRoute()->setTurnPointList(m_pRoute->wayPointList());
 
 		switch(m_pRoute->type())
 		{
 			case Route::Free:
-				m_pWebMap->setFlightType("xc2");
+				m_pWebMap->getRoute()->setFlightType("xc2");
 			break;
 			case Route::Free1Tp:
-				m_pWebMap->setFlightType("xc3");
+				m_pWebMap->getRoute()->setFlightType("xc3");
 			break;
 			case Route::Free2Tp:
-				m_pWebMap->setFlightType("xc4");
+				m_pWebMap->getRoute()->setFlightType("xc4");
 			break;
 			case Route::Free3Tp:
-				m_pWebMap->setFlightType("xc5");
+				m_pWebMap->getRoute()->setFlightType("xc5");
 			break;
 			case Route::FlatOrFaiTri:
-				m_pWebMap->setFlightType("xc3c");
+				m_pWebMap->getRoute()->setFlightType("xc3c");
 			break;
 			default:
 				switch(m_pRoute->wayPointList().size())
 				{
 					case 2:
-						m_pWebMap->setFlightType("xc2");
+						m_pWebMap->getRoute()->setFlightType("xc2");
 					break;
 					case 3:
-						m_pWebMap->setFlightType("xc3");
+						m_pWebMap->getRoute()->setFlightType("xc3");
 					break;
 					case 4:
-						m_pWebMap->setFlightType("xc4");
+						m_pWebMap->getRoute()->setFlightType("xc4");
 					break;
 					case 5:
-						m_pWebMap->setFlightType("xc5");
+						m_pWebMap->getRoute()->setFlightType("xc5");
 					break;
 					default:
-						m_pWebMap->setFlightType("xc5");
+						m_pWebMap->getRoute()->setFlightType("xc5");
 					break;
 				}
 			break;
@@ -118,9 +119,9 @@ void WebMapRouteView::finished(int res)
 
 	if(m_pRoute != NULL)
 	{
-		m_pWebMap->getTurnPointList(m_pRoute->wayPointList());
-		m_pRoute->setName(m_pWebMap->getName());
-		type = m_pWebMap->getFlightType();
+		m_pWebMap->getRoute()->getTurnPointList(m_pRoute->wayPointList());
+		m_pRoute->setName(m_pWebMap->getRoute()->getName());
+		type = m_pWebMap->getRoute()->getFlightType();
 
 		if(type == "xc2")
 		{

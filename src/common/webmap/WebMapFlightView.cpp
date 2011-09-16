@@ -19,7 +19,9 @@
  ***************************************************************************/
 
 #include "WebMap.h"
+#include "WebMapFlight.h"
 #include "WebMapFlightView.h"
+#include "WebMapRoute.h"
 
 WebMapFlightView::WebMapFlightView(const QString &name)
 {
@@ -27,7 +29,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 	resize(1000, 800);
 
 	m_pWebMap = new WebMap(this, WebMap::MapFlight);
-	m_pWebMap->setPlotEnable(true);
+	m_pWebMap->getFlight()->setPlotEnable(true);
 	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
@@ -80,14 +82,14 @@ void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapFlightView::mapReady()
 {
-	m_pWebMap->setTurnPointList(m_tpList);
-	m_pWebMap->setTurnPointsDragable(true);
-	m_pWebMap->setFlightType("xc5");
-	m_pWebMap->setLocation(m_location);
+	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
+	m_pWebMap->getRoute()->setTurnPointsDragable(true);
+	m_pWebMap->getRoute()->setFlightType("xc5");
+	m_pWebMap->getRoute()->setLocation(m_location);
 	m_pWebMap->XCLoad();
 
-	m_pWebMap->setFlightPointList(m_fpList);
-	m_pWebMap->setSogList(m_sogList);
-	m_pWebMap->setVarioList(m_varioList);
-	m_pWebMap->showPlot();
+	m_pWebMap->getFlight()->setFlightPointList(m_fpList);
+	m_pWebMap->getFlight()->setSogList(m_sogList);
+	m_pWebMap->getFlight()->setVarioList(m_varioList);
+	m_pWebMap->getFlight()->showPlot();
 }
