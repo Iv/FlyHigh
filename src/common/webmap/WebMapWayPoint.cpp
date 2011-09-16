@@ -39,6 +39,51 @@ WebMapWayPoint::~WebMapWayPoint()
 {
 }
 
+void WebMapWayPoint::init()
+{
+	QString code = "wp_init();";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
+}
+
+void WebMapWayPoint::setWayPointList(WayPoint::WayPointListType *pWpList)
+{
+	QString code = "wp_pushWayPoint({id: %1, name: '%2', spot: '%3', country: '%4',"
+                 " lat: %5, lon: %6, alt: %7});";
+	QWebFrame *pFrame;
+	uint itemNr;
+	uint listSize;
+	QString name;
+	QString country;
+	QString spot;
+	float lat;
+	float lon;
+	int id;
+	int alt;
+
+	listSize = pWpList->size();
+
+	if(listSize > 0)
+	{
+    pFrame = m_pWebMap->page()->mainFrame();
+
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+		  id = pWpList->at(itemNr).id();
+      name = pWpList->at(itemNr).name();
+      spot = pWpList->at(itemNr).spot();
+      country = pWpList->at(itemNr).country();
+		  lat = pWpList->at(itemNr).latitude();
+		  lon = pWpList->at(itemNr).longitude();
+      alt = pWpList->at(itemNr).altitude();
+      pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(spot).arg(country)
+                                 .arg(lat).arg(lon).arg(alt));
+		}
+	}
+}
+
 void WebMapWayPoint::populateJavaScriptWindowObject()
 {
 	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);

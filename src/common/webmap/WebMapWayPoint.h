@@ -22,6 +22,7 @@
 #define WebMapWayPoint_h
 
 #include <QObject>
+#include "WayPoint.h"
 
 class WebMap;
 
@@ -33,6 +34,10 @@ class WebMapWayPoint: public QObject
 		WebMapWayPoint(WebMap *pWebMap);
 
 		~WebMapWayPoint();
+
+		void init();
+
+		void setWayPointList(WayPoint::WayPointListType *pWpList);
 
 	private:
 		WebMap *m_pWebMap;
