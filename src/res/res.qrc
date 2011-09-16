@@ -6,10 +6,10 @@
      <file>ft_6020_p1.png</file>
      <file>ft_6020_p3.png</file>
      <file>polare.png</file>
-     <file>webmap_flight.html</file>
-     <file>webmap_route.html</file>
-     <file>waypoint.html</file>
      <file>airspace.html</file>
+     <file>flight.html</file>
+     <file>route.html</file>
+     <file>waypoint.html</file>
      <file>css/webmap.css</file>
      <file>js/flight.js</file>
      <file>js/webmap.js</file>
@@ -18,8 +18,8 @@
      <file>js/mapiconmaker.js</file>
      <file>js/prototype.js</file>
      <file>js/airspace.js</file>
-     <file>js/waypoint.js</file>
      <file>js/route.js</file>
+     <file>js/waypoint.js</file>
      <file>js/xcplanner.js</file>
      <file>js/chartFX/canvaschart.css</file>
      <file>js/chartFX/canvaschartpainter.js</file>
