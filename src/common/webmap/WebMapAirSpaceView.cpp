@@ -42,23 +42,19 @@ WebMapAirSpaceView::~WebMapAirSpaceView()
 	delete m_pWebMap;
 }
 
-void WebMapAirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList)
-{
-	m_pAirSpaceList = pAirSpaceList;
-}
-
 void WebMapAirSpaceView::loadMap()
 {
 	m_pWebMap->loadUrl("qrc:/airspace.html");
 }
 
+void WebMapAirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList)
+{
+	m_pAirSpaceList = pAirSpaceList;
+}
+
 void WebMapAirSpaceView::selectAirSpace(int nr)
 {
-	QString code = "as_selectAirSpace(%1);";
-	QWebFrame *pFrame;
-
-  pFrame = m_pWebMap->page()->mainFrame();
-  pFrame->evaluateJavaScript(code.arg(nr));
+  m_pWebMap->getAirSpace()->selectAirSpace(nr);
 }
 
 void WebMapAirSpaceView::resizeEvent(QResizeEvent *pEvent)
