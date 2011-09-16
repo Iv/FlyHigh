@@ -75,10 +75,31 @@ void WebMapWayPointView::saveWayPoint(int id, const QString &name, const QString
   emit changedWayPoint(wp);
 }
 
+void WebMapWayPointView::setWayPointList()
+{
+	int itemNr;
+	int listSize;
+
+	listSize = m_pWpList->size();
+
+	if(listSize > 0)
+	{
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+      m_pWebMap->getWayPoint()->pushWayPoint(m_pWpList->at(itemNr));
+		}
+	}
+}
+
 void WebMapWayPointView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-  m_pWebMap->getWayPoint()->setWayPointList(m_pWpList);
+
+  if(m_pWpList != NULL)
+  {
+    setWayPointList();
+  }
+
 	m_pWebMap->getWayPoint()->init();
 }
 
