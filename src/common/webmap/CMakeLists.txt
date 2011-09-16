@@ -5,15 +5,21 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
 
 set(webmap_SRCS WebMap.cpp
              WebMapAirSpaceView.cpp
+             WebMapFlight.cpp
              WebMapFlightView.cpp
+             WebMapRoute.cpp
              WebMapRouteView.cpp
+             WebMapWayPoint.cpp
              WebMapWayPointView.cpp
              PolyLineEncoder.cpp)
 
 set(webmap_HDRS WebMap.h
              WebMapAirSpaceView.h
+             WebMapFlight.h
              WebMapFlightView.h
+             WebMapWayPoint.h
              WebMapWayPointView.h
+             WebMapRoute.h
              WebMapRouteView.h)
 
 QT4_WRAP_CPP(webmap_SRCS ${webmap_HDRS})
