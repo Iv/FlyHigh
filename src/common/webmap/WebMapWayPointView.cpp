@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QWebFrame>
+#include "WebMap.h"
+#include "WebMapWayPoint.h"
+#include "WebMapWayPointView.h"
 
 #include <QDebug>
-
-#include "WebMap.h"
-#include "WebMapWayPointView.h"
 
 WebMapWayPointView::WebMapWayPointView(const QString &name)
 {
@@ -31,7 +31,6 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
 	resize(1000, 850);
 
 	m_pWpList = NULL;
-	m_editItem = 0;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
   pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
@@ -49,14 +48,9 @@ void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
 	m_pWpList = pWpList;
 }
 
-void WebMapWayPointView::setEditItem(uint nr)
-{
-  m_editItem = nr;
-}
-
 void WebMapWayPointView::loadMap()
 {
-	m_pWebMap->loadMap("qrc:/waypoint.html");
+	m_pWebMap->loadUrl("qrc:/waypoint.html");
 }
 
 void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
@@ -84,58 +78,13 @@ void WebMapWayPointView::saveWayPoint(int id, const QString &name, const QString
 void WebMapWayPointView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-  setWayPointList();
-	load();
+  m_pWebMap->getWayPoint()->setWayPointList(m_pWpList);
+	m_pWebMap->getWayPoint()->init();
 }
 
 void WebMapWayPointView::finished(int res)
 {
 	done(res);
-}
-
-void WebMapWayPointView::load()
-{
-	QString code = "wp_load();";
-	QWebFrame *pFrame;
-
-	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
-}
-
-void WebMapWayPointView::setWayPointList()
-{
-	QString code = "wp_pushWayPoint({id: %1, name: '%2', spot: '%3', country: '%4',"
-                 " lat: %5, lon: %6, alt: %7});";
-	QWebFrame *pFrame;
-	uint itemNr;
-	uint listSize;
-	QString name;
-	QString country;
-	QString spot;
-	float lat;
-	float lon;
-	int id;
-	int alt;
-
-	listSize = m_pWpList->size();
-
-	if(listSize > 0)
-	{
-    pFrame = m_pWebMap->page()->mainFrame();
-
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
-		  id = m_pWpList->at(itemNr).id();
-      name = m_pWpList->at(itemNr).name();
-      spot = m_pWpList->at(itemNr).spot();
-      country = m_pWpList->at(itemNr).country();
-		  lat = m_pWpList->at(itemNr).latitude();
-		  lon = m_pWpList->at(itemNr).longitude();
-      alt = m_pWpList->at(itemNr).altitude();
-      pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(spot).arg(country)
-                                 .arg(lat).arg(lon).arg(alt));
-		}
-	}
 }
 
 void WebMapWayPointView::populateJavaScriptWindowObject()
