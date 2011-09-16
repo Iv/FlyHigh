@@ -42,13 +42,6 @@ function wp_init()
 	}
 }
 
-function wp_unload()
-{
-	geocoder = null;
-	map = null;
-	GUnload();
-}
-
 function wp_pushWayPoint(opts)
 {
 	var latlng = new GLatLng(opts.lat, opts.lon);
@@ -295,21 +288,24 @@ function wp_getAlt()
 	return locInput.value;
 }
 
-function wp_saveWayPoints()
+function wp_setOk(ok)
 {
 	var marker;
 
-	for(nr=0; nr<markers.length; nr++)
+	if(ok)
 	{
-		marker = markers[nr];
-
-		if(marker.getModified())
+		for(nr=0; nr<markers.length; nr++)
 		{
-			WebMapWayPointView.saveWayPoint(marker.getId(),
-				marker.getName(), marker.getSpot(), marker.getCountry(),
-				marker.getLat(), marker.getLon(), marker.getAlt());
+			marker = markers[nr];
+
+			if(marker.getModified())
+			{
+				WebMapWayPoint.saveWayPoint(marker.getId(),
+					marker.getName(), marker.getSpot(), marker.getCountry(),
+					marker.getLat(), marker.getLon(), marker.getAlt());
+			}
 		}
 	}
 
-	WebMap.setOk(true);
+	WebMap.setOk(ok);
 }
