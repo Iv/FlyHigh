@@ -26,7 +26,7 @@ var map = null;
 var markers = [];
 var curMarker = null;
 
-function wp_load()
+function wp_init()
 {
 	if(GBrowserIsCompatible()) {
 		map = new GMap2(document.getElementById('map'));
