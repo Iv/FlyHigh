@@ -72,7 +72,7 @@ void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioL
 
 void WebMapFlightView::loadMap()
 {
-	m_pWebMap->loadMap("qrc:/webmap_flight.html");
+	m_pWebMap->loadUrl("qrc:/webmap_flight.html");
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)

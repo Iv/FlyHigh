@@ -47,7 +47,7 @@ void WebMapRouteView::setRoute(Route *pRoute)
 
 void WebMapRouteView::loadMap()
 {
-	m_pWebMap->loadMap("qrc:/webmap_route.html");
+	m_pWebMap->loadUrl("qrc:/webmap_route.html");
 }
 
 void WebMapRouteView::setTurnPointsDragable(bool drag)
