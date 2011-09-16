@@ -22,19 +22,12 @@
 #define WebMap_h
 
 #include <QWebView>
-#include "FlightPointList.h"
-#include "WayPoint.h"
 
-class QGraphicsSceneMouseEvent;
-class QGraphicsSceneWheelEvent;
 class QNetworkAccessManager;
 class QProgressBar;
+class WebMapFlight;
+class WebMapRoute;
 
-class AirSpaceList;
-
-/**
-	@author Alex Graf <grafal@sourceforge.net>
-*/
 class WebMap: public QWebView
 {
 	Q_OBJECT
@@ -48,39 +41,13 @@ class WebMap: public QWebView
 
 		~WebMap();
 
+		WebMapFlight* getFlight();
+
+		WebMapRoute* getRoute();
+
 		void loadMap(const QString &url);
 
 		void XCLoad();
-
-		void setTurnPointList(const WayPoint::WayPointListType &tpList);
-
-		void getTurnPointList(WayPoint::WayPointListType &tpList);
-
-		void setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color);
-
-		void setTurnPointsDragable(bool en);
-
-		void setLocation(const QString &loc);
-
-		QString getLocation();
-
-		void setName(const QString &name);
-
-		QString getName();
-
-		void setFlightType(const QString &flightType);
-
-		QString getFlightType() const;
-
-		void setFlightPointList(const FlightPointList &fpList);
-
-		void setSogList(const FlightPointList::SogListType &sogList);
-
-		void setVarioList(const FlightPointList::VarioListType &varioList);
-
-		void showPlot();
-
-		void setPlotEnable(bool en);
 
 		bool isMapReady() const;
 
@@ -104,12 +71,13 @@ class WebMap: public QWebView
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 
+    WebMapFlight *m_pFlight;
+    WebMapRoute *m_pRoute;
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
 		MapType m_mapType;
 		QString m_netReqCb;
 		int m_netReqId;
-		uint m_plotEn;
 		bool m_mapReady;
 
 		void setSize(uint width, uint height);
