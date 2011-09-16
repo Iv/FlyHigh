@@ -20,7 +20,13 @@
  *   It is prohibited to server or run this code over network p.e. as web  *
  *   service in combination with closed source.                            *
  ***************************************************************************/
-function setLocation(loc)
+
+function rt_init()
+{
+	XCLoad();
+}
+
+function rt_setLocation(loc)
 {
 	var locInput;
 
@@ -28,7 +34,7 @@ function setLocation(loc)
 	locInput.value = loc;
 }
 
-function getLocation()
+function rt_getLocation()
 {
 	var locInput;
 
@@ -37,7 +43,7 @@ function getLocation()
 	return locInput.value;
 }
 
-function setName(name)
+function rt_setName(name)
 {
 	var nameInput;
 
@@ -45,7 +51,7 @@ function setName(name)
 	nameInput.value = name;
 }
 
-function getName()
+function rt_getName()
 {
 	var nameInput;
 
@@ -54,7 +60,7 @@ function getName()
 	return nameInput.value;
 }
 
-function setTurnPointList(tps)
+function rt_setTurnPointList(tps)
 {
 	var tpInput;
 
@@ -62,7 +68,7 @@ function setTurnPointList(tps)
 	tpInput.value = tps;
 }
 
-function getTurnPointList()
+function rt_getTurnPointList()
 {
 	var tps = [];
 
@@ -73,12 +79,12 @@ function getTurnPointList()
 	return tps;
 } 
 
-function setTurnPointsDragable(drag)
+function rt_setTurnPointsDragable(drag)
 {
 	TurnPointsDragable = drag;
 }
 
-function setFlightType(flightType)
+function rt_setFlightType(flightType)
 {
 	var typeInput;
 
@@ -86,11 +92,16 @@ function setFlightType(flightType)
 	typeInput.value = flightType;
 }
 
-function getFlightType()
+function rt_getFlightType()
 {
 	var typeInput;
 
 	typeInput = document.getElementById("flightType");
 
 	return typeInput.value;
+}
+
+function rt_setOk(ok)
+{
+	WebMap.setOk(ok);
 }

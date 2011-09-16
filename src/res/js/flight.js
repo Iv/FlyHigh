@@ -41,7 +41,12 @@ var plotWidth;
 var chart;
 var glider;
 
-function setWayPointList(encTrack, encLevels, weight, color)
+function fl_init()
+{
+	XCLoad();
+}
+
+function fl_setTrack(encTrack, encLevels, weight, color)
 {
 	var polyline;
 
@@ -58,7 +63,7 @@ function setWayPointList(encTrack, encLevels, weight, color)
 	map.addOverlay(polyline);
 }
 
-function setPlotSize(width, height)
+function fl_setPlotSize(width, height)
 {
 	var div;
 	var plotHeight;
@@ -86,14 +91,14 @@ function setPlotSize(width, height)
 }
 
 
-function setFlightTime(time, start, duration)
+function fl_setFlightTime(time, start, duration)
 {
 	FlightData.time = time;
 	StartTime = start;
 	Duration = duration;
 }
 
-function setFlightAlt(alt, minAlt, maxAlt)
+function fl_setFlightAlt(alt, minAlt, maxAlt)
 {
 	FlightData.elev = alt;
 	FlightData.min_alt = minAlt;
@@ -113,23 +118,23 @@ function setFlightAlt(alt, minAlt, maxAlt)
 	}
 }
 
-function setFlightLatLon(lat, lon)
+function fl_setFlightLatLon(lat, lon)
 {
 	FlightData.lat = lat;
 	FlightData.lon = lon;
 }
 
-function setSog(sog)
+function fl_setSog(sog)
 {
 	FlightData.speed = sog;
 }
 
-function setVario(vario)
+function fl_setVario(vario)
 {
 	FlightData.vario = vario;
 }
 
-function showPlot()
+function fl_showPlot()
 {
 	var nbPts;
 	var horLabelNum = 8;
@@ -184,6 +189,11 @@ function showPlot()
 
 	// the simplest way to put route over track
 	XCUpdateRoute();
+}
+
+function fl_setOk(ok)
+{
+	WebMap.setOk(ok);
 }
 
 function addMouseEvents()

@@ -25,7 +25,7 @@ var map = null;
 var airspaces = [];
 var oldSelect = -1;
 
-function XCLoad()
+function as_init()
 {
 	var airspaceNr;
 
@@ -73,12 +73,6 @@ function XCLoad()
 	}
 }
 
-function XCUnload()
-{
-	map = null;
-	GUnload();
-}
-
 function as_pushAirSpace(lat, lon, opts)
 {
 	var airspace;
@@ -99,6 +93,11 @@ function as_selectAirSpace(num)
 		airspaces[num].setSelect(true);
 		oldSelect = num;
 	}
+}
+
+function as_setOk(ok)
+{
+	WebMap.setOk(ok);
 }
 
 // class AirSpace

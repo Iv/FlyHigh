@@ -9,49 +9,49 @@
 		<script type="text/javascript" src="js/waypoint.js"></script>
 		<script type="text/javascript" src="js/markerclusterer.js"></script>
 	</head>
-	<body onunload="XCUnload()" onresize="XCResize()" scroll="no">
+	<body onunload="XCUnload();" onresize="XCResize();" scroll="no">
     <div id="left">
 			<table>
 				<tr>
 					<td>Name</td>
 					<td>
-						<input id="name" type="text" onchange="wp_setMarkerName(this.value)" maxlength="17" size="17" value=""/>
+						<input id="name" type="text" onchange="wp_setMarkerName(this.value);" maxlength="17" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Spot</td>
 					<td>
-						<input id="spot" type="text" onchange="wp_setMarkerSpot(this.value)" maxlength="17" size="17" value=""/>
+						<input id="spot" type="text" onchange="wp_setMarkerSpot(this.value);" maxlength="17" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Country</td>
 					<td>
-						<input id="country" type="text" onchange="wp_setMarkerCountry(this.value)" maxlength="2" size="17" value=""/>
+						<input id="country" type="text" onchange="wp_setMarkerCountry(this.value);" maxlength="2" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Latitude [°]</td>
 					<td>
-						<input id="lat" type="text" onchange="wp_setMarkerLat(this.value)" maxlength="8" size="17" value=""/>
+						<input id="lat" type="text" onchange="wp_setMarkerLat(this.value);" maxlength="8" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Longitude [°]</td>
 					<td>
-						<input id="lon" type="text" onchange="wp_setMarkerLon(this.value)" maxlength="9" size="17" value=""/>
+						<input id="lon" type="text" onchange="wp_setMarkerLon(this.value);" maxlength="9" size="17" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>Altitude [m]</td>
 					<td>
-						<input id="alt" type="text" onchange="wp_setMarkerAlt(this.value)" maxlength="5" size="17" value=""/>
+						<input id="alt" type="text" onchange="wp_setMarkerAlt(this.value);" maxlength="5" size="17" value=""/>
 					</td>
 				</tr>
 			</table>
 			<hr/>
-			<input type="submit" onclick="wp_saveWayPoints()" value="OK"/>
-			<input type="submit" onclick="WebMap.setOk(false);" value="Cancel"/>
+			<input type="submit" onclick="wp_setOk(true);" value="OK"/>
+			<input type="submit" onclick="wp_setOk(false);" value="Cancel"/>
 		</div>
     <div id="right"></div>
     <div id="map"></div>
