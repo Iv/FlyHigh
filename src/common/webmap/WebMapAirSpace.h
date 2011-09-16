@@ -44,9 +44,6 @@ class WebMapAirSpace: public QObject
 
 	private:
 		WebMap *m_pWebMap;
-
-	private slots:
-		void populateJavaScriptWindowObject();
 };
 
 #endif

@@ -27,21 +27,25 @@
 
 WebMapRoute::WebMapRoute(WebMap *pWebMap)
 {
-	QWebFrame *pFrame;
-
 	m_pWebMap = pWebMap;
-	pFrame = m_pWebMap->page()->mainFrame();
-	QObject::connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this,
-                   SLOT(populateJavaScriptWindowObject()));
 }
 
 WebMapRoute::~WebMapRoute()
 {
 }
 
+void WebMapRoute::init()
+{
+	QString code = "rt_init();";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
+}
+
 void WebMapRoute::setName(const QString &name)
 {
-	QString code = "setName('%1');";
+	QString code = "rt_setName('%1');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -50,7 +54,7 @@ void WebMapRoute::setName(const QString &name)
 
 QString WebMapRoute::getName()
 {
-	QString code = "getName();";
+	QString code = "rt_getName();";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -60,7 +64,7 @@ QString WebMapRoute::getName()
 
 void WebMapRoute::setTurnPointList(const WayPoint::WayPointListType &tpList)
 {
-	QString code = "setTurnPointList('%1');";
+	QString code = "rt_setTurnPointList('%1');";
 	QString arg = "[";
 	QString argElem = "[%1,%2]";
 	QWebFrame *pFrame;
@@ -86,7 +90,7 @@ void WebMapRoute::setTurnPointList(const WayPoint::WayPointListType &tpList)
 
 void WebMapRoute::getTurnPointList(WayPoint::WayPointListType &tpList)
 {
-	QString code = "getTurnPointList();";
+	QString code = "rt_getTurnPointList();";
 	QWebFrame *pFrame;
 	QVariantList list;
 	QVariantList::iterator it;
@@ -117,7 +121,7 @@ void WebMapRoute::getTurnPointList(WayPoint::WayPointListType &tpList)
 
 void WebMapRoute::setTurnPointsDragable(bool en)
 {
-	QString code = "setTurnPointsDragable(%1);";
+	QString code = "rt_setTurnPointsDragable(%1);";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -126,7 +130,7 @@ void WebMapRoute::setTurnPointsDragable(bool en)
 
 void WebMapRoute::setLocation(const QString &loc)
 {
-	QString code = "setLocation('%1');";
+	QString code = "rt_setLocation('%1');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -135,7 +139,7 @@ void WebMapRoute::setLocation(const QString &loc)
 
 QString WebMapRoute::getLocation()
 {
-	QString code = "getLocation();";
+	QString code = "rt_getLocation();";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -145,7 +149,7 @@ QString WebMapRoute::getLocation()
 
 void WebMapRoute::setFlightType(const QString &flightType)
 {
-	QString code = "setFlightType('%1');";
+	QString code = "rt_setFlightType('%1');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -154,15 +158,10 @@ void WebMapRoute::setFlightType(const QString &flightType)
 
 QString WebMapRoute::getFlightType() const
 {
-	QString code = "getFlightType();";
+	QString code = "rt_getFlightType();";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
 
 	return pFrame->evaluateJavaScript(code).toString();
-}
-
-void WebMapRoute::populateJavaScriptWindowObject()
-{
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapRoute", this);
 }

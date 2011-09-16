@@ -39,11 +39,17 @@ class WebMapWayPoint: public QObject
 
 		void pushWayPoint(const WayPoint &wp);
 
+    void populateObject();
+
+	signals:
+		void changeWayPoint(const WayPoint &wp);
+
+	protected slots:
+		void saveWayPoint(int id, const QString &name, const QString &spot, const QString &country,
+                      double lat, double lon, int alt);
+
 	private:
 		WebMap *m_pWebMap;
-
-	private slots:
-		void populateJavaScriptWindowObject();
 };
 
 #endif

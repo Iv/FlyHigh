@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Alex Graf                                       *
+ *   Copyright (C) 2011 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,8 +53,6 @@ class WebMap: public QWebView
 
 		void loadUrl(const QString &url);
 
-		void XCLoad();
-
 		bool isMapReady() const;
 
 	signals:
@@ -95,7 +93,7 @@ class WebMap: public QWebView
 
 		void netReply(QNetworkReply *pReply);
 
-		void populateJavaScriptWindowObject();
+		void populateObject();
 };
 
 #endif
