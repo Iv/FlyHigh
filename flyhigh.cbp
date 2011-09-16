@@ -151,10 +151,22 @@
 		<Unit filename="src/common/webmap/PolyLineEncoder.h" />
 		<Unit filename="src/common/webmap/WebMap.cpp" />
 		<Unit filename="src/common/webmap/WebMap.h" />
+		<Unit filename="src/common/webmap/WebMapAirSpace.cpp" />
+		<Unit filename="src/common/webmap/WebMapAirSpace.h" />
+		<Unit filename="src/common/webmap/WebMapAirSpaceView.cpp" />
+		<Unit filename="src/common/webmap/WebMapAirSpaceView.h" />
+		<Unit filename="src/common/webmap/WebMapFlight.cpp" />
+		<Unit filename="src/common/webmap/WebMapFlight.h" />
 		<Unit filename="src/common/webmap/WebMapFlightView.cpp" />
 		<Unit filename="src/common/webmap/WebMapFlightView.h" />
+		<Unit filename="src/common/webmap/WebMapRoute.cpp" />
+		<Unit filename="src/common/webmap/WebMapRoute.h" />
 		<Unit filename="src/common/webmap/WebMapRouteView.cpp" />
 		<Unit filename="src/common/webmap/WebMapRouteView.h" />
+		<Unit filename="src/common/webmap/WebMapWayPoint.cpp" />
+		<Unit filename="src/common/webmap/WebMapWayPoint.h" />
+		<Unit filename="src/common/webmap/WebMapWayPointView.cpp" />
+		<Unit filename="src/common/webmap/WebMapWayPointView.h" />
 		<Unit filename="src/configuration/CMakeLists.txt" />
 		<Unit filename="src/configuration/database/CMakeLists.txt" />
 		<Unit filename="src/configuration/database/FlyHighRCFrame.ui" />
@@ -367,25 +379,32 @@
 		<Unit filename="src/preparation/WayPointWindow.cpp" />
 		<Unit filename="src/preparation/WayPointWindow.h" />
 		<Unit filename="src/res/CMakeLists.txt" />
+		<Unit filename="src/res/airspace.html" />
 		<Unit filename="src/res/css/webmap.css" />
 		<Unit filename="src/res/document.xpm" />
+		<Unit filename="src/res/flight.html" />
 		<Unit filename="src/res/flyhigh.png" />
 		<Unit filename="src/res/ft_5020.png" />
 		<Unit filename="src/res/glider.png" />
+		<Unit filename="src/res/js/airspace.js" />
 		<Unit filename="src/res/js/chartFX/canvaschart.css" />
 		<Unit filename="src/res/js/chartFX/canvaschartpainter.js" />
 		<Unit filename="src/res/js/chartFX/chart.js" />
 		<Unit filename="src/res/js/chartFX/excanvas.js" />
+		<Unit filename="src/res/js/flight.js" />
 		<Unit filename="src/res/js/jscoord-1.1.1.js" />
 		<Unit filename="src/res/js/json2.js" />
 		<Unit filename="src/res/js/mapiconmaker.js" />
+		<Unit filename="src/res/js/markerclusterer.js" />
 		<Unit filename="src/res/js/prototype.js" />
+		<Unit filename="src/res/js/route.js" />
+		<Unit filename="src/res/js/waypoint.js" />
 		<Unit filename="src/res/js/webmap.js" />
 		<Unit filename="src/res/js/xcplanner.js" />
 		<Unit filename="src/res/polare.png" />
 		<Unit filename="src/res/res.qrc" />
-		<Unit filename="src/res/webmap_flight.html" />
-		<Unit filename="src/res/webmap_route.html" />
+		<Unit filename="src/res/route.html" />
+		<Unit filename="src/res/waypoint.html" />
 		<Extensions>
 			<code_completion />
 			<envvars />
