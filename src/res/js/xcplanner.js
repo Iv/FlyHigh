@@ -575,37 +575,39 @@ function XCScoreTriangleUKXCL(flight) {
 }
 
 function XCUpdateMarkerElevation(i) {
+	var req;
 	var marker = i < 0 ? startMarker : turnpointMarkers[i];
-	var latLng = marker.getLatLng();
-	var key = (1200 * latLng.lat() + 0.5).toFixed(0) + ":" + (1200 * latLng.lng() + 0.5).toFixed(0);
-	if (key in elevationCache) {
-		marker.ele = elevationCache[key];
-		marker.rev = ++rev;
-		$("tp" + (i + 1).toString() + "ele").update(formatElevation(marker.ele));
-	} else {
-		new Ajax.Request("http://www.paraglidingforum.com/xcplanner/get_elevation.php", {
-			onSuccess: function(response) {
-				elevationCache[key] = response.responseJSON.ele;
-				if (response.responseJSON.rev > marker.rev) {
-					marker.ele = response.responseJSON.ele;
-					marker.rev = response.responseJSON.rev;
-					$("tp" + (i + 1).toString() + "ele").update(formatElevation(marker.ele));
-				}
-			},
-			parameters: {
-				lat: latLng.lat(),
-				lng: latLng.lng(),
-				rev: ++rev
-			}
-		});
+	var latlng = marker.getLatLng();
+
+	req = "http://maps.googleapis.com/maps/api/elevation/json?locations="
+	req += latlng.lat();
+	req += ",";
+	req += latlng.lng();
+	req += "&sensor=false";
+
+	WebMap.netRequest(i, req, "XCAltReply");
+}
+
+function XCAltReply(id, param)
+{
+	var marker = id < 0 ? startMarker : turnpointMarkers[id];
+	var nr;
+
+	if(param.status == "OK")
+	{
+		marker.ele = Math.round(param.results[0].elevation);
+		$("tp" + (id + 1).toString() + "ele").update(formatElevation(marker.ele));
 	}
 }
 
 function XCDragMarker(i) {
+	XCUpdateRoute();
+}
+
+function XCDragEndMarker(i) {
 	if ($F("elevation")) {
 		XCUpdateMarkerElevation(i);
 	}
-	XCUpdateRoute();
 }
 
 function XCUpdateFlightType() {
@@ -630,6 +632,7 @@ function XCUpdateFlightType() {
 		marker.ele = -9999;
 		if (TurnPointsDragable) {
 			GEvent.addListener(marker, "drag", function() { XCDragMarker(i); });
+			GEvent.addListener(marker, "dragend", function(latlng) { XCDragEndMarker(i); });
 		}
 
 		return marker;
