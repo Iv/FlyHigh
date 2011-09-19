@@ -182,10 +182,13 @@ void WebMap::netReply(QNetworkReply *pReply)
   QString code;
   QString replyStr(pReply->readAll());
   QWebFrame *pFrame;
+  int id;
 
-  code = m_netReqCb + "(%1, %2);";
+  id = m_netReqList.front().id;
+  code = m_netReqList.front().callback + "(%1, %2);";
+  m_netReqList.pop_front();
 	pFrame = page()->mainFrame();
-  pFrame->evaluateJavaScript(code.arg(m_netReqId).arg(replyStr));
+  pFrame->evaluateJavaScript(code.arg(id).arg(replyStr));
 }
 
 void WebMap::populateObject()
@@ -213,8 +216,10 @@ void WebMap::setLine(int line)
 void WebMap::netRequest(int id, const QString &request, const QString &callback)
 {
   QNetworkRequest netReq(request);
+  NetRequest netReqPar;
 
-  m_netReqId = id;
-  m_netReqCb = callback;
+  netReqPar.id = id;
+  netReqPar.callback = callback;
+  m_netReqList.push_back(netReqPar);
   m_pNetMgr->get(netReq);
 }

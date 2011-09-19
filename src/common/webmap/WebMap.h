@@ -21,6 +21,7 @@
 #ifndef WebMap_h
 #define WebMap_h
 
+#include <QVector>
 #include <QWebView>
 
 class QNetworkAccessManager;
@@ -75,15 +76,22 @@ class WebMap: public QWebView
 	private:
 		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
 
+		typedef struct NetRequest
+		{
+      int id;
+      QString callback;
+		}NetRequest;
+
+		typedef QVector<NetRequest> NetRequestList;
+
     WebMapAirSpace *m_pAirSpace;
     WebMapFlight *m_pFlight;
     WebMapRoute *m_pRoute;
     WebMapWayPoint *m_pWayPoint;
 		QNetworkAccessManager *m_pNetMgr;
 		QProgressBar *m_pProgress;
-		MapType m_mapType;
-		QString m_netReqCb;
-		int m_netReqId;
+		NetRequestList m_netReqList;
+    MapType m_mapType;
 		bool m_mapReady;
 
 		void setSize(uint width, uint height);
