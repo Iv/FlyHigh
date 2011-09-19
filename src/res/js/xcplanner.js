@@ -645,6 +645,7 @@ function XCUpdateFlightType() {
 
 		if (TurnPointsDragable) {
 			GEvent.addListener(startMarker, "drag", function() { XCDragMarker(-1); });
+			GEvent.addListener(startMarker, "dragend", function(latlng) { XCDragEndMarker(-1); });
 		}
 	}else {
 		startMarker = null;
