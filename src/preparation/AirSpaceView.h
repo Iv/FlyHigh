@@ -20,7 +20,7 @@
 #ifndef AirSpaceView_h
 #define AirSpaceView_h
 
-#include <QWidget>
+#include <QDialog>
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -29,7 +29,7 @@
 class AirSpace;
 class AirSpaceList;
 
-class AirSpaceView: public QWidget
+class AirSpaceView: public QDialog
 {
 	public:
 		AirSpaceView();
