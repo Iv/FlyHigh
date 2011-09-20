@@ -44,6 +44,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
+  m_pWayPointView = NULL;
+  m_externSelect = false;
 	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* pUpdateAct = new QAction(tr("&Update"), this);
 	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
@@ -80,6 +82,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pNewAct = new QAction(tr("New..."), this);
 	connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
 	pFileMenu->addAction(pNewAct);
+
 	QAction* pDelAct = new QAction(tr("Delete"), this);
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
@@ -88,6 +91,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
+
 	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
 	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
 	pFileMenu->addAction(pEditWebMapAct);
@@ -134,6 +138,19 @@ void WayPointWindow::refresh()
 		populateTable();
 		m_lastModified = lastModified;
 	}
+}
+
+void WayPointWindow::selectionChanged()
+{
+  int row;
+
+	if((m_pWayPointView != NULL) && !m_externSelect)
+	{
+	  row = getTable()->currentRow();
+	  m_pWayPointView->selectWayPoint(m_wpList[row].id());
+	}
+
+	m_externSelect = false;
 }
 
 void WayPointWindow::file_update()
@@ -314,22 +331,23 @@ void WayPointWindow::file_editWebMap()
 
 void WayPointWindow::file_viewWebMap()
 {
-	WebMapWayPointView *pView;
-
-	if(m_wpList.size() >= 0)
+	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
 	{
-		pView = new WebMapWayPointView(tr("View WayPoints"));
-		connect(pView, SIGNAL(changedWayPoint(const WayPoint&)), this,
+		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
+    connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
+		connect(m_pWayPointView, SIGNAL(updateWayPoint(const WayPoint&)), this,
             SLOT(updateWayPoint(const WayPoint&)));
-		pView->setWayPointList(&m_wpList);
-		pView->loadMap();
-
-    if((pView->exec() == QDialog::Accepted) && m_pDb->open())
-    {
-//      m_pDb->update(m_wpList[row]);
-      m_pDb->close();
-    }
+    connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
+		m_pWayPointView->setWayPointList(&m_wpList);
+		m_pWayPointView->loadMap();
+    m_pWayPointView->setWindowModality(Qt::NonModal);
+		m_pWayPointView->show();
 	}
+}
+
+void WayPointWindow::wayPointViewFinished(int res)
+{
+  m_pWayPointView = NULL;
 }
 
 void WayPointWindow::updateWayPoint(const WayPoint &wp)
@@ -338,10 +356,6 @@ void WayPointWindow::updateWayPoint(const WayPoint &wp)
 
   locWp = wp;
 
-  qDebug() << "WayPointWindow::changedWayPoint " << locWp.id() << locWp.name()
-    << locWp.country() << locWp.spot()
-    << locWp.altitude() << locWp.latitude() << locWp.longitude();
-
   if(m_pDb->open())
   {
     m_pDb->update(locWp);
@@ -349,6 +363,24 @@ void WayPointWindow::updateWayPoint(const WayPoint &wp)
 
   	// refill table
     emit dataChanged();
+  }
+}
+
+void WayPointWindow::wayPointChanged(int id)
+{
+  int row;
+  int listSize;
+
+  listSize = m_wpList.size();
+
+  for(row=0; row<listSize; row++)
+  {
+    if(m_wpList[row].id() == id)
+    {
+      m_externSelect = true;
+      TableWindow::selectRow(row);
+      break;
+    }
   }
 }
 

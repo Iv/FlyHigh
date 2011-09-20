@@ -25,6 +25,7 @@
 #include "IDataBase.h"
 
 class QWidget;
+class WebMapWayPointView;
 
 class WayPointWindow: public TableWindow
 {
@@ -35,6 +36,8 @@ class WayPointWindow: public TableWindow
 
 	protected:
 		virtual void refresh();
+
+		void selectionChanged();
 
 	private:
 		void setWpToRow(uint row, WayPoint &wp);
@@ -58,14 +61,20 @@ class WayPointWindow: public TableWindow
 
 		void file_viewWebMap();
 
+		void wayPointViewFinished(int res);
+
 		void updateWayPoint(const WayPoint &wp);
+
+		void wayPointChanged(int id);
 
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 
 		WayPoint::WayPointListType m_wpList;
+		WebMapWayPointView *m_pWayPointView;
 		IDataBase *m_pDb;
 		int m_lastModified;
+		bool m_externSelect;
 };
 
 #endif
