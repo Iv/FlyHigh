@@ -1,6 +1,6 @@
 /* Copyright (c):  2004 by Alex Graf
 	This file is distributed under the terms of the General Public
-	Licence. See the file gpl.txt for the Licence or visit gnu.org 
+	Licence. See the file gpl.txt for the Licence or visit gnu.org
 	for more information.
 */
 
@@ -40,16 +40,23 @@ void TableWindow::setupHeader(const QStringList &colNameList)
 	Q3Header *pHeader;
 	uint colNr;
 	uint nofCols;
-	
+
 	// set the cols
 	nofCols = colNameList.count();
 	m_pTable->setNumCols(nofCols);
 	pHeader = m_pTable->horizontalHeader();
-	
+
 	for(colNr=0; colNr<nofCols; colNr++)
 	{
 		pHeader->setLabel(colNr, colNameList[colNr]);
 	}
+}
+
+void TableWindow::selectRow(int row)
+{
+  getTable()->clearSelection();
+  getTable()->selectRow(row);
+  getTable()->ensureCellVisible(row, 0);
 }
 
 void TableWindow::tableAsHTML(QDomDocument &doc)
@@ -69,7 +76,7 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	int nrows;
 	int col;
 	int ncols;
-	
+
 /*
 	<html>
 	<head>
@@ -91,20 +98,20 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 	head.appendChild(elem);
 	body = doc.createElement("body");
 	root.appendChild(body);
-	
+
 	// table
 	table = doc.createElement("table");
 	table.setAttribute("border", 1);
 	body.appendChild(table);
-	
+
 	nrows = m_pTable->numRows();
 	ncols = m_pTable->numCols();
-	
+
 	// header
 	pHeader = m_pTable->horizontalHeader();
 	tableRow = doc.createElement("tr");
 	table.appendChild(tableRow);
-	
+
 	for(col=0; col<ncols; col++)
 	{
 		cell = doc.createElement("td");
@@ -114,13 +121,13 @@ void TableWindow::tableAsHTML(QDomDocument &doc)
 		bold.appendChild(txt);
 		cell.appendChild(bold);
 	}
-	
+
 	// data
 	for(row=0; row<nrows; row++)
 	{
 		tableRow = doc.createElement("tr");
 		table.appendChild(tableRow);
-		
+
 		for(col=0; col<ncols; col++)
 		{
 			cell = doc.createElement("td");
@@ -154,11 +161,11 @@ void TableWindow::exportTable()
 	if(selected!="")
 	{
 		file.setFileName(selected);
-		
+
 		if(file.open(QFile::WriteOnly | QFile::Truncate))
 		{
 			QTextStream out(&file);
-                  
+
 			tableAsHTML(doc);
 			string = doc.toString();
 			out << string.toLocal8Bit();
