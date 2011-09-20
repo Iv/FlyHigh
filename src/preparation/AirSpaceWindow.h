@@ -77,7 +77,7 @@ class AirSpaceWindow: public TableWindow
 		AirSpaceList m_airSpaceList;
 		AirSpaceView *m_pAirSpaceView;
     WebMapAirSpaceView *m_pWebMapView;
-    int m_externSelect;
+    bool m_externSelect;
 };
 
 #endif
