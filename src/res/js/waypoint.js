@@ -52,19 +52,8 @@ function wp_pushWayPoint(opts)
 
 	GEvent.addListener(marker, "mousedown", function(latlng)
 	{ 
-		wp_setName(this.getName());
-		wp_setSpot(this.spot);
-		wp_setCountry(this.country);
-		wp_setLatLng(latlng.lat(), latlng.lng());
-		wp_setAlt(this.alt);
-		
-		if(curMarker)
-		{
-			curMarker.setSelect(false);
-		}
-
-		this.setSelect(true);
-		curMarker = this;
+		selectMarker(this);
+		WebMap.setLine(this.getId());
 	}); 
 
 	GEvent.addListener(marker, "dragstart", function(latlng)
@@ -92,6 +81,26 @@ function wp_pushWayPoint(opts)
 	});
 
 	markers.push(marker);
+}
+
+function wp_selectWayPoint(id)
+{
+	var wpNr;
+	var marker;
+	var bounds;
+
+	for(wpNr=0; wpNr<markers.length; wpNr++)
+	{
+		marker = markers[wpNr];
+
+		if(marker.getId() == id)
+		{
+			bounds = new GLatLngBounds(marker.getLatLng(), marker.getLatLng());
+			map.setCenter(bounds.getCenter(), 12);
+			selectMarker(marker);
+			break;
+		}
+	}
 }
 
 function wp_setMarkerName(name)
@@ -308,4 +317,20 @@ function wp_setOk(ok)
 	}
 
 	WebMap.setOk(ok);
+}
+
+function selectMarker(marker)
+{
+	if(curMarker)
+	{
+		curMarker.setSelect(false);
+	}
+
+	marker.setSelect(true);
+	wp_setName(marker.getName());
+	wp_setSpot(marker.getSpot());
+	wp_setCountry(marker.getCountry());
+	wp_setLatLng(marker.getLat(), marker.getLon());
+	wp_setAlt(marker.getAlt());
+	curMarker = marker;
 }
