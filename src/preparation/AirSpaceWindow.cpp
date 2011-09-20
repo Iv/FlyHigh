@@ -112,8 +112,6 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
 
-  connect(getTable(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
-
 	m_lastModified = 0;
 
 	// read db
@@ -195,7 +193,7 @@ void AirSpaceWindow::file_open()
 				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 			}
 
-			pTable->selectRow(0);
+			TableWindow::selectRow(0);
 			selectionChanged();
 		}
 
@@ -244,7 +242,7 @@ void AirSpaceWindow::populateTable()
 			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
 		}
 
-		pTable->selectRow(0);
+		TableWindow::selectRow(0);
 		selectionChanged();
 		m_pDb->close();
 		TableWindow::unsetCursor();
@@ -307,14 +305,14 @@ void AirSpaceWindow::selectionChanged()
     m_pAirSpaceView->setSelected(getTable()->currentRow());
   }
 
-	if((m_pWebMapView != NULL) && (m_externSelect == 0))
+	if((m_pWebMapView != NULL) && !m_externSelect)
 	{
 	  m_pWebMapView->selectAirSpace(getTable()->currentRow());
 	}
 
-  if(m_externSelect > 0)
+  if(m_externSelect)
   {
-    m_externSelect--;
+    m_externSelect = false;
   }
 }
 
@@ -340,6 +338,6 @@ void AirSpaceWindow::webMapFinished(int res)
 
 void AirSpaceWindow::airSpaceChanged(int line)
 {
-  m_externSelect = 2;
-  getTable()->selectRow(line);
+  m_externSelect = true;
+  TableWindow::selectRow(line);
 }
