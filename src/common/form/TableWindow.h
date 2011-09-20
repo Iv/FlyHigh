@@ -1,6 +1,6 @@
 /* Copyright (c):  2004 by Alex Graf
 	This file is distributed under the terms of the General Public
-	Licence. See the file gpl.txt for the Licence or visit gnu.org 
+	Licence. See the file gpl.txt for the Licence or visit gnu.org
 	for more information.
 */
 
@@ -17,15 +17,20 @@ class Q3Table;
 class TableWindow: public MDIWindow
 {
 	Q_OBJECT
-	
+
 	public:
 		TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+
 		virtual ~TableWindow();
+
 		void tableAsHTML(QDomDocument &doc);
 
 	protected:
 		Q3Table* getTable();
+
 		void setupHeader(const QStringList &colNameList);
+
+		void selectRow(int row);
 
 	private:
 		/**
@@ -35,8 +40,9 @@ class TableWindow: public MDIWindow
 
 	protected slots:
 		void exportTable();
+
 		virtual void selectionChanged();
-		
+
 	private:
 		Q3Table* m_pTable;
 };
