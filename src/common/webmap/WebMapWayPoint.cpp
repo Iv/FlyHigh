@@ -42,12 +42,6 @@ void WebMapWayPoint::init()
 	pFrame->evaluateJavaScript(code);
 }
 
-void WebMapWayPoint::populateObject()
-{
-qDebug() << "populateJavaScriptWindowObject";
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
-}
-
 void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
 {
 	QString code = "wp_pushWayPoint({id: %1, name: '%2', spot: '%3', country: '%4',"
@@ -71,6 +65,20 @@ void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
   alt = wp.altitude();
   pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(spot).arg(country)
                              .arg(lat).arg(lon).arg(alt));
+}
+
+void WebMapWayPoint::selectWayPoint(uint id)
+{
+	QString code = "wp_selectWayPoint(%1);";
+	QWebFrame *pFrame;
+
+  pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(id));
+}
+
+void WebMapWayPoint::populateObject()
+{
+	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
 }
 
 void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &spot,

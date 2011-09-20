@@ -38,12 +38,14 @@ class WebMapWayPointView: public QDialog
 
 		void setWayPointList(WayPoint::WayPointListType *pWpList);
 
-		void setEditItem(uint nr);
+		void selectWayPoint(uint id);
 
 		void loadMap();
 
 	signals:
 		void updateWayPoint(const WayPoint &wp);
+
+		void wayPointChanged(int id);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
@@ -62,6 +64,8 @@ class WebMapWayPointView: public QDialog
 		void populateObject();
 
     void saveWayPoint(const WayPoint &wp);
+
+    void lineChanged(int line);
 };
 
 #endif

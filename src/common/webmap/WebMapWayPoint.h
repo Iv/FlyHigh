@@ -39,6 +39,8 @@ class WebMapWayPoint: public QObject
 
 		void pushWayPoint(const WayPoint &wp);
 
+    void selectWayPoint(uint id);
+
     void populateObject();
 
 	signals:

@@ -38,6 +38,7 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
   connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
   connect(m_pWebMap->getWayPoint(), SIGNAL(changeWayPoint(const WayPoint&)), this,
           SLOT(saveWayPoint(const WayPoint&)));
+  connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SLOT(lineChanged(int)));
 }
 
 WebMapWayPointView::~WebMapWayPointView()
@@ -48,6 +49,11 @@ WebMapWayPointView::~WebMapWayPointView()
 void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
 {
 	m_pWpList = pWpList;
+}
+
+void WebMapWayPointView::selectWayPoint(uint id)
+{
+  m_pWebMap->getWayPoint()->selectWayPoint(id);
 }
 
 void WebMapWayPointView::loadMap()
@@ -101,4 +107,9 @@ void WebMapWayPointView::populateObject()
 void WebMapWayPointView::saveWayPoint(const WayPoint &wp)
 {
   emit updateWayPoint(wp);
+}
+
+void WebMapWayPointView::lineChanged(int line)
+{
+  emit wayPointChanged(line);
 }
