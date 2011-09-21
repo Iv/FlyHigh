@@ -147,10 +147,12 @@ void WayPointWindow::selectionChanged()
 	if((m_pWayPointView != NULL) && !m_externSelect)
 	{
 	  row = getTable()->currentRow();
-	  m_pWayPointView->selectWayPoint(m_wpList[row].id());
-	}
 
-	m_externSelect = false;
+	  if(row >= 0)
+	  {
+      m_pWayPointView->selectWayPoint(m_wpList[row].id());
+	  }
+	}
 }
 
 void WayPointWindow::file_update()
@@ -379,6 +381,7 @@ void WayPointWindow::wayPointChanged(int id)
     {
       m_externSelect = true;
       TableWindow::selectRow(row);
+      m_externSelect = false;
       break;
     }
   }
