@@ -25,6 +25,7 @@ var geocoder = null;
 var map = null;
 var markers = [];
 var curMarker = null;
+var markerCluster;
 
 function wp_init()
 {
@@ -36,9 +37,20 @@ function wp_init()
 		map.addMapType(G_PHYSICAL_MAP);
 		map.setMapType(G_PHYSICAL_MAP);
 		map.enableScrollWheelZoom();
+		map.disableDoubleClickZoom();
+
+/**
+		GEvent.addListener(map, "zoomend", function(oldLevel, newLevel)
+		{ 
+			if(curMarker)
+			{
+				selectMarker(curMarker);
+			}
+		}); 
+*/
 
 		// markers are set before
-		var markerCluster = new MarkerClusterer(map, markers);
+		markerCluster = new MarkerClusterer(map, markers);
 	}
 }
 
