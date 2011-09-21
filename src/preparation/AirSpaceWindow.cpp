@@ -87,11 +87,9 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pAirSpaceViewAct,SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
 	pFileMenu->addAction(pAirSpaceViewAct);
 
-/**
   QAction* pWebMapAct = new QAction(tr("View Webmap..."), this);
 	connect(pWebMapAct,SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pWebMapAct);
-*/
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -309,11 +307,6 @@ void AirSpaceWindow::selectionChanged()
 	{
 	  m_pWebMapView->selectAirSpace(getTable()->currentRow());
 	}
-
-  if(m_externSelect)
-  {
-    m_externSelect = false;
-  }
 }
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
@@ -340,4 +333,5 @@ void AirSpaceWindow::airSpaceChanged(int line)
 {
   m_externSelect = true;
   TableWindow::selectRow(line);
+  m_externSelect = false;
 }
