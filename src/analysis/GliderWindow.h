@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,24 +31,20 @@ class GliderWindow: public TableWindow
 	Q_OBJECT
 	public:
 		GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
-	
-	protected:
-		virtual void refresh();
 
 	private:
 		void setGliderToRow(uint row, Glider &glider);
-		virtual void populateTable();
 
 	private slots:
 		void file_new();
+
 		void file_delete();
+
 		void file_update();
-		
+
 	private:
 		enum Fields{Manufacturer, Model, Serial, Flights, Airtime};
-		
-		int m_glidersLastModified;
-		int m_flightsLastModified;
+
 		IDataBase *m_pDb;
 		Glider::GliderListType m_gliderList;
 };

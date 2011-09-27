@@ -50,12 +50,13 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 
 	TableWindow::setWindowTitle("Gliders");
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
-	
+
 	// configure the table
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(Q3Table::SingleRow);
 	m_pDb = ISql::pInstance();
-	
+  connect(m_pDb, SIGNAL(glidersChanged()), this, SLOT(file_update()));
+
 	// header
 	nameList += "Manufacturer";
 	nameList += "Model";
@@ -64,90 +65,60 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	nameList += "Airtime [h]";
 
 	setupHeader(nameList);
-	
+
 	pTable->setColumnWidth(Manufacturer, 110);
 	pTable->setColumnWidth(Model, 120);
 	pTable->setColumnWidth(Serial, 100);
 	pTable->setColumnWidth(Flights, 100);
 	pTable->setColumnWidth(Airtime, 100);
 
-	m_glidersLastModified = 0;
-	m_flightsLastModified = 0;
-
-	// read db
-	emit dataChanged();
-}
-
-void GliderWindow::refresh()
-{
-	int glidersLastModified;
-	int flightsLastModified;
-	
-	glidersLastModified = m_pDb->glidersLastModified();
-	flightsLastModified = m_pDb->flightsLastModified();
-	
-	if((m_glidersLastModified < glidersLastModified) ||
-			(m_flightsLastModified < flightsLastModified))
-	{
-		populateTable();
-		m_glidersLastModified = glidersLastModified;
-		m_flightsLastModified = flightsLastModified;
-	}
+	file_update();
 }
 
 void GliderWindow::file_new()
 {
 	Glider glider;
 	IGliderForm newGlider(this, "New Glider", &glider);
-	
+
 	if(newGlider.exec())
 	{
 		ISql::pInstance()->add(glider);
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void GliderWindow::file_delete()
 {
 	int row;
-	
+
 	row = getTable()->currentRow();
-	
+
 	if(row >= 0)
 	{
 		m_pDb->delGlider(m_gliderList[row]);
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void GliderWindow::file_update()
-{
-	populateTable();
-}
-
-void GliderWindow::populateTable()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint gliderNr;
 	uint maxGliderNr;
-	
+
 	m_gliderList.clear();
 	progDlg.beginProgress("reading gliders...", m_pDb);
-	
+
 	if(m_pDb->gliderList(m_gliderList))
 	{
 		maxGliderNr = m_gliderList.size();
 		pTable->setNumRows(maxGliderNr);
-		
+
 		for(gliderNr=0; gliderNr<maxGliderNr; gliderNr++)
 		{
 			setGliderToRow(gliderNr, m_gliderList[gliderNr]);
 		}
 	}
-	
+
 	progDlg.endProgress();
 }
 
@@ -155,7 +126,7 @@ void GliderWindow::setGliderToRow(uint row, Glider &glider)
 {
 	QString str;
 	Q3Table *pTable = TableWindow::getTable();
-	
+
 	pTable->setText(row, Manufacturer, glider.manufacturer());
 	pTable->setText(row, Model, glider.model());
 	pTable->setText(row, Serial, glider.serial());
