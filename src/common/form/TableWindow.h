@@ -32,12 +32,6 @@ class TableWindow: public MDIWindow
 
 		void selectRow(int row);
 
-	private:
-		/**
-		 * Fills in data into the table object
-		 */
-		virtual void populateTable()=0;
-
 	protected slots:
 		void exportTable();
 
