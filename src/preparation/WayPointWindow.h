@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,14 +35,7 @@ class WayPointWindow: public TableWindow
 		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	protected:
-		virtual void refresh();
-
 		void selectionChanged();
-
-	private:
-		void setWpToRow(uint row, WayPoint &wp);
-
-		virtual void populateTable();
 
 	private slots:
 		void file_update();
@@ -75,6 +68,8 @@ class WayPointWindow: public TableWindow
 		IDataBase *m_pDb;
 		int m_lastModified;
 		bool m_externSelect;
+
+    void setWpToRow(uint row, WayPoint &wp);
 };
 
 #endif

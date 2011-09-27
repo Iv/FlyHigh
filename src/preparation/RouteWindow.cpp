@@ -76,6 +76,8 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 		break;
 	}
 
+  connect(m_pDb, SIGNAL(routesChanged()), this, SLOT(file_update()));
+
 	QAction* pViewAct = new QAction(tr("&View"), this);
 	connect(pViewAct, SIGNAL(triggered()), this, SLOT(file_view()));
 	pFileMenu->addAction(pViewAct);
@@ -115,23 +117,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(Type, 300);
 
-	m_lastModified = 0;
-
-	// read db
-	emit dataChanged();
-}
-
-void RouteWindow::refresh()
-{
-	int lastModified;
-
-	lastModified = m_pDb->routesLastModified();
-
-	if(m_lastModified < lastModified)
-	{
-		populateTable();
-		m_lastModified = lastModified;
-	}
+	file_update();
 }
 
 void RouteWindow::file_delete()
@@ -144,19 +130,12 @@ void RouteWindow::file_delete()
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->delRoute(m_routeList[row]);
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void RouteWindow::file_update()
-{
-	populateTable();
-}
-
-void RouteWindow::populateTable()
 {
 	ProgressDlg progDlg(this);
 	Q3Table *pTable = TableWindow::getTable();
@@ -169,6 +148,7 @@ void RouteWindow::populateTable()
 	if(m_pDb->open())
 	{
 		progDlg.beginProgress("read routes...", m_pDb);
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		m_pDb->routeList(m_routeList);
 		progDlg.endProgress();
 		maxRouteNr = m_routeList.size();
@@ -196,8 +176,6 @@ void RouteWindow::file_new()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void RouteWindow::file_newWebMap()

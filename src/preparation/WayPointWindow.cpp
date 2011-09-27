@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -13,7 +13,7 @@
  *   GNU General Public License for more details.                          *
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not,  write to the                         *
+ *   along with this program; if not,  write to the                        *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
@@ -32,10 +32,6 @@
 #include "WayPointWindow.h"
 #include "WayPoint.h"
 #include "WebMapWayPointView.h"
-
-#include <stdio.h>
-
-#include <QDebug>
 
 WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -79,6 +75,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		break;
 	}
 
+  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
+
 	QAction* pNewAct = new QAction(tr("New..."), this);
 	connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
 	pFileMenu->addAction(pNewAct);
@@ -87,7 +85,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
 
-/**
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
@@ -95,7 +92,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
 	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
 	pFileMenu->addAction(pEditWebMapAct);
-*/
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -122,22 +118,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
 
-	m_lastModified = 0;
-	// read db
-	emit dataChanged();
-}
-
-void WayPointWindow::refresh()
-{
-	int lastModified;
-
-	lastModified = m_pDb->wayPointsLastModified();
-
-	if(m_lastModified < lastModified)
-	{
-		populateTable();
-		m_lastModified = lastModified;
-	}
+	file_update();
 }
 
 void WayPointWindow::selectionChanged()
@@ -156,11 +137,6 @@ void WayPointWindow::selectionChanged()
 }
 
 void WayPointWindow::file_update()
-{
-	populateTable();
-}
-
-void WayPointWindow::populateTable()
 {
 	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
@@ -215,8 +191,6 @@ void WayPointWindow::file_AddToGps()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_delete()
@@ -229,7 +203,7 @@ void WayPointWindow::file_delete()
 
 	numSel = getTable()->numSelections();
 
-	if((numSel > 0) && IGPSDevice::pInstance()->open())
+	if((numSel > 0) && m_pDb->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
@@ -245,10 +219,8 @@ void WayPointWindow::file_delete()
 		}
 
 		TableWindow::unsetCursor();
-		IGPSDevice::pInstance()->close();
+		m_pDb->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_addNewWp()
@@ -261,8 +233,6 @@ void WayPointWindow::file_addNewWp()
 		m_pDb->add(wp);
 		m_pDb->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_AddToSqlDB()
@@ -284,8 +254,6 @@ void WayPointWindow::file_AddToSqlDB()
 
 		ISql::pInstance()->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_Edit()
@@ -304,8 +272,6 @@ void WayPointWindow::file_Edit()
       m_pDb->close();
     }
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_editWebMap()
@@ -326,9 +292,6 @@ void WayPointWindow::file_editWebMap()
       m_pDb->close();
     }
 	}
-
-	// refill table
-	emit dataChanged();
 }
 
 void WayPointWindow::file_viewWebMap()
@@ -362,9 +325,6 @@ void WayPointWindow::updateWayPoint(const WayPoint &wp)
   {
     m_pDb->update(locWp);
     m_pDb->close();
-
-  	// refill table
-    emit dataChanged();
   }
 }
 
