@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -41,14 +41,7 @@ class AirSpaceWindow: public TableWindow
 	protected:
     void closeEvent(QCloseEvent *pEvent);
 
-		virtual void refresh();
-
 		void selectionChanged();
-
-	private:
-		void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
-
-		virtual void populateTable();
 
 	private slots:
 		void file_open();
@@ -78,6 +71,8 @@ class AirSpaceWindow: public TableWindow
 		AirSpaceView *m_pAirSpaceView;
     WebMapAirSpaceView *m_pWebMapView;
     bool m_externSelect;
+
+    void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
 };
 
 #endif

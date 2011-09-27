@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -79,6 +79,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		break;
 	}
 
+	connect(m_pDb, SIGNAL(airSpaceChanged()), this, SLOT(file_update()));
+
 	QAction* pExpAct = new QAction(tr("&Export all..."), this);
 	connect(pExpAct,SIGNAL(triggered()), this, SLOT(exportTable()));
 	pFileMenu->addAction(pExpAct);
@@ -87,11 +89,9 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pAirSpaceViewAct,SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
 	pFileMenu->addAction(pAirSpaceViewAct);
 
-/**
   QAction* pWebMapAct = new QAction(tr("View Webmap..."), this);
 	connect(pWebMapAct,SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pWebMapAct);
-*/
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -112,10 +112,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
 
-	m_lastModified = 0;
-
-	// read db
-	emit dataChanged();
+	file_update();
 }
 
 AirSpaceWindow::~AirSpaceWindow()
@@ -135,25 +132,35 @@ void AirSpaceWindow::closeEvent(QCloseEvent *pEvent)
   }
 }
 
-void AirSpaceWindow::refresh()
-{
-	int lastModified;
-
-	if(m_pDb != NULL)
-	{
-		lastModified = m_pDb->airspacesLastModified();
-
-		if(m_lastModified < lastModified)
-		{
-			populateTable();
-			m_lastModified = lastModified;
-		}
-	}
-}
-
 void AirSpaceWindow::file_update()
 {
-	populateTable();
+	Q3Table *pTable = TableWindow::getTable();
+	ProgressDlg progDlg(this);
+	uint airspaceNr;
+	uint maxAirspaceNr;
+
+	m_airSpaceList.clear();
+	pTable->setNumRows(0);
+
+	if(m_pDb->open())
+	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		progDlg.beginProgress("read airspaces...", m_pDb);
+		m_pDb->airspaceList(m_airSpaceList);
+		progDlg.endProgress();
+		maxAirspaceNr = m_airSpaceList.size();
+		pTable->setNumRows(maxAirspaceNr);
+
+		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+		{
+			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+		}
+
+		TableWindow::selectRow(0);
+		selectionChanged();
+		m_pDb->close();
+		TableWindow::unsetCursor();
+	}
 }
 
 void AirSpaceWindow::file_open()
@@ -214,39 +221,6 @@ void AirSpaceWindow::file_delete()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
-	// refill table
-	emit dataChanged();
-}
-
-void AirSpaceWindow::populateTable()
-{
-	Q3Table *pTable = TableWindow::getTable();
-	ProgressDlg progDlg(this);
-	uint airspaceNr;
-	uint maxAirspaceNr;
-
-	m_airSpaceList.clear();
-	pTable->setNumRows(0);
-
-	if(m_pDb->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		progDlg.beginProgress("read airspaces...", m_pDb);
-		m_pDb->airspaceList(m_airSpaceList);
-		progDlg.endProgress();
-		maxAirspaceNr = m_airSpaceList.size();
-		pTable->setNumRows(maxAirspaceNr);
-
-		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
-		{
-			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
-		}
-
-		TableWindow::selectRow(0);
-		selectionChanged();
-		m_pDb->close();
-		TableWindow::unsetCursor();
-	}
 }
 
 void AirSpaceWindow::file_AddToGPS()
@@ -265,8 +239,6 @@ void AirSpaceWindow::file_AddToGPS()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
-	// refill table
-	emit dataChanged();
 }
 
 void AirSpaceWindow::file_viewAirSpace()
