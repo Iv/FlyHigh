@@ -51,6 +51,13 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
+
+	connect(m_pWayPoints, SIGNAL(changed()), this, SIGNAL(wayPointsChanged()));
+	connect(m_pGliders, SIGNAL(changed()), this, SIGNAL(glidersChanged()));
+	connect(m_pFlights, SIGNAL(changed()), this, SIGNAL(flightsChanged()));
+	connect(m_pRoutes, SIGNAL(changed()), this, SIGNAL(routesChanged()));
+	connect(m_pServicings, SIGNAL(changed()), this, SIGNAL(servicingsChanged()));
+	connect(m_pPilots, SIGNAL(changed()), this, SIGNAL(flightsChanged()));
 }
 
 ISql::~ISql()

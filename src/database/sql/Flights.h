@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,14 +32,19 @@ class Flights: public DataBaseSub
 		Flights(QSqlDatabase DB);
 
 		bool add(Flight &flight);
+
 		bool delFlight(Flight &flight);
+
 		int newFlightNr(Pilot &pilot);
+
 		bool flightList(Pilot &pilot, Flight::FlightListType &flightList);
+
 		bool flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList);
+
 		bool loadIGCFile(Flight &flight);
 
 		bool setFlightStatistic(Glider &glider);
-		
+
 	private:
 		enum Elements
 		{

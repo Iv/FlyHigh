@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,11 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <q3sqlcursor.h>
-#include <qsqldatabase.h>
-//Added by qt3to4:
+
+#include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QVariant>
 #include "ISql.h"
 #include "Error.h"
 #include "Routes.h"
@@ -41,7 +40,7 @@ bool Routes::add(Route &route)
 	uint nWps;
 	uint wpNr;
 	bool success;
-	
+
 	// insert route name
 	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(NULL, '%1', %2);").arg(route.name()).arg(route.type());
 	success = query.exec(sqls);
@@ -51,27 +50,29 @@ bool Routes::add(Route &route)
 	{
 		setId(route);
 		sqls = "INSERT INTO RouteItems(Id, RouteId, WayPointId) VALUES";
-	
+
 		// insert route items
 		nWps = route.wayPointList().size();
-	
+
 		for(wpNr=0; wpNr<nWps; wpNr++)
 		{
 			if(wpNr != 0)
 			{
 				sqls += ", ";
 			}
-	
+
 			value.sprintf("(NULL, %i, %i)", route.id(), route.wayPointList().at(wpNr).id());
 			sqls += value;
 		}
-	
+
 		sqls += ";";
 		success = query.exec(sqls);
 		Error::verify(success, Error::SQL_CMD);
 		DataBaseSub::setLastModified("Routes");
 	}
-		
+
+	emit changed();
+
 	return success;
 }
 
@@ -86,15 +87,15 @@ bool Routes::delRoute(Route &route)
 	sqls = "DELETE FROM RouteItems WHERE RouteId = %1;";
 	success = query.exec(sqls.arg(route.id()));
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	// route
 	sqls = "DELETE FROM Routes WHERE Id = %1;";
 	success = query.exec(sqls.arg(route.id()));
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	// waypoints
 	success = true;
-	
+
 	for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
 	{
 		sqls = "SELECT COUNT(*) FROM Flights WHERE StartPtId = %1 OR LandPtId = %2";
@@ -107,14 +108,13 @@ bool Routes::delRoute(Route &route)
 				success &= query.exec(sqls.arg((*it).id()));
 			}
 		}
-		
-
 	}
 
 	Error::verify(success, Error::SQL_DEL);
 	DataBaseSub::setLastModified("WayPoints");
 	DataBaseSub::setLastModified("Routes");
-	
+	emit changed();
+
 	return success;
 }
 
@@ -128,9 +128,9 @@ bool Routes::routeList(Route::RouteListType &routeList)
 	QString wpName;
 	int wpId;
 	bool success;
-	
+
 	success = routeQuery.exec(sqls);
-	
+
 	if(success)
 	{
 		while(routeQuery.next())
@@ -144,7 +144,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			// route items
 			sqls.sprintf("SELECT * FROM RouteItems WHERE RouteId = %i;", route.id());
 			success = routeItemsQuery.exec(sqls);
-			
+
 			if(success)
 			{
 				while(routeItemsQuery.next())
@@ -158,9 +158,9 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			routeList.push_back(route);
 		}
 	}
-	
+
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	return success;
 }
 
@@ -185,6 +185,6 @@ bool Routes::setId(Route &route)
 	}
 
 	route.setId(id);
-	
+
 	return success;
 }

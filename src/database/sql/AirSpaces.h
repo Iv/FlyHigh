@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,6 +39,9 @@ class AirSpaces: public DataBaseSub
 		bool airspace(const QString &name, AirSpace &airspace);
 
 		bool airspaceList(AirSpaceList &airspaceList);
+
+  signals:
+		void changed();
 
 	private:
 		enum Elements{Id, Name, Low, High, Class};

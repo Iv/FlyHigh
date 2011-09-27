@@ -19,8 +19,8 @@
  ***************************************************************************/
 
 #include <q3sqlcursor.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "Error.h"
 #include "Flights.h"
 #include "Gliders.h"
@@ -44,6 +44,7 @@ bool Gliders::add(Glider &glider)
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	setGliderId(glider);
 	DataBaseSub::setLastModified("Gliders");
+	emit changed();
 
 	return true;
 }
@@ -53,12 +54,13 @@ bool Gliders::delGlider(Glider &glider)
   QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	 
+
 	sqls.sprintf("DELETE FROM Gliders WHERE Id = %i", glider.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Gliders");
 	Error::verify(success, Error::SQL_CMD);
-	
+	emit changed();
+
 	return success;
 }
 
@@ -68,16 +70,16 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	QString sqls;
 	QString dbModel;
 	bool success = false;
-	
+
 	sqls.sprintf("SELECT * FROM Gliders");
-	
+
 	if(query.exec(sqls))
 	{
 		while(query.next())
 		{
 			dbModel = query.value(Model).toString();
 			success = (dbModel == modelOfGlider);
-			
+
 			if(success)
 			{
 				glider.setId(query.value(Id).toInt());
@@ -92,7 +94,7 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	{
 		Error::verify(success, Error::SQL_CMD);
 	}
-	
+
 	return success;
 }
 
@@ -102,9 +104,9 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
         QSqlQuery query(db());
 	QString sqls = "SELECT * FROM Gliders ORDER BY Manufacturer, Model ASC";
 	bool success;
-	
+
 	success = query.exec(sqls);
-	
+
 	if(success)
 	{
 		while(query.next())
@@ -117,9 +119,9 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 			gliderList.push_back(glider);
 		}
 	}
-	
+
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	return success;
 }
 
@@ -128,10 +130,10 @@ bool Gliders::glider(int id, Glider &glider)
   QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	
+
 	sqls.sprintf("SELECT * FROM Gliders WHERE Id = %i", id);
 	success = (query.exec(sqls) && query.first());
-	
+
 	if(success)
 	{
 		glider.setId(query.value(Id).toInt());
@@ -143,7 +145,7 @@ bool Gliders::glider(int id, Glider &glider)
 	{
 		Error::verify(success, Error::SQL_CMD);
 	}
-	
+
 	return success;
 }
 
@@ -155,10 +157,10 @@ bool Gliders::setGliderId(Glider &glider)
 	bool success;
 	int id = -1;
 
-        sqls = QString("SELECT * FROM Gliders WHERE "
-                "Manufacturer = '%1' AND "
-                "Model = '%2' AND "
-                "Serial = '%3'").arg(glider.manufacturer(),glider.model(),glider.serial());
+  sqls = QString("SELECT * FROM Gliders WHERE "
+          "Manufacturer = '%1' AND "
+          "Model = '%2' AND "
+          "Serial = '%3'").arg(glider.manufacturer(),glider.model(),glider.serial());
 
 	success = (query.exec(sqls) && query.first());
 
@@ -172,6 +174,6 @@ bool Gliders::setGliderId(Glider &glider)
 	}
 
 	glider.setId(id);
-	
+
 	return success;
 }

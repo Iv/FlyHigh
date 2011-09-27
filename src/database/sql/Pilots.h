@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2006 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,13 +28,17 @@
 */
 class Pilots: public DataBaseSub
 {
-	public:
+  public:
 		Pilots(QSqlDatabase DB);
+
 		~Pilots();
 
 		bool add(Pilot &pilot);
+
 		bool update(Pilot &pilot);
+
 		bool pilot(int id, Pilot &pilot);
+
 		bool setId(Pilot &pilot);
 
 	private:

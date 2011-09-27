@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,24 +20,31 @@
 #ifndef DataBaseSub_h
 #define DataBaseSub_h
 
-#include <qstring.h>
-#include <qsqldatabase.h>
+#include <QObject>
+#include <QString>
+#include <QSqlDatabase>
 
-class DataBase;
-
-class DataBaseSub
+class DataBaseSub: public QObject
 {
+  Q_OBJECT
+
 	public:
 		DataBaseSub(QSqlDatabase db);
+
 		virtual ~DataBaseSub();
-		
+
 		int lastModified(const QString &field);
-		
+
+  signals:
+		void changed();
+
 	protected:
 		QSqlDatabase db();
+
 		int newId(const QString &table);
+
 		void setLastModified(const QString &field);
-			
+
 	private:
 		QSqlDatabase m_DB;
 };

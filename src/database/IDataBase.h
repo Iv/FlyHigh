@@ -35,6 +35,7 @@ class AirSpaceList;
 class IDataBase: public QObject
 {
 	Q_OBJECT
+
 	public:
 		typedef enum SourceType{GPSdevice, SqlDB, File}SourceType;
 
@@ -112,6 +113,16 @@ class IDataBase: public QObject
 
 	signals:
 		void progress(int percent);
+
+		void airSpacesChanged();
+
+		void flightsChanged();
+
+		void glidersChanged();
+
+		void routesChanged();
+
+		void wayPointsChanged();
 
 	public slots:
 		virtual void cancel();

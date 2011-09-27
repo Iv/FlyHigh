@@ -45,6 +45,7 @@ bool WayPoints::add(WayPoint &wp)
   Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
 	setId(wp);
+	emit changed();
 
 	return success;
 }
@@ -62,6 +63,7 @@ bool WayPoints::update(WayPoint &wp)
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_CMD);
+	emit changed();
 
 	return success;
 }
@@ -76,6 +78,7 @@ bool WayPoints::delWayPoint(WayPoint &wp)
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_DEL);
+	emit changed();
 
 	return success;
 }
@@ -88,6 +91,7 @@ bool WayPoints::delAllWayPoints()
 	success = query.exec("DELETE * FROM WayPoints;");
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_DEL);
+	emit changed();
 
 	return success;
 }

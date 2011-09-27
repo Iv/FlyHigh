@@ -260,6 +260,7 @@ bool Flytec5020::add(WayPoint &wp)
 	success = m_protocol->wpSnd(wp);
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	return success;
 }
@@ -271,6 +272,7 @@ bool Flytec5020::delWayPoint(WayPoint &wp)
 	success = m_protocol->wpDel(wp.name());
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	return success;
 }
@@ -296,6 +298,7 @@ bool Flytec5020::delAllWayPoints()
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	return success;
 }
@@ -349,6 +352,7 @@ bool Flytec5020::add(Route &route)
 	}
 
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	// now write the route
 	totalSent = 1 + route.wayPointList().size();
@@ -373,6 +377,7 @@ bool Flytec5020::add(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+	emit routesChanged();
 
 	return success;
 }
@@ -435,6 +440,7 @@ bool Flytec5020::delRoute(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+	emit routesChanged();
 
 	return success;
 }
@@ -474,6 +480,7 @@ bool Flytec5020::add(AirSpace &airspace)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+	emit airSpacesChanged();
 
 	return success;
 }
@@ -485,6 +492,7 @@ bool Flytec5020::delAirSpace(AirSpace &airspace)
 	success = m_protocol->ctrDel(airspace.name());
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+	emit airSpacesChanged();
 
 	return success;
 }

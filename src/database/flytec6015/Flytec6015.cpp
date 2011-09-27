@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2010 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -143,6 +143,7 @@ bool Flytec6015::add(WayPoint &wp)
 	success = m_protocol->wpSnd(wp);
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	return success;
 }
@@ -173,6 +174,7 @@ bool Flytec6015::delAllWayPoints()
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
 
 	return success;
 }
@@ -238,6 +240,7 @@ bool Flytec6015::add(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+	emit routesChanged();
 
 	return success;
 }
@@ -305,6 +308,7 @@ bool Flytec6015::delRoute(Route &route)
 
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+	emit routesChanged();
 
 	return success;
 }

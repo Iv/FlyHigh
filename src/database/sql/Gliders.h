@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,11 +33,15 @@ class Gliders: public DataBaseSub
 		Gliders(QSqlDatabase DB);
 
 		bool add(Glider &glider);
+
 		bool delGlider(Glider &glider);
+
 		bool glider(const QString &modelOfGlider, Glider &glider);
+
 		bool gliderList(Glider::GliderListType &gliderList);
 
 		bool glider(int id, Glider &glider);
+
 		bool setGliderId(Glider &glider);
 
 	private:

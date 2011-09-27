@@ -20,7 +20,8 @@ set(dbsql_SRCS DataBaseSub.cpp
 							 Query.cpp
 							 DatabaseUtilities.cpp)
 
-set(dbsql_HDRS Migrator.h)
+set(dbsql_HDRS DataBaseSub.h
+               Migrator.h)
 
 QT4_WRAP_CPP(dbsql_SRCS ${dbsql_HDRS})
 
