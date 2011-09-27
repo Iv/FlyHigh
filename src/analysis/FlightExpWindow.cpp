@@ -34,57 +34,36 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 {
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
+  QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
-        QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+  QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
+  connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
+  pFileMenu->addAction(pExpAllAct);
 
-        QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-        connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-        pFileMenu->addAction(pExpAllAct);
+  TableWindow::setWindowTitle("Flight experience");
+  TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
-        TableWindow::setWindowTitle("Flight experience");
-        TableWindow::setWindowIcon(QIcon(":/document.xpm"));
-	
 	// configure the table
 	pTable->setReadOnly(true);
 	pTable->setSelectionMode(Q3Table::SingleRow);
 	m_pDb = ISql::pInstance();
-	
+	connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
+
 	// header
 	nameList += "Year";
 	nameList += "Number of flights";
 	nameList += "Airtime [h]";
 
 	setupHeader(nameList);
-	
+
 	pTable->setColumnWidth(Year, 60);
 	pTable->setColumnWidth(NrFlights, 140);
 	pTable->setColumnWidth(Airtime, 100);
 
-	m_lastModified = 0;
-
-	// read db
-	emit dataChanged();
-}
-
-void FlightExpWindow::refresh()
-{
-	int lastModified;
-	
-	lastModified = m_pDb->flightsLastModified();
-	
-	if(m_lastModified < lastModified)
-	{
-		populateTable();
-		m_lastModified = lastModified;
-	}
+	file_update();
 }
 
 void FlightExpWindow::file_update()
-{
-	populateTable();
-}
-
-void FlightExpWindow::populateTable()
 {
 	FlightsPerYearListType fpyList;
 	Pilot pilot;
@@ -94,7 +73,7 @@ void FlightExpWindow::populateTable()
 	uint maxYearNr;
 	uint flightsTotal = 0;
 	uint airtimeTotal = 0;
-	
+
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
 	// pilot info
@@ -104,7 +83,7 @@ void FlightExpWindow::populateTable()
 	{
 		maxYearNr = fpyList.size();
 		pTable->setNumRows(maxYearNr);
-		
+
 		if(maxYearNr > 0)
 		{
 			// statistics
@@ -116,17 +95,17 @@ void FlightExpWindow::populateTable()
 				pTable->setText(yearNr, NrFlights, str);
 				str.sprintf("%.2f",  fpyList[yearNr].airTimeSecs/3600.0);
 				pTable->setText(yearNr, Airtime, str);
-				
+
 				flightsTotal += fpyList[yearNr].nFlights;
 				airtimeTotal += fpyList[yearNr].airTimeSecs;
 			}
-			
+
 			// separator
 			pTable->insertRows(yearNr);
 			pTable->setText(yearNr, Year, "_______________________________");
 			pTable->setText(yearNr, NrFlights, "_______________________________");
 			pTable->setText(yearNr, Airtime, "_______________________________");
-				
+
 			// sum
 			pTable->insertRows(yearNr+1);
 			str.sprintf("%i", fpyList[maxYearNr-1].year - fpyList[0].year + 1);
@@ -137,6 +116,6 @@ void FlightExpWindow::populateTable()
 			pTable->setText(yearNr+1, Airtime, str);
 		}
 	}
-	
+
 	TableWindow::unsetCursor();
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,21 +31,17 @@ class ServicingWindow: public TableWindow
 
 	public:
 		ServicingWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
-		
-	protected:
-		virtual void refresh();
-
-	private:
-		virtual void populateTable();
 
 	private slots:
 		void file_update();
+
 		void file_new();
+
 		void file_delete();
-	
+
 	private:
 		enum Fields{Glider, Date, Responsibility, Comment};
-		
+
 		Servicing::ServicingListType m_servicingsList;
 		int m_lastModified;
 		ISql *m_pDb;

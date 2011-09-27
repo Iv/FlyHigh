@@ -32,38 +32,45 @@ class FlightWindow : public TableWindow
 	Q_OBJECT
 	public:
 		FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
-	
-	protected:
-		virtual void refresh();
-
-	private:
-		void setFlightToRow(uint row, Flight &flight);
-		void plotFlighPointList(FlightPointList &fpList, const QString& title);
-		virtual void populateTable();
 
 	private slots:
 		void file_update();
+
 		void file_AddToSqlDB();
+
 		void file_new();
+
 		void file_delete();
+
 		void file_import();
+
 		void file_exportIGC();
+
 		void file_exportKML();
+
 		void plot_speedVsTime();
+
 		void plot_altVsTime();
+
 		void plot_varioVsTime();
+
 		void plot_OLC();
+
 		void showOnMap();
+
 		void showOnWebMap();
-		
+
 	private:
 		enum Fields{Nr, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
-		
-		int m_lastModified;
+
 		IDataBase *m_pDb;
 		QString m_fileName;
 		GnuPlot m_plotter;
 		Flight::FlightListType m_flightList;
+
+    void setFlightToRow(uint row, Flight &flight);
+
+		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 };
 
 #endif
