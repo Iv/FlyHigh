@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,9 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qdatetime.h>
 #include <q3sqlcursor.h>
-//Added by qt3to4:
+#include <QDateTime>
 #include <QSqlQuery>
 #include "DataBaseSub.h"
 
@@ -43,13 +42,13 @@ int DataBaseSub::newId(const QString &table)
 	QString sqls = "SELECT MAX(Id) FROM " + table;
         QSqlQuery query(m_DB);
 	int newid = -1;
-	
+
 	if(query.exec(sqls) &&
 		query.first())
 	{
 		newid = query.value(0).toInt() + 1;
 	}
-	
+
 	return newid;
 }
 
@@ -58,9 +57,9 @@ void DataBaseSub::setLastModified(const QString &field)
 	QString sqls;
 	QString date;
 	QSqlQuery query(m_DB);
-	
+
 	date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
-	
+
 	if(lastModified(field) > 1)
 	{
                 sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = '%2'").arg(date,field);
@@ -79,13 +78,13 @@ int DataBaseSub::lastModified(const QString &field)
 	QString date;
         QSqlQuery query(m_DB);
 	int time = 1;
-	
+
         sqls = QString("SELECT Time FROM LastModified WHERE Name = '%1'").arg(field);
-	
+
 	if(query.exec(sqls) && query.first())
 	{
 		time = query.value(0).toDateTime().toTime_t();
 	}
-	
+
 	return time;
 }

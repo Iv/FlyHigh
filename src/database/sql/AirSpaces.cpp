@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include <q3sqlcursor.h>
-#include <qsqldatabase.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "Error.h"
 #include "AirSpaces.h"
 

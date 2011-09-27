@@ -17,11 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <qdatetime.h>
+
 #include <q3sqlcursor.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "Error.h"
 #include "Glider.h"
 #include "Gliders.h"
@@ -47,6 +47,7 @@ bool Servicings::add(Servicing &servicing)
 	pRec->setValue("Comment", servicing.comment());
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Servicings");
+	emit changed();
 
 	return true;
 }
@@ -56,12 +57,13 @@ bool Servicings::delServicing(Servicing &servicing)
 	QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	 
+
 	sqls.sprintf("DELETE FROM Servicings WHERE Id = %i", servicing.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
-	
+	emit changed();
+
 	return success;
 }
 
@@ -72,9 +74,9 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	QSqlQuery query(db());
 	QString sqls = "SELECT * FROM Servicings ORDER BY Id DESC";
 	bool success;
-	
+
 	success = query.exec(sqls);
-	
+
 	if(success)
 	{
 		while(query.next())
@@ -85,12 +87,12 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 			servicing.setDate(query.value(Date).toDate());
 			servicing.setResponsibility(query.value(Responsibility).toString());
 			servicing.setComment(query.value(Comment).toString());
-			
+
 			servicingList.push_back(servicing);
 		}
 	}
-	
+
 	Error::verify(success, Error::SQL_CMD);
-	
+
 	return success;
 }

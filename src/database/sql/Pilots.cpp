@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,10 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <qdatetime.h>
 #include <q3sqlcursor.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "Error.h"
 #include "ISql.h"
 #include "Gliders.h"
@@ -54,6 +54,7 @@ bool Pilots::add(Pilot &pilot)
 	Error::verify(success, Error::SQL_CMD);
 	setId(pilot);
 	DataBaseSub::setLastModified("Pilots");
+	emit changed();
 
 	return success;
 }
@@ -75,9 +76,10 @@ bool Pilots::update(Pilot &pilot)
 		.arg(pilot.glider().id())
 		.arg(pilot.id());
 	success = query.exec(sqls);
-	
+
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Pilots");
+	emit changed();
 
 	return success;
 }
@@ -107,7 +109,7 @@ bool Pilots::pilot(int id, Pilot &pilot)
 	{
 		Error::verify(success, Error::SQL_NO_PILOT_INFO);
 	}
-	
+
 	return success;
 }
 
@@ -119,10 +121,10 @@ bool Pilots::setId(Pilot &pilot)
 	bool success;
 	int id = -1;
 
-        sqls = QString("SELECT * FROM Pilots WHERE "
-                "FirstName = '%1' AND "
-                "LastName = '%2' AND "
-                "BirthDate = '%3'").arg(pilot.firstName(), pilot.lastName(), pilot.birthDate().toString("yyyy-MM-dd"));
+  sqls = QString("SELECT * FROM Pilots WHERE "
+          "FirstName = '%1' AND "
+          "LastName = '%2' AND "
+          "BirthDate = '%3'").arg(pilot.firstName(), pilot.lastName(), pilot.birthDate().toString("yyyy-MM-dd"));
 
 	success = (query.exec(sqls) && query.first());
 
@@ -132,6 +134,6 @@ bool Pilots::setId(Pilot &pilot)
 	}
 
 	pilot.setId(id);
-	
+
 	return success;
 }

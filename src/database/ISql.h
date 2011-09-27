@@ -47,6 +47,8 @@ class Pilots;
 */
 class ISql: public IDataBase
 {
+  Q_OBJECT
+
 	public:
 		static ISql* pInstance();
 
@@ -133,8 +135,14 @@ class ISql: public IDataBase
 
 		int pilotsLastModified();
 
+  signals:
+    void pilotsChanged();
+
+		void servicingsChanged();
+
 	protected:
 //		AirSpaces* pAirSpaceTable();
+
 		WayPoints* pWayPointTable();
 
 		Gliders* pGliderTable();

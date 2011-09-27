@@ -19,7 +19,8 @@ set(database_SRCS IDataBase.cpp
 									IFlyHighRC.cpp
 									DatabaseParameters.cpp)
 
-set(database_HDRS IDataBase.h)
+set(database_HDRS IDataBase.h
+                  ISql.h)
 
 QT4_WRAP_CPP(database_SRCS ${database_HDRS})
 
