@@ -342,6 +342,7 @@
 		<Unit filename="src/database/garmin/gpsutil.h" />
 		<Unit filename="src/database/sql/AirSpaces.cpp" />
 		<Unit filename="src/database/sql/AirSpaces.h" />
+		<Unit filename="src/database/sql/CMakeLists.txt" />
 		<Unit filename="src/database/sql/DataBaseSub.cpp" />
 		<Unit filename="src/database/sql/DataBaseSub.h" />
 		<Unit filename="src/database/sql/DatabaseUtilities.cpp" />
