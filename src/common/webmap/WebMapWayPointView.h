@@ -43,7 +43,7 @@ class WebMapWayPointView: public QDialog
 		void loadMap();
 
 	signals:
-		void updateWayPoint(const WayPoint &wp);
+		void wayPointChanged(const WayPoint &wp);
 
 		void wayPointChanged(int id);
 
@@ -62,10 +62,6 @@ class WebMapWayPointView: public QDialog
 		void finished(int res);
 
 		void populateObject();
-
-    void saveWayPoint(const WayPoint &wp);
-
-    void lineChanged(int line);
 };
 
 #endif

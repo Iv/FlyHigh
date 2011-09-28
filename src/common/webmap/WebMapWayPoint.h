@@ -44,7 +44,7 @@ class WebMapWayPoint: public QObject
     void populateObject();
 
 	signals:
-		void changeWayPoint(const WayPoint &wp);
+		void wayPointChanged(const WayPoint &wp);
 
 	protected slots:
 		void saveWayPoint(int id, const QString &name, const QString &spot, const QString &country,
