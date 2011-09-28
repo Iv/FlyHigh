@@ -33,7 +33,7 @@ function as_init()
 	{
 		map = new GMap2(document.getElementById('map'));
 		map.setCenter(new GLatLng(47, 8.5), 8);
-		map.addControl(new GMapTypeControl())
+		map.addControl(new GMapTypeControl());
 		map.removeMapType(G_SATELLITE_MAP);
 		map.addMapType(G_PHYSICAL_MAP);
 		map.setMapType(G_PHYSICAL_MAP);
