@@ -32,7 +32,7 @@ function wp_init()
 	if(GBrowserIsCompatible()) {
 		map = new GMap2(document.getElementById('map'));
 		map.setCenter(new GLatLng(47, 8.5), 8);
-		map.addControl(new GMapTypeControl())
+		map.addControl(new GMapTypeControl());
 		map.removeMapType(G_SATELLITE_MAP);
 		map.addMapType(G_PHYSICAL_MAP);
 		map.setMapType(G_PHYSICAL_MAP);
@@ -81,15 +81,7 @@ function wp_pushWayPoint(opts)
 	
 	GEvent.addListener(marker, "dragend", function(latlng)
 	{
-		var req;
-
-		req = "http://maps.googleapis.com/maps/api/elevation/json?locations="
-		req += latlng.lat();
-		req += ",";
-		req += latlng.lng();
-		req += "&sensor=false";
-
-		WebMap.netRequest(this.id, req, "wp_altReply");
+		updateMarkerAlt(this);
 	});
 
 	markers.push(marker);
@@ -99,7 +91,6 @@ function wp_selectWayPoint(id)
 {
 	var wpNr;
 	var marker;
-	var bounds;
 
 	for(wpNr=0; wpNr<markers.length; wpNr++)
 	{
@@ -107,8 +98,7 @@ function wp_selectWayPoint(id)
 
 		if(marker.getId() == id)
 		{
-			bounds = new GLatLngBounds(marker.getLatLng(), marker.getLatLng());
-			map.setCenter(bounds.getCenter(), 12);
+			zoomMarker(marker);
 			selectMarker(marker);
 			break;
 		}
@@ -204,6 +194,8 @@ function wp_setMarkerLat(lat)
 		if((numValue >= -90) && (numValue <= 90))
 		{
 			curMarker.setLat(numValue);
+			updateMarkerAlt(curMarker);
+			zoomMarker(curMarker);
 		}
 		else
 		{
@@ -223,6 +215,8 @@ function wp_setMarkerLon(lon)
 		if((numValue >= -180) && (numValue <= 180))
 		{
 			curMarker.setLon(numValue);
+			updateMarkerAlt(curMarker);
+			zoomMarker(curMarker);
 		}
 		else
 		{
@@ -231,15 +225,17 @@ function wp_setMarkerLon(lon)
 	}
 }
 
-function wp_setLatLng(lat, lng)
+function wp_setLatLng(lat, lon)
 {
 	var locInput;
-
+	
+	lat = Math.round(lat * 100000) / 100000;
 	locInput = document.getElementById("lat");
 	locInput.value = lat;
-	
+
+	lon = Math.round(lon * 100000) / 100000;
 	locInput = document.getElementById("lon");
-	locInput.value = lng;
+	locInput.value = lon;
 }
 
 function wp_getLatLng()
@@ -345,4 +341,25 @@ function selectMarker(marker)
 	wp_setLatLng(marker.getLat(), marker.getLon());
 	wp_setAlt(marker.getAlt());
 	curMarker = marker;
+}
+
+function zoomMarker(marker)
+{
+	var bounds;
+
+	bounds = new GLatLngBounds(marker.getLatLng(), marker.getLatLng());
+	map.setCenter(bounds.getCenter(), 15);
+}
+
+function updateMarkerAlt(marker)
+{
+	var req;
+
+	req = "http://maps.googleapis.com/maps/api/elevation/json?locations=";
+	req += marker.getLat();
+	req += ",";
+	req += marker.getLon();
+	req += "&sensor=false";
+
+	WebMap.netRequest(marker.getId(), req, "wp_altReply");
 }
