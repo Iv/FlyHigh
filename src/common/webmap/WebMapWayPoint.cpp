@@ -95,5 +95,5 @@ void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &sp
   wp.setLongitude(lon);
   wp.setAltitude(alt);
 
-  emit changeWayPoint(wp);
+  emit wayPointChanged(wp);
 }
