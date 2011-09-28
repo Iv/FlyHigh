@@ -34,7 +34,7 @@ WebMapAirSpaceView::WebMapAirSpaceView(const QString &name)
 	m_pWebMap = new WebMap(this, WebMap::MapAirSpace);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
-  connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SLOT(lineChanged(int)));
+  connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SIGNAL(airSpaceChanged(int)));
 }
 
 WebMapAirSpaceView::~WebMapAirSpaceView()
@@ -95,9 +95,4 @@ void WebMapAirSpaceView::mapReady()
 void WebMapAirSpaceView::finished(int res)
 {
 	done(res);
-}
-
-void WebMapAirSpaceView::lineChanged(int line)
-{
-  emit airSpaceChanged(line);
 }

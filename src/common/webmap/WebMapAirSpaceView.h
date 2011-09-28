@@ -57,8 +57,6 @@ class WebMapAirSpaceView: public QDialog
 		void mapReady();
 
 		void finished(int res);
-
-		void lineChanged(int line);
 };
 
 #endif
