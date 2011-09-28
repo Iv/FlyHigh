@@ -85,6 +85,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
 
+/**
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
@@ -92,6 +93,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
 	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
 	pFileMenu->addAction(pEditWebMapAct);
+*/
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -276,21 +278,17 @@ void WayPointWindow::file_Edit()
 
 void WayPointWindow::file_editWebMap()
 {
-  WebMapWayPointView *pView;
-	int row;
-
-	row = getTable()->currentRow();
-
-	if(row >= 0)
+	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
 	{
-    pView = new WebMapWayPointView(tr("Edit WayPoint"));
-		pView->setWayPointList(&m_wpList);
-
-    if((pView->exec() == QDialog::Accepted) && m_pDb->open())
-    {
-      m_pDb->update(m_wpList[row]);
-      m_pDb->close();
-    }
+		m_pWayPointView = new WebMapWayPointView(tr("Edit WayPoints"));
+    connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
+		connect(m_pWayPointView, SIGNAL(wayPointChanged(const WayPoint&)), this,
+            SLOT(wayPointChanged(const WayPoint&)));
+    connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
+		m_pWayPointView->setWayPointList(&m_wpList);
+		m_pWayPointView->loadMap();
+    m_pWayPointView->setWindowModality(Qt::NonModal);
+		m_pWayPointView->show();
 	}
 }
 
@@ -300,8 +298,8 @@ void WayPointWindow::file_viewWebMap()
 	{
 		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
-		connect(m_pWayPointView, SIGNAL(updateWayPoint(const WayPoint&)), this,
-            SLOT(updateWayPoint(const WayPoint&)));
+		connect(m_pWayPointView, SIGNAL(wayPointChanged(const WayPoint&)), this,
+            SLOT(wayPointChanged(const WayPoint&)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
 		m_pWayPointView->setWayPointList(&m_wpList);
 		m_pWayPointView->loadMap();
@@ -315,7 +313,7 @@ void WayPointWindow::wayPointViewFinished(int res)
   m_pWayPointView = NULL;
 }
 
-void WayPointWindow::updateWayPoint(const WayPoint &wp)
+void WayPointWindow::wayPointChanged(const WayPoint &wp)
 {
   WayPoint locWp;
 
@@ -323,7 +321,9 @@ void WayPointWindow::updateWayPoint(const WayPoint &wp)
 
   if(m_pDb->open())
   {
+    m_externSelect = true;
     m_pDb->update(locWp);
+    m_externSelect = false;
     m_pDb->close();
   }
 }

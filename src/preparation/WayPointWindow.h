@@ -56,7 +56,7 @@ class WayPointWindow: public TableWindow
 
 		void wayPointViewFinished(int res);
 
-		void updateWayPoint(const WayPoint &wp);
+		void wayPointChanged(const WayPoint &wp);
 
 		void wayPointChanged(int id);
 
