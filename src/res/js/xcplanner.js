@@ -308,7 +308,7 @@ function XCLoad() {
 	geocoder = new GClientGeocoder();
 	map = new GMap2($("map"));
 //	map.setUIToDefault();
-  map.addControl(new GMapTypeControl())
+  map.addControl(new GMapTypeControl());
   map.removeMapType(G_SATELLITE_MAP);
   map.addMapType(G_PHYSICAL_MAP);
 	map.setMapType(G_PHYSICAL_MAP);
