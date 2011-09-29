@@ -34,7 +34,11 @@ class WayPointWindow: public TableWindow
 	public:
 		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
+		~WayPointWindow();
+
 	protected:
+    void closeEvent(QCloseEvent *pEvent);
+
 		void selectionChanged();
 
 	private slots:
