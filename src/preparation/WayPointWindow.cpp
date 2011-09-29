@@ -123,6 +123,19 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	file_update();
 }
 
+WayPointWindow::~WayPointWindow()
+{
+}
+
+void WayPointWindow::closeEvent(QCloseEvent *pEvent)
+{
+  if(m_pWayPointView != NULL)
+  {
+    delete m_pWayPointView;
+    m_pWayPointView = NULL;
+  }
+}
+
 void WayPointWindow::selectionChanged()
 {
   int row;
