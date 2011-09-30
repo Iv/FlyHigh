@@ -122,6 +122,97 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
     }
     leftMarkers_ = leftMarkers;
   }
+  
+////////////////////////////////////////////////////////////////////
+// updateClusters
+///////////////////////////////////////////////////////////////////
+	this.updateClusters = function (marker)
+	{
+		var readdMarkers = [];
+		var markerCluster = null;
+		var cluster = null;
+		var markers;
+		var clusterNr;
+		var markerNr;
+		var pos;
+		var center;
+
+		// find cluster of marker
+		for(clusterNr=0; clusterNr<clusters_.length; clusterNr++)
+		{
+			cluster = clusters_[clusterNr];
+			markers = cluster.getMarkers();
+
+			for(markerNr=0; markerNr<markers.length; markerNr++)
+			{
+				if(markers[markerNr].marker == marker)
+				{
+					markerCluster = cluster;
+					this.clusterToMarkers_(cluster, readdMarkers);
+					break;
+				}
+			}
+		}
+
+		// find intersect cluster
+		if(markerCluster != null)
+		{
+			// intersect cluster updaten
+			pos = map_.fromLatLngToDivPixel(marker.getLatLng());
+
+			for(clusterNr=0; clusterNr<clusters_.length; clusterNr++)
+			{
+				cluster = clusters_[clusterNr];
+				center = cluster.getCenter();
+
+				if((center == null) || (cluster == markerCluster))
+				{
+					continue;
+				}
+
+				center = map_.fromLatLngToDivPixel(center);
+
+				// find a cluster which contains the marker
+				if(pos.x >= center.x - gridSize_ && pos.x <= center.x + gridSize_ &&
+						pos.y >= center.y - gridSize_ && pos.y <= center.y + gridSize_)
+				{
+					this.clusterToMarkers_(cluster, readdMarkers);
+					break;
+				}
+			}
+		}
+
+		reAddMarkers_(readdMarkers);
+		this.redraw_();
+	}
+
+	this.clusterToMarkers_ = function(cluster, readdMarkers)
+	{
+		var clusterNr;
+		var markerNr;
+		var markers;
+
+		// move cluster to readdMarkers
+		markers = cluster.getMarkers();
+
+		for(markerNr=0; markerNr<markers.length; markerNr++)
+		{
+			var newMarker = {'isAdded': false, 'marker': markers[markerNr].marker};
+			readdMarkers.push(newMarker);
+		}
+
+		cluster.clearMarkers();
+
+		// remove cluster
+		for(clusterNr=0; clusterNr<clusters_.length; clusterNr++)
+		{
+			if(clusters_[clusterNr] == cluster)
+			{
+				clusters_.splice(clusterNr, 1);
+				break;
+			}
+		}
+	}
 
   /**
    * Get cluster marker images of this marker cluster. Mostly used by {@link Cluster}
@@ -246,7 +337,7 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
 
   this.removeMarker = function (marker) {
     for (var i = 0; i < clusters_.length; ++i) {
-      if (clusters_[i].remove(marker)) {
+      if (clusters_[i].removeMarker(marker)) {
         clusters_[i].redraw_();
         return;
       }
@@ -328,7 +419,7 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
   /**
    * Collect all markers of clusters in viewport and regroup them.
    */
-  this.resetViewport = function () {
+  this.resetViewport = function (force) {
     var clusters = this.getClustersInViewport_();
     var tmpMarkers = [];
     var removed = 0;
@@ -340,7 +431,7 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
         continue;
       }
       var curZoom = map_.getZoom();
-      if (curZoom !== oldZoom) {
+      if((curZoom !== oldZoom) || force) {
 
         // If the cluster zoom level changed then destroy the cluster
         // and collect its markers.
@@ -689,6 +780,12 @@ ClusterMarker_.prototype.remove = function () {
   this.div_.parentNode.removeChild(this.div_);
 };
 
+ClusterMarker_.prototype.setText = function(text)
+{
+	this.div_.innerHTML = text;
+	this.text_ = text;
+};
+
 /**
  * Copy this overlay.
  * @private
@@ -705,6 +802,7 @@ ClusterMarker_.prototype.redraw = function (force) {
   if (!force) {
     return;
   }
+
   var pos = this.map_.fromLatLngToDivPixel(this.latlng_);
   pos.x -= parseInt(this.width_ / 2, 10);
   pos.y -= parseInt(this.height_ / 2, 10);
