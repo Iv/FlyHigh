@@ -82,6 +82,7 @@ function wp_pushWayPoint(opts)
 	GEvent.addListener(marker, "dragend", function(latlng)
 	{
 		updateMarkerAlt(this);
+		markerCluster.updateClusters(this);
 	});
 
 	markers.push(marker);
@@ -195,6 +196,7 @@ function wp_setMarkerLat(lat)
 		{
 			curMarker.setLat(numValue);
 			updateMarkerAlt(curMarker);
+			markerCluster.updateClusters(curMarker);
 			zoomMarker(curMarker);
 		}
 		else
@@ -216,6 +218,7 @@ function wp_setMarkerLon(lon)
 		{
 			curMarker.setLon(numValue);
 			updateMarkerAlt(curMarker);
+			markerCluster.updateClusters(curMarker);
 			zoomMarker(curMarker);
 		}
 		else
