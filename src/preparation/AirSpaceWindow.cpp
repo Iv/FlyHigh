@@ -141,27 +141,30 @@ void AirSpaceWindow::file_update()
 	uint airspaceNr;
 	uint maxAirspaceNr;
 
-	m_airSpaceList.clear();
-	pTable->setNumRows(0);
+  if(m_pDb != NULL)
+  {
+    m_airSpaceList.clear();
+    pTable->setNumRows(0);
 
-	if(m_pDb->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		progDlg.beginProgress("read airspaces...", m_pDb);
-		m_pDb->airspaceList(m_airSpaceList);
-		progDlg.endProgress();
-		maxAirspaceNr = m_airSpaceList.size();
-		pTable->setNumRows(maxAirspaceNr);
+    if(m_pDb->open())
+    {
+      TableWindow::setCursor(QCursor(Qt::WaitCursor));
+      progDlg.beginProgress("read airspaces...", m_pDb);
+      m_pDb->airspaceList(m_airSpaceList);
+      progDlg.endProgress();
+      maxAirspaceNr = m_airSpaceList.size();
+      pTable->setNumRows(maxAirspaceNr);
 
-		for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
-		{
-			setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
-		}
+      for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+      {
+        setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+      }
 
-		TableWindow::selectRow(0);
-		selectionChanged();
-		m_pDb->close();
-		TableWindow::unsetCursor();
+      TableWindow::selectRow(0);
+      selectionChanged();
+      m_pDb->close();
+      TableWindow::unsetCursor();
+    }
 	}
 }
 
