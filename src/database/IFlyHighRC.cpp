@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -79,15 +79,15 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homePath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.8.2";
+	m_versionInfo = "FlyHigh Version 0.9.0";
 	m_copyInfo =
 			"Copyright (c): 2004-2011 by Alex Graf <grafal@sf.net> and\n"
 			"Jurg Allemann <ja_kern@sf.net>.\n"
-			"Thanks to: Manolis Andreadakis, Victor Berchet, Petr Chromec,\n"
+			"Thank you Manolis Andreadakis, Victor Berchet, Petr Chromec,\n"
 			"Alex Graf, Marcus Kroiss, Jonty Lawson, Tom Payne and\n"
-			"Marc Poulhies for some lines of code for Web Map.\n"
+			"Marc Poulhies for xcplanner. Thank you Xiaoxi Wu for MarkerClusterer.\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
-			"License (GPL). Visit www.gnu.org for more information.\n";
+			"License (GPL Version 2). Visit www.gnu.org for more information.\n";
 
 	m_dbTypeList += "sqlite";
 	m_dbTypeList += "mysql";
