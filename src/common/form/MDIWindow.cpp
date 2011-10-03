@@ -13,6 +13,4 @@ MDIWindow::MDIWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
 	:QMainWindow(parent, wflags)
 {
 	setWindowTitle(name);
-
-	connect(this,SIGNAL(dataChanged()),this,SLOT(refresh()));
 }
