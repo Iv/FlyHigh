@@ -165,7 +165,19 @@ MainWindow::MainWindow()
 	connect(pPilotAct,SIGNAL(triggered()), SLOT(settings_pilotInfo()));
 	pConfMenu->addAction(pPilotAct);
 
-	// Menu Windows
+	// Menu Settings
+	QMenu* pSettingsMenu = menuBar()->addMenu(tr("&Settings"));
+	QAction* pConfigureAct = new QAction(tr("&Configure FlyHigh..."), this);
+	connect(pConfigureAct,SIGNAL(triggered()),this, SLOT(preferences()));
+	pSettingsMenu->addAction(pConfigureAct);
+
+	// Menu Tools
+	QMenu* pToolsMenu = menuBar()->addMenu(tr("&Tools"));
+	QAction* pMigrateAct = new QAction(tr("&Database migration..."), this);
+	connect(pMigrateAct,SIGNAL(triggered()),this, SLOT(migrateDB()));
+	pToolsMenu->addAction(pMigrateAct);
+
+  // Menu Windows
 	m_pWindowsMenu = menuBar()->addMenu(tr("&Windows"));
 
 	m_pCascade = new QAction(tr("&Cascade"), this);
@@ -181,18 +193,6 @@ MainWindow::MainWindow()
 	m_pWinSeparator->setSeparator(true);
 
 	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),this, SLOT(aboutToShow()));
-
-	// Menu Settings
-	QMenu* pSettingsMenu = menuBar()->addMenu(tr("&Settings"));
-	QAction* pConfigureAct = new QAction(tr("&Configure FlyHigh..."), this);
-	connect(pConfigureAct,SIGNAL(triggered()),this, SLOT(preferences()));
-	pSettingsMenu->addAction(pConfigureAct);
-
-	// Menu Tools
-	QMenu* pToolsMenu = menuBar()->addMenu(tr("&Tools"));
-	QAction* pMigrateAct = new QAction(tr("&Database migration..."), this);
-	connect(pMigrateAct,SIGNAL(triggered()),this, SLOT(migrateDB()));
-	pToolsMenu->addAction(pMigrateAct);
 
 	// Menu Help
 	menuBar()->addSeparator();
