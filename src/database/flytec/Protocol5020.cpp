@@ -376,6 +376,7 @@ bool Protocol5020::routeSnd(uint curSent, uint totalSent, Route &route)
 	QString tlg;
 	bool success;
 
+	usleep(200*1000);
 	tlg = "$PBRRTR,";
 
 	// route number
