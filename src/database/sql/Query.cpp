@@ -39,7 +39,13 @@ void Query::addStatement(const QString& statement)
 
 void Query::addStatements(const QStringList& list)
 {
-	m_Statements.append(list);
+	// this would work for qt>=4.5:
+	// m_Statements.append(list);
+	// but we'll do it the hard way:
+	for (QStringList::const_iterator iter=list.begin(); iter != list.end(); ++iter)
+	{
+		m_Statements.append(*iter);
+	}
 }
 
 const QStringList& Query::getStatements() const
