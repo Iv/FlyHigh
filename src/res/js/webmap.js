@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  *                                                                         *
- *   It is prohibited to server or run this code over network p.e. as web  *
+ *   It is prohibited to serve or run this code over network p.e. as web   *
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
@@ -62,10 +62,10 @@ function Marker(point, opts)
 	this.spot = opts.spot;
 	this.country = opts.country;
 	this.alt = opts.alt;
-	this.modified = false;
-	this.select = false;
+	this.modified = opts.modified;
+	this.select = opts.select;
 	opts.icon = new GIcon(G_DEFAULT_ICON);
-	opts.icon.image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png";
+	opts.icon.image = this.getImage();
 	GMarker.call(this, point, opts);
 }
 
@@ -78,7 +78,6 @@ Marker.prototype.setName = function(name)
 {
 	this.name = name;
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getName = function()
@@ -90,7 +89,6 @@ Marker.prototype.setSpot = function(spot)
 {
 	this.spot = spot;
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getSpot = function()
@@ -102,7 +100,6 @@ Marker.prototype.setCountry = function(country)
 {
 	this.country = country;
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getCountry = function()
@@ -117,7 +114,6 @@ Marker.prototype.setLat = function(lat)
 	latlng = new GLatLng(lat, this.getLatLng().lng());
 	this.setLatLng(latlng);
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getLat = function()
@@ -132,7 +128,6 @@ Marker.prototype.setLon = function(lon)
 	latlng = new GLatLng(this.getLatLng().lat(), lon);
 	this.setLatLng(latlng);
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getLon = function()
@@ -144,7 +139,6 @@ Marker.prototype.setAlt = function(alt)
 {
 	this.alt = alt;
 	this.modified = true;
-	this.update();
 }
 
 Marker.prototype.getAlt = function()
@@ -158,6 +152,17 @@ Marker.prototype.setSelect = function(select)
 	this.update();
 }
 
+Marker.prototype.getSelect = function()
+{
+	return this.select;
+}
+
+Marker.prototype.setModified = function(modified)
+{
+	this.modified = modified;
+	this.update();
+}
+
 Marker.prototype.getModified = function()
 {
 	return this.modified;
@@ -165,26 +170,35 @@ Marker.prototype.getModified = function()
 
 Marker.prototype.update = function()
 {
+	this.setImage(this.getImage());
+}
+
+Marker.prototype.getImage = function()
+{
+	var image;
+
 	if(this.select)
 	{
 		if(this.modified)
 		{
-			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=EE0000,FFFF00,000000&ext=.png");
+			image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=EE0000,FFFF00,000000&ext=.png";
 		}
 		else
 		{
-			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=00EE00,FFFF00,000000&ext=.png");
+			image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=00EE00,FFFF00,000000&ext=.png";
 		}
 	}
 	else
 	{
 		if(this.modified)
 		{
-			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,EE0000,000000&ext=.png");
+			image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,EE0000,000000&ext=.png";
 		}
 		else
 		{
-			this.setImage("http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png");
+			image = "http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png";
 		}
 	}
+	
+	return image;
 }

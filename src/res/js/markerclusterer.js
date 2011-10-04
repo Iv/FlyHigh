@@ -123,9 +123,31 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
     leftMarkers_ = leftMarkers;
   }
   
-////////////////////////////////////////////////////////////////////
-// updateClusters
-///////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	// updateMarker
+	///////////////////////////////////////////////////////////////////
+	this.updateMarker = function (oldMarker, newMarker)
+	{
+		var clusterNr;
+		var cluster;
+
+		for(clusterNr=0; clusterNr<clusters_.length; clusterNr++)
+		{
+			cluster = clusters_[clusterNr];
+
+			if(cluster.removeMarker(oldMarker))
+			{
+				cluster.addMarker({'isAdded': false, 'marker': newMarker});
+				break;
+			}
+		}
+
+		cluster.redraw_();
+	}
+  
+	////////////////////////////////////////////////////////////////////
+	// updateClusters
+	///////////////////////////////////////////////////////////////////
 	this.updateClusters = function (marker)
 	{
 		var readdMarkers = [];
@@ -136,6 +158,7 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
 		var markerNr;
 		var pos;
 		var center;
+		var found = false;
 
 		// find cluster of marker
 		for(clusterNr=0; clusterNr<clusters_.length; clusterNr++)
@@ -149,8 +172,14 @@ function MarkerClusterer(map, opt_markers, opt_opts) {
 				{
 					markerCluster = cluster;
 					this.clusterToMarkers_(cluster, readdMarkers);
+					found = true;
 					break;
 				}
+			}
+
+			if(found)
+			{
+				break;
 			}
 		}
 
