@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  *                                                                         *
- *   It is prohibited to server or run this code over network p.e. as web  *
+ *   It is prohibited to serve or run this code over network p.e. as web   *
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
@@ -39,16 +39,6 @@ function wp_init()
 		map.enableScrollWheelZoom();
 		map.disableDoubleClickZoom();
 
-/**
-		GEvent.addListener(map, "zoomend", function(oldLevel, newLevel)
-		{ 
-			if(curMarker)
-			{
-				selectMarker(curMarker);
-			}
-		}); 
-*/
-
 		// markers are set before
 		markerCluster = new MarkerClusterer(map, markers);
 	}
@@ -56,34 +46,11 @@ function wp_init()
 
 function wp_pushWayPoint(opts)
 {
-	var latlng = new GLatLng(opts.lat, opts.lon);
 	var marker;
 
-	marker = new Marker(latlng, {id: opts.id, name: opts.name, spot: opts.spot,
-											country: opts.country, alt: opts.alt, draggable: true});
-
-	GEvent.addListener(marker, "mousedown", function(latlng)
-	{ 
-		selectMarker(this);
-		WebMap.setLine(this.getId());
-	}); 
-
-	GEvent.addListener(marker, "dragstart", function(latlng)
-	{
-		this.modified = true;
-		this.setSelect(true);
-	});
-
-	GEvent.addListener(marker, "drag", function(latlng)
-	{
-		wp_setLatLng(latlng.lat(), latlng.lng());
-	});
-	
-	GEvent.addListener(marker, "dragend", function(latlng)
-	{
-		updateMarkerAlt(this);
-		markerCluster.updateClusters(this);
-	});
+	marker = createMarker({id: opts.id, name: opts.name, spot: opts.spot,
+												country: opts.country, lat: opts.lat, lon: opts.lon, alt: opts.alt,
+												draggable: true, modified: false, select: false});
 
 	markers.push(marker);
 }
@@ -99,8 +66,9 @@ function wp_selectWayPoint(id)
 
 		if(marker.getId() == id)
 		{
-			zoomMarker(marker);
+			gotoMarker(marker);
 			selectMarker(marker);
+			updateMarker(marker);
 			break;
 		}
 	}
@@ -111,6 +79,7 @@ function wp_setMarkerName(name)
 	if(curMarker)
 	{
 		curMarker.setName(name);
+		updateMarker(curMarker);
 	}
 }
 
@@ -119,7 +88,6 @@ function wp_setName(name)
 	var locInput;
 
 	locInput = document.getElementById("name");
-
 	locInput.value = name;
 }
 
@@ -137,6 +105,7 @@ function wp_setMarkerSpot(spot)
 	if(curMarker)
 	{
 		curMarker.setSpot(spot);
+		updateMarker(curMarker);
 	}
 }
 
@@ -145,7 +114,6 @@ function wp_setSpot(spot)
 	var locInput;
 
 	locInput = document.getElementById("spot");
-
 	locInput.value = spot;
 }
 
@@ -163,6 +131,7 @@ function wp_setMarkerCountry(country)
 	if(curMarker)
 	{
 		curMarker.setCountry(country);
+		updateMarker(curMarker);
 	}
 }
 
@@ -171,7 +140,6 @@ function wp_setCountry(country)
 	var locInput;
 
 	locInput = document.getElementById("country");
-
 	locInput.value = country;
 }
 
@@ -195,9 +163,10 @@ function wp_setMarkerLat(lat)
 		if((numValue >= -90) && (numValue <= 90))
 		{
 			curMarker.setLat(numValue);
+			updateMarker(curMarker);
 			updateMarkerAlt(curMarker);
 			markerCluster.updateClusters(curMarker);
-			zoomMarker(curMarker);
+			gotoMarker(curMarker);
 		}
 		else
 		{
@@ -217,9 +186,10 @@ function wp_setMarkerLon(lon)
 		if((numValue >= -180) && (numValue <= 180))
 		{
 			curMarker.setLon(numValue);
+			updateMarker(curMarker);
 			updateMarkerAlt(curMarker);
 			markerCluster.updateClusters(curMarker);
-			zoomMarker(curMarker);
+			gotoMarker(curMarker);
 		}
 		else
 		{
@@ -282,6 +252,7 @@ function wp_setMarkerAlt(alt)
 		if((numValue >= -500) && (numValue <= 8000))
 		{
 			curMarker.setAlt(numValue);
+			updateMarker(curMarker);
 		}
 		else
 		{
@@ -332,9 +303,10 @@ function wp_setOk(ok)
 
 function selectMarker(marker)
 {
-	if(curMarker)
+	if(curMarker && (curMarker != marker))
 	{
 		curMarker.setSelect(false);
+		updateMarker(curMarker);
 	}
 
 	marker.setSelect(true);
@@ -343,15 +315,37 @@ function selectMarker(marker)
 	wp_setCountry(marker.getCountry());
 	wp_setLatLng(marker.getLat(), marker.getLon());
 	wp_setAlt(marker.getAlt());
-	curMarker = marker;
 }
 
-function zoomMarker(marker)
+function updateMarker(marker)
+{
+	var markerNr;
+	var newMarker = null;
+
+	for(markerNr=0; markerNr<markers.length; markerNr++)
+	{
+		if(markers[markerNr] == marker)
+		{
+			markers.splice(markerNr, 1);
+			newMarker = createMarker({id: marker.getId(), name: marker.getName(), spot: marker.getSpot(), country: marker.getCountry(),
+															 lat: marker.getLat(), lon: marker.getLon(), alt: marker.getAlt(),
+															 draggable: true, modified: marker.getModified(), select: marker.getSelect()});
+
+			markers.push(newMarker);
+			markerCluster.updateMarker(marker, newMarker);
+			break;
+		}
+	}
+	
+	curMarker = newMarker;
+}
+
+function gotoMarker(marker)
 {
 	var bounds;
 
 	bounds = new GLatLngBounds(marker.getLatLng(), marker.getLatLng());
-	map.setCenter(bounds.getCenter(), 15);
+	map.setCenter(bounds.getCenter(), map.getZoom());
 }
 
 function updateMarkerAlt(marker)
@@ -365,4 +359,43 @@ function updateMarkerAlt(marker)
 	req += "&sensor=false";
 
 	WebMap.netRequest(marker.getId(), req, "wp_altReply");
+}
+
+function createMarker(opts)
+{
+	var latlng = new GLatLng(opts.lat, opts.lon);
+	var marker;
+	
+	marker = new Marker(latlng, {id: opts.id, name: opts.name, spot: opts.spot,
+											country: opts.country, alt: opts.alt, draggable: opts.draggable,
+											modified: opts.modified, select: opts.select});
+											
+	GEvent.addListener(marker, "click", function(latlng)
+	{ 
+		WebMap.setLine(this.getId());
+		selectMarker(this);
+		updateMarker(this);
+	}); 
+	
+	GEvent.addListener(marker, "dragstart", function(latlng)
+	{
+		this.setModified(true);
+		selectMarker(this);
+		WebMap.setLine(this.getId());
+	});
+	
+	GEvent.addListener(marker, "drag", function(latlng)
+	{
+		wp_setLatLng(latlng.lat(), latlng.lng());
+	});
+	
+	GEvent.addListener(marker, "dragend", function(latlng)
+	{
+		markerCluster.updateClusters(this);
+		selectMarker(this);
+		updateMarker(this);
+		updateMarkerAlt(this);
+	});
+
+	return marker;
 }
