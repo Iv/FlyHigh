@@ -278,8 +278,6 @@
 		<Unit filename="src/database/IGPSDevice.h" />
 		<Unit filename="src/database/ISql.cpp" />
 		<Unit filename="src/database/ISql.h" />
-		<Unit filename="src/database/flytec/Address.cpp" />
-		<Unit filename="src/database/flytec/Address.h" />
 		<Unit filename="src/database/flytec/CMakeLists.txt" />
 		<Unit filename="src/database/flytec/Defs5020.h" />
 		<Unit filename="src/database/flytec/Device5020.cpp" />
