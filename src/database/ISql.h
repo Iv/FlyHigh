@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2006 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,6 +34,7 @@
 #include "DatabaseParameters.h"
 
 
+class QTimer;
 //class AirSpaces;
 class WayPoints;
 class Gliders;
@@ -76,8 +77,6 @@ class ISql: public IDataBase
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 
-		int wayPointsLastModified();
-
 		bool add(Glider &glider);
 
 		bool delGlider(Glider &glider);
@@ -85,8 +84,6 @@ class ISql: public IDataBase
 		bool glider(const QString &model, Glider &glider);
 
 		bool gliderList(Glider::GliderListType &gliderList);
-
-		int glidersLastModified();
 
 		bool add(Flight &flight);
 
@@ -100,13 +97,9 @@ class ISql: public IDataBase
 
 		bool loadIGCFile(Flight &flight);
 
-		int flightsLastModified();
-
 		bool add(Route &route);
 
 		bool delRoute(Route &route);
-
-		int routesLastModified();
 
 		bool routeList(Route::RouteListType &routeList);
 
@@ -114,7 +107,6 @@ class ISql: public IDataBase
 		bool add(AirSpace &airspace);
 		bool delAirSpace(AirSpace &airspace);
 		bool airspace(const QString &name, AirSpace &airspace);
-		int airspacesLastModified();
 		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
 */
 		bool add(Servicing &serv);
@@ -123,8 +115,6 @@ class ISql: public IDataBase
 
 		bool servicingList(Servicing::ServicingListType &servicingList);
 
-		int servicingsLastModified();
-
 		bool add(Pilot &pilot);
 
 		bool update(Pilot &pilot);
@@ -132,8 +122,6 @@ class ISql: public IDataBase
 		bool pilot(int id, Pilot &pilot);
 
 		bool setId(Pilot &pilot);
-
-		int pilotsLastModified();
 
   signals:
     void pilotsChanged();
@@ -153,11 +141,9 @@ class ISql: public IDataBase
 
 		Pilots* pPilotTable();
 
-private:
-		bool connectDb();
-
 	private:
 		static ISql* m_pInst;
+    QTimer *m_pTimer;
 //		AirSpaces* m_pAirSpaces;
 		WayPoints* m_pWayPoints;
 		Gliders* m_pGliders;
@@ -174,11 +160,12 @@ private:
 
 		ISql();
 
+    bool connectDb();
+
 		void upgradeTables();
 
-		int tableVersion();
-
-		void setTableVersion();
+  private slots:
+    void checkModified();
 
 //		friend class AirSpaces;
 		friend class WayPoints;

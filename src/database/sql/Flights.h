@@ -45,6 +45,8 @@ class Flights: public DataBaseSub
 
 		bool setFlightStatistic(Glider &glider);
 
+		void checkModified();
+
 	private:
 		enum Elements
 		{
