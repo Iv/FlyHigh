@@ -40,6 +40,8 @@ class AirSpaces: public DataBaseSub
 
 		bool airspaceList(AirSpaceList &airspaceList);
 
+		void checkModified();
+
   signals:
 		void changed();
 

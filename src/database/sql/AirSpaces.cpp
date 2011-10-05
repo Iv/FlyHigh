@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -183,4 +183,9 @@ bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 	return success;
 */
 	return false;
+}
+
+void AirSpaces::checkModified()
+{
+  DataBaseSub::checkModified("AirSpaces");
 }

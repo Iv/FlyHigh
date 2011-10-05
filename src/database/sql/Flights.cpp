@@ -234,6 +234,11 @@ bool Flights::setFlightStatistic(Glider &glider)
 	return success;
 }
 
+void Flights::checkModified()
+{
+	DataBaseSub::checkModified("Flights");
+}
+
 bool Flights::setId(Flight &flight)
 {
   QSqlQuery query(db());

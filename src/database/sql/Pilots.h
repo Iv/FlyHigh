@@ -41,6 +41,8 @@ class Pilots: public DataBaseSub
 
 		bool setId(Pilot &pilot);
 
+		void checkModified();
+
 	private:
 		enum Elements
 		{

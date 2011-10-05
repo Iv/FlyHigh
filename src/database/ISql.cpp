@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2006 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,6 +21,7 @@
 #include <QHostInfo>
 #include <QFileInfo>
 #include <QDir>
+#include <QTimer>
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h"
@@ -41,6 +42,8 @@ ISql* ISql::m_pInst = NULL;
 
 ISql::ISql()
 {
+  m_pTimer = NULL;
+
   // set default values
 	setDBParameters(DatabaseParameters::defaultParameters());
 
@@ -75,7 +78,18 @@ ISql::~ISql()
 
 bool ISql::open()
 {
-	return m_DefaultDB.isOpen();
+  bool res;
+
+	res = m_DefaultDB.isOpen();
+
+  if(m_pTimer == NULL)
+  {
+    m_pTimer = new QTimer(this);
+    connect(m_pTimer, SIGNAL(timeout()), this, SLOT(checkModified()));
+    m_pTimer->start(1000);
+  }
+
+	return res;
 }
 
 void ISql::close()
@@ -119,15 +133,16 @@ bool ISql::createAndConnect()
 	}
 	else if (m_dbParameters.isSQLite())
 	{
-                QFileInfo dbfile = QFileInfo(m_dbParameters.dBFile());
+    QFileInfo dbfile = QFileInfo(m_dbParameters.dBFile());
 
 		// create directory if necessary
-		if (!dbfile.dir().exists())
+		if(!dbfile.dir().exists())
 		{
 			QDir().mkpath(dbfile.absolutePath());
 		}
 
 		ok = connectDb();
+
 		if(!ok)
 		{
 			DatabaseUtilities::createDb(m_dbParameters);
@@ -205,11 +220,6 @@ bool ISql::findWayPoint(WayPoint &wp, uint radius)
 	return m_pWayPoints->findWayPoint(wp, radius);
 }
 
-int ISql::wayPointsLastModified()
-{
-	return m_pWayPoints->lastModified("WayPoints");
-}
-
 bool ISql::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	return m_pWayPoints->wayPointList(wpList);
@@ -233,11 +243,6 @@ bool ISql::glider(const QString &model, Glider &glider)
 bool ISql::gliderList(Glider::GliderListType &gliderList)
 {
 	return m_pGliders->gliderList(gliderList);
-}
-
-int ISql::glidersLastModified()
-{
-	return m_pGliders->lastModified("Gliders");
 }
 
 bool ISql::add(Flight &flight)
@@ -270,11 +275,6 @@ bool ISql::loadIGCFile(Flight &flight)
 	return m_pFlights->loadIGCFile(flight);
 }
 
-int ISql::flightsLastModified()
-{
-	return m_pFlights->lastModified("Flights");
-}
-
 bool ISql::add(Route &route)
 {
 	return m_pRoutes->add(route);
@@ -283,11 +283,6 @@ bool ISql::add(Route &route)
 bool ISql::delRoute(Route &route)
 {
 	return m_pRoutes->delRoute(route);
-}
-
-int ISql::routesLastModified()
-{
-	return m_pRoutes->lastModified("Routes");
 }
 
 bool ISql::routeList(Route::RouteListType &routeList)
@@ -335,11 +330,6 @@ bool ISql::servicingList(Servicing::ServicingListType &servicingList)
 	return m_pServicings->servicingList(servicingList);
 }
 
-int ISql::servicingsLastModified()
-{
-	return m_pServicings->lastModified("Servicings");
-}
-
 bool ISql::add(Pilot &pilot)
 {
 	return m_pPilots->add(pilot);
@@ -358,11 +348,6 @@ bool ISql::update(Pilot &pilot)
 bool ISql::pilot(int id, Pilot &pilot)
 {
 	return m_pPilots->pilot(id, pilot);
-}
-
-int ISql::pilotsLastModified()
-{
-	return m_pPilots->lastModified("Pilots");
 }
 
 /*
@@ -401,4 +386,15 @@ void ISql::upgradeTables()
 	Upgrade upgrade(m_DefaultDB);
 
 	upgrade.upgrade();
+}
+
+void ISql::checkModified()
+{
+  // m_pAirSpaces->checkModified();
+  m_pFlights->checkModified();
+  m_pGliders->checkModified();
+  m_pPilots->checkModified();
+  m_pRoutes->checkModified();
+  m_pServicings->checkModified();
+  m_pWayPoints->checkModified();
 }

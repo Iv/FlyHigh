@@ -26,10 +26,38 @@
 DataBaseSub::DataBaseSub(QSqlDatabase db)
 {
 	m_DB = db;
+	m_lastModified = -1;
 }
 
 DataBaseSub::~DataBaseSub()
 {
+}
+
+void DataBaseSub::checkModified()
+{
+}
+
+void DataBaseSub::checkModified(const QString &field)
+{
+  int dbLastMod;
+  bool modified;
+
+  dbLastMod = lastModified(field);
+
+  if(m_lastModified != -1)
+  {
+    modified = (dbLastMod != m_lastModified);
+    m_lastModified = dbLastMod;
+
+    if(modified)
+    {
+      emit changed();
+    }
+  }
+  else
+  {
+    m_lastModified = dbLastMod;
+  }
 }
 
 QSqlDatabase DataBaseSub::db()
@@ -40,7 +68,7 @@ QSqlDatabase DataBaseSub::db()
 int DataBaseSub::newId(const QString &table)
 {
 	QString sqls = "SELECT MAX(Id) FROM " + table;
-        QSqlQuery query(m_DB);
+  QSqlQuery query(m_DB);
 	int newid = -1;
 
 	if(query.exec(sqls) &&
@@ -57,17 +85,20 @@ void DataBaseSub::setLastModified(const QString &field)
 	QString sqls;
 	QString date;
 	QSqlQuery query(m_DB);
+	QDateTime curTime;
 
-	date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
+  curTime = QDateTime::currentDateTime();
+	date = curTime.toString("yyyy.MM.dd hh:mm:ss");
+	m_lastModified = curTime.toTime_t();
 
 	if(lastModified(field) > 1)
 	{
-                sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = '%2'").arg(date,field);
+    sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = '%2'").arg(date).arg(field);
 		query.exec(sqls);
 	}
 	else
 	{
-                sqls = QString("INSERT INTO LastModified (Name, Time) VALUES ('%1', '%2')").arg(field,date);
+    sqls = QString("INSERT INTO LastModified (Name, Time) VALUES ('%1', '%2')").arg(field).arg(date);
 		query.exec(sqls);
 	}
 }
@@ -76,10 +107,10 @@ int DataBaseSub::lastModified(const QString &field)
 {
 	QString sqls;
 	QString date;
-        QSqlQuery query(m_DB);
+  QSqlQuery query(m_DB);
 	int time = 1;
 
-        sqls = QString("SELECT Time FROM LastModified WHERE Name = '%1'").arg(field);
+  sqls = QString("SELECT Time FROM LastModified WHERE Name = '%1'").arg(field);
 
 	if(query.exec(sqls) && query.first())
 	{

@@ -44,6 +44,8 @@ class Gliders: public DataBaseSub
 
 		bool setGliderId(Glider &glider);
 
+		void checkModified();
+
 	private:
 		enum Elements
 		{

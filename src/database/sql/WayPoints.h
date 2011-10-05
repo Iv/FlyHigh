@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -48,6 +48,8 @@ class WayPoints: public DataBaseSub
 		bool findWayPoint(WayPoint &wp, uint radius);
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
+
+		void checkModified();
 
 	private:
 		enum Elements

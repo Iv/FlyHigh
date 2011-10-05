@@ -33,7 +33,7 @@ class DataBaseSub: public QObject
 
 		virtual ~DataBaseSub();
 
-		int lastModified(const QString &field);
+    virtual void checkModified();
 
   signals:
 		void changed();
@@ -43,10 +43,15 @@ class DataBaseSub: public QObject
 
 		int newId(const QString &table);
 
-		void setLastModified(const QString &field);
+		void checkModified(const QString &field);
+
+    void setLastModified(const QString &field);
 
 	private:
 		QSqlDatabase m_DB;
+		int m_lastModified;
+
+    int lastModified(const QString &field);
 };
 
 #endif

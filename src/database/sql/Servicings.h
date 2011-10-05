@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef Servicings_h
 #define Servicings_h
 
@@ -30,10 +30,14 @@ class Servicings: public DataBaseSub
 {
 	public:
 		Servicings(QSqlDatabase DB);
-		
+
 		bool add(Servicing &servicing);
+
 		bool delServicing(Servicing &servicing);
+
 		bool servicingList(Servicing::ServicingListType &servicingList);
+
+		void checkModified();
 
 	private:
 		enum Elements

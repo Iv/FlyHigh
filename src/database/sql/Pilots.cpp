@@ -137,3 +137,8 @@ bool Pilots::setId(Pilot &pilot)
 
 	return success;
 }
+
+void Pilots::checkModified()
+{
+  DataBaseSub::checkModified("Pilots");
+}

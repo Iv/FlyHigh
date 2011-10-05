@@ -203,6 +203,11 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
 	return success;
 }
 
+void WayPoints::checkModified()
+{
+  DataBaseSub::checkModified("WayPoints");
+}
+
 bool WayPoints::setId(WayPoint &wp)
 {
 	QSqlQuery query(db());

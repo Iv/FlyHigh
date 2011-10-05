@@ -188,3 +188,8 @@ bool Routes::setId(Route &route)
 
 	return success;
 }
+
+void Routes::checkModified()
+{
+  DataBaseSub::checkModified("Routes");
+}

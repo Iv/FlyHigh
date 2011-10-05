@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -95,4 +95,9 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	Error::verify(success, Error::SQL_CMD);
 
 	return success;
+}
+
+void Servicings::checkModified()
+{
+  DataBaseSub::checkModified("Servicings");
 }
