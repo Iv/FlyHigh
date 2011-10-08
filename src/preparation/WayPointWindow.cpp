@@ -85,6 +85,13 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 	pFileMenu->addAction(pDelAct);
 
+  if(src == IDataBase::GPSdevice)
+  {
+    QAction* pDelAct = new QAction(tr("Delete All"), this);
+    connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+    pFileMenu->addAction(pDelAct);
+  }
+
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
@@ -232,6 +239,17 @@ void WayPointWindow::file_delete()
 		}
 
 		TableWindow::unsetCursor();
+		m_pDb->close();
+	}
+}
+
+void WayPointWindow::file_deleteAll()
+{
+	if(m_pDb->open())
+	{
+    TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    m_pDb->delAllWayPoints();
+    TableWindow::unsetCursor();
 		m_pDb->close();
 	}
 }
