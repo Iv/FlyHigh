@@ -947,10 +947,9 @@ bool Protocol5020::parWrite(MemType memType, int par, FtDataType dataType, const
       m_memdump[par] = (uint8_t)(ui16value >> 8);
       m_memdump[par + 1] = (uint8_t)(ui16value & 0xFF);
     break;
-/*
     case FtUInt32: case FtInt32:
+      // not used
 		break;
-*/
 		case FtString:
       pString = m_memdump.data();
       qString2ftString(value.toString(), &pString[par], (int)FT_STRING_SIZE);
@@ -991,10 +990,9 @@ QVariant Protocol5020::parRead(MemType memType, int par, FtDataType dataType)
       i16Value += m_memdump[par + 1];
       value = i16Value;
     break;
-/*
     case FtUInt32: case FtInt32:
+      // not used
 		break;
-*/
 		case FtString:
       pString = m_memdump.constData();
       value = ftString2qString(&pString[par], FT_STRING_SIZE);
