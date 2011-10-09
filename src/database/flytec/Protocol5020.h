@@ -21,7 +21,7 @@
 #define Protocol5020_h
 
 #include "Defs5020.h"
-#include "Device5020.h"
+#include "Device.h"
 #include "Protocol.h"
 
 class QString;
@@ -101,7 +101,7 @@ class Protocol5020: public Protocol
     QVariant parRead(MemType memType, int par, FtDataType dataType);
 
 	private:
-		Device5020 m_device;
+		Device m_device;
     QByteArray m_memdump;
     int m_total;
 

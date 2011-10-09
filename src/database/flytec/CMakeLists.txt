@@ -8,6 +8,6 @@ set(dbflytec_SRCS Flytec.cpp
                   Protocol.cpp
                   Protocol5020.cpp
                   Protocol6015.cpp
-                  Device5020.cpp)
+                  Device.cpp)
 
 add_library(dbflytec ${dbflytec_SRCS})

@@ -20,12 +20,12 @@
 
 #include <QString>
 #include <sys/timeb.h>
-#include "Device5020.h"
+#include "Device.h"
 #include "qextserialport.h"
 
 #include <QDebug>
 
-Device5020::Device5020(bool flow)
+Device::Device(bool flow)
 {
 	m_tlg = "";
 	m_tout = 0;
@@ -47,12 +47,12 @@ Device5020::Device5020(bool flow)
 	m_serialPort->setTimeout(0);
 }
 
-Device5020::~Device5020()
+Device::~Device()
 {
 	delete m_serialPort;
 }
 
-bool Device5020::openDevice(const QString &dev, int baud)
+bool Device::openDevice(const QString &dev, int baud)
 {
 	bool success;
 
@@ -68,17 +68,17 @@ bool Device5020::openDevice(const QString &dev, int baud)
 	return success;
 }
 
-bool Device5020::isOpen()
+bool Device::isOpen()
 {
 	return m_serialPort->isOpen();
 }
 
-void Device5020::closeDevice()
+void Device::closeDevice()
 {
 	m_serialPort->close();
 }
 
-bool Device5020::recieveTlg(int tout, bool head)
+bool Device::recieveTlg(int tout, bool head)
 {
 	int charNr = 0;
 	bool validTlg = false;
@@ -133,17 +133,17 @@ qDebug() << "recieveTlg" << m_tlg;
 	return validTlg;
 }
 
-const QString& Device5020::getTlg()
+const QString& Device::getTlg()
 {
 	return m_tlg;
 }
 
-bool Device5020::sendTlg(const QString &tlg)
+bool Device::sendTlg(const QString &tlg)
 {
 	return writeBuffer(tlg.toAscii().constData(), tlg.length());
 }
 
-void Device5020::flush()
+void Device::flush()
 {
 	char ch;
 
@@ -151,7 +151,7 @@ void Device5020::flush()
 	while(getChar(ch)){}; // Flush buffer
 }
 
-bool Device5020::getChar(char &ch)
+bool Device::getChar(char &ch)
 {
 	bool success;
 
@@ -160,7 +160,7 @@ bool Device5020::getChar(char &ch)
 	return success;
 }
 
-bool Device5020::writeBuffer(const char *pBuff, int len)
+bool Device::writeBuffer(const char *pBuff, int len)
 {
 	int nWrite;
 
@@ -171,7 +171,7 @@ qDebug() << "sendTlg" << pBuff;
 	return (nWrite == len);
 }
 
-void Device5020::startTimer(int tout)
+void Device::startTimer(int tout)
 {
 	struct timeb tb;
 
@@ -179,7 +179,7 @@ void Device5020::startTimer(int tout)
 	m_tout = (tb.time % 1000) * 1000 + tb.millitm + tout;
 }
 
-bool Device5020::isElapsed()
+bool Device::isElapsed()
 {
 	struct timeb tb;
 	int curTime;
