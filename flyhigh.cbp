@@ -280,10 +280,11 @@
 		<Unit filename="src/database/ISql.h" />
 		<Unit filename="src/database/flytec/CMakeLists.txt" />
 		<Unit filename="src/database/flytec/Defs5020.h" />
-		<Unit filename="src/database/flytec/Device5020.cpp" />
-		<Unit filename="src/database/flytec/Device5020.h" />
-		<Unit filename="src/database/flytec/Flytec5020.cpp" />
-		<Unit filename="src/database/flytec/Flytec5020.h" />
+		<Unit filename="src/database/flytec/Defs6015.h" />
+		<Unit filename="src/database/flytec/Device.cpp" />
+		<Unit filename="src/database/flytec/Device.h" />
+		<Unit filename="src/database/flytec/Flytec.cpp" />
+		<Unit filename="src/database/flytec/Flytec.h" />
 		<Unit filename="src/database/flytec/Protocol.cpp" />
 		<Unit filename="src/database/flytec/Protocol.h" />
 		<Unit filename="src/database/flytec/Protocol5020.cpp" />
