@@ -67,7 +67,7 @@ static const uint Flytec5020PageSize = 8;
 
 static const uint Flytec5020MemSize = 385;
 
-typedef enum FtDataType{FtInt8, FtUInt8, FtInt16, FtUInt16, FtString, FtArray}FtDataType;
+typedef enum FtDataType{FtInt8, FtUInt8, FtInt16, FtUInt16, FtUInt32, FtInt32, FtString, FtArray}FtDataType;
 
 typedef struct FlytecDate
 {

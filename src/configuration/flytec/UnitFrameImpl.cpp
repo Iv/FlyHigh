@@ -40,7 +40,7 @@ void UnitFrameImpl::update()
 	int index;
 
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
- 	ch = pFlytec->parRead(UNITS_POS, FtUInt8).toUInt();
+ 	ch = pFlytec->parRead(MemUndef, UNITS_POS, FtUInt8).toUInt();
 
 	// Distance
 	index = (ch & 0x01);
@@ -90,5 +90,5 @@ void UnitFrameImpl::store()
 	ch |= index;
 
 	// store
-	pFlytec->parWrite(UNITS_POS, FtUInt8, ch);
+	pFlytec->parWrite(MemUndef, UNITS_POS, FtUInt8, ch);
 }

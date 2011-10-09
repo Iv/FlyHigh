@@ -5,7 +5,9 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES})
 
 set(dbflytec_SRCS Flytec5020.cpp
+                  Protocol.cpp
                   Protocol5020.cpp
+                  Protocol6015.cpp
                   Device5020.cpp)
 
 add_library(dbflytec ${dbflytec_SRCS})

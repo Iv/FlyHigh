@@ -17,19 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <QString>
 #include <sys/timeb.h>
 #include "Device5020.h"
 #include "qextserialport.h"
 
-Device5020::Device5020()
+#include <QDebug>
+
+Device5020::Device5020(bool flow)
 {
 	m_tlg = "";
 	m_tout = 0;
 
 	m_serialPort = new QextSerialPort(QextSerialPort::Polling);
-	m_serialPort->setFlowControl(FLOW_XONXOFF);
+
+	if(flow)
+	{
+    m_serialPort->setFlowControl(FLOW_XONXOFF);
+	}
+	else
+	{
+    m_serialPort->setFlowControl(FLOW_OFF);
+	}
+
 	m_serialPort->setParity(PAR_NONE);
 	m_serialPort->setDataBits(DATA_8);
 	m_serialPort->setStopBits(STOP_1);
@@ -55,52 +66,16 @@ bool Device5020::openDevice(const QString &dev, int baud)
 	success = m_serialPort->open(QIODevice::ReadWrite);
 
 	return success;
-
-#if 0
-	struct termios sTermSet;
-	int ret;
-	bool success;
-
-	m_ttyFd = open(dev.toAscii().constData(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-	success = (m_ttyFd > 0);
-
-	if(isatty(m_ttyFd))
-	{
-		bzero(&sTermSet, sizeof(sTermSet)); 
-		sTermSet.c_iflag = IGNPAR | IXON | IXOFF;
-		sTermSet.c_cflag = B57600 | CS8 | CLOCAL | CREAD;
-		sTermSet.c_lflag = 0;
-		sTermSet.c_cc[VSTART] = 0x11;     /* DC1 */
-		sTermSet.c_cc[VSTOP] = 0x13;     /* DC3 */
-		sTermSet.c_cc[VTIME] = 0;   /* inter-character timer unused */
-		sTermSet.c_cc[VMIN] = 0;   /* 0 not blocking if 1 blocking read until 1 chars received */
-
-		ret = tcsetattr(m_ttyFd, TCSANOW, &sTermSet);
-		success = (ret == 0);
-
-		flush();
-	}
-
-	return success;
-#endif
 }
 
 bool Device5020::isOpen()
 {
 	return m_serialPort->isOpen();
-///	return isatty(m_ttyFd);
 }
 
 void Device5020::closeDevice()
 {
 	m_serialPort->close();
-
-/**
-	if(m_ttyFd != -1)
-	{
-		close(m_ttyFd);
-	}
-*/
 }
 
 bool Device5020::recieveTlg(int tout, bool head)
@@ -144,7 +119,7 @@ bool Device5020::recieveTlg(int tout, bool head)
 				{
 					m_tlg = "";
 				}
-				
+
 				if(validTlg || (charNr > MaxTlgSize))
 				{
 					break;
@@ -152,6 +127,8 @@ bool Device5020::recieveTlg(int tout, bool head)
 			}
 		}
 	}while(!isElapsed());
+
+qDebug() << "recieveTlg" << m_tlg;
 
 	return validTlg;
 }
@@ -181,38 +158,17 @@ bool Device5020::getChar(char &ch)
 	success = m_serialPort->getChar(&ch);
 
 	return success;
-
-/**
-	int nRead;
-
-	nRead = read(m_ttyFd, &ch, 1);
-
-	return (nRead == 1);
-*/
 }
 
 bool Device5020::writeBuffer(const char *pBuff, int len)
 {
 	int nWrite;
-	
+
+qDebug() << "sendTlg" << pBuff;
+
 	nWrite = m_serialPort->write(pBuff, len);
 
 	return (nWrite == len);
-
-/**
-	int nWrite;
-	bool success;
-
-	nWrite = write(m_ttyFd, pBuff, len);
-	success = (nWrite > 0);
-
-	if(success)
-	{
-		success = (nWrite == len);
-	}
-
-	return success;
-*/
 }
 
 void Device5020::startTimer(int tout)

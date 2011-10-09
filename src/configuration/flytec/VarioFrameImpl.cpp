@@ -46,7 +46,7 @@ void VarioFrameImpl::update()
 //	comboBox_Variomode->setCurrentItem(arr[VARIOMODE_POS]);
 
 	// Integration Time
-	spinBox_ITime->setValue(pFlytec->parRead(I_TIME_POS, FtUInt8).toUInt());
+	spinBox_ITime->setValue(pFlytec->parRead(MemUndef, I_TIME_POS, FtUInt8).toUInt());
 
 	// Total Enery Compensation
 //	spinBox_TEC->setValue(arr[TEC_POS]);
@@ -65,7 +65,7 @@ void VarioFrameImpl::store()
 //	arr[VARIOMODE_POS] = comboBox_Variomode->currentItem();
 
 	// Integration Time
-  pFlytec->parWrite(I_TIME_POS, FtUInt8, spinBox_ITime->value());
+  pFlytec->parWrite(MemUndef, I_TIME_POS, FtUInt8, spinBox_ITime->value());
 
 	// Total Enery Compensation
 //	arr[TEC_POS] = spinBox_TEC->value();

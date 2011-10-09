@@ -82,7 +82,7 @@ void DeviceFrameImpl::update()
 	pFlytec->close();
 
 	// pilot name
-	pilotName = pFlytec->parRead(PILOT_NAME_POS, FtString).toString();
+	pilotName = pFlytec->parRead(MemUndef, PILOT_NAME_POS, FtString).toString();
 
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
 	dbPilot.fullName(dbPilotName);
@@ -106,7 +106,7 @@ void DeviceFrameImpl::update()
 	lineEdit_PilotName->setText(pilotName);
 
 	// glider
-	glider = pFlytec->parRead(GLIDER_TYPE_POS, FtString).toString();
+	glider = pFlytec->parRead(MemUndef, GLIDER_TYPE_POS, FtString).toString();
 	dbGlider = m_gliderList[comboBoxModel->currentIndex()].model();
 
 	if(glider != dbGlider)
@@ -127,7 +127,7 @@ void DeviceFrameImpl::update()
 	}
 
 	// callsign
-	callsign = pFlytec->parRead(GLIDER_ID_POS, FtString).toString();
+	callsign = pFlytec->parRead(MemUndef, GLIDER_ID_POS, FtString).toString();
 
 	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
@@ -149,12 +149,12 @@ void DeviceFrameImpl::update()
 	lineEdit_GliderID->setText(callsign);
 
 	// battery type
-  comboBox_BattType->setCurrentIndex(pFlytec->parRead(BATT_TYPE_POS, FtUInt8).toInt());
+  comboBox_BattType->setCurrentIndex(pFlytec->parRead(MemUndef, BATT_TYPE_POS, FtUInt8).toInt());
 
   // language
   if(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020)
   {
-    comboBox_Language->setCurrentIndex(pFlytec->parRead(LANGUAGE_POS, FtUInt8).toInt());
+    comboBox_Language->setCurrentIndex(pFlytec->parRead(MemUndef, LANGUAGE_POS, FtUInt8).toInt());
   }
 }
 
@@ -195,7 +195,7 @@ void DeviceFrameImpl::store()
 		}
 	}
 
-	pFlytec->parWrite(PILOT_NAME_POS, FtString, pilotName);
+	pFlytec->parWrite(MemUndef, PILOT_NAME_POS, FtString, pilotName);
 
 	// glider
 	m_gliderList[comboBoxModel->currentIndex()].fullName(glider);
@@ -223,7 +223,7 @@ void DeviceFrameImpl::store()
 		glider = m_gliderList[comboBoxModel->currentIndex()].model();
 	}
 
-	pFlytec->parWrite(GLIDER_TYPE_POS, FtString, glider);
+	pFlytec->parWrite(MemUndef, GLIDER_TYPE_POS, FtString, glider);
 
 	// callsign
 	callsign = lineEdit_GliderID->text();
@@ -246,15 +246,15 @@ void DeviceFrameImpl::store()
 	}
 
 	// glider id
-	pFlytec->parWrite(GLIDER_ID_POS, FtString, callsign);
+	pFlytec->parWrite(MemUndef, GLIDER_ID_POS, FtString, callsign);
 
 	// battery type
-	pFlytec->parWrite(BATT_TYPE_POS, FtUInt8, comboBox_BattType->currentIndex());
+	pFlytec->parWrite(MemUndef, BATT_TYPE_POS, FtUInt8, comboBox_BattType->currentIndex());
 
   // language
   if(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020)
   {
-    pFlytec->parWrite(LANGUAGE_POS, FtUInt8, comboBox_Language->currentIndex());
+    pFlytec->parWrite(MemUndef, LANGUAGE_POS, FtUInt8, comboBox_Language->currentIndex());
   }
 }
 

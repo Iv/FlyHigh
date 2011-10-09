@@ -39,10 +39,10 @@ void CorrFrameImpl::update()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// correction of A1
-  spinBox_QNHCorrA1->setValue(pFlytec->parRead(QNH_CORR_A1_POS, FtInt16).toInt());
+  spinBox_QNHCorrA1->setValue(pFlytec->parRead(MemUndef, QNH_CORR_A1_POS, FtInt16).toInt());
 
 	// correction of A2
-  spinBox_QNHCorrA1->setValue(pFlytec->parRead(QNH_CORR_A2_POS, FtInt16).toInt());
+  spinBox_QNHCorrA1->setValue(pFlytec->parRead(MemUndef, QNH_CORR_A2_POS, FtInt16).toInt());
 
 /*
 	// temprature correction
@@ -58,10 +58,10 @@ void CorrFrameImpl::store()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// correction of A1
-	pFlytec->parWrite(QNH_CORR_A1_POS, FtInt16, spinBox_QNHCorrA1->value());
+	pFlytec->parWrite(MemUndef, QNH_CORR_A1_POS, FtInt16, spinBox_QNHCorrA1->value());
 
 	// correction of A2
-	pFlytec->parWrite(QNH_CORR_A2_POS, FtInt16, spinBox_QNHCorrA1->value());
+	pFlytec->parWrite(MemUndef, QNH_CORR_A2_POS, FtInt16, spinBox_QNHCorrA1->value());
 
 /*
 	// temprature correction

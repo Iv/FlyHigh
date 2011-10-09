@@ -29,6 +29,8 @@
 #include "DisplayFrameImpl.h"
 #include "Flytec5020.h"
 
+#include <stdio.h>
+
 DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
 {
@@ -109,10 +111,10 @@ void DisplayFrameImpl::update()
 	switch(pFlytec->deviceId())
 	{
 	  case IFlyHighRC::DevFlytec5020:
-      slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtInt16).toInt());
+      slider_Contrast->setValue(pFlytec->parRead(MemUndef, LCD_CONTRAST_POS, FtInt16).toInt());
     break;
     case IFlyHighRC::DevFlytec6020:
-      slider_Contrast->setValue(pFlytec->parRead(LCD_CONTRAST_POS, FtUInt8).toUInt());
+      slider_Contrast->setValue(pFlytec->parRead(MemUndef, LCD_CONTRAST_POS, FtUInt8).toUInt());
     break;
     default:
     break;
@@ -121,36 +123,36 @@ void DisplayFrameImpl::update()
 	/* page 1 */
 
 	// User Field 0
-  comboBox_UserField_1_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS, FtUInt8).toUInt());
-  comboBox_UserField_1_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_1_1_3->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_1_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_1_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_1_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS + 2, FtUInt8).toUInt());
 
 	// User Field 1
-  comboBox_UserField_1_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS, FtUInt8).toUInt());
-  comboBox_UserField_1_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_1_2_3->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_2_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_2_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_2_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS + 2, FtUInt8).toUInt());
 
 	// User Field 2
-  comboBox_UserField_1_3_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS, FtUInt8).toUInt());
-  comboBox_UserField_1_3_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 1, FtUInt8).toUInt());
-  comboBox_UserField_1_3_3->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 2, FtUInt8).toUInt());
+  comboBox_UserField_1_3_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS, FtUInt8).toUInt());
+  comboBox_UserField_1_3_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS + 1, FtUInt8).toUInt());
+  comboBox_UserField_1_3_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS + 2, FtUInt8).toUInt());
 
   /* page 3 */
 
   // User Field 0
-  comboBox_UserField_3_1_1->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 3, FtUInt8).toUInt());
-  comboBox_UserField_3_1_2->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 4, FtUInt8).toUInt());
-  comboBox_UserField_3_1_3->setCurrentIndex(pFlytec->parRead(USERFIELD_0_POS + 5, FtUInt8).toUInt());
+  comboBox_UserField_3_1_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_1_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_1_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_0_POS + 5, FtUInt8).toUInt());
 
 	// User Field 1
-  comboBox_UserField_3_2_1->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 3, FtUInt8).toUInt());
-  comboBox_UserField_3_2_2->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 4, FtUInt8).toUInt());
-  comboBox_UserField_3_2_3->setCurrentIndex(pFlytec->parRead(USERFIELD_1_POS + 5, FtUInt8).toUInt());
+  comboBox_UserField_3_2_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_2_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_2_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_1_POS + 5, FtUInt8).toUInt());
 
 	// User Field 2
-  comboBox_UserField_3_3_1->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 3, FtUInt8).toUInt());
-  comboBox_UserField_3_3_2->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 4, FtUInt8).toUInt());
-  comboBox_UserField_3_3_3->setCurrentIndex(pFlytec->parRead(USERFIELD_2_POS + 5, FtUInt8).toUInt());
+  comboBox_UserField_3_3_1->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS + 3, FtUInt8).toUInt());
+  comboBox_UserField_3_3_2->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS + 4, FtUInt8).toUInt());
+  comboBox_UserField_3_3_3->setCurrentIndex(pFlytec->parRead(MemUndef, USERFIELD_2_POS + 5, FtUInt8).toUInt());
 }
 
 void DisplayFrameImpl::store()
@@ -163,10 +165,10 @@ void DisplayFrameImpl::store()
 	switch(pFlytec->deviceId())
 	{
 	  case IFlyHighRC::DevFlytec5020:
-      pFlytec->parWrite(LCD_CONTRAST_POS, FtInt16, slider_Contrast->value());
+      pFlytec->parWrite(MemUndef, LCD_CONTRAST_POS, FtInt16, slider_Contrast->value());
     break;
     case IFlyHighRC::DevFlytec6020:
-      pFlytec->parWrite(LCD_CONTRAST_POS, FtUInt8, slider_Contrast->value());
+      pFlytec->parWrite(MemUndef, LCD_CONTRAST_POS, FtUInt8, slider_Contrast->value());
     break;
     default:
     break;
@@ -175,36 +177,36 @@ void DisplayFrameImpl::store()
 	/* page 1 */
 
 	// User Field 0
-  pFlytec->parWrite(USERFIELD_0_POS, FtUInt8, comboBox_UserField_1_1_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 1, FtUInt8, comboBox_UserField_1_1_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 2, FtUInt8, comboBox_UserField_1_1_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS, FtUInt8, comboBox_UserField_1_1_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS + 1, FtUInt8, comboBox_UserField_1_1_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS + 2, FtUInt8, comboBox_UserField_1_1_3->currentIndex());
 
 	// User Field 1
-  pFlytec->parWrite(USERFIELD_1_POS, FtUInt8, comboBox_UserField_1_2_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 1, FtUInt8, comboBox_UserField_1_2_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 2, FtUInt8, comboBox_UserField_1_2_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS, FtUInt8, comboBox_UserField_1_2_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS + 1, FtUInt8, comboBox_UserField_1_2_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS + 2, FtUInt8, comboBox_UserField_1_2_3->currentIndex());
 
 	// User Field 2
-  pFlytec->parWrite(USERFIELD_2_POS, FtUInt8, comboBox_UserField_1_3_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 1, FtUInt8, comboBox_UserField_1_3_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_1_3_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS, FtUInt8, comboBox_UserField_1_3_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS + 1, FtUInt8, comboBox_UserField_1_3_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS + 2, FtUInt8, comboBox_UserField_1_3_3->currentIndex());
 
   /* page 3 */
 
   // User Field 0
-  pFlytec->parWrite(USERFIELD_0_POS + 3, FtUInt8, comboBox_UserField_3_1_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 4, FtUInt8, comboBox_UserField_3_1_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_0_POS + 5, FtUInt8, comboBox_UserField_3_1_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS + 3, FtUInt8, comboBox_UserField_3_1_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS + 4, FtUInt8, comboBox_UserField_3_1_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_0_POS + 5, FtUInt8, comboBox_UserField_3_1_3->currentIndex());
 
 	// User Field 1
-  pFlytec->parWrite(USERFIELD_1_POS + 3, FtUInt8, comboBox_UserField_3_2_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 4, FtUInt8, comboBox_UserField_3_2_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_1_POS + 5, FtUInt8, comboBox_UserField_3_2_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS + 3, FtUInt8, comboBox_UserField_3_2_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS + 4, FtUInt8, comboBox_UserField_3_2_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_1_POS + 5, FtUInt8, comboBox_UserField_3_2_3->currentIndex());
 
 	// User Field 2
-  pFlytec->parWrite(USERFIELD_2_POS + 3, FtUInt8, comboBox_UserField_3_3_1->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 4, FtUInt8, comboBox_UserField_3_3_2->currentIndex());
-  pFlytec->parWrite(USERFIELD_2_POS + 5, FtUInt8, comboBox_UserField_3_3_3->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS + 3, FtUInt8, comboBox_UserField_3_3_1->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS + 4, FtUInt8, comboBox_UserField_3_3_2->currentIndex());
+  pFlytec->parWrite(MemUndef, USERFIELD_2_POS + 5, FtUInt8, comboBox_UserField_3_3_3->currentIndex());
 }
 
 void DisplayFrameImpl::insertItems(QComboBox * pItem)

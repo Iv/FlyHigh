@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,7 @@
 
 #include <qspinbox.h>
 #include <qcombobox.h>
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 #include "MemoryFrame6015Impl.h"
 
 MemoryFrame6015Impl::MemoryFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,37 +35,34 @@ MemoryFrame6015Impl::~MemoryFrame6015Impl()
 
 void MemoryFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// recording interval
-	uiValue = pDev->memoryRead(MemFa, REC_INTERVALL, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, REC_INTERVALL, FtUInt8).toUInt();
 	spinBox_Intervall->setValue(uiValue);
 
 	// flight end detection
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
-        comboBox_FlightEnd->setCurrentIndex((uiValue & MASK_FLIGHT_END) >> POS_FLIGHT_END);
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
+  comboBox_FlightEnd->setCurrentIndex((uiValue & MASK_FLIGHT_END) >> POS_FLIGHT_END);
 }
 
 void MemoryFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// recording interval
 	uiValue = spinBox_Intervall->value();
-	pDev->memoryWrite(MemFa, REC_INTERVALL, UInt8, uiValue);
+	pDev->parWrite(MemFa, REC_INTERVALL, FtUInt8, uiValue);
 
 	// flight end detection
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
 	uiValue &= ~MASK_FLIGHT_END;
-        uiValue |= (comboBox_FlightEnd->currentIndex() << POS_FLIGHT_END);
-	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
+  uiValue |= (comboBox_FlightEnd->currentIndex() << POS_FLIGHT_END);
+	pDev->parWrite(MemFa, DIV_FLAGS, FtUInt16, uiValue);
 }
-
-#include "moc_MemoryFrame6015Impl.cxx"
-

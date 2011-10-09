@@ -41,19 +41,19 @@ void VelocityFrameImpl::update()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// best L/D
-	spinBox_BestLD->setValue(pFlytec->parRead(BEST_LD_POS, FtUInt8).toUInt());
+	spinBox_BestLD->setValue(pFlytec->parRead(MemUndef, BEST_LD_POS, FtUInt8).toUInt());
 
 	// speed best L/D
-	spinBox_SpeedBestLD->setValue(pFlytec->parRead(SPEED_BEST_LD_POS, FtUInt8).toUInt());
+	spinBox_SpeedBestLD->setValue(pFlytec->parRead(MemUndef, SPEED_BEST_LD_POS, FtUInt8).toUInt());
 
 	// Windweel Gain
-	spinBox_Windweel->setValue(pFlytec->parRead(SPEED_GAIN_WHEEL_POS, FtUInt8).toUInt());
+	spinBox_Windweel->setValue(pFlytec->parRead(MemUndef, SPEED_GAIN_WHEEL_POS, FtUInt8).toUInt());
 
 	// Stall Speed
-	spinBox_Stallspeed->setValue(pFlytec->parRead(STALL_SPEED_POS, FtUInt8).toUInt());
+	spinBox_Stallspeed->setValue(pFlytec->parRead(MemUndef, STALL_SPEED_POS, FtUInt8).toUInt());
 
 	// Stall Altitude
-	spinBox_Stallaltitude->setValue(pFlytec->parRead(STALL_ALT_POS, FtUInt16).toUInt());
+	spinBox_Stallaltitude->setValue(pFlytec->parRead(MemUndef, STALL_ALT_POS, FtUInt16).toUInt());
 }
 
 void VelocityFrameImpl::store()
@@ -63,17 +63,17 @@ void VelocityFrameImpl::store()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// best L/D
-	pFlytec->parWrite(BEST_LD_POS, FtUInt8, spinBox_BestLD->value());
+	pFlytec->parWrite(MemUndef, BEST_LD_POS, FtUInt8, spinBox_BestLD->value());
 
 	// speed best L/D
-	pFlytec->parWrite(SPEED_BEST_LD_POS, FtUInt8, spinBox_SpeedBestLD->value());
+	pFlytec->parWrite(MemUndef, SPEED_BEST_LD_POS, FtUInt8, spinBox_SpeedBestLD->value());
 
 	// Windweel Gain
-	pFlytec->parWrite(SPEED_GAIN_WHEEL_POS, FtUInt8, spinBox_Windweel->value());
+	pFlytec->parWrite(MemUndef, SPEED_GAIN_WHEEL_POS, FtUInt8, spinBox_Windweel->value());
 
 	// Stall Speed
-	pFlytec->parWrite(STALL_SPEED_POS, FtUInt8, spinBox_Stallspeed->value());
+	pFlytec->parWrite(MemUndef, STALL_SPEED_POS, FtUInt8, spinBox_Stallspeed->value());
 
 	// Stall Altitude
-	pFlytec->parWrite(STALL_ALT_POS, FtUInt16, spinBox_Stallaltitude->value());
+	pFlytec->parWrite(MemUndef, STALL_ALT_POS, FtUInt16, spinBox_Stallaltitude->value());
 }

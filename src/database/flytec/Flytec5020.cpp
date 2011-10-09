@@ -26,12 +26,24 @@
 #include "Flytec5020.h"
 #include "IFlyHighRC.h"
 #include "Protocol5020.h"
+#include "Protocol6015.h"
 
 #include <QDebug>
 
-Flytec5020::Flytec5020()
+Flytec5020::Flytec5020(IFlyHighRC::DeviceId id)
 {
-	m_protocol = new Protocol5020();
+  switch(id)
+  {
+    case IFlyHighRC::DevFlytec5020:
+    case IFlyHighRC::DevFlytec6020:
+    	m_protocol = new Protocol5020();
+    break;
+    case IFlyHighRC::DevFlytec6015:
+    	m_protocol = new Protocol6015new();
+    break;
+  }
+
+  IGPSDevice::setDeviceId(id);
 	m_cancel = false;
 }
 
@@ -165,14 +177,14 @@ bool Flytec5020::memoryWrite()
 	return success;
 }
 
-bool Flytec5020::parWrite(int par, FtDataType dataType, const QVariant &value)
+bool Flytec5020::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
 {
-  return m_protocol->parWrite(par, dataType, value);
+  return m_protocol->parWrite(memType, par, dataType, value);
 }
 
-QVariant Flytec5020::parRead(int par, FtDataType dataType)
+QVariant Flytec5020::parRead(MemType memType, int par, FtDataType dataType)
 {
-  return m_protocol->parRead(par, dataType);
+  return m_protocol->parRead(memType, par, dataType);
 }
 
 void Flytec5020::cancel()
@@ -185,6 +197,7 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Flight flight;
 	bool success;
 	int total;
+	int prog;
 
 	(void)pilot;
 
@@ -193,21 +206,26 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 
 	if(success)
 	{
-		do
+		while(m_protocol->trackListRec(total, flight))
 		{
-			m_protocol->trackListRec(total, flight);
-			flightList.push_back(flight);
+		  flightList.push_back(flight);
 
 			if(total > 0)
 			{
-				emit progress(flight.number() * 100 / total);
+        prog = flight.number() * 100 / total;
 			}
+			else
+			{
+        prog = (prog + 10) % 100;
+			}
+
+			emit progress(prog);
 
 			if(m_cancel)
 			{
 				return false;
 			}
-		}while(flight.number() < (total - 1));
+		}
 	}
 
 	Error::verify((flightList.size() > 0), Error::FLYTEC_CMD);
@@ -279,23 +297,9 @@ bool Flytec5020::delWayPoint(WayPoint &wp)
 
 bool Flytec5020::delAllWayPoints()
 {
-///	int prog;
 	bool success;
 
 	success = m_protocol->wpDelAll();
-
-/**
-	for(prog=0; prog<=100; prog+=10)
-	{
-		emit progress(prog);
-
-		if(m_protocol->recieveDone())
-		{
-			break;
-		}
-	}
-*/
-
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
 	emit wayPointsChanged();
@@ -310,7 +314,6 @@ bool Flytec5020::wayPointList(WayPoint::WayPointListType &wpList)
 	int prog = 0;
 
 	m_cancel = false;
-
 	success = m_protocol->wpListReq();
 
 	if(success)
@@ -342,39 +345,42 @@ bool Flytec5020::add(Route &route)
 	uint nofWp;
 	bool success = false;
 
-	// make sure all waypoints exist on GPS
-	nofWp = route.wayPointList().size();
+  m_cancel = false;
 
-	for(wpNr=0; wpNr<nofWp; wpNr++)
+	// make sure all waypoints exist on GPS
+	if(dynamic_cast<Protocol5020*>(m_protocol) != NULL)
 	{
-		emit progress(wpNr *100 / nofWp);
-		m_protocol->wpSnd(route.wayPointList().at(wpNr));
+    nofWp = route.wayPointList().size();
+
+    for(wpNr=0; wpNr<nofWp; wpNr++)
+    {
+      emit progress(wpNr *100 / nofWp);
+      m_protocol->wpSnd(route.wayPointList().at(wpNr));
+
+      if(m_cancel)
+      {
+        return false;
+      }
+    }
+
+    IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+    emit wayPointsChanged();
 	}
 
-	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
-	emit wayPointsChanged();
-
 	// now write the route
-	totalSent = 1 + route.wayPointList().size();
-	m_cancel = false;
+	curSent = 0;
 
-	for(curSent=0; curSent<totalSent; curSent++)
+	while(m_protocol->routeSnd(curSent, totalSent, route))
 	{
 		emit progress(curSent * 100 / totalSent);
 
-		if(m_cancel)
+    if(m_cancel)
 		{
 			return false;
 		}
-
-		success = m_protocol->routeSnd(curSent, totalSent, route);
-
-		if(!success)
-		{
-			break;
-		}
 	}
 
+	success = (curSent == totalSent);
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	emit routesChanged();
@@ -391,7 +397,7 @@ bool Flytec5020::routeList(Route::RouteListType &routeList)
 	uint totalSent;
 
 	m_cancel = false;
-
+  curSent = 0;
 	success = m_protocol->routeListReq();
 	routeList.clear();
 
@@ -424,20 +430,6 @@ bool Flytec5020::delRoute(Route &route)
 	bool success;
 
 	success = m_protocol->routeDel(route.name());
-
-/**
-	for(prog=0; prog<=100; prog+=10)
-	{
-		emit progress(prog);
-
-		if(m_protocol->recieveDone())
-		{
-			success = true;
-			break;
-		}
-	}
-*/
-
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
 	emit routesChanged();
@@ -509,6 +501,7 @@ bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
 	bool success = false;
 	bool ctrAv = false;
 
+  curSent = 0;
 	m_cancel = false;
   airspaceList.clear();
 	success = m_protocol->ctrInfoReq();
