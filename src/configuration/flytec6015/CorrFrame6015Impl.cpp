@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,7 @@
 #include <qspinbox.h>
 
 #include "CorrFrame6015Impl.h"
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 
 CorrFrame6015Impl::CorrFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
 	:QWidget(parent)
@@ -35,34 +35,32 @@ CorrFrame6015Impl::~CorrFrame6015Impl()
 
 void CorrFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	int iValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Alt1 diff to QNH
-	iValue = pDev->memoryRead(MemFa, ALT1_DIFF, Int32).toInt() / 100;
+	iValue = pDev->parRead(MemFa, ALT1_DIFF, FtInt32).toInt() / 100;
 	spinBox_QNHCorrA1->setValue(iValue);
 
 	// Offset pressure sensor
-	iValue = pDev->memoryRead(MemFa, PRESS_OFFSET, Int32).toInt();
+	iValue = pDev->parRead(MemFa, PRESS_OFFSET, FtInt32).toInt();
 	spinBox_OffsetPress->setValue(iValue);
 }
 
 void CorrFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	int iValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Alt1 diff to QNH
 	iValue = spinBox_QNHCorrA1->value();
-	pDev->memoryWrite(MemFa, ALT1_DIFF, Int32, iValue * 100);
+	pDev->parWrite(MemFa, ALT1_DIFF, FtInt32, iValue * 100);
 
 	// Offset pressure sensor
 	iValue = spinBox_OffsetPress->value();
-	pDev->memoryWrite(MemFa, PRESS_OFFSET, Int32, iValue);
+	pDev->parWrite(MemFa, PRESS_OFFSET, FtInt32, iValue);
 }
-
-#include "moc_CorrFrame6015Impl.cxx"

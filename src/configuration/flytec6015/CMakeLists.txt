@@ -3,7 +3,7 @@ include(${QT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/database
-                    ${CMAKE_SOURCE_DIR}/src/database/flytec6015
+                    ${CMAKE_SOURCE_DIR}/src/database/flytec
                     ${CMAKE_SOURCE_DIR}/src/images
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR} )

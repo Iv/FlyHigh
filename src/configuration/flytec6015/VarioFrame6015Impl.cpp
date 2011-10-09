@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,7 @@
 
 #include <qcombobox.h>
 #include <qspinbox.h>
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 #include "VarioFrame6015Impl.h"
 
 VarioFrame6015Impl::VarioFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,51 +35,48 @@ VarioFrame6015Impl::~VarioFrame6015Impl()
 
 void VarioFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Response Delay
-	uiValue = pDev->memoryRead(MemFa, FILT_TYPE, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, FILT_TYPE, FtUInt8).toUInt();
 	slider_RespDelay->setValue(uiValue);
 
 	// Digital Filter Time
-	uiValue = pDev->memoryRead(MemFa, VARIO_DIG_FK, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, VARIO_DIG_FK, FtUInt8).toUInt();
 	spinBox_FiltTime->setValue(uiValue);
 
 	// Min/Max Filter Time
-	uiValue = pDev->memoryRead(MemFa, VARIO_MIN_MAX_FK, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, VARIO_MIN_MAX_FK, FtUInt8).toUInt();
 	spinBox_FiltTimeMinMax->setValue(uiValue);
 
 	// Min/Max Rise Reject
-	uiValue = pDev->memoryRead(MemFa, MAX_RISE_REJ, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, MAX_RISE_REJ, FtUInt16).toUInt();
 	spinBox_TimeRiseRej->setValue(uiValue);
 }
 
 void VarioFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Response Delay
 	uiValue = slider_RespDelay->value();
-	pDev->memoryWrite(MemFa, FILT_TYPE, UInt8, uiValue);
+	pDev->parWrite(MemFa, FILT_TYPE, FtUInt8, uiValue);
 
 	// Digital Filter Time
 	uiValue = spinBox_FiltTime->value();
-	pDev->memoryWrite(MemFa, VARIO_DIG_FK, UInt8, uiValue);
+	pDev->parWrite(MemFa, VARIO_DIG_FK, FtUInt8, uiValue);
 
 	// Min/Max Filter Time
 	uiValue = spinBox_FiltTimeMinMax->value();
-	pDev->memoryWrite(MemFa, VARIO_MIN_MAX_FK, UInt8, uiValue);
-	
+	pDev->parWrite(MemFa, VARIO_MIN_MAX_FK, FtUInt8, uiValue);
+
 	// Min/Max Rise Reject
 	uiValue = spinBox_TimeRiseRej->value();
-	pDev->memoryWrite(MemFa, MAX_RISE_REJ, UInt16, uiValue);
+	pDev->parWrite(MemFa, MAX_RISE_REJ, FtUInt16, uiValue);
 }
-
-#include "moc_VarioFrame6015Impl.cxx"
-

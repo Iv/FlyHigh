@@ -22,6 +22,7 @@
 
 #include "Defs5020.h"
 #include "Device5020.h"
+#include "Protocol.h"
 
 class QString;
 class AirSpace;
@@ -29,7 +30,7 @@ class Flight;
 class Route;
 class WayPoint;
 
-class Protocol5020
+class Protocol5020: public Protocol
 {
 	public:
 		Protocol5020();
@@ -69,7 +70,7 @@ class Protocol5020
 
 		bool routeListRec(uint &curSent, uint &totalSent, Route &route);
 
-		bool routeSnd(uint curSent, uint totalSent, Route &route);
+		bool routeSnd(uint &curSent, uint &totalSent, Route &route);
 
 		bool routeDel(const QString &name);
 
@@ -95,13 +96,14 @@ class Protocol5020
 
     bool updateConfiguration();
 
-    bool parWrite(int par, FtDataType dataType, const QVariant &value);
+    bool parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value);
 
-    QVariant parRead(int par, FtDataType dataType);
+    QVariant parRead(MemType memType, int par, FtDataType dataType);
 
 	private:
 		Device5020 m_device;
     QByteArray m_memdump;
+    int m_total;
 
 		QDate parseDate(const QString &token) const;
 

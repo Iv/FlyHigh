@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,7 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 #include "GPSFrame6015Impl.h"
 #include "IFlyHighRC.h"
 
@@ -37,39 +37,36 @@ GPSFrame6015Impl::~GPSFrame6015Impl()
 
 void GPSFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// grid system
-	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
-        comboBox_GridSys->setCurrentIndex((uiValue & MASK_UNIT_GRID) >> POS_UNIT_GRID);
+	uiValue = pDev->parRead(MemFa, UNIT_FLAGS, FtUInt16).toUInt();
+  comboBox_GridSys->setCurrentIndex((uiValue & MASK_UNIT_GRID) >> POS_UNIT_GRID);
 
 	// utc offset
-	iValue = pDev->memoryRead(MemFa, UTC_OFFSET, Int8).toInt();
+	iValue = pDev->parRead(MemFa, UTC_OFFSET, FtInt8).toInt();
 	spinBox_UTCoffset->setValue(iValue);
 }
 
 void GPSFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// grid system
-	uiValue = pDev->memoryRead(MemFa, UNIT_FLAGS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, UNIT_FLAGS, FtUInt16).toUInt();
 	uiValue &= ~MASK_UNIT_GRID;
-        uiValue |= (comboBox_GridSys->currentIndex() << POS_UNIT_GRID);
-	pDev->memoryWrite(MemFa, UNIT_FLAGS, UInt16, uiValue);
+  uiValue |= (comboBox_GridSys->currentIndex() << POS_UNIT_GRID);
+	pDev->parWrite(MemFa, UNIT_FLAGS, FtUInt16, uiValue);
 
 	// utc offset
 	iValue = spinBox_UTCoffset->value();
-	pDev->memoryWrite(MemFa, UTC_OFFSET, Int8, iValue);
+	pDev->parWrite(MemFa, UTC_OFFSET, FtInt8, iValue);
 }
-
-#include "moc_GPSFrame6015Impl.cxx"
-

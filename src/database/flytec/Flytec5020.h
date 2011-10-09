@@ -21,16 +21,18 @@
 #define Flytec5020_h
 
 #include "IGPSDevice.h"
+#include "IFlyHighRC.h"
 #include "Defs5020.h"
+#include "Defs6015.h"
 
 class Pilot;
-class Protocol5020;
+class Protocol;
 class AirSpaceList;
 
 class Flytec5020: public IGPSDevice
 {
 	public:
-		Flytec5020();
+		Flytec5020(IFlyHighRC::DeviceId id);
 
 		virtual ~Flytec5020();
 
@@ -44,9 +46,9 @@ class Flytec5020: public IGPSDevice
 
     bool memoryWrite();
 
-    bool parWrite(int par, FtDataType dataType, const QVariant &value);
+    bool parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value);
 
-    QVariant parRead(int par, FtDataType dataType);
+    QVariant parRead(MemType memType, int par, FtDataType dataType);
 
 	protected:
 		void cancel();
@@ -80,7 +82,7 @@ class Flytec5020: public IGPSDevice
 		bool airspaceList(AirSpaceList &airspaceList);
 
 	private:
-		Protocol5020 *m_protocol;
+		Protocol *m_protocol;
 		bool m_cancel;
 };
 

@@ -20,7 +20,7 @@
 
 #include <qcombobox.h>
 #include <qspinbox.h>
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 #include "VelocityFrame6015Impl.h"
 
 VelocityFrame6015Impl::VelocityFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,35 +35,32 @@ VelocityFrame6015Impl::~VelocityFrame6015Impl()
 
 void VelocityFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Speedgain Windweel
-	uiValue = pDev->memoryRead(MemFa, WIND_WHEEL_GAIN, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, WIND_WHEEL_GAIN, FtUInt8).toUInt();
 	spinBox_Windweel->setValue(uiValue);
 
 	// Stallspeed
-	uiValue = pDev->memoryRead(MemFa, STALL_SPEED, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, STALL_SPEED, FtUInt16).toUInt();
 	spinBox_Stallspeed->setValue(uiValue);
 }
 
 void VelocityFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Speedgain Windweel
 	uiValue = spinBox_Windweel->value();
-	pDev->memoryWrite(MemFa, WIND_WHEEL_GAIN, UInt8, uiValue);
+	pDev->parWrite(MemFa, WIND_WHEEL_GAIN, FtUInt8, uiValue);
 
 	// Stallspeed
 	uiValue = spinBox_Stallspeed->value();
-	pDev->memoryWrite(MemFa, STALL_SPEED, UInt16, uiValue);
+	pDev->parWrite(MemFa, STALL_SPEED, FtUInt16, uiValue);
 }
-
-#include "moc_VelocityFrame6015Impl.cxx"
-

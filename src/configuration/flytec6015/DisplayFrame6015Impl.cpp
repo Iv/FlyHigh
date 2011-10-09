@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,7 +26,7 @@
 #include <qpixmap.h>
 #include <qslider.h>
 #include "DisplayFrame6015Impl.h"
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 
 DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
@@ -40,35 +40,32 @@ DisplayFrame6015Impl::~DisplayFrame6015Impl()
 
 void DisplayFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Alti, Line 4, Alt2, Alt3
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
-        comboBox_AltDisp->setCurrentIndex((uiValue & MASK_ALT_DISP) >> POS_ALT_DISP);
-        comboBox_Line4->setCurrentIndex((uiValue & MASK_LINE4_DISP) >> POS_LINE4_DISP);
-        comboBox_Alt2Mode->setCurrentIndex((uiValue & MASK_ALT2_MODE) >> POS_ALT2_MODE);
-        comboBox_Alt3Mode->setCurrentIndex((uiValue & MASK_ALT3_MODE) >> POS_ALT3_MODE);
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
+  comboBox_AltDisp->setCurrentIndex((uiValue & MASK_ALT_DISP) >> POS_ALT_DISP);
+  comboBox_Line4->setCurrentIndex((uiValue & MASK_LINE4_DISP) >> POS_LINE4_DISP);
+  comboBox_Alt2Mode->setCurrentIndex((uiValue & MASK_ALT2_MODE) >> POS_ALT2_MODE);
+  comboBox_Alt3Mode->setCurrentIndex((uiValue & MASK_ALT3_MODE) >> POS_ALT3_MODE);
 }
 
 void DisplayFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Alti, Line 4, Alt2, Alt3
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
 	uiValue &= ~(MASK_ALT_DISP | MASK_LINE4_DISP | MASK_ALT2_MODE | MASK_ALT3_MODE);
-        uiValue |= (comboBox_AltDisp->currentIndex() << POS_ALT_DISP);
-        uiValue |= (comboBox_Line4->currentIndex() << POS_LINE4_DISP);
-        uiValue |= (comboBox_Alt2Mode->currentIndex() << POS_ALT2_MODE);
-        uiValue |= (comboBox_Alt3Mode->currentIndex() << POS_ALT3_MODE);
-	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
+  uiValue |= (comboBox_AltDisp->currentIndex() << POS_ALT_DISP);
+  uiValue |= (comboBox_Line4->currentIndex() << POS_LINE4_DISP);
+  uiValue |= (comboBox_Alt2Mode->currentIndex() << POS_ALT2_MODE);
+  uiValue |= (comboBox_Alt3Mode->currentIndex() << POS_ALT3_MODE);
+	pDev->parWrite(MemFa, DIV_FLAGS, FtUInt16, uiValue);
 }
-
-#include "moc_DisplayFrame6015Impl.cxx"
-

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,7 +23,7 @@
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
-#include "Flytec6015.h"
+#include "Flytec5020.h"
 #include "Glider.h"
 #include "IFlyHighRC.h"
 #include "IGliderForm.h"
@@ -45,7 +45,7 @@ void DeviceFrame6015Impl::newGlider()
 {
 	Glider glider;
 	IGliderForm newGlider(this, "New Glider", &glider);
-	
+
 	if(newGlider.exec())
 	{
 		ISql::pInstance()->add(glider);
@@ -55,7 +55,7 @@ void DeviceFrame6015Impl::newGlider()
 
 void DeviceFrame6015Impl::update()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	Pilot dbPilot;
 	QString dbPilotName;
 	QString dbGlider;
@@ -65,10 +65,10 @@ void DeviceFrame6015Impl::update()
 	int syncRes;
 	uint uiValue;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// pilot name
-	pilotName = pDev->memoryRead(MemFa, OWNER, String).toString();
+	pilotName = pDev->parRead(MemFa, OWNER, FtString).toString();
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
 	dbPilot.fullName(dbPilotName);
 
@@ -76,7 +76,7 @@ void DeviceFrame6015Impl::update()
 	{
 		syncRes = QMessageBox::question(this, "Different pilots", "Pilot on GPS differ from pilot in database. Set pilot?",
 			 	"DB to GPS", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From database
@@ -86,19 +86,19 @@ void DeviceFrame6015Impl::update()
 			break;
 		}
 	}
-	
+
 	lineEdit_PilotName->setText(pilotName);
 
 	// glider
-	glider = pDev->memoryRead(MemFa, AC_TYPE, String).toString();
+	glider = pDev->parRead(MemFa, AC_TYPE, FtString).toString();
 	dbGlider = m_gliderList[comboBoxModel->currentIndex()].model();
-	
+
 	if(glider != dbGlider)
 	{
 		syncRes = QMessageBox::question(this, "Different gliders",
 				"Glider on GPS differ from glider in database. Set glider?",
 				"DB to Dialog", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From Pilot
@@ -111,13 +111,13 @@ void DeviceFrame6015Impl::update()
 	}
 
 	// callsign
-	callsign = pDev->memoryRead(MemFa, AC_ID, String).toString();
-	
+	callsign = pDev->parRead(MemFa, AC_ID, FtString).toString();
+
 	if(callsign != dbPilot.callSign().left(callsign.length()))
 	{
 		syncRes = QMessageBox::question(this, "Different callsigns", "Callsign on GPS differ from callsign in database. Set callsign?",
 				"DB to GPS", "Ignore");
-		
+
 		switch(syncRes)
 		{
 			case 0: // From database
@@ -131,11 +131,11 @@ void DeviceFrame6015Impl::update()
 	lineEdit_GliderID->setText(callsign);
 
 	// serial nr
-	uiValue = pDev->memoryRead(MemPa, DEVICE_NR, UInt32).toUInt();
+	uiValue = pDev->parRead(MemPa, DEVICE_NR, FtUInt32).toUInt();
 	lineEdit_SerialNr->setText(QString("%1").arg(uiValue));
 
 	// device identifier
-	uiValue = pDev->memoryRead(MemPa, DEVICE_TYPE, UInt8).toUInt();
+	uiValue = pDev->parRead(MemPa, DEVICE_TYPE, FtUInt8).toUInt();
 
 	switch(uiValue)
 	{
@@ -148,21 +148,21 @@ void DeviceFrame6015Impl::update()
 	}
 
 	// sw version
-	uiValue = pDev->memoryRead(MemPa, SW_VERS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemPa, SW_VERS, FtUInt16).toUInt();
 	lineEdit_SwVersion->setText(QString("%1").arg(uiValue));
 
 	// auto off
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
 	checkBox_AutoOff->setChecked(uiValue & MASK_AUTO_POWER_OFF);
 
 	// power off time
-	uiValue = pDev->memoryRead(MemFa, POWER_OFF_TIME, UInt8).toUInt();
+	uiValue = pDev->parRead(MemFa, POWER_OFF_TIME, FtUInt8).toUInt();
 	spinBox_PowerOffTime->setValue(uiValue);
 }
 
 void DeviceFrame6015Impl::store()
 {
-	Flytec6015 *pDev;
+	Flytec5020 *pDev;
 	QString pilotName;
 	Pilot dbPilot;
 	QString dbPilotName;
@@ -173,7 +173,7 @@ void DeviceFrame6015Impl::store()
 	uint uiValue;
 	int syncRes;
 
-	pDev = static_cast<Flytec6015*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// pilot name
 	pilotName = lineEdit_PilotName->text();
@@ -195,8 +195,8 @@ void DeviceFrame6015Impl::store()
 			break;
 		}
 	}
-	
-	pDev->memoryWrite(MemFa, OWNER, String, pilotName);
+
+	pDev->parWrite(MemFa, OWNER, FtString, pilotName);
 
 	// glider
 	m_gliderList[comboBoxModel->currentIndex()].fullName(glider);
@@ -224,7 +224,7 @@ void DeviceFrame6015Impl::store()
 		glider = m_gliderList[comboBoxModel->currentIndex()].model();
 	}
 
-	pDev->memoryWrite(MemFa, AC_TYPE, String, glider);
+	pDev->parWrite(MemFa, AC_TYPE, FtString, glider);
 
 	// callsign
 	callsign = lineEdit_GliderID->text();
@@ -245,16 +245,16 @@ void DeviceFrame6015Impl::store()
 		}
 	}
 
-	pDev->memoryWrite(MemFa, AC_ID, String, callsign);
+	pDev->parWrite(MemFa, AC_ID, FtString, callsign);
 
 	// auto off
-	uiValue = pDev->memoryRead(MemFa, DIV_FLAGS, UInt16).toUInt();
+	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
 	uiValue = (uiValue & ~MASK_AUTO_POWER_OFF) | (-checkBox_AutoOff->isChecked() & MASK_AUTO_POWER_OFF);
-	pDev->memoryWrite(MemFa, DIV_FLAGS, UInt16, uiValue);
+	pDev->parWrite(MemFa, DIV_FLAGS, FtUInt16, uiValue);
 
 	// power off time
 	uiValue = spinBox_PowerOffTime->value();
-	uiValue = pDev->memoryWrite(MemFa, POWER_OFF_TIME, UInt8, uiValue);
+	uiValue = pDev->parWrite(MemFa, POWER_OFF_TIME, FtUInt8, uiValue);
 }
 
 void DeviceFrame6015Impl::updateGlider()
@@ -263,15 +263,15 @@ void DeviceFrame6015Impl::updateGlider()
 	QString gliderName;
 	Glider::GliderListType::iterator it;
 	Pilot dbPilot;
-	
+
 	comboBoxModel->clear();
 	m_gliderList.clear();
 	ISql::pInstance()->gliderList(m_gliderList);
-	
+
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderName);
-                comboBoxModel->addItem(gliderName);
+    comboBoxModel->addItem(gliderName);
 	}
 
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), dbPilot);
@@ -285,20 +285,17 @@ void DeviceFrame6015Impl::selectGlider(const QString &name)
 	int index;
 	int maxIndex;
 	bool found = false;
-	
+
 	maxIndex = comboBoxModel->count();
-	
+
 	for(index=0; index<maxIndex; index++)
 	{
-                found = (comboBoxModel->itemText(index) == name);
-		
+    found = (comboBoxModel->itemText(index) == name);
+
 		if(found)
 		{
-                        comboBoxModel->setCurrentIndex(index);
+      comboBoxModel->setCurrentIndex(index);
 			break;
 		}
 	}
 }
-
-#include "moc_DeviceFrame6015Impl.cxx"
-

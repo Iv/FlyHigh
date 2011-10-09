@@ -59,12 +59,12 @@ class IGPSDevice: public IDataBase
 
 		void setLastModified(FieldType field);
 
+    void setDeviceId(IFlyHighRC::DeviceId id);
+
 	private:
 		static IGPSDevice *m_pGPSDevice;
 		int m_lastModifiedList[NofFields];
 		IFlyHighRC::DeviceId m_deviceId;
-
-    void setDeviceId(IFlyHighRC::DeviceId id);
 };
 
 #endif

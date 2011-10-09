@@ -39,7 +39,6 @@ target_link_libraries(flyhigh
 	cfginterface
 	database
 	dbflytec
-	dbflytec6015
 	dbgarmin
 	dbsql
 	preparation

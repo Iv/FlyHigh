@@ -37,8 +37,10 @@
 #endif
 
 Protocol5020::Protocol5020()
+  :m_device(true)
 {
   m_memdump.resize(Flytec5020MemSize);
+  m_total = 0;
 }
 
 Protocol5020::~Protocol5020()
@@ -77,7 +79,7 @@ bool Protocol5020::devInfoRec(DeviceInfo &devInfo)
 	QString tlg;
 	bool valid = false;
 
-  if(m_device.recieveTlg(500))
+  if(m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
 		tokenizer.getFirstToken(tlg, ',', token);
@@ -111,6 +113,7 @@ bool Protocol5020::trackListReq()
 {
 	QString tlg;
 
+	m_total = 0;
 	tlg = "$PBRTL,";
 	addTail(tlg);
 
@@ -123,8 +126,14 @@ bool Protocol5020::trackListRec(int &total, Flight &flight)
 	QString token;
 	QString tlg;
 	bool valid = false;
+	bool notEnd = true;
 
-	if(m_device.recieveTlg(500))
+  if(m_total > 0)
+  {
+    notEnd = (flight.number() < (m_total - 1));
+  }
+
+	if(notEnd && m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
 
@@ -203,7 +212,7 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 	QString tlg;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500))
+	if(m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
 
@@ -297,11 +306,15 @@ bool Protocol5020::wpDel(const QString &name)
 bool Protocol5020::wpDelAll()
 {
 	QString tlg;
+	bool success;
 
 	tlg = "$PBRWPX,,";
 	addTail(tlg);
 
-	return m_device.sendTlg(tlg);
+	success = m_device.sendTlg(tlg);
+	usleep(200*1000);
+
+	return success;
 }
 
 bool Protocol5020::routeListReq()
@@ -322,7 +335,7 @@ bool Protocol5020::routeListRec(uint &curSent, uint &totalSent, Route &route)
 	int id;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500))
+	if(m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
 		tokenizer.getFirstToken(tlg, ',', token);
@@ -371,43 +384,52 @@ bool Protocol5020::routeListRec(uint &curSent, uint &totalSent, Route &route)
 	return valid;
 }
 
-bool Protocol5020::routeSnd(uint curSent, uint totalSent, Route &route)
+bool Protocol5020::routeSnd(uint &curSent, uint &totalSent, Route &route)
 {
 	QString tlg;
-	bool success;
+	bool success = false;
 
-	usleep(200*1000);
-	tlg = "$PBRRTR,";
+  if(curSent == 0)
+  {
+    totalSent = route.wayPointList().size() + 1;
+  }
 
-	// route number
-	tlg += QString::number(1).rightJustified(2, '0');
-	tlg += ",";
-
-	// total sentences
-	tlg += QString::number(totalSent).rightJustified(2, '0');
-	tlg += ",";
-
-	// cur sentence
-	tlg += QString::number(curSent).rightJustified(2, '0');
-	tlg += ",";
-
-	if(curSent == 0)
+	if(curSent < totalSent)
 	{
-		// name of route
-		tlg += qString2ftString(route.name(), 17);
-	}
-	else
-	{
-		// skip compatible name
-		tlg += ",";
+    usleep(200*1000);
+    tlg = "$PBRRTR,";
 
-		// name of waypoint
-		tlg += qString2ftString(route.wayPointList().at(curSent - 1).name(), 17);
-	}
+    // route number
+    tlg += QString::number(1).rightJustified(2, '0');
+    tlg += ",";
 
-	addTail(tlg);
-	success = m_device.sendTlg(tlg);
-	usleep(200*1000);
+    // total sentences
+    tlg += QString::number(totalSent).rightJustified(2, '0');
+    tlg += ",";
+
+    // cur sentence
+    tlg += QString::number(curSent).rightJustified(2, '0');
+    tlg += ",";
+
+    if(curSent == 0)
+    {
+      // name of route
+      tlg += qString2ftString(route.name(), 17);
+    }
+    else
+    {
+      // skip compatible name
+      tlg += ",";
+
+      // name of waypoint
+      tlg += qString2ftString(route.wayPointList().at(curSent - 1).name(), 17);
+    }
+
+    addTail(tlg);
+    success = m_device.sendTlg(tlg);
+    usleep(200*1000);
+    curSent++;
+	}
 
 	return success;
 }
@@ -422,6 +444,7 @@ bool Protocol5020::routeDel(const QString &name)
 	tlg += qString2ftString(name, 17);
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
+  usleep(1000*1000);
 
 	return success;
 }
@@ -445,7 +468,7 @@ bool Protocol5020::ctrInfoRec(uint &nofCtr, uint &maxCtr, uint &nofFree)
 	QString tlg;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500))
+	if(m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
 		tokenizer.getFirstToken(tlg, ',', token);
@@ -498,7 +521,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	double lon;
 	bool valid = false;
 
-	if(m_device.recieveTlg(3000))
+	if(m_device.recieveTlg(3000, true))
 	{
 		tlg = m_device.getTlg();
 		tokenizer.getFirstToken(tlg, ',', token);
@@ -778,7 +801,7 @@ bool Protocol5020::recAck()
 	int status;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500))
+	if(m_device.recieveTlg(500, true))
 	{
 		tlg = m_device.getTlg();
     tokenizer.getFirstToken(tlg, ',', token);
@@ -821,7 +844,7 @@ bool Protocol5020::memoryRead(uint addr)
 
   if(success)
   {
-    if(m_device.recieveTlg(3000))
+    if(m_device.recieveTlg(3000, true))
     {
       tlg = m_device.getTlg();
 
@@ -899,7 +922,7 @@ bool Protocol5020::updateConfiguration()
 	return success;
 }
 
-bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
+bool Protocol5020::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
 {
   uint16_t ui16value;
   int16_t i16value;
@@ -943,7 +966,7 @@ bool Protocol5020::parWrite(int par, FtDataType dataType, const QVariant &value)
 	return success;
 }
 
-QVariant Protocol5020::parRead(int par, FtDataType dataType)
+QVariant Protocol5020::parRead(MemType memType, int par, FtDataType dataType)
 {
   QVariant value;
   uint16_t ui16Value;

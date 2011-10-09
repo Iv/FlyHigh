@@ -27,7 +27,7 @@ class QextSerialPort;
 class Device5020
 {
 	public:
-		Device5020();
+		Device5020(bool flow);
 
 		~Device5020();
 
@@ -37,7 +37,7 @@ class Device5020
 
 		void closeDevice();
 
-		bool recieveTlg(int tout, bool head = true);
+		bool recieveTlg(int tout, bool head);
 
 		const QString& getTlg();
 

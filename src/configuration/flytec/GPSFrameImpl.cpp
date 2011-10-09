@@ -42,13 +42,13 @@ void GPSFrameImpl::update()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Grid System
-  comboBox_GridSys->setCurrentIndex(pFlytec->parRead(GRID_SYS_POS, FtUInt8).toUInt());
+  comboBox_GridSys->setCurrentIndex(pFlytec->parRead(MemUndef, GRID_SYS_POS, FtUInt8).toUInt());
 
 	// UTC Offset
-	spinBox_UTCoffset->setValue(pFlytec->parRead(UTC_OFFSET_POS, FtInt8).toInt());
+	spinBox_UTCoffset->setValue(pFlytec->parRead(MemUndef, UTC_OFFSET_POS, FtInt8).toInt());
 
 	// Half UTC offset
-	checkBox_UTChalfOffset->setChecked(pFlytec->parRead(UTC_HALF_OFFSET_POS, FtUInt8).toUInt());
+	checkBox_UTChalfOffset->setChecked(pFlytec->parRead(MemUndef, UTC_HALF_OFFSET_POS, FtUInt8).toUInt());
 
 //	spinBox_GeoID->setValue(arr[GEO_ID_POS]);
 }
@@ -60,16 +60,16 @@ void GPSFrameImpl::store()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Grid System
-	pFlytec->parWrite(GRID_SYS_POS, FtUInt8, comboBox_GridSys->currentIndex());
+	pFlytec->parWrite(MemUndef, GRID_SYS_POS, FtUInt8, comboBox_GridSys->currentIndex());
 
 	// UTC offset
-	pFlytec->parWrite(UTC_OFFSET_POS, FtInt8, spinBox_UTCoffset->value());
+	pFlytec->parWrite(MemUndef, UTC_OFFSET_POS, FtInt8, spinBox_UTCoffset->value());
 
 	// sync UTC offset with ressources
 	IFlyHighRC::pInstance()->setUtcOffset(spinBox_UTCoffset->value());
 
 	// Half UTC offset
-  pFlytec->parWrite(UTC_HALF_OFFSET_POS, FtUInt8, checkBox_UTChalfOffset->isChecked());
+  pFlytec->parWrite(MemUndef, UTC_HALF_OFFSET_POS, FtUInt8, checkBox_UTChalfOffset->isChecked());
 
 	// Geodic ID
 //	arr[GEO_ID_POS] = spinBox_GeoID->value();

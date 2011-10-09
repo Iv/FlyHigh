@@ -39,6 +39,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QString caption;
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
+	bool enabled;
 
   m_pWayPointView = NULL;
   m_externSelect = false;
@@ -81,16 +82,21 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
 	pFileMenu->addAction(pNewAct);
 
-	QAction* pDelAct = new QAction(tr("Delete"), this);
-	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-	pFileMenu->addAction(pDelAct);
+  QAction* pDelAct = new QAction(tr("Delete"), this);
+  connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
+  pFileMenu->addAction(pDelAct);
+  // 6016 doesn't support delete of single waypoints
+  enabled = (!((src == IDataBase::GPSdevice) &&
+            (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)));
+  pDelAct->setEnabled(enabled);
 
-  if(src == IDataBase::GPSdevice)
-  {
-    QAction* pDelAct = new QAction(tr("Delete All"), this);
-    connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
-    pFileMenu->addAction(pDelAct);
-  }
+  QAction* pDelAllAct = new QAction(tr("Delete All"), this);
+  connect(pDelAllAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+  pFileMenu->addAction(pDelAllAct);
+  // for sql db danger, does not work on 5020
+  enabled = ((src == IDataBase::GPSdevice) &&
+            (IGPSDevice::pInstance()->deviceId() != IFlyHighRC::DevFlytec5020));
+  pDelAllAct->setEnabled(enabled);
 
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));

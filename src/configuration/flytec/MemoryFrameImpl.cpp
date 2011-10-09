@@ -41,10 +41,10 @@ void MemoryFrameImpl::update()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Recording Interval
-	spinBox_Intervall->setValue(pFlytec->parRead(REC_INTERVAL_POS, FtUInt8).toUInt());
+	spinBox_Intervall->setValue(pFlytec->parRead(MemUndef, REC_INTERVAL_POS, FtUInt8).toUInt());
 
 	// Stop Mode
-	comboBox_Mode->setCurrentIndex(pFlytec->parRead(REC_STOP_MODE_POS, FtUInt8).toUInt());
+	comboBox_Mode->setCurrentIndex(pFlytec->parRead(MemUndef, REC_STOP_MODE_POS, FtUInt8).toUInt());
 }
 
 void MemoryFrameImpl::store()
@@ -54,8 +54,8 @@ void MemoryFrameImpl::store()
   pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
 
 	// Recording Interval
-	pFlytec->parWrite(REC_INTERVAL_POS, FtUInt8, spinBox_Intervall->value());
+	pFlytec->parWrite(MemUndef, REC_INTERVAL_POS, FtUInt8, spinBox_Intervall->value());
 
 	// Stop Mode
-	pFlytec->parWrite(REC_STOP_MODE_POS, FtUInt8, comboBox_Mode->currentIndex());
+	pFlytec->parWrite(MemUndef, REC_STOP_MODE_POS, FtUInt8, comboBox_Mode->currentIndex());
 }

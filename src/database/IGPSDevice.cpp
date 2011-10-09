@@ -23,7 +23,6 @@
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "Flytec5020.h"
-#include "Flytec6015.h"
 #include "GarminDevice.h"
 
 IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
@@ -31,8 +30,6 @@ IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
 IGPSDevice::IGPSDevice()
 {
 	uint fieldNr;
-
-	m_deviceId = IFlyHighRC::DevFlytec5020;
 
 	for(fieldNr=0; fieldNr<NofFields; fieldNr++)
 	{
@@ -47,40 +44,20 @@ IGPSDevice::~IGPSDevice()
 IGPSDevice* IGPSDevice::pInstance()
 {
 	IFlyHighRC::DeviceId curDevice;
-	bool newDevice = false;
+	bool createDevice;
 
 	curDevice = (IFlyHighRC::DeviceId)IFlyHighRC::pInstance()->deviceName();
-	newDevice = (m_pGPSDevice == NULL);
+	createDevice = (m_pGPSDevice == NULL) || (curDevice != m_pGPSDevice->deviceId());
 
-	if(!newDevice)
-	{
-		newDevice = (curDevice != m_pGPSDevice->deviceId());
+  if(createDevice)
+  {
+    if(m_pGPSDevice == NULL)
+    {
+      delete m_pGPSDevice;
+    }
 
-		if(newDevice)
-		{
-			delete m_pGPSDevice;
-		}
-	}
-
-	if(newDevice)
-	{
-		switch(curDevice)
-		{
-		  case IFlyHighRC::DevFlytec5020:
-			case IFlyHighRC::DevFlytec6020:
-				m_pGPSDevice = new Flytec5020();
-			break;
-			case IFlyHighRC::DevFlytec6015:
-				m_pGPSDevice = new Flytec6015();
-			break;
-			default:
-				m_pGPSDevice = new Flytec5020();
-				IFlyHighRC::pInstance()->setDeviceName(IFlyHighRC::DevFlytec5020);
-			break;
-		}
-
-		m_pGPSDevice->setDeviceId(curDevice);
-	}
+    m_pGPSDevice = new Flytec5020(curDevice);
+  }
 
 	return m_pGPSDevice;
 }
