@@ -17,19 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef Device5020_h
-#define Device5020_h
+#ifndef Device_h
+#define Device_h
 
 #include <QString>
 
 class QextSerialPort;
 
-class Device5020
+class Device
 {
 	public:
-		Device5020(bool flow);
+		Device(bool flow);
 
-		~Device5020();
+		~Device();
 
 		bool openDevice(const QString &dev, int baud);
 

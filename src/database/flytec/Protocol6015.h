@@ -22,7 +22,7 @@
 
 #include <qvariant.h>
 #include "Defs6015.h"
-#include "Device5020.h"
+#include "Device.h"
 #include "Flight.h"
 #include "Protocol.h"
 
@@ -83,7 +83,7 @@ class Protocol6015new: public Protocol
 		bool routeDel(const QString &name);
 
 	private:
-		Device5020 m_device;
+		Device m_device;
 		int m_pos;
 
 		bool parseTrack(const QString &tlg, Flight &flight);
