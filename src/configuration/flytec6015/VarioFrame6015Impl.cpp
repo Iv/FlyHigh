@@ -20,7 +20,7 @@
 
 #include <qcombobox.h>
 #include <qspinbox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "VarioFrame6015Impl.h"
 
 VarioFrame6015Impl::VarioFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,10 +35,10 @@ VarioFrame6015Impl::~VarioFrame6015Impl()
 
 void VarioFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Response Delay
 	uiValue = pDev->parRead(MemFa, FILT_TYPE, FtUInt8).toUInt();
@@ -59,10 +59,10 @@ void VarioFrame6015Impl::update()
 
 void VarioFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Response Delay
 	uiValue = slider_RespDelay->value();

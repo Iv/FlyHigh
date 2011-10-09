@@ -27,16 +27,16 @@
 #include <qslider.h>
 
 #include "DisplayFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 #include <stdio.h>
 
 DisplayFrameImpl::DisplayFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
   setupUi(this);
 
@@ -103,9 +103,9 @@ DisplayFrameImpl::~DisplayFrameImpl()
 
 void DisplayFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// LCD Contrast
 	switch(pFlytec->deviceId())
@@ -157,9 +157,9 @@ void DisplayFrameImpl::update()
 
 void DisplayFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// LCD Contrast
 	switch(pFlytec->deviceId())
@@ -211,9 +211,9 @@ void DisplayFrameImpl::store()
 
 void DisplayFrameImpl::insertItems(QComboBox * pItem)
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-	pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 	pItem->clear();
 
 	switch(pFlytec->deviceId())

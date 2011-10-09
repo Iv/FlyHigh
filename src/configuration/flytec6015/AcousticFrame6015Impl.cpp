@@ -24,7 +24,7 @@
 #include <qspinbox.h>
 
 #include "AcousticFrame6015Impl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 AcousticFrame6015Impl::AcousticFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
@@ -38,11 +38,11 @@ AcousticFrame6015Impl::~AcousticFrame6015Impl()
 
 void AcousticFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Volume
 	uiValue = pDev->parRead(MemFa, AUDIO_VOLUME, FtUInt8).toUInt();
@@ -86,11 +86,11 @@ spinBox_ThresDown->setValue(iValue);
 
 void AcousticFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Volume
 	uiValue = slider_Volume->value();

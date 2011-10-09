@@ -20,7 +20,7 @@
 
 #include <qspinbox.h>
 #include "CorrFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 CorrFrameImpl::CorrFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 	:QWidget(parent)
@@ -34,9 +34,9 @@ CorrFrameImpl::~CorrFrameImpl()
 
 void CorrFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// correction of A1
   spinBox_QNHCorrA1->setValue(pFlytec->parRead(MemUndef, QNH_CORR_A1_POS, FtInt16).toInt());
@@ -53,9 +53,9 @@ void CorrFrameImpl::update()
 
 void CorrFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// correction of A1
 	pFlytec->parWrite(MemUndef, QNH_CORR_A1_POS, FtInt16, spinBox_QNHCorrA1->value());

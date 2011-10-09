@@ -21,7 +21,7 @@
 #include <qcombobox.h>
 #include <stdint.h>
 #include "UnitFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 UnitFrameImpl::UnitFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
@@ -35,11 +35,11 @@ UnitFrameImpl::~UnitFrameImpl()
 
 void UnitFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 	uint8_t ch;
 	int index;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
  	ch = pFlytec->parRead(MemUndef, UNITS_POS, FtUInt8).toUInt();
 
 	// Distance
@@ -64,11 +64,11 @@ void UnitFrameImpl::update()
 
 void UnitFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 	uint8_t ch = 0;
 	int index;
 
-	pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Distance
   index = comboBox_Distance->currentIndex();

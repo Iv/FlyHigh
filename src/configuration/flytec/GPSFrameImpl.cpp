@@ -21,7 +21,7 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "GPSFrameImpl.h"
 #include "IFlyHighRC.h"
 
@@ -37,9 +37,9 @@ GPSFrameImpl::~GPSFrameImpl()
 
 void GPSFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Grid System
   comboBox_GridSys->setCurrentIndex(pFlytec->parRead(MemUndef, GRID_SYS_POS, FtUInt8).toUInt());
@@ -55,9 +55,9 @@ void GPSFrameImpl::update()
 
 void GPSFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Grid System
 	pFlytec->parWrite(MemUndef, GRID_SYS_POS, FtUInt8, comboBox_GridSys->currentIndex());

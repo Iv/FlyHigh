@@ -23,14 +23,14 @@
 #include "AirSpace.h"
 #include "AirSpaceList.h"
 #include "Error.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "IFlyHighRC.h"
 #include "Protocol5020.h"
 #include "Protocol6015.h"
 
 #include <QDebug>
 
-Flytec5020::Flytec5020(IFlyHighRC::DeviceId id)
+Flytec::Flytec(IFlyHighRC::DeviceId id)
 {
   switch(id)
   {
@@ -47,12 +47,12 @@ Flytec5020::Flytec5020(IFlyHighRC::DeviceId id)
 	m_cancel = false;
 }
 
-Flytec5020::~Flytec5020()
+Flytec::~Flytec()
 {
 	delete m_protocol;
 }
 
-bool Flytec5020::open()
+bool Flytec::open()
 {
 	bool success;
 
@@ -63,12 +63,12 @@ bool Flytec5020::open()
 	return success;
 }
 
-void Flytec5020::close()
+void Flytec::close()
 {
 	m_protocol->close();
 }
 
-bool Flytec5020::deviceInfo(DeviceInfo &info)
+bool Flytec::deviceInfo(DeviceInfo &info)
 {
   bool success;
 
@@ -82,7 +82,7 @@ bool Flytec5020::deviceInfo(DeviceInfo &info)
   return success;
 }
 
-bool Flytec5020::memoryRead()
+bool Flytec::memoryRead()
 {
 	uint pageNr;
   uint memSize;
@@ -127,7 +127,7 @@ bool Flytec5020::memoryRead()
 	return success;
 }
 
-bool Flytec5020::memoryWrite()
+bool Flytec::memoryWrite()
 {
 	uint pageNr;
   uint memSize;
@@ -177,22 +177,22 @@ bool Flytec5020::memoryWrite()
 	return success;
 }
 
-bool Flytec5020::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
+bool Flytec::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
 {
   return m_protocol->parWrite(memType, par, dataType, value);
 }
 
-QVariant Flytec5020::parRead(MemType memType, int par, FtDataType dataType)
+QVariant Flytec::parRead(MemType memType, int par, FtDataType dataType)
 {
   return m_protocol->parRead(memType, par, dataType);
 }
 
-void Flytec5020::cancel()
+void Flytec::cancel()
 {
 	m_cancel = true;
 }
 
-bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
+bool Flytec::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	Flight flight;
 	bool success;
@@ -233,7 +233,7 @@ bool Flytec5020::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	return success;
 }
 
-bool Flytec5020::loadIGCFile(Flight &flight)
+bool Flytec::loadIGCFile(Flight &flight)
 {
 	QBuffer buff;
 	QByteArray track;
@@ -271,7 +271,7 @@ bool Flytec5020::loadIGCFile(Flight &flight)
 	return success;
 }
 
-bool Flytec5020::add(WayPoint &wp)
+bool Flytec::add(WayPoint &wp)
 {
 	bool success;
 
@@ -283,7 +283,7 @@ bool Flytec5020::add(WayPoint &wp)
 	return success;
 }
 
-bool Flytec5020::delWayPoint(WayPoint &wp)
+bool Flytec::delWayPoint(WayPoint &wp)
 {
 	bool success;
 
@@ -295,7 +295,7 @@ bool Flytec5020::delWayPoint(WayPoint &wp)
 	return success;
 }
 
-bool Flytec5020::delAllWayPoints()
+bool Flytec::delAllWayPoints()
 {
 	bool success;
 
@@ -307,7 +307,7 @@ bool Flytec5020::delAllWayPoints()
 	return success;
 }
 
-bool Flytec5020::wayPointList(WayPoint::WayPointListType &wpList)
+bool Flytec::wayPointList(WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	bool success = false;
@@ -337,7 +337,7 @@ bool Flytec5020::wayPointList(WayPoint::WayPointListType &wpList)
 	return success;
 }
 
-bool Flytec5020::add(Route &route)
+bool Flytec::add(Route &route)
 {
 	uint curSent;
 	uint totalSent;
@@ -388,7 +388,7 @@ bool Flytec5020::add(Route &route)
 	return success;
 }
 
-bool Flytec5020::routeList(Route::RouteListType &routeList)
+bool Flytec::routeList(Route::RouteListType &routeList)
 {
 	Route route;
 	WayPoint wp;
@@ -425,7 +425,7 @@ bool Flytec5020::routeList(Route::RouteListType &routeList)
 	return success;
 }
 
-bool Flytec5020::delRoute(Route &route)
+bool Flytec::delRoute(Route &route)
 {
 	bool success;
 
@@ -437,7 +437,7 @@ bool Flytec5020::delRoute(Route &route)
 	return success;
 }
 
-bool Flytec5020::add(AirSpace &airspace)
+bool Flytec::add(AirSpace &airspace)
 {
 	bool success = false;
 	uint curSent;
@@ -477,7 +477,7 @@ bool Flytec5020::add(AirSpace &airspace)
 	return success;
 }
 
-bool Flytec5020::delAirSpace(AirSpace &airspace)
+bool Flytec::delAirSpace(AirSpace &airspace)
 {
 	bool success;
 
@@ -489,7 +489,7 @@ bool Flytec5020::delAirSpace(AirSpace &airspace)
 	return success;
 }
 
-bool Flytec5020::airspaceList(AirSpaceList &airspaceList)
+bool Flytec::airspaceList(AirSpaceList &airspaceList)
 {
 	AirSpace *pAirspace;
 	uint curSent;
