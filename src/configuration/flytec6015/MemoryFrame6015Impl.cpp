@@ -20,7 +20,7 @@
 
 #include <qspinbox.h>
 #include <qcombobox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "MemoryFrame6015Impl.h"
 
 MemoryFrame6015Impl::MemoryFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,10 +35,10 @@ MemoryFrame6015Impl::~MemoryFrame6015Impl()
 
 void MemoryFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// recording interval
 	uiValue = pDev->parRead(MemFa, REC_INTERVALL, FtUInt8).toUInt();
@@ -51,10 +51,10 @@ void MemoryFrame6015Impl::update()
 
 void MemoryFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// recording interval
 	uiValue = spinBox_Intervall->value();

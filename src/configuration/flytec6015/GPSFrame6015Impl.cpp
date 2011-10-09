@@ -21,7 +21,7 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "GPSFrame6015Impl.h"
 #include "IFlyHighRC.h"
 
@@ -37,11 +37,11 @@ GPSFrame6015Impl::~GPSFrame6015Impl()
 
 void GPSFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// grid system
 	uiValue = pDev->parRead(MemFa, UNIT_FLAGS, FtUInt16).toUInt();
@@ -54,11 +54,11 @@ void GPSFrame6015Impl::update()
 
 void GPSFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 	int iValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// grid system
 	uiValue = pDev->parRead(MemFa, UNIT_FLAGS, FtUInt16).toUInt();

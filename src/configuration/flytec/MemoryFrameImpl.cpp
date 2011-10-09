@@ -22,7 +22,7 @@
 #include <qcombobox.h>
 
 #include "MemoryFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 MemoryFrameImpl::MemoryFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
@@ -36,9 +36,9 @@ MemoryFrameImpl::~MemoryFrameImpl()
 
 void MemoryFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Recording Interval
 	spinBox_Intervall->setValue(pFlytec->parRead(MemUndef, REC_INTERVAL_POS, FtUInt8).toUInt());
@@ -49,9 +49,9 @@ void MemoryFrameImpl::update()
 
 void MemoryFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Recording Interval
 	pFlytec->parWrite(MemUndef, REC_INTERVAL_POS, FtUInt8, spinBox_Intervall->value());

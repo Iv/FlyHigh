@@ -22,7 +22,7 @@
 #include <qslider.h>
 #include <qspinbox.h>
 #include "AcousticFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 AcousticFrameImpl::AcousticFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
@@ -43,10 +43,10 @@ void AcousticFrameImpl::sinkAcousticToggled(bool b)
 
 void AcousticFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
   bool enabled;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Base Volume
 	slider_Volume->setValue(pFlytec->parRead(MemUndef, BASE_VOL_BEEP_POS, FtUInt8).toUInt());
@@ -81,9 +81,9 @@ void AcousticFrameImpl::update()
 
 void AcousticFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Base Volume
 	pFlytec->parWrite(MemUndef, BASE_VOL_BEEP_POS, FtUInt8, slider_Volume->value());

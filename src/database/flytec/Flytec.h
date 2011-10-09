@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef Flytec5020_h
-#define Flytec5020_h
+#ifndef Flytec_h
+#define Flytec_h
 
 #include "IGPSDevice.h"
 #include "IFlyHighRC.h"
@@ -29,12 +29,12 @@ class Pilot;
 class Protocol;
 class AirSpaceList;
 
-class Flytec5020: public IGPSDevice
+class Flytec: public IGPSDevice
 {
 	public:
-		Flytec5020(IFlyHighRC::DeviceId id);
+		Flytec(IFlyHighRC::DeviceId id);
 
-		virtual ~Flytec5020();
+		virtual ~Flytec();
 
 		bool open();
 

@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${QT_INCLUDES})
 
-set(dbflytec_SRCS Flytec5020.cpp
+set(dbflytec_SRCS Flytec.cpp
                   Protocol.cpp
                   Protocol5020.cpp
                   Protocol6015.cpp

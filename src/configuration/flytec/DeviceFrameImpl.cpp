@@ -22,7 +22,7 @@
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include "DeviceFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "Glider.h"
 #include "IFlyHighRC.h"
 #include "IGliderForm.h"
@@ -31,9 +31,9 @@
 DeviceFrameImpl::DeviceFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
   setupUi(this);
   comboBox_Language->setEnabled(pFlytec->deviceId() == IFlyHighRC::DevFlytec6020);
@@ -58,7 +58,7 @@ void DeviceFrameImpl::newGlider()
 
 void DeviceFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 	Pilot dbPilot;
 	QString dbPilotName;
 	QString dbGlider;
@@ -69,7 +69,7 @@ void DeviceFrameImpl::update()
 	int syncRes;
 
   // fetch data pointer for easy access
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
   pFlytec->open();
 
 	if(pFlytec->deviceInfo(devInfo))
@@ -160,7 +160,7 @@ void DeviceFrameImpl::update()
 
 void DeviceFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 	QString pilotName;
 	Pilot dbPilot;
 	QString dbPilotName;
@@ -171,7 +171,7 @@ void DeviceFrameImpl::store()
 	QString rcGlider;
 	int syncRes;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// pilot
 	pilotName = lineEdit_PilotName->text();

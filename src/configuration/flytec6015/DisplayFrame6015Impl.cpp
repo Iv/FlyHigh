@@ -26,7 +26,7 @@
 #include <qpixmap.h>
 #include <qslider.h>
 #include "DisplayFrame6015Impl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 DisplayFrame6015Impl::DisplayFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
 : QWidget(parent)
@@ -40,10 +40,10 @@ DisplayFrame6015Impl::~DisplayFrame6015Impl()
 
 void DisplayFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Alti, Line 4, Alt2, Alt3
 	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();
@@ -55,10 +55,10 @@ void DisplayFrame6015Impl::update()
 
 void DisplayFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Alti, Line 4, Alt2, Alt3
 	uiValue = pDev->parRead(MemFa, DIV_FLAGS, FtUInt16).toUInt();

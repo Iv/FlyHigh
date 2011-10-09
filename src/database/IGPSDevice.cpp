@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "GarminDevice.h"
 
 IGPSDevice *IGPSDevice::m_pGPSDevice = NULL;
@@ -56,7 +56,7 @@ IGPSDevice* IGPSDevice::pInstance()
       delete m_pGPSDevice;
     }
 
-    m_pGPSDevice = new Flytec5020(curDevice);
+    m_pGPSDevice = new Flytec(curDevice);
   }
 
 	return m_pGPSDevice;

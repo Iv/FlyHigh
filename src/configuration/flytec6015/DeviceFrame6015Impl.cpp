@@ -23,7 +23,7 @@
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "Glider.h"
 #include "IFlyHighRC.h"
 #include "IGliderForm.h"
@@ -55,7 +55,7 @@ void DeviceFrame6015Impl::newGlider()
 
 void DeviceFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	Pilot dbPilot;
 	QString dbPilotName;
 	QString dbGlider;
@@ -65,7 +65,7 @@ void DeviceFrame6015Impl::update()
 	int syncRes;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// pilot name
 	pilotName = pDev->parRead(MemFa, OWNER, FtString).toString();
@@ -162,7 +162,7 @@ void DeviceFrame6015Impl::update()
 
 void DeviceFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	QString pilotName;
 	Pilot dbPilot;
 	QString dbPilotName;
@@ -173,7 +173,7 @@ void DeviceFrame6015Impl::store()
 	uint uiValue;
 	int syncRes;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// pilot name
 	pilotName = lineEdit_PilotName->text();

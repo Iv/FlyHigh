@@ -22,7 +22,7 @@
 #include <qspinbox.h>
 
 #include "VelocityFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 VelocityFrameImpl::VelocityFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
@@ -36,9 +36,9 @@ VelocityFrameImpl::~VelocityFrameImpl()
 
 void VelocityFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// best L/D
 	spinBox_BestLD->setValue(pFlytec->parRead(MemUndef, BEST_LD_POS, FtUInt8).toUInt());
@@ -58,9 +58,9 @@ void VelocityFrameImpl::update()
 
 void VelocityFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// best L/D
 	pFlytec->parWrite(MemUndef, BEST_LD_POS, FtUInt8, spinBox_BestLD->value());

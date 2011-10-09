@@ -21,7 +21,7 @@
 #include <qcombobox.h>
 #include <qspinbox.h>
 #include "VarioFrameImpl.h"
-#include "Flytec5020.h"
+#include "Flytec.h"
 
 VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
   :QWidget(parent)
@@ -35,9 +35,9 @@ VarioFrameImpl::~VarioFrameImpl()
 
 void VarioFrameImpl::update()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Response Delay
 //	spinBox_RespDelay->setValue(arr[RESP_DELAY_POS] * 200);
@@ -54,9 +54,9 @@ void VarioFrameImpl::update()
 
 void VarioFrameImpl::store()
 {
-  Flytec5020 *pFlytec;
+  Flytec *pFlytec;
 
-  pFlytec = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+  pFlytec = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Response Delay
 //	arr[RESP_DELAY_POS] = spinBox_RespDelay->value() / 200;

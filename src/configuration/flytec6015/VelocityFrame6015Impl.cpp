@@ -20,7 +20,7 @@
 
 #include <qcombobox.h>
 #include <qspinbox.h>
-#include "Flytec5020.h"
+#include "Flytec.h"
 #include "VelocityFrame6015Impl.h"
 
 VelocityFrame6015Impl::VelocityFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -35,10 +35,10 @@ VelocityFrame6015Impl::~VelocityFrame6015Impl()
 
 void VelocityFrame6015Impl::update()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Speedgain Windweel
 	uiValue = pDev->parRead(MemFa, WIND_WHEEL_GAIN, FtUInt8).toUInt();
@@ -51,10 +51,10 @@ void VelocityFrame6015Impl::update()
 
 void VelocityFrame6015Impl::store()
 {
-	Flytec5020 *pDev;
+	Flytec *pDev;
 	uint uiValue;
 
-	pDev = static_cast<Flytec5020*>(IGPSDevice::pInstance());
+	pDev = static_cast<Flytec*>(IGPSDevice::pInstance());
 
 	// Speedgain Windweel
 	uiValue = spinBox_Windweel->value();
