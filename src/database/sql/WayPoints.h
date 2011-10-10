@@ -49,7 +49,7 @@ class WayPoints: public DataBaseSub
 
 		bool wayPointList(WayPoint::WayPointListType &wpList);
 
-		void checkModified();
+		bool checkModified();
 
 	private:
 		enum Elements

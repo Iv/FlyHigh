@@ -54,7 +54,6 @@ bool Pilots::add(Pilot &pilot)
 	Error::verify(success, Error::SQL_CMD);
 	setId(pilot);
 	DataBaseSub::setLastModified("Pilots");
-	emit changed();
 
 	return success;
 }
@@ -79,7 +78,6 @@ bool Pilots::update(Pilot &pilot)
 
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Pilots");
-	emit changed();
 
 	return success;
 }
@@ -138,7 +136,7 @@ bool Pilots::setId(Pilot &pilot)
 	return success;
 }
 
-void Pilots::checkModified()
+bool Pilots::checkModified()
 {
-  DataBaseSub::checkModified("Pilots");
+  return DataBaseSub::checkModified("Pilots");
 }

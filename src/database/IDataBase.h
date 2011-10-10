@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -61,9 +61,15 @@ class IDataBase: public QObject
 		// waypoints
 		virtual bool add(WayPoint &wp);
 
+		virtual bool add(WayPoint::WayPointListType &wpList);
+
     virtual bool update(WayPoint &wp);
 
+    virtual bool update(WayPoint::WayPointListType &wpList);
+
 		virtual bool delWayPoint(WayPoint &wp);
+
+		virtual bool delWayPoints(WayPoint::WayPointListType &wpList);
 
 		virtual bool delAllWayPoints();
 
@@ -117,8 +123,6 @@ class IDataBase: public QObject
 		void airSpacesChanged();
 
 		void flightsChanged();
-
-		void glidersChanged();
 
 		void routesChanged();
 

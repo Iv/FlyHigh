@@ -59,10 +59,8 @@ bool Flights::add(Flight &flight)
 	pRec->setValue("IGCFile", flight.igcData());
 
 	success = (cur.insert() == 1);
-	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
 	setId(flight);
-	emit changed();
 
 	return success;
 }
@@ -77,7 +75,6 @@ bool Flights::delFlight(Flight &flight)
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
-  emit changed();
 
 	return success;
 }
@@ -234,9 +231,9 @@ bool Flights::setFlightStatistic(Glider &glider)
 	return success;
 }
 
-void Flights::checkModified()
+bool Flights::checkModified()
 {
-	DataBaseSub::checkModified("Flights");
+	return DataBaseSub::checkModified("Flights");
 }
 
 bool Flights::setId(Flight &flight)

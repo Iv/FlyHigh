@@ -33,17 +33,14 @@ class DataBaseSub: public QObject
 
 		virtual ~DataBaseSub();
 
-    virtual void checkModified();
-
-  signals:
-		void changed();
+    virtual bool checkModified();
 
 	protected:
 		QSqlDatabase db();
 
 		int newId(const QString &table);
 
-		void checkModified(const QString &field);
+		bool checkModified(const QString &field);
 
     void setLastModified(const QString &field);
 

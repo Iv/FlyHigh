@@ -38,19 +38,9 @@ class IGPSDevice: public IDataBase
 
 		virtual void close();
 
-		// memory
 		virtual bool memoryRead();
 
 		virtual bool memoryWrite();
-
-		// update
-		int flightsLastModified();
-
-		int wayPointsLastModified();
-
-		int routesLastModified();
-
-		int airspacesLastModified();
 
     IFlyHighRC::DeviceId deviceId();
 

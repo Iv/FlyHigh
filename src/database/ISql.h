@@ -69,9 +69,15 @@ class ISql: public IDataBase
 
 		bool add(WayPoint &wp);
 
+		bool add(WayPoint::WayPointListType &wpList);
+
     bool update(WayPoint &wp);
 
+    bool update(WayPoint::WayPointListType &wpList);
+
 		bool delWayPoint(WayPoint &wp);
+
+		bool delWayPoints(WayPoint::WayPointListType &wpList);
 
 		bool findWayPoint(WayPoint &wp, uint radius);
 
@@ -124,6 +130,8 @@ class ISql: public IDataBase
 		bool setId(Pilot &pilot);
 
   signals:
+    void glidersChanged();
+
     void pilotsChanged();
 
 		void servicingsChanged();

@@ -54,13 +54,6 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
-
-	connect(m_pWayPoints, SIGNAL(changed()), this, SIGNAL(wayPointsChanged()));
-	connect(m_pGliders, SIGNAL(changed()), this, SIGNAL(glidersChanged()));
-	connect(m_pFlights, SIGNAL(changed()), this, SIGNAL(flightsChanged()));
-	connect(m_pRoutes, SIGNAL(changed()), this, SIGNAL(routesChanged()));
-	connect(m_pServicings, SIGNAL(changed()), this, SIGNAL(servicingsChanged()));
-	connect(m_pPilots, SIGNAL(changed()), this, SIGNAL(flightsChanged()));
 }
 
 ISql::~ISql()
@@ -202,17 +195,77 @@ ISql* ISql::pInstance()
 
 bool ISql::add(WayPoint &wp)
 {
-	return m_pWayPoints->add(wp);
+  bool success;
+
+	success = m_pWayPoints->add(wp);
+	emit wayPointsChanged();
+
+	return success;
+}
+
+bool ISql::add(WayPoint::WayPointListType &wpList)
+{
+  WayPoint::WayPointListType::iterator it;
+  bool success = true;
+
+  for(it=wpList.begin(); it!=wpList.end(); it++)
+  {
+    success &= m_pWayPoints->add(*it);
+  }
+
+	emit wayPointsChanged();
+
+	return success;
 }
 
 bool ISql::update(WayPoint &wp)
 {
-	return m_pWayPoints->update(wp);
+  bool success;
+
+	success = m_pWayPoints->update(wp);
+	emit wayPointsChanged();
+
+	return success;
+}
+
+bool ISql::update(WayPoint::WayPointListType &wpList)
+{
+  WayPoint::WayPointListType::iterator it;
+  bool success = true;
+
+  for(it=wpList.begin(); it!=wpList.end(); it++)
+  {
+    success &= m_pWayPoints->update(*it);
+  }
+
+	emit wayPointsChanged();
+
+	return success;
 }
 
 bool ISql::delWayPoint(WayPoint &wp)
 {
-	return m_pWayPoints->delWayPoint(wp);
+  bool success;
+
+	success = m_pWayPoints->delWayPoint(wp);
+	emit wayPointsChanged();
+
+	return success;
+}
+
+bool ISql::delWayPoints(WayPoint::WayPointListType &wpList)
+{
+  WayPoint::WayPointListType::iterator it;
+  bool success = true;
+
+  for(it=wpList.begin(); it!=wpList.end(); it++)
+  {
+    success &= m_pWayPoints->delWayPoint(*it);
+  }
+
+	emit wayPointsChanged();
+
+	return success;
 }
 
 bool ISql::findWayPoint(WayPoint &wp, uint radius)
@@ -227,12 +280,22 @@ bool ISql::wayPointList(WayPoint::WayPointListType &wpList)
 
 bool ISql::add(Glider &glider)
 {
-	return m_pGliders->add(glider);
+  bool success;
+
+	success = m_pGliders->add(glider);
+	emit glidersChanged();
+
+  return success;
 }
 
 bool ISql::delGlider(Glider &glider)
 {
-	return m_pGliders->delGlider(glider);
+  bool success;
+
+	success = m_pGliders->delGlider(glider);
+	emit glidersChanged();
+
+	return success;
 }
 
 bool ISql::glider(const QString &model, Glider &glider)
@@ -247,12 +310,22 @@ bool ISql::gliderList(Glider::GliderListType &gliderList)
 
 bool ISql::add(Flight &flight)
 {
-	return m_pFlights->add(flight);
+  bool success;
+
+	success = m_pFlights->add(flight);
+	emit flightsChanged();
+
+	return success;
 }
 
 bool ISql::delFlight(Flight &flight)
 {
-	return m_pFlights->delFlight(flight);
+  bool success;
+
+	success = m_pFlights->delFlight(flight);
+  emit flightsChanged();
+
+	return success;
 }
 
 int ISql::newFlightNr(Pilot &pilot)
@@ -277,12 +350,22 @@ bool ISql::loadIGCFile(Flight &flight)
 
 bool ISql::add(Route &route)
 {
-	return m_pRoutes->add(route);
+  bool success;
+
+	success = m_pRoutes->add(route);
+	emit routesChanged();
+
+	return success;
 }
 
 bool ISql::delRoute(Route &route)
 {
-	return m_pRoutes->delRoute(route);
+  bool success;
+
+	success = m_pRoutes->delRoute(route);
+  emit routesChanged();
+
+	return success;
 }
 
 bool ISql::routeList(Route::RouteListType &routeList)
@@ -317,12 +400,22 @@ bool ISql::airspaceList(AirSpace::AirSpaceListType &airspaceList)
 */
 bool ISql::add(Servicing &serv)
 {
-	return m_pServicings->add(serv);
+  bool success;
+
+	success = m_pServicings->add(serv);
+	emit servicingsChanged();
+
+	return success;
 }
 
 bool ISql::delServicing(Servicing &servicing)
 {
-	return m_pServicings->delServicing(servicing);
+  bool success;
+
+	success = m_pServicings->delServicing(servicing);
+  emit servicingsChanged();
+
+	return success;
 }
 
 bool ISql::servicingList(Servicing::ServicingListType &servicingList)
@@ -391,10 +484,34 @@ void ISql::upgradeTables()
 void ISql::checkModified()
 {
   // m_pAirSpaces->checkModified();
-  m_pFlights->checkModified();
-  m_pGliders->checkModified();
-  m_pPilots->checkModified();
-  m_pRoutes->checkModified();
-  m_pServicings->checkModified();
-  m_pWayPoints->checkModified();
+
+  if(m_pFlights->checkModified())
+  {
+    emit flightsChanged();
+  }
+
+  if(m_pGliders->checkModified())
+  {
+    emit glidersChanged();
+  }
+
+  if(m_pPilots->checkModified())
+  {
+    emit pilotsChanged();
+  }
+
+  if(m_pRoutes->checkModified())
+  {
+    emit routesChanged();
+  }
+
+  if(m_pServicings->checkModified())
+  {
+    emit servicingsChanged();
+  }
+
+  if(m_pWayPoints->checkModified())
+  {
+    emit wayPointsChanged();
+  }
 }
