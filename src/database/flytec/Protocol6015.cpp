@@ -31,18 +31,19 @@
      ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) |               \
       (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
 
-Protocol6015new::Protocol6015new()
-  :m_device(false)
+Protocol6015::Protocol6015(IFlyHighRC::DeviceId id)
+  :Protocol(id),
+  m_device(false)
 {
 	m_pos = 0;
 }
 
-Protocol6015new::~Protocol6015new()
+Protocol6015::~Protocol6015()
 {
 	close();
 }
 
-bool Protocol6015new::open(const QString &dev, int baud)
+bool Protocol6015::open(const QString &dev, int baud)
 {
 	bool success;
 
@@ -51,12 +52,12 @@ bool Protocol6015new::open(const QString &dev, int baud)
 	return success;
 }
 
-void Protocol6015new::close()
+void Protocol6015::close()
 {
 	m_device.closeDevice();
 }
 
-bool Protocol6015new::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
+bool Protocol6015::parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value)
 {
 	QString tlgValue;
 	bool success = false;
@@ -98,7 +99,7 @@ bool Protocol6015new::parWrite(MemType memType, int par, FtDataType dataType, co
 	return success;
 }
 
-QVariant Protocol6015new::parRead(MemType memType, int par, FtDataType dataType)
+QVariant Protocol6015::parRead(MemType memType, int par, FtDataType dataType)
 {
 	QVariant value;
 
@@ -120,7 +121,7 @@ QVariant Protocol6015new::parRead(MemType memType, int par, FtDataType dataType)
 	return value;
 }
 
-bool Protocol6015new::recieveDone()
+bool Protocol6015::recieveDone()
 {
 	QString tlg;
 	bool success = false;
@@ -134,7 +135,7 @@ bool Protocol6015new::recieveDone()
 	return success;
 }
 
-bool Protocol6015new::trackListReq()
+bool Protocol6015::trackListReq()
 {
 	QString tlg = "ACT_20_00\r\n";
 	bool success;
@@ -145,7 +146,7 @@ bool Protocol6015new::trackListReq()
 	return success;
 }
 
-bool Protocol6015new::trackListRec(int &total, Flight &flight)
+bool Protocol6015::trackListRec(int &total, Flight &flight)
 {
 	QString tlg;
 	bool success = false;
@@ -163,7 +164,7 @@ bool Protocol6015new::trackListRec(int &total, Flight &flight)
 	return success;
 }
 
-bool Protocol6015new::trackReq(int trackNr)
+bool Protocol6015::trackReq(int trackNr)
 {
 	QString tlg;
 	bool success;
@@ -175,7 +176,7 @@ bool Protocol6015new::trackReq(int trackNr)
 	return success;
 }
 
-bool Protocol6015new::trackRec(QString &line)
+bool Protocol6015::trackRec(QString &line)
 {
 	bool success = false;
 
@@ -188,7 +189,7 @@ bool Protocol6015new::trackRec(QString &line)
 	return success;
 }
 
-bool Protocol6015new::wpListReq()
+bool Protocol6015::wpListReq()
 {
 	QString tlg;
 	bool success;
@@ -200,7 +201,7 @@ bool Protocol6015new::wpListReq()
 	return success;
 }
 
-bool Protocol6015new::wpListRec(WayPoint &wp)
+bool Protocol6015::wpListRec(WayPoint &wp)
 {
 	QString tlg;
 	bool success = false;
@@ -218,7 +219,7 @@ bool Protocol6015new::wpListRec(WayPoint &wp)
 	return success;
 }
 
-bool Protocol6015new::wpSnd(const WayPoint &wp)
+bool Protocol6015::wpSnd(const WayPoint &wp)
 {
 	QString tlg;
 	bool success = false;
@@ -241,7 +242,7 @@ bool Protocol6015new::wpSnd(const WayPoint &wp)
 	return success;
 }
 
-bool Protocol6015new::wpDelAll()
+bool Protocol6015::wpDelAll()
 {
 	QString tlg = "ACT_30_00\r\n";
 	bool success = false;
@@ -259,7 +260,7 @@ bool Protocol6015new::wpDelAll()
 	return success;
 }
 
-bool Protocol6015new::routeListReq()
+bool Protocol6015::routeListReq()
 {
 	QString tlg;
 	bool success;
@@ -271,7 +272,7 @@ bool Protocol6015new::routeListReq()
 	return success;
 }
 
-bool Protocol6015new::routeListRec(uint &curSent, uint &totalSent, Route &route)
+bool Protocol6015::routeListRec(uint &curSent, uint &totalSent, Route &route)
 {
 	QString tlg;
 	WayPoint wp;
@@ -312,7 +313,7 @@ bool Protocol6015new::routeListRec(uint &curSent, uint &totalSent, Route &route)
 	return success;
 }
 
-bool Protocol6015new::routeSnd(uint &curSent, uint &totalSent, Route &route)
+bool Protocol6015::routeSnd(uint &curSent, uint &totalSent, Route &route)
 {
 	QString tlg;
 	bool success = false;
@@ -345,7 +346,7 @@ bool Protocol6015new::routeSnd(uint &curSent, uint &totalSent, Route &route)
 	return success;
 }
 
-bool Protocol6015new::routeDel(const QString &name)
+bool Protocol6015::routeDel(const QString &name)
 {
 	QString tlg = "ACT_40_00\r\n";
 	bool success = false;
@@ -363,7 +364,7 @@ bool Protocol6015new::routeDel(const QString &name)
 	return success;
 }
 
-bool Protocol6015new::parseTrack(const QString &tlg, Flight &flight)
+bool Protocol6015::parseTrack(const QString &tlg, Flight &flight)
 {
 	Tokenizer tokenizer;
 	QString token;
@@ -392,7 +393,7 @@ bool Protocol6015new::parseTrack(const QString &tlg, Flight &flight)
 	return true;
 }
 
-bool Protocol6015new::parseWp(const QString &tlg, WayPoint &wp)
+bool Protocol6015::parseWp(const QString &tlg, WayPoint &wp)
 {
 	Tokenizer tokenizer;
 	QString token;
@@ -416,7 +417,7 @@ bool Protocol6015new::parseWp(const QString &tlg, WayPoint &wp)
 	return true;
 }
 
-QDate Protocol6015new::parseDate(const QString &token)
+QDate Protocol6015::parseDate(const QString &token)
 {
 	Tokenizer tokenizer;
 	QString timeToken;
@@ -434,7 +435,7 @@ QDate Protocol6015new::parseDate(const QString &token)
 	return QDate(year, month, day);
 }
 
-QTime Protocol6015new::parseTime(const QString &token)
+QTime Protocol6015::parseTime(const QString &token)
 {
 	Tokenizer tokenizer;
 	QString timeToken;
@@ -452,7 +453,7 @@ QTime Protocol6015new::parseTime(const QString &token)
 	return QTime(hour, min, sec);
 }
 
-void Protocol6015new::getWpSndTlg(const WayPoint &wp, QString &tlg)
+void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 {
 	char dir;
 
@@ -495,7 +496,7 @@ void Protocol6015new::getWpSndTlg(const WayPoint &wp, QString &tlg)
 	tlg += "\r\n";
 }
 
-QString Protocol6015new::value2ftString(int value, int length)
+QString Protocol6015::value2ftString(int value, int length)
 {
 	QString ftStr;
 	QString pad;
@@ -510,7 +511,7 @@ QString Protocol6015new::value2ftString(int value, int length)
 	return ftStr;
 }
 
-QString Protocol6015new::deg2ftString(double value, int length, char dir)
+QString Protocol6015::deg2ftString(double value, int length, char dir)
 {
 	QString ftStr;
 	QString degStr;
@@ -537,7 +538,7 @@ QString Protocol6015new::deg2ftString(double value, int length, char dir)
 }
 
 /* format: "[N|S|E|W] dddd[d]'mm.mmm" */
-double Protocol6015new::ftString2Deg(const QString &token)
+double Protocol6015::ftString2Deg(const QString &token)
 {
 	Tokenizer subTokenizer;
 	QString subToken;
@@ -561,7 +562,7 @@ double Protocol6015new::ftString2Deg(const QString &token)
 	return deg;
 }
 
-QString Protocol6015new::qString2ftString(const QString &qString, int length)
+QString Protocol6015::qString2ftString(const QString &qString, int length)
 {
 	QString pad;
 	QString ftString;
@@ -581,7 +582,7 @@ QString Protocol6015new::qString2ftString(const QString &qString, int length)
 	return ftString;
 }
 
-QString Protocol6015new::ftString2qString(const QString &ftString)
+QString Protocol6015::ftString2qString(const QString &ftString)
 {
 	int cpyLength;
 
@@ -596,7 +597,7 @@ QString Protocol6015new::ftString2qString(const QString &ftString)
 	return ftString.left(cpyLength);
 }
 
-bool Protocol6015new::writeEnableFa()
+bool Protocol6015::writeEnableFa()
 {
 	QString tlg = "ACT_82_00\r\n";
 	bool success = false;
@@ -613,7 +614,7 @@ bool Protocol6015new::writeEnableFa()
 	return success;
 }
 
-bool Protocol6015new::writePar(MemType memType, int par, const QString &value)
+bool Protocol6015::writePar(MemType memType, int par, const QString &value)
 {
 	QString tlg;
 	QString resp;
@@ -643,7 +644,7 @@ bool Protocol6015new::writePar(MemType memType, int par, const QString &value)
 	return success;
 }
 
-bool Protocol6015new::writeParString(MemType memType, int par, const QString &value)
+bool Protocol6015::writeParString(MemType memType, int par, const QString &value)
 {
 	QString ftString;
 	QByteArray arrValue;
@@ -657,7 +658,7 @@ bool Protocol6015new::writeParString(MemType memType, int par, const QString &va
 	return success;
 }
 
-bool Protocol6015new::writeParArray(MemType memType, int par, const QByteArray &value)
+bool Protocol6015::writeParArray(MemType memType, int par, const QByteArray &value)
 {
 	QString byte;
 	QString tlg;
@@ -675,7 +676,7 @@ bool Protocol6015new::writeParArray(MemType memType, int par, const QByteArray &
 	return success;
 }
 
-bool Protocol6015new::requestPar(MemType memType, int par)
+bool Protocol6015::requestPar(MemType memType, int par)
 {
 	QString tlg;
 	bool success;
@@ -699,7 +700,7 @@ bool Protocol6015new::requestPar(MemType memType, int par)
 	return success;
 }
 
-int Protocol6015new::readParInt(MemType memType, int par, FtDataType dataType)
+int Protocol6015::readParInt(MemType memType, int par, FtDataType dataType)
 {
 	QString tlg;
 	Tokenizer tokenizer;
@@ -763,7 +764,7 @@ int Protocol6015new::readParInt(MemType memType, int par, FtDataType dataType)
 	return value;
 }
 
-QString Protocol6015new::readParString(MemType memType, int par)
+QString Protocol6015::readParString(MemType memType, int par)
 {
 	QString value = "";
 
@@ -773,7 +774,7 @@ QString Protocol6015new::readParString(MemType memType, int par)
 	return value;
 }
 
-QByteArray Protocol6015new::readParArray(MemType memType, int par)
+QByteArray Protocol6015::readParArray(MemType memType, int par)
 {
 	QString tlg;
 	Tokenizer tokenizer;

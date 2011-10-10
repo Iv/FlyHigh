@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef Protocol6015new_h
-#define Protocol6015new_h
+#ifndef Protocol6015_h
+#define Protocol6015_h
 
 #include <qvariant.h>
 #include "Defs6015.h"
@@ -33,12 +33,12 @@ class WayPoint;
 /**
 	@author Alex Graf <grafal@sourceforge.net>
 */
-class Protocol6015new: public Protocol
+class Protocol6015: public Protocol
 {
 	public:
-		Protocol6015new();
+		Protocol6015(IFlyHighRC::DeviceId id);
 
-		~Protocol6015new();
+		~Protocol6015();
 
 		bool open(const QString &dev, int baud);
 

@@ -36,8 +36,9 @@
   #include <QtDebug>
 #endif
 
-Protocol5020::Protocol5020()
-  :m_device(true)
+Protocol5020::Protocol5020(IFlyHighRC::DeviceId id)
+  :Protocol(id),
+  m_device(true)
 {
   m_memdump.resize(Flytec5020MemSize);
   m_total = 0;
@@ -275,7 +276,7 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
-	usleep(100*1000);
+	usleep(150*1000);
 
 #ifdef _DEBUG
   qDebug() << tlg;
@@ -298,7 +299,15 @@ bool Protocol5020::wpDel(const QString &name)
 #endif
 
 	success = m_device.sendTlg(tlg);
-	usleep(2000*1000);
+
+	if(deviceId() == IFlyHighRC::DevFlytec5020)
+  {
+    usleep(2000*1000);
+	}
+	else
+	{
+    usleep(300*1000);
+	}
 
 	return success;
 }
