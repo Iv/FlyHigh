@@ -20,8 +20,9 @@
 
 #include "Protocol.h"
 
-Protocol::Protocol()
+Protocol::Protocol(IFlyHighRC::DeviceId id)
 {
+  m_devId = id;
 }
 
 Protocol::~Protocol()
@@ -170,4 +171,9 @@ bool Protocol::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 bool Protocol::ctrDel(const QString &name)
 {
   return false;
+}
+
+IFlyHighRC::DeviceId Protocol::deviceId() const
+{
+  return m_devId;
 }

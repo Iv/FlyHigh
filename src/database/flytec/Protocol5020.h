@@ -33,7 +33,7 @@ class WayPoint;
 class Protocol5020: public Protocol
 {
 	public:
-		Protocol5020();
+		Protocol5020(IFlyHighRC::DeviceId id);
 
 		~Protocol5020();
 

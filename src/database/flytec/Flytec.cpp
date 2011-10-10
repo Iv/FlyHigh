@@ -36,10 +36,10 @@ Flytec::Flytec(IFlyHighRC::DeviceId id)
   {
     case IFlyHighRC::DevFlytec5020:
     case IFlyHighRC::DevFlytec6020:
-    	m_protocol = new Protocol5020();
+    	m_protocol = new Protocol5020(id);
     break;
     case IFlyHighRC::DevFlytec6015:
-    	m_protocol = new Protocol6015new();
+    	m_protocol = new Protocol6015(id);
     break;
   }
 
@@ -57,7 +57,7 @@ bool Flytec::open()
 	bool success;
 
 	success = m_protocol->open(IFlyHighRC::pInstance()->deviceLine(),
-					IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
+	IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
 	Error::verify(success, Error::FLYTEC_OPEN);
 
 	return success;
@@ -285,12 +285,16 @@ bool Flytec::add(WayPoint &wp)
 
 bool Flytec::add(WayPoint::WayPointListType &wpList)
 {
-  WayPoint::WayPointListType::iterator it;
+  int nofWp;
+  int wpNr;
   bool success = true;
 
-  for(it=wpList.begin(); it!=wpList.end(); it++)
+  nofWp = wpList.size();
+
+  for(wpNr=0; wpNr<nofWp; wpNr++)
   {
-    success &= m_protocol->wpSnd(*it);
+    success &= m_protocol->wpSnd(wpList[wpNr]);
+    emit progress(wpNr * 100 / nofWp);
   }
 
   Error::verify(success, Error::FLYTEC_CMD);
@@ -314,12 +318,16 @@ bool Flytec::delWayPoint(WayPoint &wp)
 
 bool Flytec::delWayPoints(WayPoint::WayPointListType &wpList)
 {
-  WayPoint::WayPointListType::iterator it;
+  int nofWp;
+  int wpNr;
   bool success = true;
 
-  for(it=wpList.begin(); it!=wpList.end(); it++)
+  nofWp = wpList.size();
+
+  for(wpNr=0; wpNr<nofWp; wpNr++)
   {
-    success &= m_protocol->wpDel((*it).name());
+    success &= m_protocol->wpDel(wpList[wpNr].name());
+    emit progress(wpNr * 100 / nofWp);
   }
 
   Error::verify(success, Error::FLYTEC_CMD);

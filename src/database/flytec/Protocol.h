@@ -21,6 +21,7 @@
 #define Protocol_h
 
 #include <qvariant.h>
+#include "IFlyHighRC.h"
 #include "Defs5020.h"
 #include "Defs6015.h"
 
@@ -35,7 +36,7 @@ class WayPoint;
 class Protocol
 {
 	public:
-		Protocol();
+		Protocol(IFlyHighRC::DeviceId id);
 
 		virtual ~Protocol();
 
@@ -103,6 +104,12 @@ class Protocol
 		virtual bool ctrSnd(uint curSent, uint totalSent, AirSpace &airspace);
 
 		virtual bool ctrDel(const QString &name);
+
+  protected:
+		IFlyHighRC::DeviceId deviceId() const;
+
+  private:
+    IFlyHighRC::DeviceId m_devId;
 };
 
 #endif
