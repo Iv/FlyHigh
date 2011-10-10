@@ -71,8 +71,6 @@ bool Routes::add(Route &route)
 		DataBaseSub::setLastModified("Routes");
 	}
 
-	emit changed();
-
 	return success;
 }
 
@@ -113,7 +111,6 @@ bool Routes::delRoute(Route &route)
 	Error::verify(success, Error::SQL_DEL);
 	DataBaseSub::setLastModified("WayPoints");
 	DataBaseSub::setLastModified("Routes");
-	emit changed();
 
 	return success;
 }
@@ -189,7 +186,7 @@ bool Routes::setId(Route &route)
 	return success;
 }
 
-void Routes::checkModified()
+bool Routes::checkModified()
 {
-  DataBaseSub::checkModified("Routes");
+  return DataBaseSub::checkModified("Routes");
 }

@@ -47,7 +47,6 @@ bool Servicings::add(Servicing &servicing)
 	pRec->setValue("Comment", servicing.comment());
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Servicings");
-	emit changed();
 
 	return true;
 }
@@ -62,7 +61,6 @@ bool Servicings::delServicing(Servicing &servicing)
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
-	emit changed();
 
 	return success;
 }
@@ -87,7 +85,6 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 			servicing.setDate(query.value(Date).toDate());
 			servicing.setResponsibility(query.value(Responsibility).toString());
 			servicing.setComment(query.value(Comment).toString());
-
 			servicingList.push_back(servicing);
 		}
 	}
@@ -97,7 +94,7 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	return success;
 }
 
-void Servicings::checkModified()
+bool Servicings::checkModified()
 {
-  DataBaseSub::checkModified("Servicings");
+  return DataBaseSub::checkModified("Servicings");
 }

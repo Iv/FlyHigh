@@ -37,7 +37,7 @@ class Routes: public DataBaseSub
 
 		bool routeList(Route::RouteListType &routeList);
 
-		void checkModified();
+		bool checkModified();
 
 	private:
 		enum RouteElements{Id, Name, Type};

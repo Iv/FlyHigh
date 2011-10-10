@@ -283,6 +283,23 @@ bool Flytec::add(WayPoint &wp)
 	return success;
 }
 
+bool Flytec::add(WayPoint::WayPointListType &wpList)
+{
+  WayPoint::WayPointListType::iterator it;
+  bool success = true;
+
+  for(it=wpList.begin(); it!=wpList.end(); it++)
+  {
+    success &= m_protocol->wpSnd(*it);
+  }
+
+  Error::verify(success, Error::FLYTEC_CMD);
+  IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
+
+	return success;
+}
+
 bool Flytec::delWayPoint(WayPoint &wp)
 {
 	bool success;
@@ -290,6 +307,23 @@ bool Flytec::delWayPoint(WayPoint &wp)
 	success = m_protocol->wpDel(wp.name());
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::WayPoints);
+	emit wayPointsChanged();
+
+	return success;
+}
+
+bool Flytec::delWayPoints(WayPoint::WayPointListType &wpList)
+{
+  WayPoint::WayPointListType::iterator it;
+  bool success = true;
+
+  for(it=wpList.begin(); it!=wpList.end(); it++)
+  {
+    success &= m_protocol->wpDel((*it).name());
+  }
+
+  Error::verify(success, Error::FLYTEC_CMD);
+  IGPSDevice::setLastModified(IGPSDevice::WayPoints);
 	emit wayPointsChanged();
 
 	return success;

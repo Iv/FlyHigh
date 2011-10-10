@@ -44,7 +44,6 @@ bool Gliders::add(Glider &glider)
 	Error::verify(cur.insert() == 1, Error::SQL_CMD);
 	setGliderId(glider);
 	DataBaseSub::setLastModified("Gliders");
-	emit changed();
 
 	return true;
 }
@@ -59,7 +58,6 @@ bool Gliders::delGlider(Glider &glider)
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Gliders");
 	Error::verify(success, Error::SQL_CMD);
-	emit changed();
 
 	return success;
 }
@@ -178,7 +176,7 @@ bool Gliders::setGliderId(Glider &glider)
 	return success;
 }
 
-void Gliders::checkModified()
+bool Gliders::checkModified()
 {
-  DataBaseSub::checkModified("Gliders");
+  return DataBaseSub::checkModified("Gliders");
 }

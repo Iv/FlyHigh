@@ -37,7 +37,7 @@ class Servicings: public DataBaseSub
 
 		bool servicingList(Servicing::ServicingListType &servicingList);
 
-		void checkModified();
+		bool checkModified();
 
 	private:
 		enum Elements

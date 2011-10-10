@@ -33,14 +33,14 @@ DataBaseSub::~DataBaseSub()
 {
 }
 
-void DataBaseSub::checkModified()
+bool DataBaseSub::checkModified()
 {
 }
 
-void DataBaseSub::checkModified(const QString &field)
+bool DataBaseSub::checkModified(const QString &field)
 {
   int dbLastMod;
-  bool modified;
+  bool modified = false;
 
   dbLastMod = lastModified(field);
 
@@ -48,16 +48,13 @@ void DataBaseSub::checkModified(const QString &field)
   {
     modified = (dbLastMod != m_lastModified);
     m_lastModified = dbLastMod;
-
-    if(modified)
-    {
-      emit changed();
-    }
   }
   else
   {
     m_lastModified = dbLastMod;
   }
+
+  return modified;
 }
 
 QSqlDatabase DataBaseSub::db()

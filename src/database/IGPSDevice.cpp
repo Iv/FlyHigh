@@ -94,26 +94,6 @@ void IGPSDevice::setLastModified(FieldType field)
 	}
 }
 
-int IGPSDevice::flightsLastModified()
-{
-	return m_lastModifiedList[Flights];
-}
-
-int IGPSDevice::wayPointsLastModified()
-{
-	return m_lastModifiedList[WayPoints];
-}
-
-int IGPSDevice::routesLastModified()
-{
-	return m_lastModifiedList[Routes];
-}
-
-int IGPSDevice::airspacesLastModified()
-{
-	return m_lastModifiedList[AirSpaces];
-}
-
 void IGPSDevice::setDeviceId(IFlyHighRC::DeviceId id)
 {
   m_deviceId = id;

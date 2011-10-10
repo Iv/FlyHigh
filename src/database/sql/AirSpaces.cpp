@@ -185,7 +185,7 @@ bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 	return false;
 }
 
-void AirSpaces::checkModified()
+bool AirSpaces::checkModified()
 {
-  DataBaseSub::checkModified("AirSpaces");
+  return DataBaseSub::checkModified("AirSpaces");
 }

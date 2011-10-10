@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -40,15 +40,11 @@ void IDataBase::close()
 // flights
 bool IDataBase::add(Flight &flight)
 {
-	(void)flight;
-
 	return false;
 }
 
 bool IDataBase::delFlight(Flight &flight)
 {
-	(void)flight;
-
 	return false;
 }
 
@@ -59,23 +55,21 @@ int IDataBase::flightsLastModified()
 
 bool IDataBase::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
-	(void)pilot;
-	(void)flightList;
-
 	return false;
 }
 
 bool IDataBase::loadIGCFile(Flight &flight)
 {
-	(void)flight;
-
 	return false;
 }
 
 bool IDataBase::add(WayPoint &wp)
 {
-	(void)wp;
+	return false;
+}
 
+bool IDataBase::add(WayPoint::WayPointListType &wpList)
+{
 	return false;
 }
 
@@ -84,10 +78,18 @@ bool IDataBase::update(WayPoint &wp)
   return false;
 }
 
+bool IDataBase::update(WayPoint::WayPointListType &wpList)
+{
+	return false;
+}
+
 bool IDataBase::delWayPoint(WayPoint &wp)
 {
-	(void)wp;
+	return false;
+}
 
+bool IDataBase::delWayPoints(WayPoint::WayPointListType &wpList)
+{
 	return false;
 }
 
@@ -103,29 +105,21 @@ int IDataBase::wayPointsLastModified()
 
 bool IDataBase::wayPointList(WayPoint::WayPointListType &wpList)
 {
-	(void)wpList;
-
 	return false;
 }
 
 bool IDataBase::add(Glider &glider)
 {
-	(void)glider;
-
 	return false;
 }
 
 bool IDataBase::delGlider(Glider &glider)
 {
-	(void)glider;
-
 	return false;
 }
 
 bool IDataBase::gliderList(Glider::GliderListType &gliderList)
 {
-	(void)gliderList;
-
 	return false;
 }
 
@@ -136,15 +130,11 @@ int IDataBase::glidersLastModified()
 
 bool IDataBase::add(Route &route)
 {
-	(void)route;
-
 	return false;
 }
 
 bool IDataBase::delRoute(Route &route)
 {
-	(void)route;
-
 	return false;
 }
 
@@ -162,30 +152,21 @@ bool IDataBase::routeList(Route::RouteListType &routeList)
 
 bool IDataBase::add(Pilot &pilot)
 {
-	(void)pilot;
-
 	return false;
 }
 
 bool IDataBase::setId(Pilot &pilot)
 {
-	(void)pilot;
-
 	return false;
 }
 
 bool IDataBase::update(Pilot &pilot)
 {
-	(void)pilot;
-
 	return false;
 }
 
 bool IDataBase::pilot(int id, Pilot &pilot)
 {
-	(void)id;
-	(void)pilot;
-
 	return false;
 }
 
@@ -196,23 +177,16 @@ int IDataBase::pilotsLastModified()
 
 bool IDataBase::add(AirSpace &airspace)
 {
-	(void)airspace;
-
 	return false;
 }
 
 bool IDataBase::delAirSpace(AirSpace &airspace)
 {
-	(void)airspace;
-
 	return false;
 }
 
 bool IDataBase::airspace(const QString &name, AirSpace &airspace)
 {
-	(void)name;
-	(void)airspace;
-
 	return false;
 }
 
