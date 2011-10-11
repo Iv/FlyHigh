@@ -81,6 +81,11 @@ void WebMapWayPoint::populateObject()
 	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
 }
 
+void WebMapWayPoint::beginSaveWayPoint()
+{
+  m_wpList.clear();
+}
+
 void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &spot,
                                       const QString &country, double lat, double lon,
                                       int alt)
@@ -95,5 +100,10 @@ void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &sp
   wp.setLongitude(lon);
   wp.setAltitude(alt);
 
-  emit wayPointChanged(wp);
+  m_wpList.push_back(wp);
+}
+
+void WebMapWayPoint::endSaveWayPoint()
+{
+  emit wayPointsChanged(m_wpList);
 }

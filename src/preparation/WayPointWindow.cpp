@@ -93,9 +93,9 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
   QAction* pDelAllAct = new QAction(tr("Delete All"), this);
   connect(pDelAllAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
   pFileMenu->addAction(pDelAllAct);
-  // for sql db danger, does not work on 5020
+  // for sql db danger, only used by 6015
   enabled = ((src == IDataBase::GPSdevice) &&
-            (IGPSDevice::pInstance()->deviceId() != IFlyHighRC::DevFlytec5020));
+            (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015));
   pDelAllAct->setEnabled(enabled);
 
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
@@ -174,7 +174,7 @@ void WayPointWindow::file_update()
 
 	if(m_pDb->open())
 	{
-		progDlg.beginProgress("reading waypoints...", m_pDb);
+		progDlg.beginProgress(tr("reading waypoints..."), m_pDb);
 		m_pDb->wayPointList(m_wpList);
 		progDlg.endProgress();
 		m_pDb->close();
@@ -191,6 +191,8 @@ void WayPointWindow::file_update()
 
 void WayPointWindow::file_AddToGps()
 {
+  WayPoint::WayPointListType wpList;
+  ProgressDlg progDlg(this);
 	int numSel;
 	int sel;
 	int topRow;
@@ -210,10 +212,13 @@ void WayPointWindow::file_AddToGps()
 
 			for(row=topRow; row<=bottomRow; row++)
 			{
-				IGPSDevice::pInstance()->add(m_wpList[row]);
+			  wpList.push_back(m_wpList[row]);
 			}
 		}
 
+    progDlg.beginProgress(tr("write waypoints..."), IGPSDevice::pInstance());
+    IGPSDevice::pInstance()->add(wpList);
+    progDlg.endProgress();
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
@@ -221,6 +226,8 @@ void WayPointWindow::file_AddToGps()
 
 void WayPointWindow::file_delete()
 {
+  WayPoint::WayPointListType wpList;
+  ProgressDlg progDlg(this);
 	int numSel;
 	int sel;
 	int topRow;
@@ -240,10 +247,13 @@ void WayPointWindow::file_delete()
 
 			for(row=topRow; row<=bottomRow; row++)
 			{
-				m_pDb->delWayPoint(m_wpList[row]);
+				wpList.push_back(m_wpList[row]);
 			}
 		}
 
+    progDlg.beginProgress(tr("delete waypoints..."), m_pDb);
+    m_pDb->delWayPoints(wpList);
+    progDlg.endProgress();
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
@@ -317,8 +327,8 @@ void WayPointWindow::file_editWebMap()
 	{
 		m_pWayPointView = new WebMapWayPointView(tr("Edit WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
-		connect(m_pWayPointView, SIGNAL(wayPointChanged(const WayPoint&)), this,
-            SLOT(wayPointChanged(const WayPoint&)));
+		connect(m_pWayPointView, SIGNAL(wayPointsChanged(WayPoint::WayPointListType&)), this,
+            SLOT(wayPointsChanged(WayPoint::WayPointListType&)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
 		m_pWayPointView->setWayPointList(&m_wpList);
 		m_pWayPointView->loadMap();
@@ -333,8 +343,6 @@ void WayPointWindow::file_viewWebMap()
 	{
 		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
-		connect(m_pWayPointView, SIGNAL(wayPointChanged(const WayPoint&)), this,
-            SLOT(wayPointChanged(const WayPoint&)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
 		m_pWayPointView->setWayPointList(&m_wpList);
 		m_pWayPointView->loadMap();
@@ -348,16 +356,12 @@ void WayPointWindow::wayPointViewFinished(int res)
   m_pWayPointView = NULL;
 }
 
-void WayPointWindow::wayPointChanged(const WayPoint &wp)
+void WayPointWindow::wayPointsChanged(WayPoint::WayPointListType &wpList)
 {
-  WayPoint locWp;
-
-  locWp = wp;
-
   if(m_pDb->open())
   {
     m_externSelect = true;
-    m_pDb->update(locWp);
+    m_pDb->update(wpList);
     m_externSelect = false;
     m_pDb->close();
   }

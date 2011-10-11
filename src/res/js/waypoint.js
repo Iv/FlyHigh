@@ -285,6 +285,8 @@ function wp_setOk(ok)
 
 	if(ok)
 	{
+		WebMapWayPoint.beginSaveWayPoint();
+
 		for(nr=0; nr<markers.length; nr++)
 		{
 			marker = markers[nr];
@@ -296,6 +298,8 @@ function wp_setOk(ok)
 					marker.getLat(), marker.getLon(), marker.getAlt());
 			}
 		}
+
+		WebMapWayPoint.endSaveWayPoint();
 	}
 
 	WebMap.setOk(ok);
