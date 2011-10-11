@@ -43,7 +43,7 @@ class WebMapWayPointView: public QDialog
 		void loadMap();
 
 	signals:
-		void wayPointChanged(const WayPoint &wp);
+		void wayPointsChanged(WayPoint::WayPointListType &wpList);
 
 		void wayPointChanged(int id);
 
