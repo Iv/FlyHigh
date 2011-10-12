@@ -42,13 +42,7 @@ Device::Device(bool flow)
 	m_serialPort->setParity(PAR_NONE);
 	m_serialPort->setDataBits(DATA_8);
 	m_serialPort->setStopBits(STOP_1);
-#ifdef Q_OS_WIN
-  // on windoze, set timeout to -1 for
-  // non-blocking read/write operations
   m_serialPort->setTimeout(-1);
-#else
-  m_serialPort->setTimeout(0);
-#endif
 }
 
 Device::~Device()
