@@ -20,7 +20,7 @@
 			<span id="score" style="font-size: 18px;">0.0 points</span><br/>
 			<hr/>
 			<b>Name:</b>
-			<input id="name" type="text" value="FIE_100"/>
+			<input id="name" type="text" value="FIE_100" onchange="rt_setRouteName(this.value);"/>
 			<hr/>
 			<input id="location" type="text" onkeypress="XCGoOnEnter(event);"/>
 			<input type="submit" onclick="XCGo();" value="Go" title="Center the map on this location"/>

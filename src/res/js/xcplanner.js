@@ -25,7 +25,7 @@ var COLOR = {
 	faiSectors: ["#00ff00", "#00bbff", "#ff0000"]
 };
 
-var TurnPointsDraggable = true;
+var RouteEditable = true;
 
 var triangleMarkerColors = COLOR.faiSectors;
 var olc5MarkerColors = [COLOR.marker, COLOR.faiSectors[0], COLOR.faiSectors[1], COLOR.faiSectors[2], COLOR.marker];
@@ -330,12 +330,12 @@ function XCLoad() {
 	if (bounds) {
 		map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
 		XCSetDefaultTurnpoints(false);
-		XCUpdateFlightType();
+		UpdateFlightType();
 	} else {
 		geocoder.getLatLng($F("location"), function(latLng) {
 			map.setCenter(latLng, 10);
 			XCSetDefaultTurnpoints(false);
-			XCUpdateFlightType();
+			UpdateFlightType();
 		});
 	}
 }
@@ -382,25 +382,31 @@ function XCSetDefaultTurnpoints(replace) {
 }
 
 function XCReverseRoute() {
-	var latLngs = turnpointMarkers.map(function(marker) { return marker.getLatLng(); });
-	turnpointMarkers.each(function(marker, i) {
-		marker.setLatLng(latLngs[latLngs.length - 1 - i]);
-		marker.ele = -9999;
-		marker.rev = ++rev;
-	});
-	XCUpdateRoute();
-	XCUpdateElevations();
+	if(RouteEditable)
+	{
+		var latLngs = turnpointMarkers.map(function(marker) { return marker.getLatLng(); });
+		turnpointMarkers.each(function(marker, i) {
+			marker.setLatLng(latLngs[latLngs.length - 1 - i]);
+			marker.ele = -9999;
+			marker.rev = ++rev;
+		});
+		XCUpdateRoute();
+		XCUpdateElevations();
+	}
 }
 
 function XCRotateRoute(delta) {
-	var latLngs = turnpointMarkers.map(function(marker) { return marker.getLatLng(); });
-	turnpointMarkers.each(function(marker, i) {
-		marker.setLatLng(latLngs[(i + delta + latLngs.length) % latLngs.length]);
-		marker.ele = -9999;
-		marker.rev = ++rev;
-	});
-	XCUpdateRoute();
-	XCUpdateElevations();
+	if(RouteEditable)
+	{
+		var latLngs = turnpointMarkers.map(function(marker) { return marker.getLatLng(); });
+		turnpointMarkers.each(function(marker, i) {
+			marker.setLatLng(latLngs[(i + delta + latLngs.length) % latLngs.length]);
+			marker.ele = -9999;
+			marker.rev = ++rev;
+		});
+		XCUpdateRoute();
+		XCUpdateElevations();
+	}
 }
 
 function XCScore(flight) {
@@ -610,7 +616,19 @@ function XCDragEndMarker(i) {
 	}
 }
 
-function XCUpdateFlightType() {
+function XCUpdateFlightType()
+{
+	if(RouteEditable)
+	{
+		UpdateFlightType();
+	}
+	else
+	{
+		$("flightType").setValue($F("defaultFlightType"));
+	}
+}
+
+function UpdateFlightType() {
 	XCSaveDefaultTurnpoints();
 	turnpointMarkers.each(function(m, i) { map.removeOverlay(m); });
 	if (startMarker) {
@@ -627,10 +645,10 @@ function XCUpdateFlightType() {
 	turnpointMarkers = $R(0, flightType.n, true).map(function(i) {
 		var primaryColor = markerColors ? markerColors[i] : COLOR.marker;
 		var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: (i + 1).toString(), primaryColor: primaryColor});
-		var marker = new GMarker(defaultTurnpointLatLngs[i], {draggable: TurnPointsDraggable, icon: icon});
+		var marker = new GMarker(defaultTurnpointLatLngs[i], {draggable: RouteEditable, icon: icon});
 		marker.rev = 0;
 		marker.ele = -9999;
-		if (TurnPointsDraggable) {
+		if (RouteEditable) {
 			GEvent.addListener(marker, "drag", function() { XCDragMarker(i); });
 			GEvent.addListener(marker, "dragend", function(latlng) { XCDragEndMarker(i); });
 		}
@@ -639,11 +657,11 @@ function XCUpdateFlightType() {
 	});
 	if (flightType.circuit) {
 		var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: "0", primaryColor: COLOR.marker});
-		startMarker = new GMarker(defaultStartLatLng, {draggable: TurnPointsDraggable, icon: icon});
+		startMarker = new GMarker(defaultStartLatLng, {draggable: RouteEditable, icon: icon});
 		startMarker.rev = 0;
 		startMarker.ele = -9999;
 
-		if (TurnPointsDraggable) {
+		if (RouteEditable) {
 			GEvent.addListener(startMarker, "drag", function() { XCDragMarker(-1); });
 			GEvent.addListener(startMarker, "dragend", function(latlng) { XCDragEndMarker(-1); });
 		}

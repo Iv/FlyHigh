@@ -119,9 +119,9 @@ void WebMapRoute::getTurnPointList(WayPoint::WayPointListType &tpList)
 	}
 }
 
-void WebMapRoute::setTurnPointsDraggable(bool en)
+void WebMapRoute::setEditable(bool en)
 {
-	QString code = "rt_setTurnPointsDraggable(%1);";
+	QString code = "rt_setEditable(%1);";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
