@@ -41,7 +41,7 @@ class WebMapRouteView: public QDialog
 
 		void loadMap();
 
-		void setTurnPointsDraggable(bool drag);
+		void setEditable(bool en);
 
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
@@ -49,7 +49,7 @@ class WebMapRouteView: public QDialog
 	private:
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
-		bool m_tpDrag;
+		bool m_editable;
 
 	private slots:
 		void mapReady();

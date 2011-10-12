@@ -21,6 +21,8 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
+var routeName;
+
 function rt_init()
 {
 	XCLoad();
@@ -43,10 +45,23 @@ function rt_getLocation()
 	return locInput.value;
 }
 
+function rt_setRouteName(name)
+{
+	if(RouteEditable)
+	{
+		routeName = name;
+	}
+	else
+	{
+		rt_setName(routeName);
+	}
+}
+
 function rt_setName(name)
 {
 	var nameInput;
 
+	routeName = name;
 	nameInput = document.getElementById("name");
 	nameInput.value = name;
 }
@@ -79,9 +94,9 @@ function rt_getTurnPointList()
 	return tps;
 } 
 
-function rt_setTurnPointsDraggable(drag)
+function rt_setEditable(en)
 {
-	TurnPointsDraggable = drag;
+	RouteEditable = en;
 }
 
 function rt_setFlightType(flightType)

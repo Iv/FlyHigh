@@ -30,7 +30,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 
 	m_pRoute = NULL;
 	m_pWebMap = new WebMap(this, WebMap::MapRoute);
-	m_tpDrag = true;
+	m_editable = true;
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
 }
@@ -50,9 +50,9 @@ void WebMapRouteView::loadMap()
 	m_pWebMap->loadUrl("qrc:/route.html");
 }
 
-void WebMapRouteView::setTurnPointsDraggable(bool drag)
+void WebMapRouteView::setEditable(bool en)
 {
-	m_tpDrag = drag;
+	m_editable = en;
 }
 
 void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
@@ -63,7 +63,7 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 void WebMapRouteView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-	m_pWebMap->getRoute()->setTurnPointsDraggable(m_tpDrag);
+	m_pWebMap->getRoute()->setEditable(m_editable);
 
 	if(m_pRoute != NULL)
 	{
