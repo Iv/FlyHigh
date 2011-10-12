@@ -20,10 +20,8 @@
 
 #include <QString>
 #include <sys/timeb.h>
-#include "Device.h"
 #include "qextserialport.h"
-
-#include <QDebug>
+#include "Device.h"
 
 Device::Device(bool flow)
 {
@@ -44,7 +42,13 @@ Device::Device(bool flow)
 	m_serialPort->setParity(PAR_NONE);
 	m_serialPort->setDataBits(DATA_8);
 	m_serialPort->setStopBits(STOP_1);
-	m_serialPort->setTimeout(0);
+#ifdef Q_OS_WIN
+  // on windoze, set timeout to -1 for
+  // non-blocking read/write operations
+  m_serialPort->setTimeout(-1);
+#else
+  m_serialPort->setTimeout(0);
+#endif
 }
 
 Device::~Device()
@@ -128,8 +132,6 @@ bool Device::recieveTlg(int tout, bool head)
 		}
 	}while(!isElapsed());
 
-qDebug() << "recieveTlg" << m_tlg;
-
 	return validTlg;
 }
 
@@ -145,10 +147,9 @@ bool Device::sendTlg(const QString &tlg)
 
 void Device::flush()
 {
-	char ch;
-
 	m_tlg = "";
-	while(getChar(ch)){}; // Flush buffer
+	// Flush buffer
+	m_serialPort->readAll();
 }
 
 bool Device::getChar(char &ch)
@@ -163,8 +164,6 @@ bool Device::getChar(char &ch)
 bool Device::writeBuffer(const char *pBuff, int len)
 {
 	int nWrite;
-
-qDebug() << "sendTlg" << pBuff;
 
 	nWrite = m_serialPort->write(pBuff, len);
 

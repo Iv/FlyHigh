@@ -19,10 +19,10 @@
  ***************************************************************************/
 
 #include <math.h>
-#include "Protocol6015.h"
 #include "Route.h"
 #include "Tokenizer.h"
 #include "WayPoint.h"
+#include "Protocol6015.h"
 
 #define bswap_16(x) \
      ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8))
@@ -151,8 +151,10 @@ bool Protocol6015::trackListRec(int &total, Flight &flight)
 	QString tlg;
 	bool success = false;
 
-	if(m_device.recieveTlg(500, false))
-	{
+  // timeout was 500. Changed to 1000ms due to
+  // longer tranfer duration on Windoze platforms
+  if(m_device.recieveTlg(1000, false))
+  {
 		tlg = m_device.getTlg();
 
 		if(tlg != " Done\r\n")
