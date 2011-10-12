@@ -26,6 +26,7 @@ var map = null;
 var markers = [];
 var curMarker = null;
 var markerCluster;
+var WpEditable = false;
 
 function wp_init()
 {
@@ -44,13 +45,18 @@ function wp_init()
 	}
 }
 
+function wp_setEditable(en)
+{
+	WpEditable = en;
+}
+
 function wp_pushWayPoint(opts)
 {
 	var marker;
 
 	marker = createMarker({id: opts.id, name: opts.name, spot: opts.spot,
 												country: opts.country, lat: opts.lat, lon: opts.lon, alt: opts.alt,
-												draggable: true, modified: false, select: false});
+												draggable: WpEditable, modified: false, select: false});
 
 	markers.push(marker);
 }
@@ -78,8 +84,15 @@ function wp_setMarkerName(name)
 {
 	if(curMarker)
 	{
-		curMarker.setName(name);
-		updateMarker(curMarker);
+		if(WpEditable)
+		{
+			curMarker.setName(name);
+			updateMarker(curMarker);
+		}
+		else
+		{
+			wp_setName(curMarker.getName());
+		}
 	}
 }
 
@@ -104,8 +117,15 @@ function wp_setMarkerSpot(spot)
 {
 	if(curMarker)
 	{
-		curMarker.setSpot(spot);
-		updateMarker(curMarker);
+		if(WpEditable)
+		{
+			curMarker.setSpot(spot);
+			updateMarker(curMarker);
+		}
+		else
+		{
+			wp_setSpot(curMarker.getSpot());
+		}
 	}
 }
 
@@ -130,8 +150,15 @@ function wp_setMarkerCountry(country)
 {
 	if(curMarker)
 	{
-		curMarker.setCountry(country);
-		updateMarker(curMarker);
+		if(WpEditable)
+		{
+			curMarker.setCountry(country);
+			updateMarker(curMarker);
+		}
+		else
+		{
+			wp_setCountry(curMarker.getCountry());
+		}
 	}
 }
 
@@ -160,7 +187,7 @@ function wp_setMarkerLat(lat)
 	{
 		numValue = parseFloat(lat);
 
-		if((numValue >= -90) && (numValue <= 90))
+		if(WpEditable && ((numValue >= -90) && (numValue <= 90)))
 		{
 			curMarker.setLat(numValue);
 			updateMarker(curMarker);
@@ -183,7 +210,7 @@ function wp_setMarkerLon(lon)
 	{
 		numValue = parseFloat(lon);
 
-		if((numValue >= -180) && (numValue <= 180))
+		if(WpEditable && ((numValue >= -180) && (numValue <= 180)))
 		{
 			curMarker.setLon(numValue);
 			updateMarker(curMarker);
@@ -249,7 +276,7 @@ function wp_setMarkerAlt(alt)
 	{
 		numValue = parseInt(alt);
 
-		if((numValue >= -500) && (numValue <= 8000))
+		if(WpEditable && ((numValue >= -500) && (numValue <= 8000)))
 		{
 			curMarker.setAlt(numValue);
 			updateMarker(curMarker);
@@ -333,7 +360,7 @@ function updateMarker(marker)
 			markers.splice(markerNr, 1);
 			newMarker = createMarker({id: marker.getId(), name: marker.getName(), spot: marker.getSpot(), country: marker.getCountry(),
 															 lat: marker.getLat(), lon: marker.getLon(), alt: marker.getAlt(),
-															 draggable: true, modified: marker.getModified(), select: marker.getSelect()});
+															 draggable: WpEditable, modified: marker.getModified(), select: marker.getSelect()});
 
 			markers.push(newMarker);
 			markerCluster.updateMarker(marker, newMarker);

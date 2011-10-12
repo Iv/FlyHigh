@@ -81,6 +81,15 @@ void WebMapWayPoint::populateObject()
 	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapWayPoint", this);
 }
 
+void WebMapWayPoint::setEditable(bool en)
+{
+	QString code = "wp_setEditable(%1);";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(en));
+}
+
 void WebMapWayPoint::beginSaveWayPoint()
 {
   m_wpList.clear();

@@ -42,6 +42,8 @@ class WebMapWayPointView: public QDialog
 
 		void loadMap();
 
+		void setEditable(bool en);
+
 	signals:
 		void wayPointsChanged(WayPoint::WayPointListType &wpList);
 
@@ -53,6 +55,7 @@ class WebMapWayPointView: public QDialog
 	private:
 		WebMap *m_pWebMap;
 		WayPoint::WayPointListType *m_pWpList;
+		bool m_editable;
 
 		void setWayPointList();
 

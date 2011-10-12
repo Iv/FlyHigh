@@ -43,6 +43,8 @@ class WebMapWayPoint: public QObject
 
     void populateObject();
 
+    void setEditable(bool en);
+
 	signals:
 		void wayPointsChanged(WayPoint::WayPointListType &wpList);
 

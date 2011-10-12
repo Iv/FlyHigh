@@ -79,9 +79,9 @@ function rt_getTurnPointList()
 	return tps;
 } 
 
-function rt_setTurnPointsDragable(drag)
+function rt_setTurnPointsDraggable(drag)
 {
-	TurnPointsDragable = drag;
+	TurnPointsDraggable = drag;
 }
 
 function rt_setFlightType(flightType)
