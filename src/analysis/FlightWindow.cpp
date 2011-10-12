@@ -239,7 +239,7 @@ void FlightWindow::file_AddToSqlDB()
 
 	row = getTable()->currentRow();
 
-	if((row >= 0) && m_pDb->open())
+  if(row >= 0)
 	{
 		// pilot info
 		ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
