@@ -79,7 +79,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		break;
 	}
 
-	connect(m_pDb, SIGNAL(airSpaceChanged()), this, SLOT(file_update()));
+  connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
 	QAction* pExpAct = new QAction(tr("&Export all..."), this);
 	connect(pExpAct,SIGNAL(triggered()), this, SLOT(exportTable()));
