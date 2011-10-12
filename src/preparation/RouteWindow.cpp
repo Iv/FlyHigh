@@ -220,7 +220,7 @@ void RouteWindow::file_viewWebMap()
 		route = m_routeList[row];
 		pView = new WebMapRouteView(tr("View Route"));
 		pView->setRoute(&route);
-		pView->setTurnPointsDragable(false);
+		pView->setTurnPointsDraggable(false);
 		pView->loadMap();
 		pView->exec();
 	}

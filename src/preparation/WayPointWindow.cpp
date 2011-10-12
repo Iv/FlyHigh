@@ -39,7 +39,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	QString caption;
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
-	bool enabled;
 
   m_pWayPointView = NULL;
   m_externSelect = false;
@@ -54,9 +53,11 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = ISql::pInstance();
 			caption = "WayPoints from DB";
+
 			QAction* pAddAct = new QAction(tr("Add to GPS..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
 			pFileMenu->addAction(pAddAct);
+
       QAction* pEditAct = new QAction(tr("Edit..."), this);
 			connect(pEditAct, SIGNAL(triggered()), this, SLOT(file_Edit()));
 			pFileMenu->addAction(pEditAct);
@@ -66,6 +67,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = IGPSDevice::pInstance();
 			caption = "WayPoints from GPS";
+
 			QAction* pAddAct = new QAction(tr("Add to DB..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
@@ -82,29 +84,34 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
 	pFileMenu->addAction(pNewAct);
 
-  QAction* pDelAct = new QAction(tr("Delete"), this);
-  connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-  pFileMenu->addAction(pDelAct);
   // 6016 doesn't support delete of single waypoints
-  enabled = (!((src == IDataBase::GPSdevice) &&
-            (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)));
-  pDelAct->setEnabled(enabled);
+  if(!((src == IDataBase::GPSdevice) &&
+    (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)))
+  {
+    QAction* pDelAct = new QAction(tr("Delete"), this);
+    connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
+    pFileMenu->addAction(pDelAct);
+  }
 
-  QAction* pDelAllAct = new QAction(tr("Delete All"), this);
-  connect(pDelAllAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
-  pFileMenu->addAction(pDelAllAct);
   // for sql db danger, only used by 6015
-  enabled = ((src == IDataBase::GPSdevice) &&
-            (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015));
-  pDelAllAct->setEnabled(enabled);
+  if((src == IDataBase::GPSdevice) &&
+     (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015))
+  {
+    QAction* pDelAllAct = new QAction(tr("Delete All"), this);
+    connect(pDelAllAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+    pFileMenu->addAction(pDelAllAct);
+  }
 
 	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
 	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pViewWebMapAct);
 
-	QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
-	connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
-	pFileMenu->addAction(pEditWebMapAct);
+  if(src == IDataBase::SqlDB)
+  {
+    QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
+    connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
+    pFileMenu->addAction(pEditWebMapAct);
+  }
 
 	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -344,6 +351,7 @@ void WayPointWindow::file_viewWebMap()
 		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
+    m_pWayPointView->setEditable(false);
 		m_pWayPointView->setWayPointList(&m_wpList);
 		m_pWayPointView->loadMap();
     m_pWayPointView->setWindowModality(Qt::NonModal);

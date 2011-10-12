@@ -50,7 +50,7 @@ void WebMapRouteView::loadMap()
 	m_pWebMap->loadUrl("qrc:/route.html");
 }
 
-void WebMapRouteView::setTurnPointsDragable(bool drag)
+void WebMapRouteView::setTurnPointsDraggable(bool drag)
 {
 	m_tpDrag = drag;
 }
@@ -63,7 +63,7 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 void WebMapRouteView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-	m_pWebMap->getRoute()->setTurnPointsDragable(m_tpDrag);
+	m_pWebMap->getRoute()->setTurnPointsDraggable(m_tpDrag);
 
 	if(m_pRoute != NULL)
 	{

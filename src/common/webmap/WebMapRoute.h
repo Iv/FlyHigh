@@ -46,7 +46,7 @@ class WebMapRoute: public QObject
 
 		void getTurnPointList(WayPoint::WayPointListType &tpList);
 
-    void setTurnPointsDragable(bool en);
+    void setTurnPointsDraggable(bool en);
 
     void setLocation(const QString &loc);
 

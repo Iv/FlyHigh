@@ -31,6 +31,7 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
 	resize(1000, 850);
 
 	m_pWpList = NULL;
+	m_editable = true;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
   pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
@@ -63,6 +64,11 @@ void WebMapWayPointView::loadMap()
 	m_pWebMap->loadUrl("qrc:/waypoint.html");
 }
 
+void WebMapWayPointView::setEditable(bool en)
+{
+  m_editable = en;
+}
+
 void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
@@ -87,6 +93,7 @@ void WebMapWayPointView::setWayPointList()
 void WebMapWayPointView::mapReady()
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
+	m_pWebMap->getWayPoint()->setEditable(m_editable);
 
   if(m_pWpList != NULL)
   {
