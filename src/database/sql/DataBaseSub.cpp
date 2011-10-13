@@ -35,6 +35,7 @@ DataBaseSub::~DataBaseSub()
 
 bool DataBaseSub::checkModified()
 {
+	return false;
 }
 
 bool DataBaseSub::checkModified(const QString &field)
