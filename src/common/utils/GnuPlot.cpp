@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
 
 // A C++ interface to gnuplot.
 //
@@ -34,19 +34,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <QTemporaryFile>
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "GnuPlot.h"
-
-#define PATH_MAXNAMESZ       4096
-#define GP_MAX_TMP_FILES    64
-#define GP_TMP_NAME_SIZE    512
-#define GP_CMD_SIZE         1024
-#define GP_TITLE_SIZE       80
 
 
 GnuPlot::GnuPlot(void)
@@ -83,21 +75,20 @@ GnuPlot::~GnuPlot()
 
 void GnuPlot::clear()
 {
-	int fileNr;
-
 	if(m_filesToDel.size() > 0)
 	{
-		for(fileNr=0; fileNr<m_filesToDel.size(); fileNr++)
+		// delete temporary files
+		for(QList<QTemporaryFile*>::iterator iter=m_filesToDel.begin();
+			iter!=m_filesToDel.end();
+			++iter)
 		{
-      remove(m_filesToDel[fileNr].toAscii().constData());
+			delete *iter;
 		}
 
 		m_filesToDel.clear();
 	}
 
 	m_nplots = 0;
-
-	return;
 }
 
 void GnuPlot::setStyle(const QString &style)
@@ -127,27 +118,27 @@ void GnuPlot::execCmd(const QString &cmd)
 	if(m_pGnuPipe != NULL)
 	{
 		locCmd += "\n";
-                fputs(locCmd.toAscii().constData(), m_pGnuPipe);
+		fputs(locCmd.toAscii().constData(), m_pGnuPipe);
 		fflush(m_pGnuPipe);
 	}
 }
 
 void GnuPlot::setLabelX(const QString &label)
 {
-        QString cmdstr = QString("set xlabel \"%1\"").arg(label);
+	QString cmdstr = QString("set xlabel \"%1\"").arg(label);
 	execCmd(cmdstr);
 }
 
 void GnuPlot::setLabelY(const QString &label)
 {
-        QString cmdstr = QString("set ylabel \"%1\"").arg(label);
-        execCmd(cmdstr);
+	QString cmdstr = QString("set ylabel \"%1\"").arg(label);
+	execCmd(cmdstr);
 }
 
 void GnuPlot::setLabelZ(const QString &label)
 {
-        QString cmdstr = QString("set zlabel \"%1\"").arg(label);
-        execCmd(cmdstr);
+	QString cmdstr = QString("set zlabel \"%1\"").arg(label);
+	execCmd(cmdstr);
 }
 
 //
@@ -160,11 +151,11 @@ void GnuPlot::plotSlope(double a, double b, const QString &title)
 
 	if(m_nplots > 0)
 	{
-                cmdstr = QString("replot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
+		cmdstr = QString("replot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
 	}
 	else
 	{
-                cmdstr = QString("plot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
+		cmdstr = QString("plot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
 	}
 
 	setAxisData('x', Float);
@@ -181,12 +172,12 @@ void GnuPlot::plotEquation(const QString &equation, const QString &title)
 
 	if(m_nplots > 0)
 	{
-                cmdstr = QString("replot %1 title \"%2\" with %3").arg(equation).arg(title).arg(m_style);
+		cmdstr = QString("replot %1 title \"%2\" with %3").arg(equation).arg(title).arg(m_style);
 	}
 	else
 	{
-                cmdstr = QString("plot %1 title \"%2\" with %3").arg(equation).arg(title).arg(m_style);
-        }
+		cmdstr = QString("plot %1 title \"%2\" with %3").arg(equation).arg(title).arg(m_style);
+	}
 
 	setAxisData('x', Float);
 	execCmd(cmdstr);
@@ -195,28 +186,29 @@ void GnuPlot::plotEquation(const QString &equation, const QString &title)
 
 void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 {
-	QFile file;
 	QString cmdstr;
 	QString line;
 	int valueNr;
 
-	if(openTmpFile(file))
+	QFile* pFile = getOpenTmpFile();
+
+	if(pFile)
 	{
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f\n", x[valueNr]);
-      file.write(line.toAscii(), line.length());
+			pFile->write(line.toAscii(), line.length());
 		}
 
-		file.close();
+		pFile->close();
 
 		if(m_nplots > 0)
 		{
-      cmdstr = QString("replot \"%1\" with %2").arg(file.fileName()).arg(m_style);
+			cmdstr = QString("replot \"%1\" with %2").arg(pFile->fileName()).arg(m_style);
 		}
 		else
 		{
-      cmdstr = QString("plot \"%1\" title \"%2\" with %3").arg(file.fileName()).arg(title).arg(m_style);
+			cmdstr = QString("plot \"%1\" title \"%2\" with %3").arg(pFile->fileName()).arg(title).arg(m_style);
 		}
 
 		setAxisData('x', Float);
@@ -227,28 +219,28 @@ void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 
 void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 {
-	QFile file;
 	QString cmdstr;
 	QString line;
 	int valueNr;
+	QFile* pFile = getOpenTmpFile();
 
-	if(openTmpFile(file))
+	if(pFile)
 	{
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f %f\n", x[valueNr], y[valueNr]);
-      file.write(line.toAscii(), line.length());
+			pFile->write(line.toAscii(), line.length());
 		}
 
-		file.close();
+		pFile->close();
 
 		if(m_nplots > 0)
 		{
-      cmdstr = QString("replot \"%1\" with %2").arg(file.fileName()).arg(m_style);
+			cmdstr = QString("replot \"%1\" with %2").arg(pFile->fileName()).arg(m_style);
 		}
 		else
 		{
-      cmdstr = QString("plot \"%1\" title \"%2\" with %3").arg(file.fileName()).arg(title).arg(m_style);
+			cmdstr = QString("plot \"%1\" title \"%2\" with %3").arg(pFile->fileName()).arg(title).arg(m_style);
 		}
 
 		setAxisData('x', Float);
@@ -259,27 +251,27 @@ void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 
 void GnuPlot::plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title)
 {
-	QFile file;
 	QString cmdstr;
 	QString line;
 	int valueNr;
+	QFile* pFile = getOpenTmpFile();
 
-	if(openTmpFile(file))
+	if(pFile)
 	{
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
-      line = QString("%1 %2\n").arg(x[valueNr].toString(Qt::ISODate)).arg(y[valueNr]);
-      file.write(line.toAscii(), line.length());
+			line = QString("%1 %2\n").arg(x[valueNr].toString(Qt::ISODate)).arg(y[valueNr]);
+			pFile->write(line.toAscii(), line.length());
 		}
-		file.close();
+		pFile->close();
 
 		if(m_nplots > 0)
 		{
-      cmdstr = QString("replot \"%1\" using 1:2 with %2").arg(file.fileName()).arg(m_style);
+			cmdstr = QString("replot \"%1\" using 1:2 with %2").arg(pFile->fileName()).arg(m_style);
 		}
 		else
 		{
-      cmdstr = QString("plot \"%1\" using 1:2 title \"%2\" with %3").arg(file.fileName()).arg(title).arg(m_style);
+			cmdstr = QString("plot \"%1\" using 1:2 title \"%2\" with %3").arg(pFile->fileName()).arg(title).arg(m_style);
 		}
 
 		setAxisData('x', Time);
@@ -294,24 +286,25 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 	QString cmdstr;
 	QString line;
 	int valueNr;
+	QFile* pFile = getOpenTmpFile();
 
-	if(openTmpFile(file))
+	if(pFile)
 	{
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f %f %f\n", x[valueNr], y[valueNr], z[valueNr]);
-      file.write(line.toAscii(), line.length());
+			pFile->write(line.toAscii(), line.length());
 		}
 
-		file.close();
+		pFile->close();
 
 		if(m_nplots > 0)
 		{
-      cmdstr = QString("replot \"%1\" title \"%2\" with %3").arg(file.fileName()).arg(title).arg(m_style);
+			cmdstr = QString("replot \"%1\" title \"%2\" with %3").arg(pFile->fileName()).arg(title).arg(m_style);
 		}
 		else
 		{
-      cmdstr = QString("splot \"%1\" title \"%2\" with %3").arg(file.fileName()).arg(title).arg(m_style);
+			cmdstr = QString("splot \"%1\" title \"%2\" with %3").arg(pFile->fileName()).arg(title).arg(m_style);
 		}
 
 		setAxisData('x', Float);
@@ -353,7 +346,7 @@ void GnuPlot::setOutput(const QString &name)
 	else if(term == "ps")
 	{
 		execCmd("set terminal ps");
-                cmdstr = QString("set output \"%1\"").arg(name);
+		cmdstr = QString("set output \"%1\"").arg(name);
 		execCmd(cmdstr);
 	}
 	else
@@ -362,37 +355,24 @@ void GnuPlot::setOutput(const QString &name)
 	}
 }
 
-bool GnuPlot::openTmpFile(QFile &file)
+QFile* GnuPlot::getOpenTmpFile()
 {
-	char name[] = "/tmp/gnuplotiXXXXXX";
-	char* tmpName;
-	bool success;
+	QTemporaryFile* pTemp = NULL;
 
-	success = (m_filesToDel.size() < GP_MAX_TMP_FILES);
+	// create temporary files for output
+	pTemp = new QTemporaryFile();
 
-	if(success)
+	if(pTemp->open())
 	{
-		// create temporary files for output
-#ifdef _WIN32
-		tmpName = mktemp(name);
-#else
-		mkstemp(name);
-		tmpName = name;
-#endif
-
-		if(success)
-		{
-			file.setFileName(tmpName);
-			success = file.open(QIODevice::WriteOnly);
-
-			if(success)
-			{
-				m_filesToDel.push_back(name);
-			}
-		}
+		m_filesToDel.push_back(pTemp);
+	}
+	else
+	{
+		delete pTemp;
+		pTemp = NULL;
 	}
 
-	return success;
+	return pTemp;
 }
 
 void GnuPlot::setAxisData(const char axis, AxisDataType axisData)

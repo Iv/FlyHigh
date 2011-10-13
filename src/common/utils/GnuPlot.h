@@ -23,11 +23,13 @@
 #ifndef GnuPlot_h
 #define GnuPlot_h
 
-#include <qfile.h>
-#include <qvector.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qdatetime.h>
+#include <QVector>
+#include <QString>
+#include <QList>
+#include <QDateTime>
+
+class QTemporaryFile;
+class QFile;
 
 class GnuPlot
 {
@@ -61,7 +63,7 @@ class GnuPlot
 		void plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, const QString &title);
 
 		void clear();
-    
+
 		// select Output (x11, png, ps)
 		void setOutput(const QString &name);
 	
@@ -69,10 +71,10 @@ class GnuPlot
 		typedef enum {Float, Time}AxisDataType;
 		FILE *m_pGnuPipe;
 		QString m_style;
-		QStringList m_filesToDel;
+		QList<QTemporaryFile*> m_filesToDel;
 		int m_nplots;
 		
-		bool openTmpFile(QFile &file);
+		QFile* getOpenTmpFile();
 		void setAxisData(const char axis, AxisDataType axisData);
 };
 
