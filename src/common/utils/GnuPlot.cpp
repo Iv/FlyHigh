@@ -101,7 +101,6 @@ bool GnuPlot::findGnuplot()
     path.remove("PATH=");
     // tokenize
     QStringList parts = path.split(PATH_SEP_CHAR);
-    //QString gnuplot(GNUPLOT_BIN_NAME);
     // iterate through PATH elements
     QStringListIterator iter(parts);
     while(iter.hasNext())
