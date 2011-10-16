@@ -35,7 +35,7 @@ class QSettings;
  *  Windoze: c:\Documents and Settings\<user>\Application Data\flyhigh\flyhigh.ini
  *
  * Until version 0.8.2, the configuration file was /home/<user>/.flyhighrc
- * This file will be move to the new location upon the first start of flyhigh
+ * This file will be moved to the new location upon the first start of flyhigh
  *
  * If no config file can be found at neither old nor new location, a default
  * will be created.
@@ -117,10 +117,6 @@ class IFlyHighRC
 
 		DatabaseParameters getDBParameters() const;
 
-		// gnuplot exe location
-		void setGnuplotPath(const QString& path);
-		const QString& gnuplotPath() const;
-
 	private:
 		static IFlyHighRC *m_pInstance;
 		QSettings* m_pSettings;
@@ -139,7 +135,6 @@ class IFlyHighRC
 		QString m_dbPass;
 		QString m_dbType;
 		QString m_dbFile;
-		QString m_gnuplot;
 
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;

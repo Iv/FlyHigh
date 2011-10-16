@@ -73,9 +73,18 @@ class GnuPlot
 		QString m_style;
 		QList<QTemporaryFile*> m_filesToDel;
 		int m_nplots;
+    QString m_GnuplotBinary;
 		
 		QFile* getOpenTmpFile();
 		void setAxisData(const char axis, AxisDataType axisData);
+
+    /**
+     * look for the gnuplot executable
+     * the platform depending executable is searched in all
+     * PATH environment variable directories
+     * @return true if found
+     */
+    bool findGnuplot();
 };
 
 #endif

@@ -37,7 +37,6 @@ const QString DatabaseUserKey  = "database/dbusername";
 const QString DatabasePassKey  = "database/dbpassword";
 const QString DatabaseTypeKey  = "database/dbtype";
 const QString DatabaseFileKey  = "database/dbfile";
-const QString GnuplotPathKey   = "gnuplot/gnuplot";
 
 
 IFlyHighRC *IFlyHighRC::m_pInstance = NULL;
@@ -99,8 +98,6 @@ IFlyHighRC::IFlyHighRC()
 	m_dbType = m_dbTypeList[0];
 	// relative to userhome or absolute:
 	m_dbFile = "Flights/flyhigh_v2.sqlite";
-
-	m_gnuplot = "/usr/bin/gnuplot";
 }
 
 IFlyHighRC::~IFlyHighRC()
@@ -292,17 +289,6 @@ DatabaseParameters IFlyHighRC::getDBParameters() const
 														m_dbFile);
 }
 
-void IFlyHighRC::setGnuplotPath(const QString& path)
-{
-	m_gnuplot = path;
-}
-
-const QString& IFlyHighRC::gnuplotPath() const
-{
-	return m_gnuplot;
-}
-
-
 void IFlyHighRC::loadRC()
 {
 	QSettings* pSettings=NULL;
@@ -348,9 +334,6 @@ void IFlyHighRC::loadRC()
 
 	// pilot settings
 	m_pilotId = m_pSettings->value(PilotIdKey,m_pilotId).toInt();
-
-	// gnuplot location
-	m_gnuplot = m_pSettings->value(GnuplotPathKey,m_gnuplot).toString();
 
 	// a bit of validation
 	if (!m_dbTypeList.contains(m_dbType))
@@ -406,9 +389,6 @@ void IFlyHighRC::saveRC()
 
 		// pilot settings
 		m_pSettings->setValue(PilotIdKey,m_pilotId);
-
-		// gnuplot path
-		m_pSettings->setValue(GnuplotPathKey,m_gnuplot);
 
 		// flush
 		m_pSettings->sync();
