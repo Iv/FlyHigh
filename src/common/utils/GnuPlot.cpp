@@ -36,22 +36,32 @@
 
 #include <unistd.h>
 #include <QTemporaryFile>
+#include <QProcess>
+#include <QStringList>
+#include <QRegExp>
+#include <QDir>
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "GnuPlot.h"
 
+// qnuplot executable name depends on OS
+// PATH separator char as well
+#ifdef Q_OS_WIN
+#define GNUPLOT_BIN_NAME "gnuplot.exe"
+#define PATH_SEP_CHAR ";"
+#else
+#define GNUPLOT_BIN_NAME "gnuplot"
+#define PATH_SEP_CHAR ":"
+#endif
 
 GnuPlot::GnuPlot(void)
 {
-	QString gnuplot = IFlyHighRC::pInstance()->gnuplotPath();
-	bool exist;
-
-	m_nplots = 0;
-	exist = (access(gnuplot.toStdString().c_str(), X_OK) == 0);
+  m_nplots = 0;
+  bool exist=findGnuplot();
 
 	if(exist)
 	{
-		m_pGnuPipe = popen(gnuplot.toStdString().c_str(), "w");
+    m_pGnuPipe = popen(m_GnuplotBinary.toStdString().c_str(), "w");
 	}
 	else
 	{
@@ -71,6 +81,43 @@ GnuPlot::~GnuPlot()
 	{
 		pclose(m_pGnuPipe);
 	}
+}
+
+bool GnuPlot::findGnuplot()
+{
+  m_GnuplotBinary.clear();
+
+  // fetch environment variables
+  QStringList env = QProcess::systemEnvironment();
+
+  // find PATH members
+  QRegExp rx("PATH=*",Qt::CaseSensitive,QRegExp::Wildcard);
+  int idx = env.indexOf(rx);
+  if(idx!=-1)
+  {
+    // got PATH
+    QString path(env.at(idx));
+    // strip the prefix "PATH="
+    path.remove("PATH=");
+    // tokenize
+    QStringList parts = path.split(PATH_SEP_CHAR);
+    //QString gnuplot(GNUPLOT_BIN_NAME);
+    // iterate through PATH elements
+    QStringListIterator iter(parts);
+    while(iter.hasNext())
+    {
+      QDir dir(iter.next());
+      if(dir.exists(GNUPLOT_BIN_NAME))
+      {
+        m_GnuplotBinary = dir.filePath(GNUPLOT_BIN_NAME);
+        // there may be spaces in the path: surround with "
+        m_GnuplotBinary.prepend('"').append('"');
+        break;
+      }
+    }
+  }
+
+  return !m_GnuplotBinary.isEmpty();
 }
 
 void GnuPlot::clear()
