@@ -130,15 +130,15 @@ bool Flytec::memoryRead()
 bool Flytec::memoryWrite()
 {
 	uint pageNr;
-  uint memSize;
+	uint memSize;
 	uint pageSize;
 	uint pageAddr;
 	uint nofPages = Flytec5020MemSize / Flytec5020PageSize;
 	bool success = false;
 
-  memSize = Flytec5020MemSize;
-  pageSize = Flytec5020PageSize;
-  nofPages = memSize / pageSize;
+	memSize = Flytec5020MemSize;
+	pageSize = Flytec5020PageSize;
+	nofPages = memSize / pageSize;
 	m_cancel = false;
 
 	for(pageNr=0; pageNr<nofPages; pageNr++)
@@ -196,8 +196,8 @@ bool Flytec::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	Flight flight;
 	bool success;
-	int total;
-	int prog;
+	int total=0;
+	int prog=0;
 
 	(void)pilot;
 
@@ -212,11 +212,11 @@ bool Flytec::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 
 			if(total > 0)
 			{
-        prog = flight.number() * 100 / total;
+				prog = flight.number() * 100 / total;
 			}
 			else
 			{
-        prog = (prog + 10) % 100;
+				prog = (prog + 10) % 100;
 			}
 
 			emit progress(prog);
