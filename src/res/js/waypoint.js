@@ -310,7 +310,7 @@ function wp_setOk(ok)
 {
 	var marker;
 
-	if(ok)
+	if(ok && WpEditable)
 	{
 		WebMapWayPoint.beginSaveWayPoint();
 
