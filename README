@@ -46,7 +46,8 @@ Linux: Look for a fitting package at http://software.opensuse.org/search?q=flyhi
        You may wish to add the obs repository to your package manager for automatic
        updates. Check http://en.opensuse.org//Portal:Build_Service for guidance.
 Windows: Download and install gnuplot first! You'll find instructions how to do so
-         at http://www.gnuplot.info/
+         at http://www.gnuplot.info/ Please note that that gnuplot.exe needs to be
+		 accessible from the %PATH% environment variable. 
          After that, download the latest flyhigh for windows installer from 
          http://sourceforge.net/projects/flyhigh and run it. That's it.
 
