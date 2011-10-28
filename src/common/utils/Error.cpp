@@ -58,7 +58,8 @@ const Error::ErrorType Error::m_errorList[NOF_ERRORS] =
 	},
 	{
 		QObject::tr("Can not open gnuplot."),
-		QObject::tr("Check that gnuplot is proper installed.")
+    QObject::tr("Check if gnuplot is properly installed\n"
+    "and listed in PATH.")
 	}
 };
 
