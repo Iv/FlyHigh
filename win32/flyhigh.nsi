@@ -87,9 +87,6 @@ Section "files" SEC01
   File "lib\QtWebKit4.dll"
   File "lib\Qt3Support4.dll"
   File "lib\phonon4.dll"
-  ; sql driver plugins (sqlite from Qt SDK, mysql homebrewed)
-  File "lib\qsqlmysql4.dll"
-  File "lib\qsqlite4.dll"
   ; some mingw32 libraries (from Qt SDK)
   File "lib\mingwm10.dll"
   File "lib\libgcc_s_dw2-1.dll"
@@ -97,6 +94,14 @@ Section "files" SEC01
   File "lib\sqlite3.dll"
   ; mysql library, availabel from www.mysql.com
   File "lib\libmysql.dll"
+  ; sql driver plugins (sqlite from Qt SDK, mysql homebrewed)
+  ; must be located in a 'sqldrivers' subdirectory
+  SetOutPath "$INSTDIR\sqldrivers"
+  File "lib\qsqlmysql4.dll"
+  File "lib\qsqlite4.dll"
+  SetOutPath "$INSTDIR"
+  ; qt path configuration file
+  File "qt.conf"
   ; famous readme file
   File "..\README"
   ; convert to dos line-ends
@@ -153,13 +158,15 @@ Section Uninstall
   Delete "$INSTDIR\QtWebKit4.dll"
   Delete "$INSTDIR\Qt3Support4.dll"
   Delete "$INSTDIR\phonon4.dll"
-  Delete "$INSTDIR\qsqlmysql4.dll"
-  Delete "$INSTDIR\qsqlite4.dll"
+  Delete "$INSTDIR\sqldrivers\qsqlmysql4.dll"
+  Delete "$INSTDIR\sqldrivers\qsqlite4.dll"
   Delete "$INSTDIR\mingwm10.dll"
   Delete "$INSTDIR\libgcc_s_dw2-1.dll"
   Delete "$INSTDIR\sqlite3.dll"
   Delete "$INSTDIR\libmysql.dll"
+  Delete "$INSTDIR\qt.conf"
   
+  RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR"
   
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
