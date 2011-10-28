@@ -90,8 +90,14 @@ bool GnuPlot::findGnuplot()
   // fetch environment variables
   QStringList env = QProcess::systemEnvironment();
 
+  // Starting from Qt 4.6, reading the PATH environment variable
+  // may be shortened to
+  // QString path = QProcessEnvironment::systemEnvironment().value("PATH");
+  // Since a lot of distros still provide older Qt versions
+  // we stick to this rather clumsy way
+
   // find PATH members
-  QRegExp rx("PATH=*",Qt::CaseSensitive,QRegExp::Wildcard);
+  QRegExp rx("PATH=*",Qt::CaseInsensitive,QRegExp::Wildcard);
   int idx = env.indexOf(rx);
   if(idx!=-1)
   {
