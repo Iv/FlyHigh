@@ -210,6 +210,8 @@ void DatabaseParameters::validateDBFile()
 		// prepend userhome
 		m_dBFile.prepend(QDir::separator()).prepend(QDir::homePath());
 	}
+	// normalize
+	m_dBFile = QFileInfo(m_dBFile).canonicalFilePath();
 }
 
 const QString& DatabaseParameters::dBType() const
