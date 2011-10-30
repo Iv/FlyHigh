@@ -4,7 +4,7 @@
 
 ; Helper defines
 !define PRODUCT_NAME "flyhigh"
-!define PRODUCT_VERSION "0.9.0-RC1"
+!define PRODUCT_VERSION "0.9.1-RC1"
 !define PRODUCT_PUBLISHER "flyhigh project"
 !define PRODUCT_WEB_SITE "http://flyhigh.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}"
@@ -92,7 +92,7 @@ Section "files" SEC01
   File "lib\libgcc_s_dw2-1.dll"
   ; sqlite library, available from www.sqlite.org
   File "lib\sqlite3.dll"
-  ; mysql library, availabel from www.mysql.com
+  ; mysql library, available from www.mysql.com
   File "lib\libmysql.dll"
   ; sql driver plugins (sqlite from Qt SDK, mysql homebrewed)
   ; must be located in a 'sqldrivers' subdirectory
@@ -108,8 +108,6 @@ Section "files" SEC01
   Push "$INSTDIR\README"
   Push "$INSTDIR\README.txt"
   Call unix2dos
-
-;  File /oname=README.txt "..\README"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
