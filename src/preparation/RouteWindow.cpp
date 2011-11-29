@@ -184,6 +184,7 @@ void RouteWindow::file_newWebMap()
 
 	// default route
 	route.setName("FIE_90");
+	route.setType(Route::Free3Tp);
 	route.wayPointList().push_back(WayPoint(46.52439, 7.97287));
 	route.wayPointList().push_back(WayPoint(46.52439, 8.29102));
 	route.wayPointList().push_back(WayPoint(46.27975, 8.29102));
