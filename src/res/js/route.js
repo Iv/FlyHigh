@@ -21,7 +21,9 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
-var routeName;
+var FlightType = ["undef", "xc2", "xc3", "xc4", "xc5", "xc3c"];
+var routeId = -1;
+var routeName = "";
 
 function rt_init()
 {
@@ -99,24 +101,51 @@ function rt_setEditable(en)
 	RouteEditable = en;
 }
 
-function rt_setFlightType(flightType)
+function rt_setFlightType(type)
 {
 	var typeInput;
 
 	typeInput = document.getElementById("defaultFlightType");
-	typeInput.value = flightType;
+	typeInput.value = FlightType[type];
 }
 
 function rt_getFlightType()
 {
 	var typeInput;
+	var typeNr = 0;
 
 	typeInput = document.getElementById("flightType");
 
-	return typeInput.value;
+	for(typeNr=0; typeNr<FlightType.length; typeNr++)
+	{
+		if(FlightType[typeNr] == typeInput.value)
+		{
+			break;
+		}
+	}
+
+	return typeNr;
 }
 
 function rt_setOk(ok)
 {
+	var wpName;
+	var type;
+
+	if(ok && RouteEditable)
+	{
+		type = rt_getFlightType();
+		WebMapRoute.beginSaveRoute();
+		WebMapRoute.saveRoute(routeId, routeName, type);
+
+		turnpointMarkers.each(function(marker, i)
+		{
+			wpName = routeName + "_" + i;
+			WebMapRoute.saveWayPoint(wpName, marker.getLatLng().lat(), marker.getLatLng().lng(), marker.ele);
+		});
+		
+		WebMapRoute.endSaveRoute();
+	}
+
 	WebMap.setOk(ok);
 }
