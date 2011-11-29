@@ -89,6 +89,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	}
 
   connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
+  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
 	QAction* pExpIGCAct = new QAction(tr("&Export IGC..."), this);
 	connect(pExpIGCAct,SIGNAL(triggered()), this, SLOT(file_exportIGC()));
