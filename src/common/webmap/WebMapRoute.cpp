@@ -28,6 +28,7 @@
 WebMapRoute::WebMapRoute(WebMap *pWebMap)
 {
 	m_pWebMap = pWebMap;
+	m_pRoute = NULL;
 }
 
 WebMapRoute::~WebMapRoute()
@@ -43,6 +44,11 @@ void WebMapRoute::init()
 	pFrame->evaluateJavaScript(code);
 }
 
+void WebMapRoute::populateObject()
+{
+	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapRoute", this);
+}
+
 void WebMapRoute::setName(const QString &name)
 {
 	QString code = "rt_setName('%1');";
@@ -50,16 +56,6 @@ void WebMapRoute::setName(const QString &name)
 
 	pFrame = m_pWebMap->page()->mainFrame();
 	pFrame->evaluateJavaScript(code.arg(name));
-}
-
-QString WebMapRoute::getName()
-{
-	QString code = "rt_getName();";
-	QWebFrame *pFrame;
-
-	pFrame = m_pWebMap->page()->mainFrame();
-
-	return pFrame->evaluateJavaScript(code).toString();
 }
 
 void WebMapRoute::setTurnPointList(const WayPoint::WayPointListType &tpList)
@@ -86,37 +82,6 @@ void WebMapRoute::setTurnPointList(const WayPoint::WayPointListType &tpList)
 
 	arg += "]";
 	pFrame->evaluateJavaScript(code.arg(arg));
-}
-
-void WebMapRoute::getTurnPointList(WayPoint::WayPointListType &tpList)
-{
-	QString code = "rt_getTurnPointList();";
-	QWebFrame *pFrame;
-	QVariantList list;
-	QVariantList::iterator it;
-	QVariantList::iterator latLngIt;
-	WayPoint wp;
-	QString name;
-	int wpNr = 0;
-
-	pFrame = m_pWebMap->page()->mainFrame();
-	list = pFrame->evaluateJavaScript(code).toList();
-	tpList.clear();
-
-	name = getName();
-	name += "_%1";
-
-	for(it=list.begin(); it!=list.end(); it++)
-	{
-		if((*it).toList().size() == 2)
-		{
-			wp.setName(name.arg(wpNr));
-			wp.setLatitude((*it).toList().at(0).toDouble());
-			wp.setLongitude((*it).toList().at(1).toDouble());
-			wpNr++;
-			tpList.push_back(wp);
-		}
-	}
 }
 
 void WebMapRoute::setEditable(bool en)
@@ -147,21 +112,53 @@ QString WebMapRoute::getLocation()
 	return pFrame->evaluateJavaScript(code).toString();
 }
 
-void WebMapRoute::setFlightType(const QString &flightType)
+void WebMapRoute::setFlightType(Route::Type type)
 {
 	QString code = "rt_setFlightType('%1');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(flightType));
+	pFrame->evaluateJavaScript(code.arg(type));
 }
 
-QString WebMapRoute::getFlightType() const
+void WebMapRoute::setRouteToStore(Route *pRoute)
 {
-	QString code = "rt_getFlightType();";
-	QWebFrame *pFrame;
+  m_pRoute = pRoute;
+}
 
-	pFrame = m_pWebMap->page()->mainFrame();
+void WebMapRoute::beginSaveRoute()
+{
+  if(m_pRoute != NULL)
+  {
+    m_pRoute->wayPointList().clear();
+  }
+}
 
-	return pFrame->evaluateJavaScript(code).toString();
+void WebMapRoute::saveRoute(int id, const QString &name, int type)
+{
+  if(m_pRoute != NULL)
+  {
+    m_pRoute->setId(id);
+    m_pRoute->setName(name);
+    m_pRoute->setType((Route::Type)type);
+  }
+}
+
+void WebMapRoute::saveWayPoint(const QString &name, double lat, double lon, int alt)
+{
+  WayPoint wp;
+
+  if(m_pRoute != NULL)
+  {
+    wp.setName(name);
+    wp.setLatitude(lat);
+    wp.setLongitude(lon);
+    wp.setAltitude(alt);
+    m_pRoute->wayPointList().push_back(wp);
+  }
+}
+
+void WebMapRoute::endSaveRoute()
+{
+  m_pRoute = NULL;
 }

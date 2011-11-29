@@ -43,6 +43,9 @@ class WebMapRouteView: public QDialog
 
 		void setEditable(bool en);
 
+	signals:
+		void routeChanged(Route &route);
+
 	protected:
 		void resizeEvent(QResizeEvent *pEvent);
 
@@ -55,6 +58,8 @@ class WebMapRouteView: public QDialog
 		void mapReady();
 
 		void finished(int res);
+
+		void populateObject();
 };
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include "FlightPointList.h"
+#include "Route.h"
 #include "WayPoint.h"
 
 class WebMap;
@@ -38,13 +39,11 @@ class WebMapRoute: public QObject
 
 		void init();
 
+		void populateObject();
+
     void setName(const QString &name);
 
-		QString getName();
-
 		void setTurnPointList(const WayPoint::WayPointListType &tpList);
-
-		void getTurnPointList(WayPoint::WayPointListType &tpList);
 
     void setEditable(bool en);
 
@@ -52,12 +51,22 @@ class WebMapRoute: public QObject
 
 		QString getLocation();
 
-    void setFlightType(const QString &flightType);
+    void setFlightType(Route::Type type);
 
-		QString getFlightType() const;
+    void setRouteToStore(Route *pRoute);
+
+	protected slots:
+    void beginSaveRoute();
+
+    void saveRoute(int id, const QString &name, int type);
+
+		void saveWayPoint(const QString &name, double lat, double lon, int alt);
+
+    void endSaveRoute();
 
 	private:
 		WebMap *m_pWebMap;
+		Route *m_pRoute;
 };
 
 #endif

@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QWebFrame>
 #include "Route.h"
 #include "WebMap.h"
 #include "WebMapRouteView.h"
@@ -25,14 +26,17 @@
 
 WebMapRouteView::WebMapRouteView(const QString &name)
 {
+  QWebFrame *pFrame;
 	QWidget::setWindowTitle(name);
 	resize(1000, 850);
 
 	m_pRoute = NULL;
 	m_pWebMap = new WebMap(this, WebMap::MapRoute);
 	m_editable = true;
+	pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
+	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
 }
 
 WebMapRouteView::~WebMapRouteView()
@@ -69,45 +73,8 @@ void WebMapRouteView::mapReady()
 	{
 		m_pWebMap->getRoute()->setName(m_pRoute->name());
 		m_pWebMap->getRoute()->setTurnPointList(m_pRoute->wayPointList());
-
-		switch(m_pRoute->type())
-		{
-			case Route::Free:
-				m_pWebMap->getRoute()->setFlightType("xc2");
-			break;
-			case Route::Free1Tp:
-				m_pWebMap->getRoute()->setFlightType("xc3");
-			break;
-			case Route::Free2Tp:
-				m_pWebMap->getRoute()->setFlightType("xc4");
-			break;
-			case Route::Free3Tp:
-				m_pWebMap->getRoute()->setFlightType("xc5");
-			break;
-			case Route::FlatOrFaiTri:
-				m_pWebMap->getRoute()->setFlightType("xc3c");
-			break;
-			default:
-				switch(m_pRoute->wayPointList().size())
-				{
-					case 2:
-						m_pWebMap->getRoute()->setFlightType("xc2");
-					break;
-					case 3:
-						m_pWebMap->getRoute()->setFlightType("xc3");
-					break;
-					case 4:
-						m_pWebMap->getRoute()->setFlightType("xc4");
-					break;
-					case 5:
-						m_pWebMap->getRoute()->setFlightType("xc5");
-					break;
-					default:
-						m_pWebMap->getRoute()->setFlightType("xc5");
-					break;
-				}
-			break;
-		}
+    m_pWebMap->getRoute()->setFlightType(m_pRoute->type());
+    m_pWebMap->getRoute()->setRouteToStore(m_pRoute);
 	}
 
 	m_pWebMap->getRoute()->init();
@@ -115,39 +82,10 @@ void WebMapRouteView::mapReady()
 
 void WebMapRouteView::finished(int res)
 {
-	QString type;
-
-	if(m_pRoute != NULL)
-	{
-		m_pWebMap->getRoute()->getTurnPointList(m_pRoute->wayPointList());
-		m_pRoute->setName(m_pWebMap->getRoute()->getName());
-		type = m_pWebMap->getRoute()->getFlightType();
-
-		if(type == "xc2")
-		{
-			m_pRoute->setType(Route::Free);
-		}
-		else if(type == "xc3")
-		{
-			m_pRoute->setType(Route::Free1Tp);
-		}
-		else if(type == "xc4")
-		{
-			m_pRoute->setType(Route::Free2Tp);
-		}
-		else if(type == "xc5")
-		{
-			m_pRoute->setType(Route::Free3Tp);
-		}
-		else if(type == "xc3c")
-		{
-			m_pRoute->setType(Route::FlatOrFaiTri);
-		}
-		else
-		{
-			m_pRoute->setType(Route::Undefined);
-		}
-	}
-
 	done(res);
+}
+
+void WebMapRouteView::populateObject()
+{
+  m_pWebMap->getRoute()->populateObject();
 }
