@@ -3,8 +3,8 @@ Version:
 Section: database
 Priority: optional
 Architecture: i386
-Depends: libqtcore4 (>= 4.4.3), libqtgui4 (>= 4.4.3), libqt4-qt3support (>= 4.4.3), libqt4-sql-mysql (>= 4.4.3),
- libqt4-webkit (>= 4.4.3), gnuplot (>= 4.2), mysql-server (>= 5.0), mysql-common (>= 5.0)
+Depends: libqtcore4 (>= 4.4.3), libqtgui4 (>= 4.4.3), libqt4-qt3support (>= 4.4.3), libqt4-sql-sqlite (>= 3.7.3),
+ libqt4-webkit (>= 4.4.3), gnuplot (>= 4.2)
 Suggests:
 Provides: flyhigh
 Installed-Size:
