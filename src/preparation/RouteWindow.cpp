@@ -331,7 +331,6 @@ void RouteWindow::setRouteToRow(uint row, Route &route)
 void RouteWindow::newWebMap(Route &route)
 {
 	WebMapRouteView *pView;
-	WayPoint::WayPointListType::iterator it;
 
 	pView = new WebMapRouteView(tr("Add Route to DB"));
 	pView->setRoute(&route);
@@ -341,12 +340,7 @@ void RouteWindow::newWebMap(Route &route)
 	{
 		// save new route
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
-		{
-			ISql::pInstance()->add(*it);
-		}
-
+    m_pDb->add(route.wayPointList());
 		m_pDb->add(route);
 		TableWindow::unsetCursor();
 		m_pDb->close();
