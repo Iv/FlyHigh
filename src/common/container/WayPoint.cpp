@@ -26,17 +26,19 @@
 
 const uint WayPoint::startLandRadius = 500;
 const double WayPoint::earthRadius = 6371000.0;
- 
+
 WayPoint::WayPoint()
 {
 	m_id = -1;
 	m_name = "";
 	m_desc = "";
+	m_country = "";
+	m_spot = "";
 	m_lat = 0;
 	m_lon = 0;
 	m_alt = 0;
-	m_country = "";
-	m_spot = "";
+  m_type = TypeStartLand;
+  m_radius = 400;
 }
 
 WayPoint::WayPoint(double lat, double lon)
@@ -79,6 +81,26 @@ void WayPoint::fullName(QString& name) const
 	{
 	 name += " (" + m_country + ")";
 	}
+}
+
+void WayPoint::setSpot(const QString &spot)
+{
+	m_spot = spot;
+}
+
+const QString& WayPoint::spot() const
+{
+	return m_spot;
+}
+
+void WayPoint::setCountry(const QString &country)
+{
+	m_country = country;
+}
+
+const QString& WayPoint::country() const
+{
+	return m_country;
 }
 
 const QString& WayPoint::description() const
@@ -128,24 +150,24 @@ int WayPoint::altitude() const
 	return m_alt;
 }
 
-void WayPoint::setCountry(const QString &country)
+void WayPoint::setType(Type type)
 {
-	m_country = country;
+  m_type = type;
 }
 
-const QString& WayPoint::country() const
+WayPoint::Type WayPoint::type() const
 {
-	return m_country;
+  return m_type;
 }
 
-void WayPoint::setSpot(const QString &spot)
+void WayPoint::setRadius(int radius)
 {
-	m_spot = spot;
+  m_radius = radius;
 }
 
-const QString& WayPoint::spot() const
+int WayPoint::radius() const
 {
-	return m_spot;
+  return m_radius;
 }
 
 uint WayPoint::distance(const WayPoint &wp) const
@@ -205,28 +227,28 @@ uint WayPoint::distance(const WayPoint &wp1, const WayPoint &wp2)
 	double lat1; // in radians
 	double lat2; // in radians
 	double deltaLong; // in radians
-	
+
 	// P1, L1 Latitude and Longitude of Point 1
 	// P2, L2 Latitude and Longitude of Point 2
 	lat1 = wp1.latitude() * M_PI / 180;
 	lat2 = wp2.latitude() * M_PI / 180;
 	deltaLong = (wp2.longitude() - wp1.longitude()) * M_PI / 180;
-	
+
 	// cos E = sin P1 * sin P2 + cos P1 * cos P2 * cos (L2 - L1)
 	angle = sinl(lat1) * sinl(lat2) + cosl(lat1) * cosl(lat2) * cosl(deltaLong);
 
 	// FAI Earth Radius is 6371 km
 	dist = earthRadius * acosl(angle);
-	
+
 	return (uint)round(dist);
 }
 
 double WayPoint::arc(uint distance)
 {
 	double a;
-	
+
 	a = distance / earthRadius;
-	
+
 	return (a * 180.0 / M_PI);
 }
 

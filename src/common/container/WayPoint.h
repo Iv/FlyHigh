@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef WayPoint_h
 #define WayPoint_h
 
@@ -32,12 +32,13 @@ distance in meters, arc in degrees
 class WayPoint
 {
 	public:
+    typedef enum Type{TypeStartLand = 0, TypeBuoy = 1, TypeTurnPoint = 2}Type;
 		typedef QVector<WayPoint> WayPointListType;
 		typedef QVector<int> WayPointIdListType;
 		typedef QVector<int> AltListType;
 		static const uint startLandRadius; // in meters
 		static const double earthRadius; // in meters
-		
+
 		WayPoint();
 
 		WayPoint(double lat, double lon);
@@ -50,6 +51,8 @@ class WayPoint
 
 		void setName(const QString &name);
 
+    void fullName(QString& name) const;
+
 		void setSpot(const QString &spot);
 
 		const QString& spot() const;
@@ -57,8 +60,6 @@ class WayPoint
 		void setCountry(const QString &country);
 
 		const QString& country() const;
-
-		void fullName(QString& name) const;
 
 		const QString& description() const;
 
@@ -78,7 +79,15 @@ class WayPoint
 		void setAltitude(int alt);
 
 		int altitude() const;
-		
+
+		void setType(Type type);
+
+		Type type() const;
+
+		void setRadius(int radius);
+
+		int radius() const;
+
 		uint distance(const WayPoint &wp) const;
 
 		/**
@@ -101,16 +110,18 @@ class WayPoint
 		void setMax(const WayPoint &wp);
 
 		bool operator==(const WayPoint &wp);
-		
+
 	private:
 		int m_id;
 		QString m_name;
 		QString m_desc;
+		QString m_country;
+		QString m_spot;
 		double m_lat;
 		double m_lon;
 		int m_alt;
-		QString m_country;
-		QString m_spot;
+    Type m_type;
+    int m_radius;
 };
 
 #endif
