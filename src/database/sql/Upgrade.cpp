@@ -34,6 +34,8 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(2011,  1, 18), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_2 = QDateTime(QDate(2011,  2, 20), QTime( 0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_2 = QDateTime(QDate(2011,  12, 1), QTime( 0, 0));
+// don't forget to replace new version string on setup-set-lastmodified statement!
 
 Upgrade::Upgrade(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -45,6 +47,8 @@ bool Upgrade::setup(const DatabaseParameters& params)
 {
 	bool res = true;
 	QueryExecutor::TReplaceMap replacements;
+	QSqlQuery query;
+	QSqlQuery user;
 
 	// we need db name, username and password as replacement tokens
 	replacements["%dbname"] = params.dBName();
@@ -52,23 +56,23 @@ bool Upgrade::setup(const DatabaseParameters& params)
 	replacements["%password"] = params.dBPassword();
 
 	// create the db
-	QSqlQuery query = m_pExecutor->executeQuery("setup-create-db",
-																							QueryExecutor::TBindMap(),
-																							replacements,
-																							db());
+	query = m_pExecutor->executeQuery("setup-create-db",
+                                    QueryExecutor::TBindMap(),
+                                    replacements,
+                                    db());
 
 	// only mysql cares about user management and permissions
-	if (params.isMySQL())
+	if(params.isMySQL())
 	{
 		// check if there's already a user
-		QSqlQuery user = m_pExecutor->executeQuery("setup-get-user",
-																							 QueryExecutor::TBindMap(),
-																							 replacements,
-																							 db());
+		user = m_pExecutor->executeQuery("setup-get-user",
+                                     QueryExecutor::TBindMap(),
+                                     replacements,
+                                     db());
 
 		// if the user already exists, it won't be touched
 		// which means the user keeps his former password
-		if (user.size()==0)
+		if(user.size() == 0)
 		{
 			// no user with this name
 			m_pExecutor->executeQuery("setup-create-user",
@@ -90,7 +94,7 @@ bool Upgrade::setup(const DatabaseParameters& params)
 															db());
 	}
 
-	if (query.lastError().type()!=QSqlError::NoError)
+	if(query.lastError().type()!=QSqlError::NoError)
 	{
 		// something failed
 		return false;
@@ -108,8 +112,7 @@ bool Upgrade::setup(const DatabaseParameters& params)
 
 	// finalize db setup
 	replacements.clear();
-	replacements["%versiontimestamp"] = "2011-01-18 00:00:00";
-
+	replacements["%versiontimestamp"] = DataBaseVersion_0_9_2.toString("yyyy-MM-dd hh:mm:ss");
 	m_pExecutor->executeQuery("setup-set-lastmodified",
 														QueryExecutor::TBindMap(),
 														replacements,
@@ -127,7 +130,7 @@ bool Upgrade::upgrade()
 
 	if(dataBaseVersion() < DataBaseVersion_0_5_0)
 	{
-		Q_ASSERT(false);       
+		Q_ASSERT(false);
 	}
 
 	if(dataBaseVersion() < DataBaseVersion_0_8_1)
@@ -136,7 +139,7 @@ bool Upgrade::upgrade()
 		res &= query.exec(sqls);
 		setDataBaseVersion(DataBaseVersion_0_8_1);
 	}
-	
+
 	if(dataBaseVersion() < DataBaseVersion_0_8_2)
 	{
 		DataBaseSub::setLastModified("Pilots");
@@ -147,6 +150,13 @@ bool Upgrade::upgrade()
 		DataBaseSub::setLastModified("Routes");
 		setDataBaseVersion(DataBaseVersion_0_8_2);
 	}
+
+	if(dataBaseVersion() < DataBaseVersion_0_9_2)
+	{
+	  m_pExecutor->executeQuery("upgrade-waypoints-add-type-and-radius", db());
+		setDataBaseVersion(DataBaseVersion_0_9_2);
+	}
+
 	return res;
 }
 
@@ -155,14 +165,14 @@ Upgrade::DataBaseVersion Upgrade::dataBaseVersion()
 	QString sqls;
 	QSqlQuery query(db());
 	DataBaseVersion dbVers = DataBaseVersion_0_5_0;
-	
+
 	sqls.sprintf("SELECT Time FROM LastModified WHERE Name = 'DataBaseVersion'");
-	
+
 	if(query.exec(sqls) && query.first())
 	{
 		dbVers = query.value(0).toDateTime();
 	}
-	
+
 	return dbVers;
 }
 
@@ -171,7 +181,7 @@ void Upgrade::setDataBaseVersion(const DataBaseVersion &tabVers)
 	QString sqls;
 	QString version;
 	QSqlQuery query(db());
-	
+
 	version = tabVers.toString("yyyy-MM-dd hh:mm:ss");
 	sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = 'DataBaseVersion'").arg(version);
 	query.exec(sqls);
