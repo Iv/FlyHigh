@@ -47,14 +47,14 @@ class WayPoints: public DataBaseSub
 		// radius in meters
 		bool findWayPoint(WayPoint &wp, uint radius);
 
-		bool wayPointList(WayPoint::WayPointListType &wpList);
+		bool wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList);
 
 		bool checkModified();
 
 	private:
 		enum Elements
 		{
-			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description
+			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type, Radius
 		};
 
 		bool setId(WayPoint &wp);
