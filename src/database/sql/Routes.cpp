@@ -91,11 +91,18 @@ bool Routes::delRoute(Route &route)
 	success = query.exec(sqls.arg(route.id()));
 	Error::verify(success, Error::SQL_CMD);
 
-	// waypoints
+	// waypoints (delete only types not used anymore)
 	success = true;
 
 	for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
 	{
+	  if((*it).type() == WayPoint::TypeTurnPoint)
+	  {
+      sqls = "DELETE FROM WayPoints WHERE Id = %1";
+      success &= query.exec(sqls.arg((*it).id()));
+	  }
+
+/**
 		sqls = "SELECT COUNT(*) FROM Flights WHERE StartPtId = %1 OR LandPtId = %2";
 
 		if(query.exec(sqls.arg((*it).id()).arg((*it).id())) && query.next())
@@ -106,6 +113,7 @@ bool Routes::delRoute(Route &route)
 				success &= query.exec(sqls.arg((*it).id()));
 			}
 		}
+*/
 	}
 
 	Error::verify(success, Error::SQL_DEL);
