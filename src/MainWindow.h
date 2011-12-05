@@ -37,14 +37,15 @@ class MainWindow: public QMainWindow
 
 	protected:
 		void closeEvent(QCloseEvent *);
-		
+
 	private slots:
 		void flights_fromSQL();
 		void flights_fromGPS();
 		void flights_experience();
 		void analysis_gliders();
 		void analysis_servicing();
-		void waypoints_fromSQL();
+		void startLand_fromSQL();
+		void buoys_fromSQL();
 		void waypoints_fromGPS();
 		void routes_fromSQL();
 		void routes_fromGPS();
