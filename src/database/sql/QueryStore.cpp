@@ -367,10 +367,10 @@ void QueryStore::init()
 	addQuery("upgrade-waypoints-add-type-and-radius",
 					 "QMYSQL",
 					 "ALTER TABLE `WayPoints` "
-              "ADD `Type` INT NOT NULL DEFAULT 0,"
+              "ADD `Type` INT NOT NULL DEFAULT 1,"
               "ADD `Radius` INT NOT NULL DEFAULT 400");
 	QStringList sqls;
-  sqls << "ALTER TABLE `WayPoints` ADD `Type` INTEGER NOT NULL DEFAULT 0" <<
+  sqls << "ALTER TABLE `WayPoints` ADD `Type` INTEGER NOT NULL DEFAULT 1" <<
           "ALTER TABLE `WayPoints` ADD `Radius` INTEGER NOT NULL DEFAULT 400";
 	addQuery("upgrade-waypoints-add-type-and-radius",
 					 "QSQLITE",
