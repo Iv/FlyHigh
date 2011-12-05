@@ -21,7 +21,7 @@
 #ifndef Route_h
 #define Route_h
 
-#include <QString> 
+#include <QString>
 #include <QVector>
 #include "WayPoint.h"
 
@@ -30,8 +30,8 @@ class Route
 	public:
 		typedef QVector<Route> RouteListType;
 
-		typedef enum Type{Undefined, Free, Free1Tp, Free2Tp, Free3Tp, FlatOrFaiTri}Type;
-		
+		typedef enum Type{Undefined, Free, Free1Tp, Free2Tp, Free3Tp, FlatOrFaiTri, Competition}Type;
+
 		Route();
 
 		int id() const;
@@ -43,15 +43,15 @@ class Route
 		void setName(const QString &name);
 
 		Type type() const;
-		
+
 		QString typeAsText() const;
 
 		void setType(Type type);
 
 		WayPoint::WayPointListType& wayPointList();
-		
+
 		Route& operator=(const Route &route);
-		
+
 	private:
 		int m_id;
 		QString m_name;

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QStringList> 
+#include <QStringList>
 #include "Route.h"
 
 QStringList TypeTextList = QStringList()
@@ -27,7 +27,8 @@ QStringList TypeTextList = QStringList()
 << QObject::tr("Free flight via a turnpoint")
 << QObject::tr("Free flight via 2 turnpoints")
 << QObject::tr("Free flight via 3 turnpoints")
-<< QObject::tr("Flat or FAI triangle");
+<< QObject::tr("Flat or FAI triangle")
+<< QObject::tr("Competition");
 
 Route::Route()
 {
@@ -82,6 +83,6 @@ Route& Route::operator=(const Route &route)
 	m_name = route.m_name;
 	m_wpList = route.m_wpList;
 	m_type = route.m_type;
-	
+
 	return *this;
 }
