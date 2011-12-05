@@ -37,7 +37,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
                                IDataBase::SourceType src, WayPoint::Type type)
 	:TableWindow(parent, name, wflags)
 {
-	QString caption;
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
@@ -54,7 +53,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		case IDataBase::SqlDB:
 		{
 			m_pDb = ISql::pInstance();
-			caption = "WayPoints from DB";
 
 			QAction* pAddAct = new QAction(tr("Add to GPS..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
@@ -68,7 +66,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
-			caption = "WayPoints from GPS";
 
 			QAction* pAddAct = new QAction(tr("Add to DB..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
@@ -115,7 +112,6 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
     pFileMenu->addAction(pEditWebMapAct);
   }
 
-	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
