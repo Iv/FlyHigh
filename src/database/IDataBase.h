@@ -75,7 +75,7 @@ class IDataBase: public QObject
 
 		virtual int wayPointsLastModified();
 
-		virtual bool wayPointList(WayPoint::WayPointListType &wpList);
+		virtual bool wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList);
 
 		// gliders
 		virtual bool add(Glider &glider);

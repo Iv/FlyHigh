@@ -103,7 +103,7 @@ int IDataBase::wayPointsLastModified()
 	return 0;
 }
 
-bool IDataBase::wayPointList(WayPoint::WayPointListType &wpList)
+bool IDataBase::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList)
 {
 	return false;
 }
