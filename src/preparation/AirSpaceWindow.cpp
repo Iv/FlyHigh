@@ -38,7 +38,6 @@
 AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
-	QString caption;
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
@@ -54,7 +53,6 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
-			caption = "AirSpaces from GPS";
 
 			QAction* pDelAct = new QAction(tr("&Delete"), this);
 			connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
@@ -67,7 +65,6 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		case IDataBase::File:
 		{
 			m_pDb = NULL;
-			caption = "AirSpaces from File";
 
 			QAction* pImpAct = new QAction(tr("&Import..."), this);
 			connect(pImpAct,SIGNAL(triggered()), this, SLOT(file_open()));
@@ -93,7 +90,6 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	connect(pWebMapAct,SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	pFileMenu->addAction(pWebMapAct);
 
-	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
@@ -112,7 +108,14 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
 
-	file_update();
+  if(src == IDataBase::File)
+  {
+    file_open();
+  }
+  else
+  {
+    file_update();
+  }
 }
 
 AirSpaceWindow::~AirSpaceWindow()
