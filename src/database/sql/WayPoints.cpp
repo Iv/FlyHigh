@@ -36,10 +36,12 @@ bool WayPoints::add(WayPoint &wp)
 	bool success;
 
   sqls = QString("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude,"
-                                        "Latitude, Altitude, Description)"
-                 "VALUES (NULL, '%1', '%2', '%3', %4, %5, %6, '%7');")
+                                        "Latitude, Altitude, Description, Type,"
+                                        "Radius)"
+                 "VALUES (NULL, '%1', '%2', '%3', %4, %5, %6, '%7', %8, %9);")
               .arg(wp.name()).arg(wp.spot()).arg(wp.country()).arg(wp.longitude())
-              .arg(wp.latitude()).arg(wp.altitude()).arg(wp.description());
+              .arg(wp.latitude()).arg(wp.altitude()).arg(wp.description())
+              .arg(wp.type()).arg(wp.radius());
 
 	success = query.exec(sqls);
   Error::verify(success, Error::SQL_CMD);
@@ -55,10 +57,11 @@ bool WayPoints::update(WayPoint &wp)
   QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE WayPoints SET Name='%1',Country='%2',Spot='%3',Description='%4',"
-          "Longitude=%5,Latitude=%6,Altitude=%7 WHERE Id=%8;")
+  sqls = QString("UPDATE WayPoints SET Name='%1', Country='%2', Spot='%3', Description='%4',"
+          "Longitude=%5, Latitude=%6, Altitude=%7, Type=%8, Radius=%9 WHERE Id=%10;")
           .arg(wp.name()).arg(wp.country()).arg(wp.spot()).arg(wp.description())
-          .arg(wp.longitude()).arg(wp.latitude()).arg(wp.altitude()).arg(wp.id());
+          .arg(wp.longitude()).arg(wp.latitude()).arg(wp.altitude()).arg(wp.type())
+          .arg(wp.radius()).arg(wp.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_CMD);
@@ -101,7 +104,8 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 	int alt;
 	bool success;
 
-	sqls = QString("SELECT * FROM WayPoints WHERE Id = %1;").arg(id);
+	sqls = QString("SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude,"
+                 "Description, Type, Radius FROM WayPoints WHERE Id = %1;").arg(id);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
@@ -110,11 +114,13 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 		wp.setName(query.value(Name).toString());
 		wp.setSpot(query.value(Spot).toString());
 		wp.setCountry(query.value(Country).toString());
-		wp.setDescription(query.value(Description).toString());
 		lon = query.value(Longitude).toDouble();
 		lat = query.value(Latitude).toDouble();
 		alt = query.value(Altitude).toInt();
 		wp.setCoordinates(lat, lon, alt);
+    wp.setDescription(query.value(Description).toString());
+		wp.setType((WayPoint::Type)query.value(Type).toInt());
+		wp.setRadius(query.value(Radius).toInt());
 	}
 	else
 	{
@@ -127,7 +133,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 {
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM WayPoints;";
+	QString sqls;
 	WayPoint locWp;
 	double lat;
 	double lon;
@@ -135,6 +141,8 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 	bool success;
 	bool found = false;
 
+	sqls = "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description,"
+         "Type, Radius FROM WayPoints;";
 	success = query.exec(sqls);
 
 	if(success)
@@ -155,6 +163,8 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 				wp.setCountry(query.value(Country).toString());
 				wp.setDescription(query.value(Description).toString());
 				wp.setCoordinates(lat, lon, query.value(Altitude).toInt());
+				wp.setType((WayPoint::Type)query.value(Type).toInt());
+        wp.setRadius(query.value(Radius).toInt());
 				break;
 			}
 		}
@@ -165,17 +175,19 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 	return found;
 }
 
-bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
+bool WayPoints::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM WayPoints ORDER BY Country, Name, Spot ASC;";
+	QString sqls;
 	double lon;
 	double lat;
 	int alt;
 	bool success;
 
-	success = query.exec(sqls);
+  sqls = "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description,"
+         "Type, Radius FROM WayPoints WHERE Type=%1 ORDER BY Country, Name, Spot ASC;";
+	success = query.exec(sqls.arg(type));
 
 	if(success)
 	{
@@ -190,6 +202,8 @@ bool WayPoints::wayPointList(WayPoint::WayPointListType &wpList)
       lat = query.value(Latitude).toDouble();
       alt = query.value(Altitude).toInt();
 			wp.setCoordinates(lat, lon, alt);
+      wp.setType((WayPoint::Type)query.value(Type).toInt());
+      wp.setRadius(query.value(Radius).toInt());
 			wpList.push_back(wp);
 		}
 	}
