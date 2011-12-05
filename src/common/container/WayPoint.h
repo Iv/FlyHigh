@@ -32,7 +32,7 @@ distance in meters, arc in degrees
 class WayPoint
 {
 	public:
-    typedef enum Type{TypeStartLand = 0, TypeBuoy = 1, TypeTurnPoint = 2}Type;
+    typedef enum Type{TypeStartLand = 1, TypeBuoy = 2, TypeRoute = 4}Type;
 		typedef QVector<WayPoint> WayPointListType;
 		typedef QVector<int> WayPointIdListType;
 		typedef QVector<int> AltListType;

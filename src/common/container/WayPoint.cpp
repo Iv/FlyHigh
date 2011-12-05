@@ -24,7 +24,7 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-const uint WayPoint::startLandRadius = 500;
+const uint WayPoint::startLandRadius = 400;
 const double WayPoint::earthRadius = 6371000.0;
 
 WayPoint::WayPoint()
