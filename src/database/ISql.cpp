@@ -273,9 +273,9 @@ bool ISql::findWayPoint(WayPoint &wp, uint radius)
 	return m_pWayPoints->findWayPoint(wp, radius);
 }
 
-bool ISql::wayPointList(WayPoint::WayPointListType &wpList)
+bool ISql::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList)
 {
-	return m_pWayPoints->wayPointList(wpList);
+	return m_pWayPoints->wayPointList(type, wpList);
 }
 
 bool ISql::add(Glider &glider)

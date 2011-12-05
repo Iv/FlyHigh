@@ -81,7 +81,7 @@ class ISql: public IDataBase
 
 		bool findWayPoint(WayPoint &wp, uint radius);
 
-		bool wayPointList(WayPoint::WayPointListType &wpList);
+		bool wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList);
 
 		bool add(Glider &glider);
 
