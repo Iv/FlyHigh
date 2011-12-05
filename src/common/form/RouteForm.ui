@@ -118,6 +118,9 @@
    </property>
   </widget>
   <widget class="QComboBox" name="comboBoxType">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>330</x>
@@ -125,6 +128,12 @@
      <width>181</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="editable">
+    <bool>false</bool>
+   </property>
+   <property name="currentIndex">
+    <number>6</number>
    </property>
    <item>
     <property name="text">
@@ -154,6 +163,11 @@
    <item>
     <property name="text">
      <string>Flat or FAI triangle</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Competition</string>
     </property>
    </item>
   </widget>
