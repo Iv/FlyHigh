@@ -154,6 +154,7 @@ void WebMapRoute::saveWayPoint(const QString &name, double lat, double lon, int 
     wp.setLatitude(lat);
     wp.setLongitude(lon);
     wp.setAltitude(alt);
+    wp.setType(WayPoint::TypeTurnPoint);
     m_pRoute->wayPointList().push_back(wp);
   }
 }
