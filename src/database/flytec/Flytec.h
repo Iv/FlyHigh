@@ -69,7 +69,7 @@ class Flytec: public IGPSDevice
 
 		bool delAllWayPoints();
 
-		bool wayPointList(WayPoint::WayPointListType &wpList);
+		bool wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList);
 
 		// routes
 		bool add(Route &route);

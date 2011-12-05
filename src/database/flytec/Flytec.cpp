@@ -349,7 +349,7 @@ bool Flytec::delAllWayPoints()
 	return success;
 }
 
-bool Flytec::wayPointList(WayPoint::WayPointListType &wpList)
+bool Flytec::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList)
 {
 	WayPoint wp;
 	bool success = false;
@@ -370,6 +370,7 @@ bool Flytec::wayPointList(WayPoint::WayPointListType &wpList)
 				return false;
 			}
 
+      wp.setType(WayPoint::TypeTurnPoint);
 			wpList.push_back(wp);
 		}
 	}
