@@ -47,12 +47,12 @@ void FlightFormImpl::updateWayPoints()
 {
 	QString name;
 	WayPoint::WayPointListType::iterator it;
-	
+
 	m_wpList.clear();
-	ISql::pInstance()->wayPointList(m_wpList);
+	ISql::pInstance()->wayPointList(WayPoint::TypeStartLand, m_wpList);
 	comboBoxStart->clear();
 	comboBoxLand->clear();
-	
+
 	for(it=m_wpList.begin(); it!=m_wpList.end(); it++)
 	{
 		(*it).fullName(name);
@@ -65,11 +65,11 @@ void FlightFormImpl::updateGlider()
 {
 	QString gliderModel;
 	Glider::GliderListType::iterator it;
-	
+
 	m_gliderList.clear();
 	ISql::pInstance()->gliderList(m_gliderList);
 	comboBoxModel->clear();
-	
+
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
@@ -83,7 +83,7 @@ void FlightFormImpl::enableInput(bool b)
 	pushButtonGlider->setEnabled(b);
 	pushButtonStart->setEnabled(b);
 	pushButtonLand->setEnabled(b);
-	
+
 	if(b)
 	{
 		QWidget::unsetCursor();
@@ -125,16 +125,16 @@ void FlightFormImpl::accept()
 	m_pFlight->setDate(dateEditStart->date());
 	m_pFlight->setTime(timeEditStart->time());
 	m_pFlight->setDuration(timeEditDuration->time());
-	
+
 	// glider
 	m_pFlight->setGlider(m_gliderList[comboBoxModel->currentIndex()]);
 
 	// start
 	m_pFlight->setStartPt(m_wpList[comboBoxStart->currentIndex()]);
-	
+
 	// land
 	m_pFlight->setLandPt(m_wpList[comboBoxLand->currentIndex()]);
-	
+
 	// distance
 	m_pFlight->setDistance((uint)(lineEditDistance->text().toDouble()*1000.0));
 
@@ -150,13 +150,13 @@ void FlightFormImpl::selectStart()
 	int index;
 	int maxIndex;
 	bool found = false;
-	
+
 	maxIndex = comboBoxStart->count();
-	
+
 	for(index=0; index<maxIndex; index++)
 	{
 		found = (m_wpList[index] == m_pFlight->startPt());
-		
+
 		if(found)
 		{
 			comboBoxStart->setCurrentIndex(index);
@@ -170,13 +170,13 @@ void FlightFormImpl::selectLand()
 	int index;
 	int maxIndex;
 	bool found = false;
-	
+
 	maxIndex = comboBoxLand->count();
-	
+
 	for(index=0; index<maxIndex; index++)
 	{
 		found = (m_wpList[index] == m_pFlight->landPt());
-		
+
 		if(found)
 		{
 			comboBoxLand->setCurrentIndex(index);
@@ -190,13 +190,13 @@ void FlightFormImpl::selectGlider()
 	int index;
 	int maxIndex;
 	bool found = false;
-	
+
 	maxIndex = comboBoxModel->count();
-	
+
 	for(index=0; index<maxIndex; index++)
 	{
 		found = (m_gliderList[index] == m_pFlight->glider());
-		
+
 		if(found)
 		{
 			comboBoxModel->setCurrentIndex(index);
@@ -209,7 +209,7 @@ void FlightFormImpl::newGlider()
 {
 	Glider glider;
 	IGliderForm newGlider(this, "New Glider", &glider);
-	
+
 	if(newGlider.exec())
 	{
 		ISql::pInstance()->add(glider);
@@ -221,7 +221,7 @@ void FlightFormImpl::newWayPoint()
 {
 	WayPoint wp;
 	IWayPointForm newWayPoint(this, "New WayPoint", &wp);
-	
+
 	if(newWayPoint.exec())
 	{
 		ISql::pInstance()->add(wp);
@@ -235,7 +235,7 @@ void FlightFormImpl::limitDistance()
 	double dist;
 
 	dist = lineEditDistance->text().toDouble();
-	
+
 	if(dist < 0.0)
 	{
 		dist = 0.0;
