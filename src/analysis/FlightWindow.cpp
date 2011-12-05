@@ -47,7 +47,6 @@
 FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
-	QString caption;
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
 
@@ -62,7 +61,6 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 		case IDataBase::SqlDB:
 		{
 			m_pDb = ISql::pInstance();
-			caption = tr("Flights from DB");
 			QAction* pNewAct = new QAction(tr("&New..."), this);
 			connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
 			pFileMenu->addAction(pNewAct);
@@ -77,7 +75,6 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
-			caption = tr("Flights from GPS");
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
 			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
@@ -127,7 +124,6 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	connect(pMapAct, SIGNAL(triggered()), this, SLOT(showOnMap()));
 	pPlotMenu->addAction(pMapAct);
 
-	TableWindow::setWindowTitle(caption);
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
@@ -974,7 +970,6 @@ void FlightWindow::plotFlighPointList(FlightPointList &tpList, const QString& ti
 
 void FlightWindow::showOnWebMap()
 {
-	QString title;
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
@@ -1088,7 +1083,6 @@ void FlightWindow::showOnWebMap()
 
 void FlightWindow::showOnMap()
 {
-	QString title;
 	IGCFileParser igcParser;
 	ProgressDlg progDlg(this);
 	int row;
