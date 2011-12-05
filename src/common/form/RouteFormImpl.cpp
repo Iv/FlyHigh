@@ -30,22 +30,22 @@
 RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRoute)
 	:QDialog(parent)
 {
-        setupUi(this);
 	WayPoint *pWp;
 	QString fullName;
 	uint nItems;
 	uint curItem;
-	
+
 	Q_CHECK_PTR(pRoute);
 	m_pRoute = pRoute;
 	m_readOnly = false;
-	
+
+  setupUi(this);
 	setWindowTitle(caption);
 
 	// database waypoints
-	ISql::pInstance()->wayPointList(m_wpDbList);
+	ISql::pInstance()->wayPointList(WayPoint::TypeBuoy, m_wpDbList);
 	nItems = m_wpDbList.size();
-	
+
 	for(curItem=0; curItem<nItems; curItem++)
 	{
 		m_wpDbList.at(curItem).fullName(fullName);
@@ -60,7 +60,7 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 
 	// waypoints
 	nItems = m_pRoute->wayPointList().size();
-	
+
 	for(curItem=0; curItem<nItems; curItem++)
 	{
 		pWp = &(m_pRoute->wayPointList()[curItem]);
@@ -94,7 +94,7 @@ void RouteFormImpl::accept()
 		m_pRoute->setType((Route::Type)comboBoxType->currentIndex());
 		m_pRoute->wayPointList().clear();
 		nItems = m_wpRouteList.count();
-	
+
 		for(curItem=0; curItem<nItems; curItem++)
 		{
 			pWp = m_wpRouteList.at(curItem);
@@ -111,7 +111,7 @@ void RouteFormImpl::down()
 	WayPoint *pWp;
 
 	curItem = listBoxRouteWayPoints->currentItem();
-	
+
 	if(curItem < (m_wpRouteList.count() - 1))
 	{
 		pWp = m_wpRouteList.at(curItem);
@@ -127,7 +127,7 @@ void RouteFormImpl::up()
 	WayPoint *pWp;
 
 	curItem = listBoxRouteWayPoints->currentItem();
-	
+
 	if(curItem > 0)
 	{
 		pWp = m_wpRouteList.at(curItem);
@@ -149,7 +149,7 @@ void RouteFormImpl::toRight()
 	if(curItem < count)
 	{
 		pWp = &m_wpDbList[curItem];
-	
+
 		if(listBoxRouteWayPoints->count() > 0)
 		{
 			curItem = listBoxRouteWayPoints->currentItem() + 1;
@@ -158,7 +158,7 @@ void RouteFormImpl::toRight()
 		{
 			curItem = 0;
 		}
-	
+
 		m_wpRouteList.insert(curItem, pWp);
 		showWpRoute();
 	}
@@ -167,7 +167,7 @@ void RouteFormImpl::toRight()
 void RouteFormImpl::remove()
 {
 	uint curItem;
-	
+
 	curItem = listBoxRouteWayPoints->currentItem();
 	m_wpRouteList.remove(curItem);
 	showWpRoute();
@@ -183,7 +183,7 @@ void RouteFormImpl::showWpRoute()
 	selItem = m_wpRouteList.at();
 	listBoxRouteWayPoints->clear();
 	nItems = m_wpRouteList.count();
-	
+
 	for(curItem=0; curItem<nItems; curItem++)
 	{
 		m_wpRouteList.at(curItem)->fullName(wpName);
