@@ -102,25 +102,28 @@ MainWindow::MainWindow()
 	// Preparation
 	QMenu* pPrepMenu = menuBar()->addMenu(tr("&Preparation"));
 
-	QAction* pWPDBAct = new QAction(tr("&WayPoints (DB)"), this);
-	connect(pWPDBAct,SIGNAL(triggered()), this, SLOT(waypoints_fromSQL()));
-	pPrepMenu->addAction(pWPDBAct);
+	QAction* pStatLandDBAct = new QAction(tr("&Start/Land (DB)"), this);
+	connect(pStatLandDBAct, SIGNAL(triggered()), this, SLOT(startLand_fromSQL()));
+	pPrepMenu->addAction(pStatLandDBAct);
+	QAction* pBuoyDBAct = new QAction(tr("&Buoys (DB)"), this);
+	connect(pBuoyDBAct, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
+	pPrepMenu->addAction(pBuoyDBAct);
 	QAction* pWPDevAct = new QAction(tr("WayPoints (G&PS)"), this);
-	connect(pWPDevAct,SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
+	connect(pWPDevAct, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
 	pPrepMenu->addAction(pWPDevAct);
 	pPrepMenu->addSeparator();
 	QAction* pRtDBAct = new QAction(tr("&Routes (DB)"), this);
-	connect(pRtDBAct,SIGNAL(triggered()), this, SLOT(routes_fromSQL()));
+	connect(pRtDBAct, SIGNAL(triggered()), this, SLOT(routes_fromSQL()));
 	pPrepMenu->addAction(pRtDBAct);
 	QAction* pRtDevAct = new QAction(tr("Routes (&GPS)"), this);
-	connect(pRtDevAct,SIGNAL(triggered()), this, SLOT(routes_fromGPS()));
+	connect(pRtDevAct, SIGNAL(triggered()), this, SLOT(routes_fromGPS()));
 	pPrepMenu->addAction(pRtDevAct);
 	pPrepMenu->addSeparator();
 	QAction* pAirDevAct = new QAction(tr("&Airspaces (GPS)"), this);
-	connect(pAirDevAct,SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
+	connect(pAirDevAct, SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
 	pPrepMenu->addAction(pAirDevAct);
 	QAction* pAirFileAct = new QAction(tr("Airspaces (&File)"), this);
-	connect(pAirFileAct,SIGNAL(triggered()), this, SLOT(airspaces_fromFile()));
+	connect(pAirFileAct, SIGNAL(triggered()), this, SLOT(airspaces_fromFile()));
 	pPrepMenu->addAction(pAirFileAct);
 
 	// Menu Configuration
@@ -128,7 +131,7 @@ MainWindow::MainWindow()
 
 	// Submenu Port
 	QAction* pPortAct = new QAction(tr("&Port..."), this);
-	connect(pPortAct,SIGNAL(triggered()), this, SLOT(settings_port()));
+	connect(pPortAct, SIGNAL(triggered()), this, SLOT(settings_port()));
 	pConfMenu->addAction(pPortAct);
 
 	// Submenu Settings>Device
@@ -145,12 +148,14 @@ MainWindow::MainWindow()
 		QAction* pDevAct = new QAction(devName,this);
 		pDevAct->setData(devNr);
 		pDevAct->setCheckable(true);
-		connect(pDevAct,SIGNAL(triggered()),this,SLOT(settings_device()));
+		connect(pDevAct, SIGNAL(triggered()),this,SLOT(settings_device()));
+
 		// enable current device
 		if(devNr == curDev)
 		{
 			pDevAct->setChecked(true);
 		}
+
 		pDevActGrp->addAction(pDevAct);
 	}
 
@@ -158,23 +163,23 @@ MainWindow::MainWindow()
 	m_pDevicesMenu->addActions(pDevActGrp->actions());
 
 	QAction* pConfAct = new QAction(tr("&Configure Device..."), this);
-	connect(pConfAct,SIGNAL(triggered()), SLOT(settings_configure_device()));
+	connect(pConfAct, SIGNAL(triggered()), SLOT(settings_configure_device()));
 	pConfMenu->addAction(pConfAct);
 
 	QAction* pPilotAct = new QAction(tr("Pilot &Info..."), this);
-	connect(pPilotAct,SIGNAL(triggered()), SLOT(settings_pilotInfo()));
+	connect(pPilotAct, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
 	pConfMenu->addAction(pPilotAct);
 
 	// Menu Settings
 	QMenu* pSettingsMenu = menuBar()->addMenu(tr("&Settings"));
 	QAction* pConfigureAct = new QAction(tr("&Configure FlyHigh..."), this);
-	connect(pConfigureAct,SIGNAL(triggered()),this, SLOT(preferences()));
+	connect(pConfigureAct, SIGNAL(triggered()),this, SLOT(preferences()));
 	pSettingsMenu->addAction(pConfigureAct);
 
 	// Menu Tools
 	QMenu* pToolsMenu = menuBar()->addMenu(tr("&Tools"));
 	QAction* pMigrateAct = new QAction(tr("&Database migration..."), this);
-	connect(pMigrateAct,SIGNAL(triggered()),this, SLOT(migrateDB()));
+	connect(pMigrateAct, SIGNAL(triggered()),this, SLOT(migrateDB()));
 	pToolsMenu->addAction(pMigrateAct);
 
   // Menu Windows
@@ -262,9 +267,17 @@ void MainWindow::analysis_servicing()
 	showWindow(pWin);
 }
 
-void MainWindow::waypoints_fromSQL()
+void MainWindow::startLand_fromSQL()
 {
-	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from DB", 0, IDataBase::SqlDB);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Start/Land from DB", 0, IDataBase::SqlDB, WayPoint::TypeStartLand);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::buoys_fromSQL()
+{
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Buoys from DB", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -272,7 +285,7 @@ void MainWindow::waypoints_fromSQL()
 
 void MainWindow::waypoints_fromGPS()
 {
-	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from GPS", 0, IDataBase::GPSdevice);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from GPS", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
