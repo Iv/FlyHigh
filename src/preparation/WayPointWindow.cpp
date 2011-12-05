@@ -33,7 +33,8 @@
 #include "WayPoint.h"
 #include "WebMapWayPointView.h"
 
-WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
+WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags,
+                               IDataBase::SourceType src, WayPoint::Type type)
 	:TableWindow(parent, name, wflags)
 {
 	QString caption;
@@ -41,6 +42,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	Q3Table *pTable = TableWindow::getTable();
 
   m_pWayPointView = NULL;
+  m_wpType = type;
   m_externSelect = false;
 	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 	QAction* pUpdateAct = new QAction(tr("&Update"), this);
@@ -182,7 +184,7 @@ void WayPointWindow::file_update()
 	if(m_pDb->open())
 	{
 		progDlg.beginProgress(tr("reading waypoints..."), m_pDb);
-		m_pDb->wayPointList(m_wpList);
+		m_pDb->wayPointList(m_wpType, m_wpList);
 		progDlg.endProgress();
 		m_pDb->close();
 	}

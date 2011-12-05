@@ -32,7 +32,8 @@ class WayPointWindow: public TableWindow
 	Q_OBJECT
 
 	public:
-		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags,
+                  IDataBase::SourceType src, WayPoint::Type type);
 
 		~WayPointWindow();
 
@@ -72,6 +73,7 @@ class WayPointWindow: public TableWindow
 		WayPoint::WayPointListType m_wpList;
 		WebMapWayPointView *m_pWayPointView;
 		IDataBase *m_pDb;
+		WayPoint::Type m_wpType;
 		int m_lastModified;
 		bool m_externSelect;
 
