@@ -219,11 +219,16 @@ void RouteWindow::file_viewWebMap()
 	if(row >= 0)
 	{
 		route = m_routeList[row];
-		pView = new WebMapRouteView(tr("View Route"));
-		pView->setRoute(&route);
-		pView->setEditable(false);
-		pView->loadMap();
-		pView->exec();
+
+		if((route.type() != Route::Undefined) &&
+       (route.type() != Route::Competition))
+    {
+      pView = new WebMapRouteView(tr("View Route"));
+      pView->setRoute(&route);
+      pView->setEditable(false);
+      pView->loadMap();
+      pView->exec();
+    }
 	}
 }
 
