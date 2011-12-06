@@ -382,6 +382,8 @@
 		<Unit filename="src/preparation/RouteWindow.h" />
 		<Unit filename="src/preparation/WayPointWindow.cpp" />
 		<Unit filename="src/preparation/WayPointWindow.h" />
+		<Unit filename="src/preparation/WptFileParser.cpp" />
+		<Unit filename="src/preparation/WptFileParser.h" />
 		<Unit filename="src/res/CMakeLists.txt" />
 		<Unit filename="src/res/airspace.html" />
 		<Unit filename="src/res/css/webmap.css" />
