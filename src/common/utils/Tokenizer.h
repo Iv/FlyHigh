@@ -29,12 +29,16 @@ class Tokenizer
 {
 	public:
 		Tokenizer();
-	
+
 		~Tokenizer();
 
 		bool getFirstToken(const QString &tlg, char delim, QString &token);
 
+    bool getFirstToken(const QString &tlg, const QString &delim, QString &token);
+
 		bool getNextToken(const QString &tlg, char delim, QString &token);
+
+		bool getNextToken(const QString &tlg, const QString &delim, QString &token);
 
 	private:
 		int m_pos;
