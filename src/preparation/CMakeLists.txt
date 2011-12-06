@@ -12,7 +12,8 @@ set(preparation_SRCS AirSpaceView.cpp
                      AirSpaceWindow.cpp
                      OpenAirFileParser.cpp
                      RouteWindow.cpp
-                     WayPointWindow.cpp)
+                     WayPointWindow.cpp
+                     WptFileParser.cpp)
 
 set(preparation_HDRS WayPointWindow.h
                      RouteWindow.h
