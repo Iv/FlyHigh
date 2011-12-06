@@ -36,13 +36,29 @@ bool Tokenizer::getFirstToken(const QString &tlg, char delim, QString &token)
 	return getNextToken(tlg, delim, token);
 }
 
+bool Tokenizer::getFirstToken(const QString &tlg, const QString &delim, QString &token)
+{
+	m_pos = 0;
+
+	return getNextToken(tlg, delim, token);
+}
+
 bool Tokenizer::getNextToken(const QString &tlg, char delim, QString &token)
+{
+  QString strDelim;
+
+  strDelim = delim;
+
+  return getNextToken(tlg, strDelim, token);
+}
+
+bool Tokenizer::getNextToken(const QString &tlg, const QString &delim, QString &token)
 {
 	int end;
 	bool found;
 
 	token = "";
-        end = tlg.indexOf(delim, m_pos);
+  end = tlg.indexOf(delim, m_pos);
 	found = (end > 0);
 
 	if(found)
