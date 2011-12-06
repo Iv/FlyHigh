@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,7 +31,7 @@ class OpenAirFileParser
 	public:
 		OpenAirFileParser();
 
-		void parse(QByteArray &openAirData, AirSpaceList &airspaceList);
+		bool parse(const QString &fileName, AirSpaceList &airspaceList);
 
 	private:
 		double m_arcCenterLat;

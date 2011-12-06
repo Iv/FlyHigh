@@ -172,31 +172,23 @@ void AirSpaceWindow::file_update()
 void AirSpaceWindow::file_open()
 {
 	Q3Table *pTable = TableWindow::getTable();
-	QByteArray openAirData;
-	QString selected;
-	QFile file;
+	QString fileName;
 	OpenAirFileParser parser;
 	uint airspaceNr;
 	uint maxAirspaceNr;
 
-	selected = QFileDialog::getOpenFileName(this,
+	fileName = QFileDialog::getOpenFileName(this,
 																					"Open OpenAir File",
 																					IFlyHighRC::pInstance()->lastDir(),
 																					"OpenAir Files (*.txt *.fas)");
-	file.setFileName(selected);
 
-	if(selected!="" && file.exists())
+	if(fileName != "")
 	{
-		IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
-
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-		if(file.open(QIODevice::ReadOnly))
+		if(parser.parse(fileName, m_airSpaceList))
 		{
-			openAirData = file.readAll();
-			file.close();
-
-			parser.parse(openAirData, m_airSpaceList);
 			m_airSpaceList.sort();
 			maxAirspaceNr = m_airSpaceList.size();
 			pTable->setNumRows(maxAirspaceNr);
