@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qbuffer.h>
-#include <qstring.h>
+#include <QFile>
+#include <QBuffer>
+#include <QString>
+#include <QTextStream>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,27 +31,34 @@
 #include "OpenAirFileParser.h"
 #include "WayPoint.h"
 
-#define MAX_REC_SIZE 100
-
 OpenAirFileParser::OpenAirFileParser()
 {
   m_id = 0;
 }
 
-void OpenAirFileParser::parse(QByteArray &openAirData, AirSpaceList &airspaceList)
+bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceList)
 {
-	QBuffer buff;
-	char pRecord[MAX_REC_SIZE];
+  QFile file(fileName);
+  QTextStream inStream(&file);
 	AirSpace *pAirspace = NULL;
 	QString strValue;
+  QString line;
+  QByteArray byteLine;
+	char* pRecord;
+  bool success;
 
 	airspaceList.clear();
-	buff.setBuffer(&openAirData);
+  success = file.open(QIODevice::ReadOnly | QIODevice::Text);
 
-	if(buff.open(QIODevice::ReadOnly))
+	if(success)
 	{
-		while(buff.readLine(pRecord, MAX_REC_SIZE) > 0)
-		{
+    line = inStream.readLine();
+
+    while(!line.isNull())
+    {
+      byteLine = line.toAscii();
+      pRecord = byteLine.data();
+
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
 				pAirspace = new AirSpace();
@@ -108,10 +117,12 @@ void OpenAirFileParser::parse(QByteArray &openAirData, AirSpaceList &airspaceLis
 					parseCircle(pRecord, pAirspace);
 				}
 			}
-		}
 
-		buff.close();
+      line = inStream.readLine();
+		}
 	}
+
+	return success;
 }
 
 void OpenAirFileParser::parseString(char *pRecord, QString &str)
