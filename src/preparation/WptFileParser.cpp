@@ -34,8 +34,10 @@ bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &w
   QTextStream inStream(&file);
   QString line;
   WayPoint wpt;
+  int id = 0;
   bool success;
 
+  wayPointList.clear();
   success = file.open(QIODevice::ReadOnly | QIODevice::Text);
 
   if(success)
@@ -46,6 +48,9 @@ bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &w
     {
       if(parseLine(line, wpt))
       {
+        id++;
+        wpt.setId(id);
+        wpt.setType(WayPoint::TypeBuoy);
         wayPointList.push_back(wpt);
       }
 
@@ -121,13 +126,13 @@ bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
   // altitude
   if(success)
   {
-    wpt.setAltitude(token.toInt());
-    success = tokenizer.getNextToken(line, '\n', token);
+    wpt.setAltitude((int)token.toDouble());
   }
 
   // description
   if(success)
   {
+    tokenizer.getNextToken(line, '\n', token);
     wpt.setDescription(token);
   }
 
