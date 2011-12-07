@@ -40,28 +40,53 @@ class MainWindow: public QMainWindow
 
 	private slots:
 		void flights_fromSQL();
+
 		void flights_fromGPS();
+
 		void flights_experience();
+
 		void analysis_gliders();
+
 		void analysis_servicing();
+
 		void startLand_fromSQL();
+
 		void buoys_fromSQL();
+
+		void buoys_fromFile();
+
 		void waypoints_fromGPS();
+
 		void routes_fromSQL();
+
 		void routes_fromGPS();
+
 //		void airspaces_fromSQL();
+
 		void airspaces_fromGPS();
+
 		void airspaces_fromFile();
+
 		void windows_tile_horizontally();
+
 		void windows_activated(int id);
+
 		void settings_port();
+
 		void settings_device();
+
 		void settings_configure_device();
+
 		void settings_pilotInfo();
+
 		void help_about();
+
 		void aboutToShow();
+
 		void setActiveSubWindow(QWidget *window);
+
 		void preferences();
+
 		void migrateDB();
 
 	private:
