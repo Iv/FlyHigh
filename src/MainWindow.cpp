@@ -98,7 +98,6 @@ MainWindow::MainWindow()
 	connect(pServAct,SIGNAL(triggered()), this, SLOT(analysis_servicing()));
 	pAnalysisMenu->addAction(pServAct);
 
-
 	// Preparation
 	QMenu* pPrepMenu = menuBar()->addMenu(tr("&Preparation"));
 
@@ -108,6 +107,9 @@ MainWindow::MainWindow()
 	QAction* pBuoyDBAct = new QAction(tr("&Buoys (DB)"), this);
 	connect(pBuoyDBAct, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
 	pPrepMenu->addAction(pBuoyDBAct);
+	QAction* pBuoyFileAct = new QAction(tr("&Buoys (File)"), this);
+	connect(pBuoyFileAct, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
+	pPrepMenu->addAction(pBuoyFileAct);
 	QAction* pWPDevAct = new QAction(tr("WayPoints (G&PS)"), this);
 	connect(pWPDevAct, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
 	pPrepMenu->addAction(pWPDevAct);
@@ -278,6 +280,14 @@ void MainWindow::startLand_fromSQL()
 void MainWindow::buoys_fromSQL()
 {
 	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Buoys from DB", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
+
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::buoys_fromFile()
+{
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Buoys from file", 0, IDataBase::File, WayPoint::TypeBuoy);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
