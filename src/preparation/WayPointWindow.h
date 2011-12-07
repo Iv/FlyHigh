@@ -61,6 +61,8 @@ class WayPointWindow: public TableWindow
 
 		void file_viewWebMap();
 
+		void file_open();
+
 		void wayPointViewFinished(int res);
 
 		void wayPointsChanged(WayPoint::WayPointListType &wpList);
@@ -77,7 +79,7 @@ class WayPointWindow: public TableWindow
 		int m_lastModified;
 		bool m_externSelect;
 
-    void setWpToRow(uint row, WayPoint &wp);
+    void setWpToRow(uint row, const WayPoint &wp);
 };
 
 #endif

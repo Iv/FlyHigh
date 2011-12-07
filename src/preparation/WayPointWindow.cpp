@@ -19,18 +19,20 @@
  ***************************************************************************/
 
 #include <QCursor>
+#include <QDateTime>
+#include <QFileDialog>
+#include <QMenuBar>
 #include <QString>
 #include <QStringList>
 #include <q3table.h>
-#include <QDateTime>
-#include <QMenuBar>
 #include "IDataBase.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
-#include "ProgressDlg.h"
 #include "IWayPointForm.h"
+#include "ProgressDlg.h"
 #include "WayPointWindow.h"
 #include "WayPoint.h"
+#include "WptFileParser.h"
 #include "WebMapWayPointView.h"
 
 WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags,
@@ -39,14 +41,19 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 {
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
+	QMenu* pFileMenu;
 
   m_pWayPointView = NULL;
   m_wpType = type;
   m_externSelect = false;
-	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
-	QAction* pUpdateAct = new QAction(tr("&Update"), this);
-	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-	pFileMenu->addAction(pUpdateAct);
+  pFileMenu = menuBar()->addMenu(tr("&File"));
+
+  if(src != IDataBase::File)
+  {
+    QAction* pUpdateAct = new QAction(tr("&Update"), this);
+    connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
+    pFileMenu->addAction(pUpdateAct);
+  }
 
 	switch(src)
 	{
@@ -61,6 +68,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
       QAction* pEditAct = new QAction(tr("Edit..."), this);
 			connect(pEditAct, SIGNAL(triggered()), this, SLOT(file_Edit()));
 			pFileMenu->addAction(pEditAct);
+
+      connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 		}
 		break;
 		case IDataBase::GPSdevice:
@@ -70,6 +79,21 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 			QAction* pAddAct = new QAction(tr("Add to DB..."), this);
 			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
+
+      connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
+		}
+		break;
+    case IDataBase::File:
+		{
+			m_pDb = NULL;
+
+      QAction* pImportFile = new QAction(tr("&Import File..."), this);
+      connect(pImportFile, SIGNAL(triggered()), this, SLOT(file_open()));
+      pFileMenu->addAction(pImportFile);
+
+      QAction* pAddAct = new QAction(tr("Add to DB..."), this);
+			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			pFileMenu->addAction(pAddAct);
 		}
 		break;
 		default:
@@ -77,19 +101,20 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		break;
 	}
 
-  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
-
-	QAction* pNewAct = new QAction(tr("New..."), this);
-	connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
-	pFileMenu->addAction(pNewAct);
-
-  // 6016 doesn't support delete of single waypoints
-  if(!((src == IDataBase::GPSdevice) &&
-    (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)))
+  if(src != IDataBase::File)
   {
-    QAction* pDelAct = new QAction(tr("Delete"), this);
-    connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-    pFileMenu->addAction(pDelAct);
+    QAction* pNewAct = new QAction(tr("New..."), this);
+    connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
+    pFileMenu->addAction(pNewAct);
+
+    // 6016 doesn't support delete of single waypoints
+    if(!((src == IDataBase::GPSdevice) &&
+      (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)))
+    {
+      QAction* pDelAct = new QAction(tr("Delete"), this);
+      connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
+      pFileMenu->addAction(pDelAct);
+    }
   }
 
   // for sql db danger, only used by 6015
@@ -136,7 +161,14 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
 
-	file_update();
+  if(src == IDataBase::File)
+  {
+    file_open();
+  }
+  else
+  {
+    file_update();
+  }
 }
 
 WayPointWindow::~WayPointWindow()
@@ -174,23 +206,26 @@ void WayPointWindow::file_update()
 	uint wpNr;
 	uint maxWpNr;
 
-	m_wpList.clear();
-	pTable->setNumRows(0); // clear table, because of different nr of waypoints
-
-	if(m_pDb->open())
+	if(m_pDb != NULL)
 	{
-		progDlg.beginProgress(tr("reading waypoints..."), m_pDb);
-		m_pDb->wayPointList(m_wpType, m_wpList);
-		progDlg.endProgress();
-		m_pDb->close();
-	}
+    m_wpList.clear();
+    pTable->setNumRows(0); // clear table, because of different nr of waypoints
 
-	maxWpNr = m_wpList.size();
-	pTable->setNumRows(maxWpNr);
+    if(m_pDb->open())
+    {
+      progDlg.beginProgress(tr("reading waypoints..."), m_pDb);
+      m_pDb->wayPointList(m_wpType, m_wpList);
+      progDlg.endProgress();
+      m_pDb->close();
+    }
 
-	for(wpNr=0; wpNr<maxWpNr; wpNr++)
-	{
-		setWpToRow(wpNr, m_wpList[wpNr]);
+    maxWpNr = m_wpList.size();
+    pTable->setNumRows(maxWpNr);
+
+    for(wpNr=0; wpNr<maxWpNr; wpNr++)
+    {
+      setWpToRow(wpNr, m_wpList[wpNr]);
+    }
 	}
 }
 
@@ -289,6 +324,40 @@ void WayPointWindow::file_addNewWp()
 
 void WayPointWindow::file_AddToSqlDB()
 {
+  WayPoint::WayPointListType wpList;
+  ProgressDlg progDlg(this);
+	int numSel;
+	int sel;
+	int topRow;
+	int bottomRow;
+	int row;
+
+	numSel = getTable()->numSelections();
+
+	if((numSel > 0) && ISql::pInstance()->open())
+	{
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
+		for(sel=0; sel<numSel; sel++)
+		{
+			topRow = getTable()->selection(sel).topRow();
+			bottomRow = getTable()->selection(sel).bottomRow();
+
+			for(row=topRow; row<=bottomRow; row++)
+			{
+				wpList.push_back(m_wpList[row]);
+			}
+		}
+
+    progDlg.beginProgress(tr("add waypoints..."), ISql::pInstance());
+    ISql::pInstance()->add(wpList);
+    progDlg.endProgress();
+		TableWindow::unsetCursor();
+		ISql::pInstance()->close();
+	}
+
+
+/**
 	int row;
 
 	row = getTable()->currentRow();
@@ -306,6 +375,7 @@ void WayPointWindow::file_AddToSqlDB()
 
 		ISql::pInstance()->close();
 	}
+*/
 }
 
 void WayPointWindow::file_Edit()
@@ -342,9 +412,45 @@ void WayPointWindow::file_editWebMap()
 	}
 }
 
+void WayPointWindow::file_open()
+{
+	Q3Table *pTable = TableWindow::getTable();
+	QString fileName;
+	WptFileParser parser;
+	uint wptNr;
+	uint maxWptNr;
+
+	fileName = QFileDialog::getOpenFileName(this,
+																					"WayPoint File",
+																					IFlyHighRC::pInstance()->lastDir(),
+																					"WayPoint Files (*.wpt)");
+
+	if(fileName != "")
+	{
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
+		if(parser.parse(fileName, m_wpList))
+		{
+			maxWptNr = m_wpList.size();
+			pTable->setNumRows(maxWptNr);
+
+			for(wptNr=0; wptNr<maxWptNr; wptNr++)
+			{
+				setWpToRow(wptNr, m_wpList.at(wptNr));
+			}
+
+			TableWindow::selectRow(0);
+			selectionChanged();
+		}
+
+		TableWindow::unsetCursor();
+	}
+}
+
 void WayPointWindow::file_viewWebMap()
 {
-	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
+	if((m_pWayPointView == NULL) && (m_wpList.size() > 0))
 	{
 		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
@@ -392,7 +498,7 @@ void WayPointWindow::wayPointChanged(int id)
   }
 }
 
-void WayPointWindow::setWpToRow(uint row, WayPoint &wp)
+void WayPointWindow::setWpToRow(uint row, const WayPoint &wp)
 {
 	QString str;
 	Q3Table *pTable = TableWindow::getTable();
