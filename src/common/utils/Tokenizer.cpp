@@ -64,7 +64,7 @@ bool Tokenizer::getNextToken(const QString &tlg, const QString &delim, QString &
 	if(found)
 	{
 		token = tlg.mid(m_pos, (end - m_pos));
-		m_pos = (end + 1);
+		m_pos = (end + delim.size());
 	}
 	else
 	{
