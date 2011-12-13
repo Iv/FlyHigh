@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -66,7 +66,7 @@ class WayPoint
 		void setDescription(const QString &desc);
 
 		// latitude and longitude are in WGS84 (degree)
-		void setCoordinates(double lat, double lon, int alt=0);
+		void setCoordinates(double lat, double lon, int alt = 0);
 
 		void setLatitude(double lat);
 
@@ -83,10 +83,6 @@ class WayPoint
 		void setType(Type type);
 
 		Type type() const;
-
-		void setRadius(int radius);
-
-		int radius() const;
 
 		uint distance(const WayPoint &wp) const;
 
@@ -121,7 +117,6 @@ class WayPoint
 		double m_lon;
 		int m_alt;
     Type m_type;
-    int m_radius;
 };
 
 #endif
