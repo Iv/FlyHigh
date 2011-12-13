@@ -153,7 +153,7 @@ bool Upgrade::upgrade()
 
 	if(dataBaseVersion() < DataBaseVersion_0_9_2)
 	{
-	  m_pExecutor->executeQuery("upgrade-waypoints-add-type-and-radius", db());
+	  m_pExecutor->executeQuery("upgrade-waypoints-add-type", db());
 		setDataBaseVersion(DataBaseVersion_0_9_2);
 	}
 

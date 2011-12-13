@@ -166,7 +166,6 @@ void QueryStore::init()
 					 "`Altitude` INT NOT NULL,"
 					 "`Description` VARCHAR(200) NULL DEFAULT '',"
 					 "`Type` INT NOT NULL,"
-					 "`Radius` INT NULL DEFAULT 400,"
 					 "PRIMARY KEY(`Id`),"
 					 "UNIQUE KEY byWayPoints(`Name`, `Spot`, `Country`)"
 					 ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
@@ -182,8 +181,7 @@ void QueryStore::init()
 					 "`Latitude` FLOAT NOT NULL,"
 					 "`Altitude` INTEGER NOT NULL,"
 					 "`Description` VARCHAR(200) DEFAULT '',"
-					 "`Type` INTEGER NOT NULL,"
-					 "`Radius` INTEGER NULL DEFAULT 400)");
+					 "`Type` INTEGER NOT NULL");
 
 	addQuery("setup-create-flights",
 					 "QMYSQL",
@@ -364,17 +362,14 @@ void QueryStore::init()
 					 setlastmod);
 
   // upgrades
-	addQuery("upgrade-waypoints-add-type-and-radius",
+	addQuery("upgrade-waypoints-add-type",
 					 "QMYSQL",
 					 "ALTER TABLE `WayPoints` "
-              "ADD `Type` INT NOT NULL DEFAULT 1,"
-              "ADD `Radius` INT NOT NULL DEFAULT 400");
-	QStringList sqls;
-  sqls << "ALTER TABLE `WayPoints` ADD `Type` INTEGER NOT NULL DEFAULT 1" <<
-          "ALTER TABLE `WayPoints` ADD `Radius` INTEGER NOT NULL DEFAULT 400";
-	addQuery("upgrade-waypoints-add-type-and-radius",
+              "ADD `Type` INT NOT NULL DEFAULT 1");
+	addQuery("upgrade-waypoints-add-type",
 					 "QSQLITE",
-					 sqls);
+					 "ALTER TABLE `WayPoints` "
+              "ADD `Type` INTEGER NOT NULL DEFAULT 1");
 }
 
 void QueryStore::addQuery(const QString& name, const QString& driver, const Query& query)

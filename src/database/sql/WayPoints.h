@@ -54,7 +54,7 @@ class WayPoints: public DataBaseSub
 	private:
 		enum Elements
 		{
-			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type, Radius
+			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type
 		};
 
 		bool setId(WayPoint &wp);

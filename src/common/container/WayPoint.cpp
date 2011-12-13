@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -38,7 +38,6 @@ WayPoint::WayPoint()
 	m_lon = 0;
 	m_alt = 0;
   m_type = TypeStartLand;
-  m_radius = 400;
 }
 
 WayPoint::WayPoint(double lat, double lon)
@@ -158,16 +157,6 @@ void WayPoint::setType(Type type)
 WayPoint::Type WayPoint::type() const
 {
   return m_type;
-}
-
-void WayPoint::setRadius(int radius)
-{
-  m_radius = radius;
-}
-
-int WayPoint::radius() const
-{
-  return m_radius;
 }
 
 uint WayPoint::distance(const WayPoint &wp) const
