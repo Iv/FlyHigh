@@ -104,13 +104,13 @@ MainWindow::MainWindow()
 	QAction* pStatLandDBAct = new QAction(tr("&Start/Land (DB)"), this);
 	connect(pStatLandDBAct, SIGNAL(triggered()), this, SLOT(startLand_fromSQL()));
 	pPrepMenu->addAction(pStatLandDBAct);
-	QAction* pBuoyDBAct = new QAction(tr("&Buoys (DB)"), this);
+	QAction* pBuoyDBAct = new QAction(tr("&Waypoints (DB)"), this);
 	connect(pBuoyDBAct, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
 	pPrepMenu->addAction(pBuoyDBAct);
-	QAction* pBuoyFileAct = new QAction(tr("&Buoys (File)"), this);
+	QAction* pBuoyFileAct = new QAction(tr("&Waypoints (File)"), this);
 	connect(pBuoyFileAct, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
 	pPrepMenu->addAction(pBuoyFileAct);
-	QAction* pWPDevAct = new QAction(tr("WayPoints (G&PS)"), this);
+	QAction* pWPDevAct = new QAction(tr("Waypoints (G&PS)"), this);
 	connect(pWPDevAct, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
 	pPrepMenu->addAction(pWPDevAct);
 	pPrepMenu->addSeparator();
@@ -279,7 +279,7 @@ void MainWindow::startLand_fromSQL()
 
 void MainWindow::buoys_fromSQL()
 {
-	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Buoys from DB", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Waypoints from DB", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -287,7 +287,7 @@ void MainWindow::buoys_fromSQL()
 
 void MainWindow::buoys_fromFile()
 {
-	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Buoys from file", 0, IDataBase::File, WayPoint::TypeBuoy);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Waypoints from file", 0, IDataBase::File, WayPoint::TypeBuoy);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -295,7 +295,7 @@ void MainWindow::buoys_fromFile()
 
 void MainWindow::waypoints_fromGPS()
 {
-	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "WayPoints from GPS", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
+	MDIWindow* pWin = new WayPointWindow(m_pMdiArea, "Waypoints from GPS", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
