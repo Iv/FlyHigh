@@ -93,6 +93,8 @@ class ISql: public IDataBase
 
 		bool add(Flight &flight);
 
+		bool updateFlight(Flight &flight);
+
 		bool delFlight(Flight &flight);
 
 		int newFlightNr(Pilot &pilot);

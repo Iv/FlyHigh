@@ -43,6 +43,11 @@ bool IDataBase::add(Flight &flight)
 	return false;
 }
 
+bool IDataBase::updateFlight(Flight &flight)
+{
+  return false;
+}
+
 bool IDataBase::delFlight(Flight &flight)
 {
 	return false;

@@ -50,6 +50,8 @@ class IDataBase: public QObject
 		// flights
 		virtual bool add(Flight &flight);
 
+		virtual bool updateFlight(Flight &flight);
+
 		virtual bool delFlight(Flight &flight);
 
 		virtual int flightsLastModified();
