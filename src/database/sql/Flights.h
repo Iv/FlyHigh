@@ -33,6 +33,8 @@ class Flights: public DataBaseSub
 
 		bool add(Flight &flight);
 
+		bool updateFlight(Flight &flight);
+
 		bool delFlight(Flight &flight);
 
 		int newFlightNr(Pilot &pilot);

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3sqlcursor.h>
+#include <QVariant>
 #include <QDateTime>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -39,28 +39,46 @@ Flights::Flights(QSqlDatabase DB)
 
 bool Flights::add(Flight &flight)
 {
-	Q3SqlCursor cur("Flights");
-	QSqlRecord *pRec;
   QSqlQuery query(db());
+  QString sqls;
 	bool success;
 
-	// insert record
-	pRec = cur.primeInsert();
-	pRec->setValue("Number", flight.number());
-	pRec->setValue("PilotId", flight.pilot().id());
-	pRec->setValue("Date", flight.date());
-	pRec->setValue("Time", flight.time());
-	pRec->setValue("GliderId", flight.glider().id());
-	pRec->setValue("StartPtId", flight.startPt().id());
-	pRec->setValue("LandPtId", flight.landPt().id());
-	pRec->setValue("Duration", flight.duration());
-	pRec->setValue("Distance", flight.distance());
-	pRec->setValue("Comment", flight.comment());
-	pRec->setValue("IGCFile", flight.igcData());
+  sqls = QString("INSERT INTO Flights (Number, PilotId, Date, Time, GliderId, StartPtId, "
+                 "LandPtId, Duration, Distance, Comment, IGCFile) "
+                 "VALUES(%1, %2, '%3', '%4', %5, %6, %7, %8, %9, '%10', :igcdata);")
+                 .arg(flight.number()).arg(flight.pilot().id())
+                 .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
+                 .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
+                 .arg(flight.duration()).arg(flight.distance()).arg(flight.comment());
 
-	success = (cur.insert() == 1);
+  query.prepare(sqls);
+  query.bindValue(":igcdata", flight.igcData());
+	success = query.exec();
 	DataBaseSub::setLastModified("Flights");
+	Error::verify(success, Error::SQL_CMD);
 	setId(flight);
+
+	return success;
+}
+
+bool Flights::updateFlight(Flight &flight)
+{
+  QSqlQuery query(db());
+  QString sqls;
+	bool success;
+
+  sqls = QString("UPDATE Flights SET Number=%1, PilotId=%2, Date='%3', Time='%4', GliderId=%5, "
+                 "StartPtId=%6, LandPtId=%7, Duration=%8, Distance=%9, Comment='%10' "
+                 "WHERE Id=%11;")
+                 .arg(flight.number()).arg(flight.pilot().id()).arg(flight.date().toString("yyyy-MM-dd"))
+                 .arg(flight.time().toString("hh:mm:ss"))
+                 .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
+                 .arg(flight.duration()).arg(flight.distance()).arg(flight.comment())
+                 .arg(flight.id());
+
+	success = query.exec(sqls);
+	DataBaseSub::setLastModified("Flights");
+	Error::verify(success, Error::SQL_CMD);
 
 	return success;
 }
@@ -82,7 +100,7 @@ bool Flights::delFlight(Flight &flight)
 int Flights::newFlightNr(Pilot &pilot)
 {
 	QString sqls;
-        QSqlQuery query(db());
+  QSqlQuery query(db());
 	int newFlightNr = -1;
 
 	sqls.sprintf("SELECT MAX(Number) FROM Flights WHERE PilotId = %i", pilot.id());
@@ -99,7 +117,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 {
 	Pilot flightPilot;
 	Flight flight;
-        QSqlQuery query(db());
+  QSqlQuery query(db());
 	QString sqls;
 	bool success;
 	Glider glider;
