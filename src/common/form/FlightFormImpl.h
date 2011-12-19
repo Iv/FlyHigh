@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,6 @@
 #ifndef FlightFormImpl_h
 #define FlightFormImpl_h
 
-//#include <qthread.h>
 #include "ui_FlightForm.h"
 #include "Glider.h"
 #include "WayPoint.h"
@@ -36,23 +35,31 @@ class FlightFormImpl : public QDialog, public Ui::FlightForm
 		FlightFormImpl(QWidget* parent, const QString &caption, Flight *pFlight);
 
 		void setFlight(Flight *pFlight);
+
 		void enableInput(bool b);
 
 	protected slots:
 		void accept();
+
 		void newWayPoint();
+
 		void newGlider();
+
 		void limitDistance();
-		
+
 	private:
 		Flight *m_pFlight;
 		Glider::GliderListType m_gliderList;
 		WayPoint::WayPointListType m_wpList;
-		
+
 		void updateWayPoints();
+
 		void updateGlider();
+
 		void selectStart();
+
 		void selectLand();
+
 		void selectGlider();
 };
 

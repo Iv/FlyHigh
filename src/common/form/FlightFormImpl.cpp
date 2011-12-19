@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -36,10 +36,10 @@
 #include "WayPoint.h"
 
 FlightFormImpl::FlightFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
-: QDialog(parent)
+  :QDialog(parent)
 {
-        setupUi(this);
-        setWindowTitle(caption);
+  setupUi(this);
+  setWindowTitle(caption);
 	setFlight(pFlight);
 }
 
@@ -56,8 +56,8 @@ void FlightFormImpl::updateWayPoints()
 	for(it=m_wpList.begin(); it!=m_wpList.end(); it++)
 	{
 		(*it).fullName(name);
-                comboBoxStart->addItem(name);
-                comboBoxLand->addItem(name);
+    comboBoxStart->addItem(name);
+    comboBoxLand->addItem(name);
 	}
 }
 
@@ -73,7 +73,7 @@ void FlightFormImpl::updateGlider()
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
-                comboBoxModel->addItem(gliderModel);
+    comboBoxModel->addItem(gliderModel);
 	}
 }
 
@@ -116,6 +116,7 @@ void FlightFormImpl::setFlight(Flight *pFlight)
 		selectGlider();
 		str.sprintf("%.3f", m_pFlight->distance() / 1000.0);
 		lineEditDistance->setText(str);
+		textEditComment->setText(m_pFlight->comment());
 	}
 }
 
