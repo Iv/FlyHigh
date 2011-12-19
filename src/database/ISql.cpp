@@ -318,6 +318,16 @@ bool ISql::add(Flight &flight)
 	return success;
 }
 
+bool ISql::updateFlight(Flight &flight)
+{
+  bool success;
+
+	success = m_pFlights->updateFlight(flight);
+	emit flightsChanged();
+
+	return success;
+}
+
 bool ISql::delFlight(Flight &flight)
 {
   bool success;
