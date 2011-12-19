@@ -62,13 +62,16 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 		{
 			m_pDb = ISql::pInstance();
 			QAction* pNewAct = new QAction(tr("&New..."), this);
-			connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
+			connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_new()));
 			pFileMenu->addAction(pNewAct);
+			QAction* pEditAct = new QAction(tr("&Edit..."), this);
+			connect(pEditAct, SIGNAL(triggered()), this, SLOT(file_edit()));
+			pFileMenu->addAction(pEditAct);
 			QAction* pDelAct = new QAction(tr("&Delete"), this);
-			connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
+			connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
 			pFileMenu->addAction(pDelAct);
 			QAction* pImpAct = new QAction(tr("&Import..."), this);
-			connect(pImpAct,SIGNAL(triggered()), this, SLOT(file_import()));
+			connect(pImpAct, SIGNAL(triggered()), this, SLOT(file_import()));
 			pFileMenu->addAction(pImpAct);
 		}
 		break;
@@ -76,7 +79,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 		{
 			m_pDb = IGPSDevice::pInstance();
 			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
 			pFileMenu->addAction(pAddAct);
 		}
 		break;
@@ -89,13 +92,13 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
   connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
 	QAction* pExpIGCAct = new QAction(tr("&Export IGC..."), this);
-	connect(pExpIGCAct,SIGNAL(triggered()), this, SLOT(file_exportIGC()));
+	connect(pExpIGCAct, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
 	pFileMenu->addAction(pExpIGCAct);
 	QAction* pExpKMLAct = new QAction(tr("&Export KML..."), this);
-	connect(pExpKMLAct,SIGNAL(triggered()), this, SLOT(file_exportKML()));
+	connect(pExpKMLAct, SIGNAL(triggered()), this, SLOT(file_exportKML()));
 	pFileMenu->addAction(pExpKMLAct);
 	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
+	connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
 	pFileMenu->addAction(pExpAllAct);
 
 /*	- ground speed / time
@@ -711,6 +714,25 @@ void FlightWindow::file_new()
 	{
 		ISql::pInstance()->add(flight);
 		m_pDb->close();
+	}
+}
+
+void FlightWindow::file_edit()
+{
+  IFlightForm flightForm(this, tr("Edit Flight"));
+  int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    flightForm.setFlight(&m_flightList[row]);
+
+    if(flightForm.exec() && m_pDb->open())
+    {
+      ISql::pInstance()->updateFlight(m_flightList[row]);
+      m_pDb->close();
+    }
 	}
 }
 
