@@ -42,9 +42,12 @@ class WayPoints: public DataBaseSub
 
 		bool wayPoint(int id, WayPoint &wp);
 
-		// searches a WayPoint around radius from lat and lon of wp
-		// fills values of wp and returns database ID
-		// radius in meters
+		/**
+      Searches a WayPoint around radius from lat, lon and type of wp. Fills other
+      values from database.
+      @param wp WayPoint looking for
+      @param radius in meters
+		*/
 		bool findWayPoint(WayPoint &wp, uint radius);
 
 		bool wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpList);
@@ -52,11 +55,6 @@ class WayPoints: public DataBaseSub
 		bool checkModified();
 
 	private:
-		enum Elements
-		{
-			Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type
-		};
-
 		bool setId(WayPoint &wp);
 };
 

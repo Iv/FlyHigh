@@ -47,10 +47,6 @@ class Gliders: public DataBaseSub
 		bool checkModified();
 
 	private:
-		enum Elements
-		{
-			Id, Manufacturer, Model, Serial
-		};
 };
 
 #endif

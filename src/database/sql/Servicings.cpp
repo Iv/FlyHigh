@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3sqlcursor.h>
 #include <QDateTime>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QVariant>
 #include "Error.h"
 #include "Glider.h"
 #include "Gliders.h"
@@ -35,20 +35,21 @@ Servicings::Servicings(QSqlDatabase DB)
 
 bool Servicings::add(Servicing &servicing)
 {
-	Q3SqlCursor cur("Servicings");
-	QSqlRecord *pRec;
+	QSqlQuery query(db());
+	QString sqls;
+	bool success;
 
-	// insert record
-	pRec = cur.primeInsert();
-	pRec->setValue("Id", newId("Servicings"));
-	pRec->setValue("GliderId", servicing.glider().id());
-	pRec->setValue("Date", servicing.date());
-	pRec->setValue("Responsibility", servicing.responsibility());
-	pRec->setValue("Comment", servicing.comment());
-	Error::verify(cur.insert() == 1, Error::SQL_CMD);
+  sqls = QString("INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) "
+                 "VALUES(%1, %2, '%3', '%4', '%5');")
+                 .arg(newId("Servicings")).arg(servicing.glider().id())
+                 .arg(servicing.date().toString("yyyy-MM-dd"))
+                 .arg(servicing.responsibility()).arg(servicing.comment());
+
+  success = query.exec(sqls);
+	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Servicings");
 
-	return true;
+	return success;
 }
 
 bool Servicings::delServicing(Servicing &servicing)
@@ -57,7 +58,7 @@ bool Servicings::delServicing(Servicing &servicing)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("DELETE FROM Servicings WHERE Id = %i", servicing.id());
+	sqls = QString("DELETE FROM Servicings WHERE Id=%1").arg(servicing.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
@@ -70,21 +71,23 @@ bool Servicings::servicingList(Servicing::ServicingListType &servicingList)
 	Servicing servicing;
 	Glider glider;
 	QSqlQuery query(db());
-	QString sqls = "SELECT * FROM Servicings ORDER BY Id DESC";
+	QString sqls;
 	bool success;
 
+  sqls = "SELECT Id, GliderId, Date, Responsibility, Comment FROM Servicings "
+         "ORDER BY Id DESC";
 	success = query.exec(sqls);
 
 	if(success)
 	{
 		while(query.next())
 		{
-			servicing.setId(query.value(Id).toInt());
-			ISql::pInstance()->pGliderTable()->glider(query.value(GliderId).toInt(), glider);
+			servicing.setId(query.value(0).toInt());
+			ISql::pInstance()->pGliderTable()->glider(query.value(1).toInt(), glider);
 			servicing.setGlider(glider);
-			servicing.setDate(query.value(Date).toDate());
-			servicing.setResponsibility(query.value(Responsibility).toString());
-			servicing.setComment(query.value(Comment).toString());
+			servicing.setDate(query.value(2).toDate());
+			servicing.setResponsibility(query.value(3).toString());
+			servicing.setComment(query.value(4).toString());
 			servicingList.push_back(servicing);
 		}
 	}

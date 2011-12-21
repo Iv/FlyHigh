@@ -89,7 +89,8 @@ bool Flights::delFlight(Flight &flight)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("DELETE FROM Flights WHERE PilotId = %i AND Number = %i", flight.pilot().id(), flight.number());
+	sqls = QString("DELETE FROM Flights WHERE PilotId=%1 AND Number=%2")
+                  .arg(flight.pilot().id()).arg(flight.number());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
@@ -103,7 +104,7 @@ int Flights::newFlightNr(Pilot &pilot)
   QSqlQuery query(db());
 	int newFlightNr = -1;
 
-	sqls.sprintf("SELECT MAX(Number) FROM Flights WHERE PilotId = %i", pilot.id());
+	sqls = QString("SELECT MAX(Number) FROM Flights WHERE PilotId=%1").arg(pilot.id());
 
 	if(query.exec(sqls) && query.first())
 	{
@@ -123,29 +124,32 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Glider glider;
 	WayPoint wayPoint;
 
-	sqls.sprintf("SELECT * FROM Flights WHERE PilotId = %i ORDER BY Number DESC;", pilot.id());
+	sqls = QString("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
+                  "Duration, Distance, Comment FROM Flights WHERE PilotId=%1 ORDER BY Number DESC;")
+                .arg(pilot.id());
+
 	success = query.exec(sqls);
 
 	if(success)
 	{
 		while(query.next())
 		{
-			flight.setId(query.value(Id).toInt());
-			flight.setNumber(query.value(Number).toInt());
-			ISql::pInstance()->pPilotTable()->pilot(query.value(PilotId).toInt(), flightPilot);
+			flight.setId(query.value(0).toInt());
+			flight.setNumber(query.value(1).toInt());
+			ISql::pInstance()->pPilotTable()->pilot(query.value(2).toInt(), flightPilot);
 			flight.setPilot(flightPilot);
-			flight.setDate(query.value(Date).toDate());
-			flight.setTime(query.value(Time).toTime());
-			ISql::pInstance()->pGliderTable()->glider(query.value(GliderId).toInt(), glider);
+			flight.setDate(query.value(3).toDate());
+			flight.setTime(query.value(4).toTime());
+			ISql::pInstance()->pGliderTable()->glider(query.value(5).toInt(), glider);
 			flight.setGlider(glider);
-			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(StartPtId).toInt(), wayPoint);
+			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(6).toInt(), wayPoint);
 			flight.setStartPt(wayPoint);
-			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(LandPtId).toInt(), wayPoint);
+			ISql::pInstance()->pWayPointTable()->wayPoint(query.value(7).toInt(), wayPoint);
 			flight.setLandPt(wayPoint);
-			flight.setDuration(query.value(Duration).toInt());
-			flight.setDistance(query.value(Distance).toInt());
-			flight.setComment(query.value(Comment).toString());
-			//flight.setIgcData(query.value(IGCFile).toByteArray());
+			flight.setDuration(query.value(8).toInt());
+			flight.setDistance(query.value(9).toInt());
+			flight.setComment(query.value(10).toString());
+			//flight.setIgcData(query.value(11).toByteArray());
 
 			flightList.push_back(flight);
 		}
@@ -167,11 +171,10 @@ bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 
 	for(year=2000; year<=now.year(); year++)
 	{
-		sqls.sprintf("SELECT * FROM Flights WHERE "
-			"PilotId = %i AND "
-			"Date >= '%i-01-01' AND "
-			"Date <= '%i-12-31';",
-				pilot.id(), year, year);
+		sqls = QString("SELECT Duration FROM Flights WHERE PilotId = %1 AND "
+                  "Date >= '%2-01-01' AND Date <= '%3-12-31';")
+                  .arg(pilot.id()).arg(year).arg(year);
+
 		success = query.exec(sqls);
 
 		if(success)
@@ -183,7 +186,7 @@ bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 			while(query.next())
 			{
 				fpy.nFlights++;
-				fpy.airTimeSecs += query.value(Duration).toInt();
+				fpy.airTimeSecs += query.value(0).toInt();
 			}
 
 			if(fpy.nFlights > 0)
@@ -208,12 +211,13 @@ bool Flights::loadIGCFile(Flight &flight)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM Flights WHERE PilotId = %i AND Number = %i;", flight.pilot().id(), flight.number());
+	sqls = QString("SELECT IGCFile FROM Flights WHERE PilotId=%1 AND Number=%2;")
+                .arg(flight.pilot().id()).arg(flight.number());
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		flight.setIgcData(query.value(IGCFile).toByteArray());
+		flight.setIgcData(query.value(0).toByteArray());
 	}
 
 	Error::verify(success, Error::SQL_CMD);
@@ -229,7 +233,7 @@ bool Flights::setFlightStatistic(Glider &glider)
 	uint flights = 0;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM Flights WHERE GliderId = %i;", glider.id());
+	sqls = QString("SELECT Duration FROM Flights WHERE GliderId=%1;").arg(glider.id());
 	success = query.exec(sqls);
 
 	if(success)
@@ -237,7 +241,7 @@ bool Flights::setFlightStatistic(Glider &glider)
 		while(query.next())
 		{
 			flights++;
-			airtime += query.value(Duration).toInt();
+			airtime += query.value(0).toInt();
 		}
 
 		glider.setAirtime(airtime);
@@ -262,16 +266,14 @@ bool Flights::setId(Flight &flight)
 	bool success;
 	int id = -1;
 
-	sqls.sprintf("SELECT * FROM Flights WHERE "
-		"Number = %i AND "
-		"PilotId = %i;",
-		flight.number(), flight.pilot().id());
+	sqls = QString("SELECT Id FROM Flights WHERE Number=%1 AND PilotId=%2;")
+                .arg(flight.number()).arg(flight.pilot().id());
 
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		id = query.value(Id).toInt();
+		id = query.value(0).toInt();
 	}
 	else
 	{
