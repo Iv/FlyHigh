@@ -42,7 +42,8 @@ bool Routes::add(Route &route)
 	bool success;
 
 	// insert route name
-	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(NULL, '%1', %2);").arg(route.name()).arg(route.type());
+	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(NULL, '%1', %2);")
+                  .arg(route.name()).arg(route.type());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
@@ -61,7 +62,7 @@ bool Routes::add(Route &route)
 				sqls += ", ";
 			}
 
-			value.sprintf("(NULL, %i, %i)", route.id(), route.wayPointList().at(wpNr).id());
+			value = QString("(NULL, %1, %2)").arg(route.id()).arg(route.wayPointList().at(wpNr).id());
 			sqls += value;
 		}
 
@@ -82,13 +83,13 @@ bool Routes::delRoute(Route &route)
 	bool success;
 
 	// first delete route items
-	sqls = "DELETE FROM RouteItems WHERE RouteId = %1;";
-	success = query.exec(sqls.arg(route.id()));
+	sqls = QString("DELETE FROM RouteItems WHERE RouteId=%1;").arg(route.id());
+	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 
 	// route
-	sqls = "DELETE FROM Routes WHERE Id = %1;";
-	success = query.exec(sqls.arg(route.id()));
+	sqls = QString("DELETE FROM Routes WHERE Id=%1;").arg(route.id());
+	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 
 	// waypoints (delete only types not used anymore)
@@ -98,8 +99,8 @@ bool Routes::delRoute(Route &route)
 	{
 	  if((*it).type() == WayPoint::TypeTurnPoint)
 	  {
-      sqls = "DELETE FROM WayPoints WHERE Id = %1";
-      success &= query.exec(sqls.arg((*it).id()));
+      sqls = QString("DELETE FROM WayPoints WHERE Id=%1").arg((*it).id());
+      success &= query.exec(sqls);
 	  }
 
 /**
@@ -129,7 +130,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 	WayPoint wp;
 	QSqlQuery routeQuery(db());
 	QSqlQuery routeItemsQuery(db());
-	QString sqls = "SELECT * FROM Routes ORDER BY Name ASC;";
+	QString sqls = "SELECT Id, Name, Type FROM Routes ORDER BY Name ASC;";
 	QString wpName;
 	int wpId;
 	bool success;
@@ -141,20 +142,20 @@ bool Routes::routeList(Route::RouteListType &routeList)
 		while(routeQuery.next())
 		{
 			// route name
-			route.setId(routeQuery.value(Id).toInt());
-			route.setName(routeQuery.value(Name).toString());
-			route.setType((Route::Type)routeQuery.value(Type).toInt());
+			route.setId(routeQuery.value(0).toInt());
+			route.setName(routeQuery.value(1).toString());
+			route.setType((Route::Type)routeQuery.value(2).toInt());
 			route.wayPointList().clear();
 
 			// route items
-			sqls.sprintf("SELECT * FROM RouteItems WHERE RouteId = %i;", route.id());
+			sqls = QString("SELECT WayPointId FROM RouteItems WHERE RouteId=%1;").arg(route.id());
 			success = routeItemsQuery.exec(sqls);
 
 			if(success)
 			{
 				while(routeItemsQuery.next())
 				{
-					wpId = routeItemsQuery.value(WayPointId).toInt();
+					wpId = routeItemsQuery.value(0).toInt();
 					ISql::pInstance()->pWayPointTable()->wayPoint(wpId, wp);
 					route.wayPointList().push_back(wp);
 				}
@@ -177,12 +178,12 @@ bool Routes::setId(Route &route)
 	bool success;
 	int id = -1;
 
-	sqls = QString("SELECT * FROM Routes WHERE Name = '%1';").arg(route.name());
+	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';").arg(route.name());
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		id = query.value(Id).toInt();
+		id = query.value(0).toInt();
 	}
 	else
 	{

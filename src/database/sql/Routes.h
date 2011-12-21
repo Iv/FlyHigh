@@ -40,9 +40,6 @@ class Routes: public DataBaseSub
 		bool checkModified();
 
 	private:
-		enum RouteElements{Id, Name, Type};
-		enum RouteItemElements{RouteItemId, RouteId, WayPointId};
-
 		bool setId(Route &route);
 };
 

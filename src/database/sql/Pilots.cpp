@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <q3sqlcursor.h>
+
 #include <QDateTime>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QVariant>
 #include "Error.h"
 #include "ISql.h"
 #include "Gliders.h"
@@ -37,20 +38,17 @@ Pilots::~Pilots()
 
 bool Pilots::add(Pilot &pilot)
 {
-	Q3SqlCursor cur("Pilots");
-	QSqlRecord *pRec;
-        QSqlQuery query(db());
+  QSqlQuery query(db());
+  QString sqls;
 	bool success;
 
-	// insert record
-	pRec = cur.primeInsert();
-	pRec->setValue("FirstName", pilot.firstName());
-	pRec->setValue("LastName", pilot.lastName());
-	pRec->setValue("BirthDate", pilot.birthDate());
-	pRec->setValue("CallSign", pilot.callSign());
-	pRec->setValue("GliderId", pilot.glider().id());
+  sqls = QString("INSERT INTO Pilots (FirstName, LastName, BirthDate, CallSign, GliderId) "
+                 "VALUES('%1', '%2', '%3', '%4', %5);")
+                 .arg(pilot.firstName()).arg(pilot.lastName())
+                 .arg(pilot.birthDate().toString("yyyy-MM-dd"))
+                 .arg(pilot.callSign()).arg(pilot.glider().id());
 
-	success = (cur.insert() == 1);
+  success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	setId(pilot);
 	DataBaseSub::setLastModified("Pilots");
@@ -63,19 +61,17 @@ bool Pilots::update(Pilot &pilot)
   QSqlQuery query(db());
 	QString sqls;
 	bool success;
-	QString birthDate;
 
-	birthDate = pilot.birthDate().toString("yyyy-MM-dd");
-
-	sqls = QString("UPDATE Pilots SET FirstName= '%1', LastName = '%2', BirthDate = '%3', CallSign = '%4', GliderId = %5 WHERE Id = %6")
+	sqls = QString("UPDATE Pilots SET FirstName='%1', LastName='%2', BirthDate='%3', "
+                 "CallSign='%4', GliderId=%5 WHERE Id=%6")
 		.arg(pilot.firstName())
 		.arg(pilot.lastName())
-		.arg(birthDate)
+		.arg(pilot.birthDate().toString("yyyy-MM-dd"))
 		.arg(pilot.callSign())
 		.arg(pilot.glider().id())
 		.arg(pilot.id());
-	success = query.exec(sqls);
 
+	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Pilots");
 
@@ -90,17 +86,18 @@ bool Pilots::pilot(int id, Pilot &pilot)
 	Glider glider;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM Pilots WHERE Id = %i ", id);
+	sqls = QString("SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId "
+                  "FROM Pilots WHERE Id=%1;").arg(id);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		pilot.setId(query.value(Id).toInt());
-		pilot.setFirstName(query.value(FirstName).toString());
-		pilot.setLastName(query.value(LastName).toString());
-		pilot.setBirthDate(query.value(BirthDate).toDate());
-		pilot.setCallSign(query.value(CallSign).toString());
-		ISql::pInstance()->pGliderTable()->glider(query.value(GliderId).toInt(), glider);
+		pilot.setId(query.value(0).toInt());
+		pilot.setFirstName(query.value(1).toString());
+		pilot.setLastName(query.value(2).toString());
+		pilot.setBirthDate(query.value(3).toDate());
+		pilot.setCallSign(query.value(4).toString());
+		ISql::pInstance()->pGliderTable()->glider(query.value(5).toInt(), glider);
 		pilot.setGlider(glider);
 	}
 	else
@@ -119,16 +116,16 @@ bool Pilots::setId(Pilot &pilot)
 	bool success;
 	int id = -1;
 
-  sqls = QString("SELECT * FROM Pilots WHERE "
-          "FirstName = '%1' AND "
-          "LastName = '%2' AND "
-          "BirthDate = '%3'").arg(pilot.firstName(), pilot.lastName(), pilot.birthDate().toString("yyyy-MM-dd"));
+  sqls = QString("SELECT Id FROM Pilots WHERE FirstName='%1' AND LastName='%2' "
+                 "AND BirthDate='%3'")
+                  .arg(pilot.firstName()).arg(pilot.lastName())
+                  .arg(pilot.birthDate().toString("yyyy-MM-dd"));
 
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		id = query.value(Id).toInt();
+		id = query.value(0).toInt();
 	}
 
 	pilot.setId(id);

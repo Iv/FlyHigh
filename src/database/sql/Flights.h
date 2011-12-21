@@ -50,12 +50,6 @@ class Flights: public DataBaseSub
 		bool checkModified();
 
 	private:
-		enum Elements
-		{
-			Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId,
-			Duration, Distance, Comment, IGCFile
-		};
-
 		bool setId(Flight &flight);
 };
 

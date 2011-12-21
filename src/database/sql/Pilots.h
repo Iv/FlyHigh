@@ -44,10 +44,6 @@ class Pilots: public DataBaseSub
 		bool checkModified();
 
 	private:
-		enum Elements
-		{
-			Id, FirstName, LastName, BirthDate, CallSign, GliderId
-		};
 };
 
 #endif

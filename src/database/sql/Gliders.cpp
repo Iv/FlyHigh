@@ -33,15 +33,16 @@ Gliders::Gliders(QSqlDatabase DB)
 
 bool Gliders::add(Glider &glider)
 {
-	Q3SqlCursor cur("Gliders");
-	QSqlRecord *pRec;
+  QSqlQuery query(db());
+  QString sqls;
+  bool success;
 
-	// insert record
-	pRec = cur.primeInsert();
-	pRec->setValue("Manufacturer", glider.manufacturer());
-	pRec->setValue("Model", glider.model());
-	pRec->setValue("Serial", glider.serial());
-	Error::verify(cur.insert() == 1, Error::SQL_CMD);
+  sqls = QString("INSERT INTO Gliders (Manufacturer, Model, Serial) "
+                 "VALUES('%1', '%2', '%3');")
+                 .arg(glider.manufacturer()).arg(glider.model()).arg(glider.serial());
+
+  success = query.exec(sqls);
+	Error::verify(success, Error::SQL_CMD);
 	setGliderId(glider);
 	DataBaseSub::setLastModified("Gliders");
 
@@ -54,7 +55,7 @@ bool Gliders::delGlider(Glider &glider)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("DELETE FROM Gliders WHERE Id = %i", glider.id());
+	sqls = QString("DELETE FROM Gliders WHERE Id=%1;").arg(glider.id());
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Gliders");
 	Error::verify(success, Error::SQL_CMD);
@@ -69,21 +70,21 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	QString dbModel;
 	bool success = false;
 
-	sqls.sprintf("SELECT * FROM Gliders");
+	sqls.sprintf("SELECT Id, Manufacturer, Model, Serial FROM Gliders;");
 
 	if(query.exec(sqls))
 	{
 		while(query.next())
 		{
-			dbModel = query.value(Model).toString();
+			dbModel = query.value(2).toString();
 			success = (dbModel == modelOfGlider);
 
 			if(success)
 			{
-				glider.setId(query.value(Id).toInt());
-				glider.setManufacturer(query.value(Manufacturer).toString());
-				glider.setModel(query.value(Model).toString());
-				glider.setSerial(query.value(Serial).toString());
+				glider.setId(query.value(0).toInt());
+				glider.setManufacturer(query.value(1).toString());
+				glider.setModel(dbModel);
+				glider.setSerial(query.value(3).toString());
 				break;
 			}
 		}
@@ -100,7 +101,8 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 {
 	Glider glider;
         QSqlQuery query(db());
-	QString sqls = "SELECT * FROM Gliders ORDER BY Manufacturer, Model ASC";
+	QString sqls = "SELECT Id, Manufacturer, Model, Serial FROM Gliders "
+                  "ORDER BY Manufacturer, Model ASC";
 	bool success;
 
 	success = query.exec(sqls);
@@ -109,10 +111,10 @@ bool Gliders::gliderList(Glider::GliderListType &gliderList)
 	{
 		while(query.next())
 		{
-			glider.setId(query.value(Id).toInt());
-			glider.setManufacturer(query.value(Manufacturer).toString());
-			glider.setModel(query.value(Model).toString());
-			glider.setSerial(query.value(Serial).toString());
+			glider.setId(query.value(0).toInt());
+			glider.setManufacturer(query.value(1).toString());
+			glider.setModel(query.value(2).toString());
+			glider.setSerial(query.value(3).toString());
 			ISql::pInstance()->pFlightTable()->setFlightStatistic(glider);
 			gliderList.push_back(glider);
 		}
@@ -129,15 +131,15 @@ bool Gliders::glider(int id, Glider &glider)
 	QString sqls;
 	bool success;
 
-	sqls.sprintf("SELECT * FROM Gliders WHERE Id = %i", id);
+	sqls = QString("SELECT Manufacturer, Model, Serial FROM Gliders WHERE Id=%1").arg(id);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		glider.setId(query.value(Id).toInt());
-		glider.setManufacturer(query.value(Manufacturer).toString());
-		glider.setModel(query.value(Model).toString());
-		glider.setSerial(query.value(Serial).toString());
+		glider.setId(id);
+		glider.setManufacturer(query.value(0).toString());
+		glider.setModel(query.value(1).toString());
+		glider.setSerial(query.value(2).toString());
 	}
 	else
 	{
@@ -155,16 +157,15 @@ bool Gliders::setGliderId(Glider &glider)
 	bool success;
 	int id = -1;
 
-  sqls = QString("SELECT * FROM Gliders WHERE "
-          "Manufacturer = '%1' AND "
-          "Model = '%2' AND "
-          "Serial = '%3'").arg(glider.manufacturer(),glider.model(),glider.serial());
+  sqls = QString("SELECT Id FROM Gliders WHERE "
+                  "Manufacturer='%1' AND Model='%2' AND Serial='%3'")
+                  .arg(glider.manufacturer(),glider.model(),glider.serial());
 
 	success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
-		id = query.value(Id).toInt();
+		id = query.value(0).toInt();
 	}
 	else
 	{
