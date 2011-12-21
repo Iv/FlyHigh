@@ -284,6 +284,7 @@ void FlightWindow::file_AddToSqlDB()
 
 				// start place
 				wp = igcParser.flightPointList().at(id).wp;
+        wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
@@ -303,6 +304,7 @@ void FlightWindow::file_AddToSqlDB()
 			if(id >= 0)
 			{
 				wp = igcParser.flightPointList().at(id).wp;
+				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
@@ -413,6 +415,7 @@ void FlightWindow::file_import()
 
 				// start place
 				wp = igcParser.flightPointList().at(startPtId).wp;
+				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
@@ -432,6 +435,7 @@ void FlightWindow::file_import()
 			if(landPtId >= 0)
 			{
 				wp = igcParser.flightPointList().at(landPtId).wp;
+				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
