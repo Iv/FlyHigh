@@ -163,6 +163,8 @@ void RouteWindow::file_update()
 void RouteWindow::file_new()
 {
 	Route route;
+
+	route.setType(Route::Competition);
 	IRouteForm routeForm(this, tr("Add Route to DB"), &route);
 
 	if(routeForm.exec() && m_pDb->open())
