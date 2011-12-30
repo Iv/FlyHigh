@@ -78,7 +78,7 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homePath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.9.1";
+	m_versionInfo = "FlyHigh Version 0.9.2";
 	m_copyInfo =
 			"Copyright (c): 2004-2011 by Alex Graf <grafal@sf.net> and\n"
 			"Jurg Allemann <ja_kern@sf.net>.\n"
