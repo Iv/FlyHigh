@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,18 +21,21 @@
 #ifndef _MainWindow_h_
 #define _MainWindow_h_
 
-#include <qmainwindow.h>
+#include <QMainWindow>
 #include <QCloseEvent>
 
 class QMdiArea;
+class QMdiSubWindow;
 class QSignalMapper;
 class MDIWindow;
 
 class MainWindow: public QMainWindow
 {
 	Q_OBJECT
+
 	public:
 		MainWindow();
+
 		virtual ~MainWindow();
 
 	protected:
@@ -85,6 +88,8 @@ class MainWindow: public QMainWindow
 
 		void setActiveSubWindow(QWidget *window);
 
+		void subWindowActivated(QMdiSubWindow *pWindow);
+
 		void preferences();
 
 		void migrateDB();
@@ -94,7 +99,6 @@ class MainWindow: public QMainWindow
 		QSignalMapper* m_pWinMapper;
 		QMenu* m_pWindowsMenu;
 		QMenu* m_pDevicesMenu;
-		MDIWindow* m_pActiveWin;
 		QAction* m_pCascade;
 		QAction* m_pTile;
 		QAction* m_pTileHor;
