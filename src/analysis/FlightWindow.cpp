@@ -19,11 +19,11 @@
  ***************************************************************************/
 
 #include <q3table.h>
+#include <QAction>
+#include <QDateTime>
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
-#include <QDateTime>
-#include <QMenuBar>
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "FlightWindow.h"

@@ -18,13 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <q3table.h>
+#include <QAction>
 #include <QFile>
 #include <QFileDialog>
-#include <q3header.h>
-#include <QMenuBar>
 #include <QString>
 #include <QStringList>
-#include <q3table.h>
 #include "AirSpace.h"
 #include "WebMapAirSpaceView.h"
 #include "AirSpaceWindow.h"
@@ -39,12 +38,13 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
+	QAction* pAction;
+	Q3Table *pTable;
 
+	pTable = TableWindow::getTable();
   m_pWebMapView = NULL;
   m_pAirSpaceView = NULL;
   m_externSelect = false;
-	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
 
 	switch(src)
 	{
@@ -54,41 +54,43 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = IGPSDevice::pInstance();
 
-			QAction* pDelAct = new QAction(tr("&Delete"), this);
-			connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-			pFileMenu->addAction(pDelAct);
-			QAction* pUpdateAct = new QAction(tr("&Update"), this);
-			connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-			pFileMenu->addAction(pUpdateAct);
+			pAction = new QAction(tr("&Delete"), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Update"), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 		case IDataBase::File:
 		{
 			m_pDb = NULL;
 
-			QAction* pImpAct = new QAction(tr("&Import..."), this);
-			connect(pImpAct,SIGNAL(triggered()), this, SLOT(file_open()));
-			pFileMenu->addAction(pImpAct);
-			QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
-			connect(pAddAct,SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			pFileMenu->addAction(pAddAct);
+			pAction = new QAction(tr("&Import..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Add to GPS..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 	}
 
   connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
-	QAction* pExpAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-	pFileMenu->addAction(pExpAct);
+	pAction = new QAction(tr("&Export all..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+	MDIWindow::addAction(pAction);
 
-  QAction* pAirSpaceViewAct = new QAction(tr("View Airspace..."), this);
-	connect(pAirSpaceViewAct,SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
-	pFileMenu->addAction(pAirSpaceViewAct);
+  pAction = new QAction(tr("View Airspace..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
+	MDIWindow::addAction(pAction);
 
-  QAction* pWebMapAct = new QAction(tr("View Webmap..."), this);
-	connect(pWebMapAct,SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	pFileMenu->addAction(pWebMapAct);
+  pAction = new QAction(tr("View Webmap..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+	MDIWindow::addAction(pAction);
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
@@ -97,10 +99,10 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setSelectionMode(Q3Table::SingleRow);
 
 	// header
-	nameList += "Name";
-	nameList += "Low";
-	nameList += "High";
-	nameList += "Class";
+	nameList += tr("Name");
+	nameList += tr("Low");
+	nameList += tr("High");
+	nameList += tr("Class");
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Name, 200);

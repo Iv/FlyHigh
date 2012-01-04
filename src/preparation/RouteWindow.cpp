@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QCursor>
-#include <QMenuBar>
-#include <QString>
 #include <q3table.h>
+#include <QAction>
+#include <QCursor>
+#include <QString>
 #include "IGPSDevice.h"
 #include "ProgressDlg.h"
 #include "IRouteForm.h"
@@ -37,9 +37,10 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
+	QAction *pAction;
+	Q3Table *pTable;
 
-	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	pTable = TableWindow::getTable();
 
 	switch(src)
 	{
@@ -47,24 +48,26 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 		{
 			m_pDb = ISql::pInstance();
 
-			QAction* pNewAct = new QAction(tr("&New..."), this);
-			connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_new()));
-			pFileMenu->addAction(pNewAct);
-			QAction* pNewWebMapAct = new QAction(tr("New &Web Map..."), this);
-			connect(pNewWebMapAct, SIGNAL(triggered()), this, SLOT(file_newWebMap()));
-			pFileMenu->addAction(pNewWebMapAct);
-			QAction* pAddAct = new QAction(tr("&Add to GPS..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			pFileMenu->addAction(pAddAct);
+			pAction = new QAction(tr("&New..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("New &Web Map..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_newWebMap()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Add to GPS..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
 /**
-			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			pFileMenu->addAction(pAddAct);
+			pAction = new QAction(tr("&Add to DB..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			MDIWindow::addAction(pAction);
 */
 		}
 		break;
@@ -75,29 +78,32 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 
   connect(m_pDb, SIGNAL(routesChanged()), this, SLOT(file_update()));
 
-	QAction* pViewAct = new QAction(tr("&View"), this);
-	connect(pViewAct, SIGNAL(triggered()), this, SLOT(file_view()));
-	pFileMenu->addAction(pViewAct);
+	pAction = new QAction(tr("&View"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_view()));
+	MDIWindow::addAction(pAction);
 
 	if(src == IDataBase::SqlDB)
 	{
-    QAction* pViewWebMapAct = new QAction(tr("&View Web Map"), this);
-		connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-		pFileMenu->addAction(pViewWebMapAct);
-		QAction* pViewCopyFromAct = new QAction(tr("&Copy from..."), this);
-		connect(pViewCopyFromAct, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
-		pFileMenu->addAction(pViewCopyFromAct);
+    pAction = new QAction(tr("&View Web Map"), this);
+		connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+		MDIWindow::addAction(pAction);
+
+		pAction = new QAction(tr("&Copy from..."), this);
+		connect(pAction, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
+		MDIWindow::addAction(pAction);
 	}
 
-	QAction* pDelAct = new QAction(tr("&Delete"), this);
-	connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-	pFileMenu->addAction(pDelAct);
-	QAction* pUpdateAct = new QAction(tr("&Update"), this);
-	connect(pUpdateAct, SIGNAL(triggered()), this, SLOT(file_update()));
-	pFileMenu->addAction(pUpdateAct);
-	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
-	pFileMenu->addAction(pExpAllAct);
+	pAction = new QAction(tr("&Delete"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Update"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Export all..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+	MDIWindow::addAction(pAction);
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 

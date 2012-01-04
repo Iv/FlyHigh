@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <q3table.h>
 #include <QCursor>
 #include <QMenuBar>
 #include <QStringList>
-#include <q3table.h>
 #include <QWidget>
 #include "ContainerDef.h"
 #include "GliderWindow.h"
@@ -34,21 +34,24 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
+	Q3Table *pTable;
+	QAction* pAction;
 
-	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+  pTable = TableWindow::getTable();
 
-	QAction* pNewAct = new QAction(tr("&New..."), this);
-	connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
-	pFileMenu->addAction(pNewAct);
-	QAction* pDelAct = new QAction(tr("&Delete"), this);
-	connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-	pFileMenu->addAction(pDelAct);
-	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-	pFileMenu->addAction(pExpAllAct);
+	pAction = new QAction(tr("&New..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
+	MDIWindow::addAction(pAction);
 
-	TableWindow::setWindowTitle("Gliders");
+	pAction = new QAction(tr("&Delete"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Export all..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+	MDIWindow::addAction(pAction);
+
+	TableWindow::setWindowTitle(tr("Gliders"));
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
@@ -58,11 +61,11 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
   connect(m_pDb, SIGNAL(glidersChanged()), this, SLOT(file_update()));
 
 	// header
-	nameList += "Manufacturer";
-	nameList += "Model";
-	nameList += "Serial";
-	nameList += "Flights";
-	nameList += "Airtime [h]";
+	nameList += tr("Manufacturer");
+	nameList += tr("Model");
+	nameList += tr("Serial");
+	nameList += tr("Flights");
+	nameList += tr("Airtime [h]");
 
 	setupHeader(nameList);
 

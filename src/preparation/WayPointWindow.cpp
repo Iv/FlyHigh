@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <q3table.h>
+#include <QAction>
 #include <QCursor>
 #include <QDateTime>
 #include <QFileDialog>
-#include <QMenuBar>
 #include <QString>
 #include <QStringList>
-#include <q3table.h>
 #include "IDataBase.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
@@ -40,19 +40,18 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
+	QAction* pAction;
 	Q3Table *pTable = TableWindow::getTable();
-	QMenu* pFileMenu;
 
   m_pWayPointView = NULL;
   m_wpType = type;
   m_externSelect = false;
-  pFileMenu = menuBar()->addMenu(tr("&File"));
 
   if(src != IDataBase::File)
   {
-    QAction* pUpdateAct = new QAction(tr("&Update"), this);
-    connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-    pFileMenu->addAction(pUpdateAct);
+    pAction = new QAction(tr("&Update"), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+    MDIWindow::addAction(pAction);
   }
 
 	switch(src)
@@ -61,13 +60,13 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = ISql::pInstance();
 
-			QAction* pAddAct = new QAction(tr("Add to GPS..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
-			pFileMenu->addAction(pAddAct);
+			pAction = new QAction(tr("Add to GPS..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
+			MDIWindow::addAction(pAction);
 
-      QAction* pEditAct = new QAction(tr("Edit..."), this);
-			connect(pEditAct, SIGNAL(triggered()), this, SLOT(file_Edit()));
-			pFileMenu->addAction(pEditAct);
+      pAction = new QAction(tr("Edit..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_Edit()));
+			MDIWindow::addAction(pAction);
 
       connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 		}
@@ -76,9 +75,9 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = IGPSDevice::pInstance();
 
-			QAction* pAddAct = new QAction(tr("Add to DB..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			pFileMenu->addAction(pAddAct);
+			pAction = new QAction(tr("Add to DB..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			MDIWindow::addAction(pAction);
 
       connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 		}
@@ -87,13 +86,13 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 		{
 			m_pDb = NULL;
 
-      QAction* pImportFile = new QAction(tr("&Import File..."), this);
-      connect(pImportFile, SIGNAL(triggered()), this, SLOT(file_open()));
-      pFileMenu->addAction(pImportFile);
+      pAction = new QAction(tr("&Import File..."), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
+      MDIWindow::addAction(pAction);
 
-      QAction* pAddAct = new QAction(tr("Add to DB..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			pFileMenu->addAction(pAddAct);
+      pAction = new QAction(tr("Add to DB..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 		default:
@@ -103,17 +102,17 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 
   if(src != IDataBase::File)
   {
-    QAction* pNewAct = new QAction(tr("New..."), this);
-    connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
-    pFileMenu->addAction(pNewAct);
+    pAction = new QAction(tr("New..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
+    MDIWindow::addAction(pAction);
 
     // 6016 doesn't support delete of single waypoints
     if(!((src == IDataBase::GPSdevice) &&
       (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)))
     {
-      QAction* pDelAct = new QAction(tr("Delete"), this);
-      connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-      pFileMenu->addAction(pDelAct);
+      pAction = new QAction(tr("Delete"), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+      MDIWindow::addAction(pAction);
     }
   }
 
@@ -121,20 +120,20 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
   if((src == IDataBase::GPSdevice) &&
      (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015))
   {
-    QAction* pDelAllAct = new QAction(tr("Delete All"), this);
-    connect(pDelAllAct, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
-    pFileMenu->addAction(pDelAllAct);
+    pAction = new QAction(tr("Delete All"), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_deleteAll()));
+    MDIWindow::addAction(pAction);
   }
 
-	QAction* pViewWebMapAct = new QAction(tr("View WebMap..."), this);
-	connect(pViewWebMapAct, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	pFileMenu->addAction(pViewWebMapAct);
+	pAction = new QAction(tr("View WebMap..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+	MDIWindow::addAction(pAction);
 
   if(src == IDataBase::SqlDB)
   {
-    QAction* pEditWebMapAct = new QAction(tr("Edit WebMap..."), this);
-    connect(pEditWebMapAct, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
-    pFileMenu->addAction(pEditWebMapAct);
+    pAction = new QAction(tr("Edit WebMap..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
+    MDIWindow::addAction(pAction);
   }
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
@@ -144,13 +143,13 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	pTable->setSelectionMode(Q3Table::MultiRow);
 
 	// header
-	nameList += "Name";
-	nameList += "Country";
-	nameList += "Spot";
-	nameList += "Longitude\n[Deg,min]";
-	nameList += "Latitude\n[Deg,min]";
-	nameList += "Altitude\n[m]";
-	nameList += "Description";
+	nameList += tr("Name");
+	nameList += tr("Country");
+	nameList += tr("Spot");
+	nameList += tr("Longitude\n[Deg,min]");
+	nameList += tr("Latitude\n[Deg,min]");
+	nameList += tr("Altitude\n[m]");
+	nameList += tr("Description");
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Name, 150);
