@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,14 +33,16 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
-  QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	Q3Table *pTable;
+  QAction* pAction;
 
-  QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-  connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
-  pFileMenu->addAction(pExpAllAct);
+  pTable = TableWindow::getTable();
 
-  TableWindow::setWindowTitle("Flight experience");
+  pAction = new QAction(tr("&Export all..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+  MDIWindow::addAction(pAction);
+
+  TableWindow::setWindowTitle(tr("Flight experience"));
   TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
@@ -50,9 +52,9 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 	connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
 
 	// header
-	nameList += "Year";
-	nameList += "Number of flights";
-	nameList += "Airtime [h]";
+	nameList += tr("Year");
+	nameList += tr("Number of flights");
+	nameList += tr("Airtime [h]");
 
 	setupHeader(nameList);
 
