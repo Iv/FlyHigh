@@ -200,7 +200,7 @@ MainWindow::MainWindow()
 	m_pWinSeparator = new QAction(this);
 	m_pWinSeparator->setSeparator(true);
 
-	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),this, SLOT(aboutToShow()));
+	connect(m_pWindowsMenu, SIGNAL(aboutToShow()),this, SLOT(updateMenuWindow()));
 
 	// Menu Help
 	menuBar()->addSeparator();
@@ -381,17 +381,32 @@ void MainWindow::migrateDB()
 	dlg.exec();
 }
 
-void MainWindow::aboutToShow()
+void MainWindow::updateMenuWindow()
 {
 	QList<QMdiSubWindow*> winList;
-	QList<QMdiSubWindow*> windows;
+	MDIWindow::ActionList::const_iterator it;
 	QString text;
 	QAction *action;
-	MDIWindow *child;
+	MDIWindow *pChild;
 	int childNr;
 	bool hasMdiChild;
 
 	m_pWindowsMenu->clear();
+
+  // childs menues
+  pChild = activeMdiChild();
+
+  if((pChild != NULL) && (pChild->actionList().size() > 0))
+  {
+    for(it=pChild->actionList().begin(); it!=pChild->actionList().end(); it++)
+    {
+      m_pWindowsMenu->addAction(*it);
+    }
+
+    m_pWindowsMenu->addSeparator();
+  }
+
+  // window behaviour
 	m_pWindowsMenu->addAction(m_pCascade);
 	m_pWindowsMenu->addAction(m_pTile);
 	m_pWindowsMenu->addAction(m_pTileHor);
@@ -403,27 +418,28 @@ void MainWindow::aboutToShow()
 	m_pTile->setEnabled(hasMdiChild);
 	m_pTileHor->setEnabled(hasMdiChild);
 
-	windows = m_pMdiArea->subWindowList();
-	m_pWinSeparator->setVisible(!windows.isEmpty());
+  // windows list
+	winList = m_pMdiArea->subWindowList();
+	m_pWinSeparator->setVisible(!winList.isEmpty());
 
-	for(childNr=0; childNr<windows.size(); childNr++)
+	for(childNr=0; childNr<winList.size(); childNr++)
 	{
-    child = qobject_cast<MDIWindow*>(windows.at(childNr)->widget());
+    pChild = qobject_cast<MDIWindow*>(winList.at(childNr)->widget());
 
     if(childNr < 9)
     {
-      text = QString("&%1 %2").arg(childNr + 1).arg(child->windowTitle());
+      text = QString("&%1 %2").arg(childNr + 1).arg(pChild->windowTitle());
     }
     else
     {
-      text = QString("%1 %2").arg(childNr + 1).arg(child->windowTitle());
+      text = QString("%1 %2").arg(childNr + 1).arg(pChild->windowTitle());
     }
 
     action = m_pWindowsMenu->addAction(text);
     action->setCheckable(true);
-    action ->setChecked(child == activeMdiChild());
+    action ->setChecked(pChild == activeMdiChild());
     connect(action, SIGNAL(triggered()), m_pWinMapper, SLOT(map()));
-    m_pWinMapper->setMapping(action, windows.at(childNr));
+    m_pWinMapper->setMapping(action, winList.at(childNr));
 	}
 }
 
@@ -568,24 +584,28 @@ void MainWindow::settings_pilotInfo()
 MDIWindow* MainWindow::activeMdiChild()
 {
   MDIWindow *pWin = NULL;
+  QMdiSubWindow *pActWin;
 
-  if(QMdiSubWindow *activeSubWindow = m_pMdiArea->activeSubWindow())
+  pActWin = m_pMdiArea->activeSubWindow();
+
+  if(pActWin != NULL)
   {
-    pWin = qobject_cast<MDIWindow*>(activeSubWindow->widget());
+    pWin = qobject_cast<MDIWindow*>(pActWin->widget());
   }
 
   return pWin;
 }
 
-void MainWindow::setActiveSubWindow(QWidget *window)
+void MainWindow::setActiveSubWindow(QWidget *pWin)
 {
-  if(window != NULL)
+  if(pWin != NULL)
   {
-    m_pMdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(window));
+    m_pMdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(pWin));
   }
 }
 
-void MainWindow::subWindowActivated(QMdiSubWindow *pWindow)
+void MainWindow::subWindowActivated(QMdiSubWindow *pSubWin)
 {
   qDebug() << "Window aktiviert";
+  updateMenuWindow();
 }
