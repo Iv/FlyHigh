@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QCursor>
-#include <QMenuBar>
 #include <q3table.h>
+#include <QAction>
+#include <QCursor>
 #include "ISql.h"
 #include "Servicing.h"
 #include "ServicingWindow.h"
@@ -31,20 +31,21 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
 {
 	QStringList nameList;
 	Q3Table *pTable = TableWindow::getTable();
+  QAction* pAction;
 
-  QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+  pAction = new QAction(tr("&New..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
+  MDIWindow::addAction(pAction);
 
-  QAction* pNewAct = new QAction(tr("&New..."), this);
-  connect(pNewAct,SIGNAL(triggered()), this, SLOT(file_new()));
-  pFileMenu->addAction(pNewAct);
-  QAction* pDelAct = new QAction(tr("&Delete"), this);
-  connect(pDelAct,SIGNAL(triggered()), this, SLOT(file_delete()));
-  pFileMenu->addAction(pDelAct);
-  QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-  connect(pExpAllAct,SIGNAL(triggered()), this, SLOT(exportTable()));
-  pFileMenu->addAction(pExpAllAct);
+  pAction = new QAction(tr("&Delete"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+  MDIWindow::addAction(pAction);
 
-  TableWindow::setWindowTitle("Servicings");
+  pAction = new QAction(tr("&Export all..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+  MDIWindow::addAction(pAction);
+
+  TableWindow::setWindowTitle(tr("Servicings"));
   TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
@@ -54,10 +55,10 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
 	connect(m_pDb, SIGNAL(servicingsChanged()), this, SLOT(file_update()));
 
 	// header
-	nameList += "Glider";
-	nameList += "Date";
-	nameList += "Responsibility";
-	nameList += "Comment";
+	nameList += tr("Glider");
+	nameList += tr("Date");
+	nameList += tr("Responsibility");
+	nameList += tr("Comment");
 
 	setupHeader(nameList);
 

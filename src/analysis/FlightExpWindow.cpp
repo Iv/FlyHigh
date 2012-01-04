@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QCursor>
-#include <QMenuBar>
-#include <QStringList>
 #include <q3table.h>
+#include <QAction>
+#include <QCursor>
+#include <QStringList>
 #include <QWidget>
 #include "ContainerDef.h"
 #include "FlightExpWindow.h"
@@ -33,8 +33,8 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable;
   QAction* pAction;
+	Q3Table *pTable;
 
   pTable = TableWindow::getTable();
 
