@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <q3table.h>
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
-#include <q3table.h>
 #include <QDateTime>
 #include <QMenuBar>
 #include "IFlyHighRC.h"
@@ -48,39 +48,45 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
+	Q3Table *pTable;
+	QAction *pAction;
 
-	QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
+	pTable = TableWindow::getTable();
 
-	QAction* pUpdateAct = new QAction(tr("&Update"), this);
-	connect(pUpdateAct,SIGNAL(triggered()), this, SLOT(file_update()));
-	pFileMenu->addAction(pUpdateAct);
+	pAction = new QAction(tr("&Update"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+	MDIWindow::addAction(pAction);
 
 	switch(src)
 	{
 		case IDataBase::SqlDB:
 		{
 			m_pDb = ISql::pInstance();
-			QAction* pNewAct = new QAction(tr("&New..."), this);
-			connect(pNewAct, SIGNAL(triggered()), this, SLOT(file_new()));
-			pFileMenu->addAction(pNewAct);
-			QAction* pEditAct = new QAction(tr("&Edit..."), this);
-			connect(pEditAct, SIGNAL(triggered()), this, SLOT(file_edit()));
-			pFileMenu->addAction(pEditAct);
-			QAction* pDelAct = new QAction(tr("&Delete"), this);
-			connect(pDelAct, SIGNAL(triggered()), this, SLOT(file_delete()));
-			pFileMenu->addAction(pDelAct);
-			QAction* pImpAct = new QAction(tr("&Import..."), this);
-			connect(pImpAct, SIGNAL(triggered()), this, SLOT(file_import()));
-			pFileMenu->addAction(pImpAct);
+
+			pAction = new QAction(tr("&New..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Edit..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Delete"), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Import..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_import()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
-			QAction* pAddAct = new QAction(tr("&Add to DB..."), this);
-			connect(pAddAct, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			pFileMenu->addAction(pAddAct);
+
+			pAction = new QAction(tr("&Add to DB..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+			MDIWindow::addAction(pAction);
 		}
 		break;
 		default:
@@ -91,41 +97,49 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
   connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
   connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
-	QAction* pExpIGCAct = new QAction(tr("&Export IGC..."), this);
-	connect(pExpIGCAct, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
-	pFileMenu->addAction(pExpIGCAct);
-	QAction* pExpKMLAct = new QAction(tr("&Export KML..."), this);
-	connect(pExpKMLAct, SIGNAL(triggered()), this, SLOT(file_exportKML()));
-	pFileMenu->addAction(pExpKMLAct);
-	QAction* pExpAllAct = new QAction(tr("&Export all..."), this);
-	connect(pExpAllAct, SIGNAL(triggered()), this, SLOT(exportTable()));
-	pFileMenu->addAction(pExpAllAct);
+	pAction = new QAction(tr("&Export IGC..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Export KML..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportKML()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Export all..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+	MDIWindow::addAction(pAction);
 
 /*	- ground speed / time
 - vario / time
 - altitude / time
 - 3D plot of flight*/
-	QMenu* pPlotMenu = menuBar()->addMenu(tr("&Plot"));
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
 
-	QAction* pSpdTimeAct = new QAction("&Speed vs Time", this);
-	connect(pSpdTimeAct, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
-	pPlotMenu->addAction(pSpdTimeAct);
+	pAction = new QAction(tr("&Speed vs Time"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
+	MDIWindow::addAction(pAction);
 
-	QAction* pAltTimeAct = new QAction("&Alt vs Time", this);
-	connect(pAltTimeAct, SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
-	pPlotMenu->addAction(pAltTimeAct);
-	QAction* pVarioTimeAct = new QAction("&Vario vs Time", this);
-	connect(pVarioTimeAct, SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
-	pPlotMenu->addAction(pVarioTimeAct);
-	QAction* pOLCAct = new QAction("&OLC", this);
-	connect(pOLCAct, SIGNAL(triggered()), this, SLOT(plot_OLC()));
-	pPlotMenu->addAction(pOLCAct);
-	QAction* pWebMapAct = new QAction("&Web Map View", this);
-	connect(pWebMapAct, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
-	pPlotMenu->addAction(pWebMapAct);
-	QAction* pMapAct = new QAction("&Map View", this);
-	connect(pMapAct, SIGNAL(triggered()), this, SLOT(showOnMap()));
-	pPlotMenu->addAction(pMapAct);
+	pAction = new QAction(tr("&Alt vs Time"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Vario vs Time"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&OLC"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_OLC()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Web Map View"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Map View"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnMap()));
+	MDIWindow::addAction(pAction);
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
@@ -134,15 +148,15 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	pTable->setSelectionMode(Q3Table::SingleRow);
 
 	// header
-	nameList += "Nr";
-	nameList += "Date\n[DD.MM.YYYY]";
-	nameList += "Time\n[hh:mm:ss]";
-	nameList += "Duration\n[hh:mm:ss]";
-	nameList += "Glider";
-	nameList += "Starting Point";
-	nameList += "Landing Strip";
-	nameList += "Distance\n[km]";
-	nameList += "Comment";
+	nameList += tr("Nr");
+	nameList += tr("Date\n[DD.MM.YYYY]");
+	nameList += tr("Time\n[hh:mm:ss]");
+	nameList += tr("Duration\n[hh:mm:ss]");
+	nameList += tr("Glider");
+	nameList += tr("Starting Point");
+	nameList += tr("Landing Strip");
+	nameList += tr("Distance\n[km]");
+	nameList += tr("Comment");
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Nr, 50);
@@ -387,7 +401,7 @@ void FlightWindow::file_import()
 			// parse and optimize
 			igcParser.parse(flight.igcData());
 			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
-			progDlg.beginProgress("optimize flight...", &olcOptimizer);
+			progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 			if(olcOptimizer.optimize())
 			{
