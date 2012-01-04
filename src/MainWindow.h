@@ -84,11 +84,11 @@ class MainWindow: public QMainWindow
 
 		void help_about();
 
-		void aboutToShow();
+		void updateMenuWindow();
 
-		void setActiveSubWindow(QWidget *window);
+		void setActiveSubWindow(QWidget *pWin);
 
-		void subWindowActivated(QMdiSubWindow *pWindow);
+		void subWindowActivated(QMdiSubWindow *pSubWin);
 
 		void preferences();
 
