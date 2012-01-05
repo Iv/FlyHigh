@@ -18,23 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QWidget>
+#include <QMenu>
 #include <QString>
 #include "MDIWindow.h"
 
-
-MDIWindow::MDIWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
+MDIWindow::MDIWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
 	:QMainWindow(parent, wflags)
 {
+  m_pMenu = new QMenu(name, this);
 	setWindowTitle(name);
 }
 
 void MDIWindow::addAction(QAction *pAction)
 {
-  m_actionList.push_back(pAction);
+  m_pMenu->addAction(pAction);
 }
 
-const MDIWindow::ActionList& MDIWindow::actionList() const
+QMenu* MDIWindow::menu()
 {
-  return m_actionList;
+  return m_pMenu;
 }
