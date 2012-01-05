@@ -4,12 +4,12 @@
 	for more information.
 */
 
+#include <q3table.h>
+#include <q3header.h>
 #include <QDate>
 #include <QFile>
 #include <QRegExp>
 #include <QFileDialog>
-#include <q3table.h>
-#include <q3header.h>
 #include <QStringList>
 #include <QTextStream>
 #include "IFlyHighRC.h"
@@ -19,9 +19,8 @@ TableWindow::TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
     :MDIWindow(parent, name, wflags)
 {
 	m_pTable = new Q3Table(this);
-	m_pTable->show();
 	setFocusProxy(m_pTable);
-	setCentralWidget(m_pTable);
+  setWidget(m_pTable);
 
 	connect(m_pTable, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
