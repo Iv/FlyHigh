@@ -21,14 +21,14 @@
 #ifndef _MDIWindow_h_
 #define _MDIWindow_h_
 
-#include <QMainWindow>
+#include <QMdiSubWindow>
 
 class QAction;
 class QMenu;
 class QWidget;
 class QString;
 
-class MDIWindow: public QMainWindow
+class MDIWindow: public QMdiSubWindow
 {
 	Q_OBJECT
 
