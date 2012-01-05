@@ -426,7 +426,7 @@ void MainWindow::updateMenuWindow()
 
 	for(childNr=0; childNr<winList.size(); childNr++)
 	{
-    pChild = qobject_cast<MDIWindow*>(winList.at(childNr)->widget());
+    pChild = qobject_cast<MDIWindow*>(winList.at(childNr));
 
     if(childNr < 9)
     {
@@ -525,13 +525,13 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	QMainWindow::closeEvent(e);
 }
 
-void MainWindow::showWindow(QMainWindow *pWin)
+void MainWindow::showWindow(MDIWindow *pWin)
 {
 	m_pMdiArea->addSubWindow(pWin);
-	pWin->setWindowState(Qt::WindowNoState|Qt::WindowActive);
+	pWin->setWindowState(Qt::WindowNoState | Qt::WindowActive);
 
 	// show the very first window in maximized mode
-	if(m_pMdiArea->subWindowList().count()==1)
+	if(m_pMdiArea->subWindowList().count() == 1)
 	{
 		m_pMdiArea->activeSubWindow()->showMaximized();
 	}
@@ -592,7 +592,7 @@ MDIWindow* MainWindow::activeMdiChild()
 
   if(pActWin != NULL)
   {
-    pWin = qobject_cast<MDIWindow*>(pActWin->widget());
+    pWin = qobject_cast<MDIWindow*>(pActWin);
   }
 
   return pWin;
@@ -612,8 +612,7 @@ void MainWindow::subWindowActivated(QMdiSubWindow *pSubWin)
 
   menuBar()->clear();
   menuBar()->addMenu(m_pMenuFile);
-
-  pWin = activeMdiChild();
+  pWin = qobject_cast<MDIWindow*>(pSubWin);
 
   if(pWin != NULL)
   {

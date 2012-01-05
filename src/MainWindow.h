@@ -110,7 +110,7 @@ class MainWindow: public QMainWindow
 		QAction* m_pTileHor;
 		QAction* m_pWinSeparator;
 
-		void showWindow(QMainWindow *pWin);
+		void showWindow(MDIWindow *pWin);
 
 		MDIWindow* activeMdiChild();
 };
