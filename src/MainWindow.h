@@ -97,8 +97,14 @@ class MainWindow: public QMainWindow
 	private:
 		QMdiArea* m_pMdiArea;
 		QSignalMapper* m_pWinMapper;
-		QMenu* m_pWindowsMenu;
-		QMenu* m_pDevicesMenu;
+		QMenu *m_pMenuFile;
+		QMenu *m_pMenuAnalysis;
+		QMenu *m_pMenuPreparation;
+		QMenu *m_pMenuSettings;
+		QMenu *m_pMenuTools;
+		QMenu* m_pMenuWindows;
+		QMenu* m_pMenuHelp;
+		QMenu* m_pMenuDevice;
 		QAction* m_pCascade;
 		QAction* m_pTile;
 		QAction* m_pTileHor;
