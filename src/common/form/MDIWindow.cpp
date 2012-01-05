@@ -23,10 +23,12 @@
 #include "MDIWindow.h"
 
 MDIWindow::MDIWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
-	:QMainWindow(parent, wflags)
+	:QMdiSubWindow(parent, wflags)
 {
   m_pMenu = new QMenu(name, this);
 	setWindowTitle(name);
+	setAttribute(Qt::WA_DeleteOnClose);
+	setMinimumSize(400, 200);
 }
 
 void MDIWindow::addAction(QAction *pAction)
