@@ -22,9 +22,9 @@
 #define _MDIWindow_h_
 
 #include <QMainWindow>
-#include <QList>
 
 class QAction;
+class QMenu;
 class QWidget;
 class QString;
 
@@ -33,19 +33,17 @@ class MDIWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-    typedef QList<QAction*> ActionList;
-
-		MDIWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		MDIWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
 		void addAction(QAction *pAction);
 
-    const ActionList& actionList() const;
+    QMenu* menu();
 
 	signals:
 		void message(const QString&, int);
 
   private:
-    ActionList m_actionList;
+    QMenu *m_pMenu;
 };
 
 #endif
