@@ -609,15 +609,20 @@ void MainWindow::cascadeSubWindows()
 
 void MainWindow::showWindow(MDIWindow *pWin)
 {
+  MDIWindow *pActWin = NULL;
+
+  pActWin = activeMdiChild();
 	m_pMdiArea->addSubWindow(pWin);
-  pWin->setWindowState(Qt::WindowActive);
   resizeSubWindow(pWin);
 
-	// show the very first window in maximized mode
-	if(m_pMdiArea->subWindowList().count() == 1)
-	{
-		pWin->showMaximized();
-	}
+  if((pActWin == NULL) || pActWin->isMaximized())
+  {
+    pWin->showMaximized();
+  }
+  else
+  {
+    pWin->show();
+  }
 }
 
 MDIWindow* MainWindow::activeMdiChild()
