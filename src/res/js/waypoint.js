@@ -75,6 +75,7 @@ function wp_selectWayPoint(id)
 			gotoMarker(marker);
 			selectMarker(marker);
 			updateMarker(marker);
+      map.setZoom(13);
 			break;
 		}
 	}
@@ -228,7 +229,7 @@ function wp_setMarkerLon(lon)
 function wp_setLatLng(lat, lon)
 {
 	var locInput;
-	
+
 	lat = Math.round(lat * 100000) / 100000;
 	locInput = document.getElementById("lat");
 	locInput.value = lat;
@@ -256,7 +257,7 @@ function wp_altReply(id, param)
 	{
 		alt = Math.round(param.results[0].elevation);
 		wp_setAlt(alt);
-		
+
 		for(nr=0; nr<markers.length; nr++)
 		{
 			if(markers[nr].id == id)
@@ -367,7 +368,7 @@ function updateMarker(marker)
 			break;
 		}
 	}
-	
+
 	curMarker = newMarker;
 }
 
@@ -396,30 +397,30 @@ function createMarker(opts)
 {
 	var latlng = new GLatLng(opts.lat, opts.lon);
 	var marker;
-	
+
 	marker = new Marker(latlng, {id: opts.id, name: opts.name, spot: opts.spot,
 											country: opts.country, alt: opts.alt, draggable: opts.draggable,
 											modified: opts.modified, select: opts.select});
-											
+
 	GEvent.addListener(marker, "click", function(latlng)
-	{ 
+	{
 		WebMap.setLine(this.getId());
 		selectMarker(this);
 		updateMarker(this);
-	}); 
-	
+	});
+
 	GEvent.addListener(marker, "dragstart", function(latlng)
 	{
 		this.setModified(true);
 		selectMarker(this);
 		WebMap.setLine(this.getId());
 	});
-	
+
 	GEvent.addListener(marker, "drag", function(latlng)
 	{
 		wp_setLatLng(latlng.lat(), latlng.lng());
 	});
-	
+
 	GEvent.addListener(marker, "dragend", function(latlng)
 	{
 		markerCluster.updateClusters(this);
