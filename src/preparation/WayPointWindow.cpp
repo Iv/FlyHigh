@@ -23,6 +23,7 @@
 #include <QCursor>
 #include <QDateTime>
 #include <QFileDialog>
+#include <QMenu>
 #include <QString>
 #include <QStringList>
 #include "IDataBase.h"
@@ -191,7 +192,7 @@ void WayPointWindow::selectionChanged()
 	{
 	  row = getTable()->currentRow();
 
-	  if(row >= 0)
+	  if((row >= 0) && (row < m_wpList.size()))
 	  {
       m_pWayPointView->selectWayPoint(m_wpList[row].id());
 	  }
@@ -377,6 +378,43 @@ void WayPointWindow::file_AddToSqlDB()
 */
 }
 
+void WayPointWindow::file_open()
+{
+	Q3Table *pTable;
+	QString fileName;
+	WptFileParser parser;
+	uint wptNr;
+	uint maxWptNr;
+
+	fileName = QFileDialog::getOpenFileName(this,
+																					"WayPoint File",
+																					IFlyHighRC::pInstance()->lastDir(),
+																					"WayPoint Files (*.wpt)");
+
+	if(fileName != "")
+	{
+		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
+		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+
+		if(parser.parse(fileName, m_wpList))
+		{
+			maxWptNr = m_wpList.size();
+			pTable = TableWindow::getTable();
+			pTable->setNumRows(maxWptNr);
+
+			for(wptNr=0; wptNr<maxWptNr; wptNr++)
+			{
+				setWpToRow(wptNr, m_wpList.at(wptNr));
+			}
+
+			TableWindow::selectRow(0);
+			selectionChanged();
+		}
+
+		TableWindow::unsetCursor();
+	}
+}
+
 void WayPointWindow::file_Edit()
 {
 	int row;
@@ -399,6 +437,7 @@ void WayPointWindow::file_editWebMap()
 {
 	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
 	{
+    menu()->setEnabled(false);
 		m_pWayPointView = new WebMapWayPointView(tr("Edit WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
 		connect(m_pWayPointView, SIGNAL(wayPointsChanged(WayPoint::WayPointListType&)), this,
@@ -411,46 +450,11 @@ void WayPointWindow::file_editWebMap()
 	}
 }
 
-void WayPointWindow::file_open()
-{
-	Q3Table *pTable = TableWindow::getTable();
-	QString fileName;
-	WptFileParser parser;
-	uint wptNr;
-	uint maxWptNr;
-
-	fileName = QFileDialog::getOpenFileName(this,
-																					"WayPoint File",
-																					IFlyHighRC::pInstance()->lastDir(),
-																					"WayPoint Files (*.wpt)");
-
-	if(fileName != "")
-	{
-		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		if(parser.parse(fileName, m_wpList))
-		{
-			maxWptNr = m_wpList.size();
-			pTable->setNumRows(maxWptNr);
-
-			for(wptNr=0; wptNr<maxWptNr; wptNr++)
-			{
-				setWpToRow(wptNr, m_wpList.at(wptNr));
-			}
-
-			TableWindow::selectRow(0);
-			selectionChanged();
-		}
-
-		TableWindow::unsetCursor();
-	}
-}
-
 void WayPointWindow::file_viewWebMap()
 {
 	if((m_pWayPointView == NULL) && (m_wpList.size() > 0))
 	{
+    menu()->setEnabled(false);
 		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
@@ -465,6 +469,7 @@ void WayPointWindow::file_viewWebMap()
 void WayPointWindow::wayPointViewFinished(int res)
 {
   m_pWayPointView = NULL;
+  menu()->setEnabled(true);
 }
 
 void WayPointWindow::wayPointsChanged(WayPoint::WayPointListType &wpList)
