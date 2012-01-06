@@ -39,7 +39,7 @@ class MainWindow: public QMainWindow
 		virtual ~MainWindow();
 
 	protected:
-		void closeEvent(QCloseEvent *);
+		void closeEvent(QCloseEvent *pEvent);
 
 	private slots:
 		void flights_fromSQL();
@@ -70,17 +70,19 @@ class MainWindow: public QMainWindow
 
 		void airspaces_fromFile();
 
-		void windows_tile_horizontally();
-
-		void windows_activated(int id);
-
 		void settings_port();
 
 		void settings_device();
 
 		void settings_configure_device();
 
+    void settings_configure_flyhigh();
+
 		void settings_pilotInfo();
+
+    void tools_migrateDB();
+
+    void windows_tile_horizontally();
 
 		void help_about();
 
@@ -90,9 +92,7 @@ class MainWindow: public QMainWindow
 
 		void subWindowActivated(QMdiSubWindow *pSubWin);
 
-		void preferences();
-
-		void migrateDB();
+		void cascadeSubWindows();
 
 	private:
 		QMdiArea* m_pMdiArea;
@@ -113,6 +113,8 @@ class MainWindow: public QMainWindow
 		void showWindow(MDIWindow *pWin);
 
 		MDIWindow* activeMdiChild();
+
+		void resizeSubWindow(MDIWindow *pWin);
 };
 
 #endif

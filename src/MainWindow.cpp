@@ -188,7 +188,7 @@ MainWindow::MainWindow()
 	m_pMenuSettings->addAction(pAction);
 
   pAction = new QAction(tr("&Configure FlyHigh..."), this);
-  connect(pAction, SIGNAL(triggered()),this, SLOT(preferences()));
+  connect(pAction, SIGNAL(triggered()),this, SLOT(settings_configure_flyhigh()));
   m_pMenuSettings->addAction(pAction);
 
 	pAction = new QAction(tr("Pilot &Info..."), this);
@@ -198,14 +198,14 @@ MainWindow::MainWindow()
 	// Menu Tools
 	m_pMenuTools = menuBar()->addMenu(tr("&Tools"));
 	pAction = new QAction(tr("&Database migration..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(migrateDB()));
+	connect(pAction, SIGNAL(triggered()), this, SLOT(tools_migrateDB()));
 	m_pMenuTools->addAction(pAction);
 
   // Menu Windows
 	m_pMenuWindows = menuBar()->addMenu(tr("&Windows"));
 
 	m_pCascade = new QAction(tr("&Cascade"), this);
-	connect(m_pCascade, SIGNAL(triggered()), m_pMdiArea, SLOT(cascadeSubWindows()));
+	connect(m_pCascade, SIGNAL(triggered()), this, SLOT(cascadeSubWindows()));
 
 	m_pTile = new QAction(tr("&Tile"), this);
 	connect(m_pTile, SIGNAL(triggered()), m_pMdiArea, SLOT(tileSubWindows()));
@@ -239,20 +239,48 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::flights_fromGPS()
+void MainWindow::closeEvent(QCloseEvent *pEvent)
 {
-  MDIWindow* pWin;
+	QList<QMdiSubWindow*> winList;
+	QWidget *pWin;
+	uint nofWin;
+	uint winNr;
 
-  pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::GPSdevice);
-	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
-	showWindow(pWin);
+	winList = m_pMdiArea->subWindowList();
+	nofWin = winList.count();
+
+	if(nofWin > 0)
+	{
+		for(winNr=0; winNr<nofWin; winNr++)
+		{
+			pWin = winList.at(winNr);
+
+			if(!pWin->close())
+			{
+				pEvent->ignore();
+				return;
+			}
+		}
+	}
+
+	QMainWindow::closeEvent(pEvent);
 }
+
 
 void MainWindow::flights_fromSQL()
 {
 	MDIWindow *pWin;
 
 	pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::SqlDB);
+	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
+	showWindow(pWin);
+}
+
+void MainWindow::flights_fromGPS()
+{
+  MDIWindow* pWin;
+
+  pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::GPSdevice);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -366,13 +394,47 @@ void MainWindow::airspaces_fromFile()
 	showWindow(pWin);
 }
 
-void MainWindow::help_about()
+
+void MainWindow::settings_device()
 {
-	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
-	IFlyHighRC::pInstance()->copyInfo());
+	QAction* pAct;
+
+  pAct = qobject_cast<QAction*>(sender());
+	IFlyHighRC::pInstance()->setDeviceName(pAct->data().toUInt());
 }
 
-void MainWindow::preferences()
+void MainWindow::settings_port()
+{
+	IPortFrame portFrame;
+
+	portFrame.show();
+}
+
+void MainWindow::settings_configure_device()
+{
+	IFlytecConfig *pFrame;
+	IFlytec6015Config *pConfig6015;
+
+	switch(IFlyHighRC::pInstance()->deviceName())
+	{
+		case IFlyHighRC::DevFlytec5020:
+		case IFlyHighRC::DevFlytec6020:
+			pFrame = new IFlytecConfig();
+			pFrame->show();
+		break;
+		case IFlyHighRC::DevFlytec6015:
+			pConfig6015 = new IFlytec6015Config();
+			pConfig6015->show();
+		break;
+			/*
+			handle here other devices
+			case 1:
+			break;
+			*/
+	}
+}
+
+void MainWindow::settings_configure_flyhigh()
 {
 	PreferencesDlg dlg(this);
 
@@ -390,11 +452,64 @@ void MainWindow::preferences()
 	}
 }
 
-void MainWindow::migrateDB()
+void MainWindow::settings_pilotInfo()
+{
+	IFlyHighRCFrame rcFrame;
+
+	rcFrame.show();
+}
+
+void MainWindow::tools_migrateDB()
 {
 	MigrationDlg dlg(this);
 
 	dlg.exec();
+}
+
+void MainWindow::windows_tile_horizontally()
+{
+  QList<QMdiSubWindow*> winList;
+	QWidget *pWin;
+	uint winNr;
+	uint nofWin;
+	int heightForEach;
+	int y = 0;
+
+	winList = m_pMdiArea->subWindowList();
+
+	// if 0 or 1 windows do normal tiling
+	if(winList.count() < 2)
+	{
+		m_pMdiArea->tileSubWindows();
+		return;
+	}
+
+	// primitive horizontal tiling
+	nofWin = winList.count();
+	heightForEach = m_pMdiArea->height() / nofWin;
+
+	for(winNr= 0; winNr<nofWin; winNr++)
+	{
+		pWin = winList.at(winNr);
+
+		if(pWin->isMaximized())
+		{
+			// prevent flicker
+			pWin->hide();
+			pWin->showNormal();
+		}
+
+		// set new height
+		pWin->resize(m_pMdiArea->width(), heightForEach);
+		pWin->move(0,y);
+		y += heightForEach;
+	}
+}
+
+void MainWindow::help_about()
+{
+	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
+	IFlyHighRC::pInstance()->copyInfo());
 }
 
 void MainWindow::updateMenuWindow()
@@ -445,159 +560,6 @@ void MainWindow::updateMenuWindow()
 	}
 }
 
-void MainWindow::windows_activated(int id)
-{
-  QWidget* pWin;
-
-  pWin = m_pMdiArea->subWindowList().at(id);
-
-	if(pWin != NULL)
-	{
-		pWin->showNormal();
-		pWin->setFocus();
-	}
-}
-
-void MainWindow::windows_tile_horizontally()
-{
-  QList<QMdiSubWindow*> winList;
-	QWidget *pWin;
-	uint winNr;
-	uint nofWin;
-	int heightForEach;
-	int y = 0;
-
-	winList = m_pMdiArea->subWindowList();
-
-	// if 0 or 1 windows do normal tiling
-	if(winList.count() < 2)
-	{
-		m_pMdiArea->tileSubWindows();
-		return;
-	}
-
-	// primitive horizontal tiling
-	nofWin = winList.count();
-	heightForEach = m_pMdiArea->height() / nofWin;
-
-	for(winNr= 0; winNr<nofWin; winNr++)
-	{
-		pWin = winList.at(winNr);
-
-		if(pWin->isMaximized())
-		{
-			// prevent flicker
-			pWin->hide();
-			pWin->showNormal();
-		}
-
-		// set new height
-		pWin->resize(m_pMdiArea->width(), heightForEach);
-		pWin->move(0,y);
-		y += heightForEach;
-	}
-}
-
-void MainWindow::closeEvent(QCloseEvent *e)
-{
-	QList<QMdiSubWindow*> winList;
-	QWidget *pWin;
-	uint nofWin;
-	uint winNr;
-
-	winList = m_pMdiArea->subWindowList();
-	nofWin = winList.count();
-
-	if(nofWin > 0)
-	{
-		for(winNr=0; winNr<nofWin; winNr++)
-		{
-			pWin = winList.at(winNr);
-
-			if(!pWin->close())
-			{
-				e->ignore();
-				return;
-			}
-		}
-	}
-
-	QMainWindow::closeEvent(e);
-}
-
-void MainWindow::showWindow(MDIWindow *pWin)
-{
-	m_pMdiArea->addSubWindow(pWin);
-	pWin->setWindowState(Qt::WindowNoState | Qt::WindowActive);
-
-	// show the very first window in maximized mode
-	if(m_pMdiArea->subWindowList().count() == 1)
-	{
-		m_pMdiArea->activeSubWindow()->showMaximized();
-	}
-}
-
-void MainWindow::settings_device()
-{
-	QAction* pAct;
-
-  pAct = qobject_cast<QAction*>(sender());
-	IFlyHighRC::pInstance()->setDeviceName(pAct->data().toUInt());
-}
-
-void MainWindow::settings_port()
-{
-	IPortFrame portFrame;
-
-	portFrame.show();
-}
-
-void MainWindow::settings_configure_device()
-{
-	IFlytecConfig *pFrame;
-	IFlytec6015Config *pConfig6015;
-
-	switch(IFlyHighRC::pInstance()->deviceName())
-	{
-		case IFlyHighRC::DevFlytec5020:
-		case IFlyHighRC::DevFlytec6020:
-			pFrame = new IFlytecConfig();
-			pFrame->show();
-		break;
-		case IFlyHighRC::DevFlytec6015:
-			pConfig6015 = new IFlytec6015Config();
-			pConfig6015->show();
-		break;
-			/*
-			handle here other devices
-			case 1:
-			break;
-			*/
-	}
-}
-
-void MainWindow::settings_pilotInfo()
-{
-	IFlyHighRCFrame rcFrame;
-
-	rcFrame.show();
-}
-
-MDIWindow* MainWindow::activeMdiChild()
-{
-  MDIWindow *pWin = NULL;
-  QMdiSubWindow *pActWin;
-
-  pActWin = m_pMdiArea->activeSubWindow();
-
-  if(pActWin != NULL)
-  {
-    pWin = qobject_cast<MDIWindow*>(pActWin);
-  }
-
-  return pWin;
-}
-
 void MainWindow::setActiveSubWindow(QWidget *pWin)
 {
   if(pWin != NULL)
@@ -625,4 +587,55 @@ void MainWindow::subWindowActivated(QMdiSubWindow *pSubWin)
   menuBar()->addMenu(m_pMenuTools);
   menuBar()->addMenu(m_pMenuWindows);
   menuBar()->addMenu(m_pMenuHelp);
+}
+
+void MainWindow::cascadeSubWindows()
+{
+  QList<QMdiSubWindow*> winList;
+  MDIWindow *pWin;
+  uint winNr;
+	uint nofWin;
+
+  m_pMdiArea->cascadeSubWindows();
+  winList = m_pMdiArea->subWindowList();
+	nofWin = winList.count();
+
+	for(winNr= 0; winNr<nofWin; winNr++)
+	{
+		pWin = qobject_cast<MDIWindow*>(winList.at(winNr));
+		resizeSubWindow(pWin);
+	}
+}
+
+void MainWindow::showWindow(MDIWindow *pWin)
+{
+	m_pMdiArea->addSubWindow(pWin);
+  pWin->setWindowState(Qt::WindowActive);
+  resizeSubWindow(pWin);
+
+	// show the very first window in maximized mode
+	if(m_pMdiArea->subWindowList().count() == 1)
+	{
+		pWin->showMaximized();
+	}
+}
+
+MDIWindow* MainWindow::activeMdiChild()
+{
+  MDIWindow *pWin = NULL;
+  QMdiSubWindow *pActWin;
+
+  pActWin = m_pMdiArea->activeSubWindow();
+
+  if(pActWin != NULL)
+  {
+    pWin = qobject_cast<MDIWindow*>(pActWin);
+  }
+
+  return pWin;
+}
+
+void MainWindow::resizeSubWindow(MDIWindow *pWin)
+{
+	pWin->resize(m_pMdiArea->width() / 2, m_pMdiArea->height() / 2);
 }
