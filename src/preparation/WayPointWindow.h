@@ -80,6 +80,8 @@ class WayPointWindow: public TableWindow
 		bool m_externSelect;
 
     void setWpToRow(uint row, const WayPoint &wp);
+
+    void selectionToList(WayPoint::WayPointListType &wpList);
 };
 
 #endif

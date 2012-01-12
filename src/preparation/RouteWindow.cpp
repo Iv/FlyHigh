@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QCursor>
 #include <QString>
+#include <QTableWidget>
 #include "IGPSDevice.h"
 #include "ProgressDlg.h"
 #include "IRouteForm.h"
@@ -38,7 +38,7 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 {
 	QStringList nameList;
 	QAction *pAction;
-	Q3Table *pTable;
+	QTableWidget *pTable;
 
 	pTable = TableWindow::getTable();
 
@@ -108,8 +108,8 @@ RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wfla
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	// header
 	nameList += tr("Name");
@@ -140,12 +140,11 @@ void RouteWindow::file_delete()
 void RouteWindow::file_update()
 {
 	ProgressDlg progDlg(this);
-	Q3Table *pTable = TableWindow::getTable();
 	uint routeNr;
 	uint maxRouteNr;
 
 	m_routeList.clear();
-	pTable->setNumRows(0);
+	TableWindow::setNumRows(0);
 
 	if(m_pDb->open())
 	{
@@ -154,7 +153,7 @@ void RouteWindow::file_update()
 		m_pDb->routeList(m_routeList);
 		progDlg.endProgress();
 		maxRouteNr = m_routeList.size();
-		pTable->setNumRows(maxRouteNr);
+		TableWindow::setNumRows(maxRouteNr);
 
 		for(routeNr=0; routeNr<maxRouteNr; routeNr++)
 		{
@@ -331,10 +330,10 @@ void RouteWindow::file_AddToSqlDB()
 
 void RouteWindow::setRouteToRow(uint row, Route &route)
 {
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 
-	pTable->setText(row, Name, route.name());
-	pTable->setText(row, Type, route.typeAsText());
+	pTable->item(row, Name)->setText(route.name());
+	pTable->item(row, Type)->setText(route.typeAsText());
 }
 
 void RouteWindow::newWebMap(Route &route)

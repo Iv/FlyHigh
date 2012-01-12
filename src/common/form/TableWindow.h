@@ -1,8 +1,22 @@
-/* Copyright (c):  2004 by Alex Graf
-	This file is distributed under the terms of the General Public
-	Licence. See the file gpl.txt for the Licence or visit gnu.org
-	for more information.
-*/
+/***************************************************************************
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #ifndef _TableWindow_h_
 #define _TableWindow_h_
@@ -12,7 +26,7 @@
 #include "MDIWindow.h"
 
 class QStringList;
-class Q3Table;
+class QTableWidget;
 
 class TableWindow: public MDIWindow
 {
@@ -26,9 +40,11 @@ class TableWindow: public MDIWindow
 		void tableAsHTML(QDomDocument &doc);
 
 	protected:
-		Q3Table* getTable();
+		QTableWidget* getTable();
 
 		void setupHeader(const QStringList &colNameList);
+
+		void setNumRows(int rows);
 
 		void selectRow(int row);
 
@@ -38,7 +54,7 @@ class TableWindow: public MDIWindow
 		virtual void selectionChanged();
 
 	private:
-		Q3Table* m_pTable;
+		QTableWidget* m_pTable;
 };
 
 #endif
