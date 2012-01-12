@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,9 +21,8 @@
 #ifndef Container_h
 #define Container_h
 
-#include <qdatetime.h>
-#include <q3valuelist.h>
- 
+#include <QList>
+
 typedef struct
 {
 	int year;
@@ -31,6 +30,6 @@ typedef struct
 	uint airTimeSecs;
 }FlightsPerYearType;
 
-typedef Q3ValueList<FlightsPerYearType> FlightsPerYearListType;
-		
+typedef QList<FlightsPerYearType> FlightsPerYearListType;
+
 #endif
