@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,8 +20,7 @@
 #ifndef AirSpace_h
 #define AirSpace_h
 
-#include <qstring.h>
-#include <q3sortedlist.h>
+#include <QString>
 #include "AirSpaceItem.h"
 #include "BoundBox.h"
 #include "WayPoint.h"
