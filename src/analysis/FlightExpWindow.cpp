@@ -71,10 +71,11 @@ void FlightExpWindow::file_update()
 	Pilot pilot;
 	QTableWidget *pTable = TableWindow::getTable();
 	QString str;
-	uint yearNr;
-	uint maxYearNr;
 	uint flightsTotal = 0;
 	uint airtimeTotal = 0;
+  uint fpyCount;
+	uint fpyNr;
+  uint itemNr;
 
 	TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
@@ -83,38 +84,40 @@ void FlightExpWindow::file_update()
 
 	if(m_pDb->flightsPerYear(pilot, fpyList))
 	{
-		maxYearNr = fpyList.size();
-		TableWindow::setNumRows(maxYearNr + 2);
+		fpyCount = fpyList.size();
+		TableWindow::setNumRows(fpyCount + 2);
 
-		if(maxYearNr > 0)
+		if(fpyCount > 0)
 		{
-			// statistics
-			for(yearNr=0; yearNr<maxYearNr; yearNr++)
+			// statistics, newest first
+			for(fpyNr=0; fpyNr<fpyCount; fpyNr++)
 			{
-				str.sprintf("%i", fpyList[yearNr].year);
-				pTable->item(yearNr, Year)->setText(str);
-				str.sprintf("%i", fpyList[yearNr].nFlights);
-				pTable->item(yearNr, NrFlights)->setText(str);
-				str.sprintf("%.2f",  fpyList[yearNr].airTimeSecs / 3600.0);
-				pTable->item(yearNr, Airtime)->setText(str);
+			  itemNr = (fpyCount - fpyNr - 1);
+				str.sprintf("%i", fpyList[itemNr].year);
+				pTable->item(itemNr, Year)->setText(str);
+				str.sprintf("%i", fpyList[itemNr].nFlights);
+				pTable->item(itemNr, NrFlights)->setText(str);
+				str.sprintf("%.2f",  fpyList[itemNr].airTimeSecs / 3600.0);
+				pTable->item(itemNr, Airtime)->setText(str);
 
-				flightsTotal += fpyList[yearNr].nFlights;
-				airtimeTotal += fpyList[yearNr].airTimeSecs;
+				flightsTotal += fpyList[itemNr].nFlights;
+				airtimeTotal += fpyList[itemNr].airTimeSecs;
 			}
 
 			// separator
-			pTable->item(yearNr, Year)->setText("________");
-			pTable->item(yearNr, NrFlights)->setText("_____________________");
-			pTable->item(yearNr, Airtime)->setText("_______________");
+			itemNr = fpyCount;
+			pTable->item(itemNr, Year)->setText("________");
+			pTable->item(itemNr, NrFlights)->setText("_____________________");
+			pTable->item(itemNr, Airtime)->setText("_______________");
 
 			// sum
-			yearNr++;
-			str.sprintf("%i", fpyList[maxYearNr-1].year - fpyList[0].year + 1);
-			pTable->item(yearNr, Year)->setText(str);
+			itemNr++;
+			str.sprintf("%i", fpyList[fpyCount-1].year - fpyList[0].year + 1);
+			pTable->item(itemNr, Year)->setText(str);
 			str.sprintf("%i", flightsTotal);
-			pTable->item(yearNr, NrFlights)->setText(str);
+			pTable->item(itemNr, NrFlights)->setText(str);
 			str.sprintf("%.2f",  airtimeTotal / 3600.0);
-			pTable->item(yearNr, Airtime)->setText(str);
+			pTable->item(itemNr, Airtime)->setText(str);
 		}
 	}
 
