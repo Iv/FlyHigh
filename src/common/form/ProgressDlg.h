@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,22 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef ProgressDlg_h
 #define ProgressDlg_h
 
-#include <qobject.h>
+#include <QObject>
 
-class Q3ProgressDialog;
+class QProgressDialog;
 class QWidget;
 
-/* 
-add this to pProgObj
-	public:
-	signals:
-	void progress(int percent); // show progress: emit progress(int);
-	public slots:
-	virtual void cancel(); // cancel the process
+/**
+  @class ProgressDlg
+  add this to pProgObj
+    public:
+    signals:
+    void progress(int percent); // show progress: emit progress(int);
+    public slots:
+    virtual void cancel(); // cancel the process
 */
 
 class ProgressDlg: public QObject
@@ -41,14 +42,14 @@ class ProgressDlg: public QObject
 	public:
 		ProgressDlg(QWidget *pCreator);
 		~ProgressDlg();
-		
+
 		void beginProgress(const QString &label, QObject *pProgObj);
 		void endProgress();
-		
+
 	private:
 		QWidget *m_pCreator;
-		Q3ProgressDialog *m_pProgDlg;
-		
+		QProgressDialog *m_pProgDlg;
+
 	private slots:
 		void progress(int percent);
 };

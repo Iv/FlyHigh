@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,12 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <qapplication.h>
-#include <qeventloop.h>
-#include <q3progressdialog.h>
+
+#include <QApplication>
+#include <QEventLoop>
+#include <QProgressDialog>
 #include "ProgressDlg.h"
-#include <QtGui/qapplication.h>
 
 ProgressDlg::ProgressDlg(QWidget *pCreator)
 {
@@ -38,9 +37,9 @@ ProgressDlg::~ProgressDlg()
 void ProgressDlg::beginProgress(const QString &label, QObject *pProgObj)
 {
 	endProgress();
-	
-	m_pProgDlg = new Q3ProgressDialog(label, "Cancel", 100, m_pCreator, "progress", true);
-	
+
+	m_pProgDlg = new QProgressDialog(label, "Cancel", 0, 100, m_pCreator);
+
 	connect(pProgObj, SIGNAL(progress(int)), this, SLOT(progress(int)));
 	connect(m_pProgDlg, SIGNAL(canceled()), pProgObj, SLOT(cancel()));
 
@@ -59,6 +58,6 @@ void ProgressDlg::endProgress()
 
 void ProgressDlg::progress(int percent)
 {
-	m_pProgDlg->setProgress(percent);
+	m_pProgDlg->setValue(percent);
 	QApplication::processEvents(QEventLoop::AllEvents);
 }

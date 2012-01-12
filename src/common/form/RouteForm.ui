@@ -29,26 +29,6 @@
     <string>up</string>
    </property>
   </widget>
-  <widget class="Q3ListBox" name="listBoxRouteWayPoints">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>70</y>
-     <width>210</width>
-     <height>350</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="Q3ListBox" name="listBoxDBWayPoints">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>70</y>
-     <width>210</width>
-     <height>350</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButtonToRight">
    <property name="geometry">
     <rect>
@@ -228,22 +208,29 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QListView" name="listBoxDBWayPoints">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>211</width>
+     <height>351</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QListView" name="listBoxRouteWayPoints">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>70</y>
+     <width>211</width>
+     <height>351</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
