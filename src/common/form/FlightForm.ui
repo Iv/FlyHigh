@@ -35,16 +35,6 @@
     <number>5000</number>
    </property>
   </widget>
-  <widget class="Q3TimeEdit" name="timeEditDuration">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>270</y>
-     <width>100</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="Q3TextEdit" name="textEditComment">
    <property name="geometry">
     <rect>
@@ -72,7 +62,7 @@
     <rect>
      <x>170</x>
      <y>320</y>
-     <width>100</width>
+     <width>101</width>
      <height>31</height>
     </rect>
    </property>
@@ -276,50 +266,6 @@
     <string>new...</string>
    </property>
   </widget>
-  <widget class="Q3DateEdit" name="dateEditStart">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>220</y>
-     <width>120</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="order">
-    <enum>Q3DateEdit::DMY</enum>
-   </property>
-   <property name="date">
-    <date>
-     <year>2000</year>
-     <month>1</month>
-     <day>1</day>
-    </date>
-   </property>
-   <property name="maxValue">
-    <date>
-     <year>2020</year>
-     <month>12</month>
-     <day>31</day>
-    </date>
-   </property>
-   <property name="minValue">
-    <date>
-     <year>2000</year>
-     <month>1</month>
-     <day>1</day>
-    </date>
-   </property>
-  </widget>
-  <widget class="Q3TimeEdit" name="timeEditStart">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>220</y>
-     <width>92</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QComboBox" name="comboBoxStart">
    <property name="geometry">
     <rect>
@@ -391,6 +337,45 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QDateEdit" name="dateEditStart">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>220</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="displayFormat">
+    <string>dd.MM.yyyy</string>
+   </property>
+  </widget>
+  <widget class="QTimeEdit" name="timeEditStart">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>220</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="displayFormat">
+    <string>HH:mm:ss</string>
+   </property>
+  </widget>
+  <widget class="QTimeEdit" name="timeEditDuration">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>270</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="displayFormat">
+    <string>HH:mm:ss</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
@@ -406,16 +391,6 @@
    <extends>Q3Frame</extends>
    <header>q3textedit.h</header>
   </customwidget>
-  <customwidget>
-   <class>Q3DateEdit</class>
-   <extends>QWidget</extends>
-   <header>Qt3Support/Q3DateEdit</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TimeEdit</class>
-   <extends>QWidget</extends>
-   <header>Qt3Support/Q3TimeEdit</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>spinBoxFlightNr</tabstop>
@@ -430,6 +405,8 @@
   <tabstop>timeEditDuration</tabstop>
   <tabstop>lineEditDistance</tabstop>
   <tabstop>textEditComment</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
  </tabstops>
  <resources/>
  <connections>

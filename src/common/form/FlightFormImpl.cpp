@@ -18,15 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qbuffer.h>
-#include <qpushbutton.h>
-#include <qcursor.h>
-#include <q3datetimeedit.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qstringlist.h>
-#include <qspinbox.h>
-#include <q3textedit.h>
+#include <QCursor>
 #include "FlightFormImpl.h"
 #include "ISql.h"
 #include "IGliderForm.h"
