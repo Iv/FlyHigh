@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef AirSpaceFormImpl_h
 #define AirSpaceFormImpl_h
 
@@ -33,12 +33,12 @@ class AirSpace;
 class AirSpaceFormImpl: public QDialog, public Ui::AirSpaceForm
 {
 	Q_OBJECT
-	
+
 	public:
 		AirSpaceFormImpl(QWidget* parent, const QString &caption, AirSpace *pAirSpace);
 
 		void setAirSpace(AirSpace *pAirSpace);
-		
+
 	protected slots:
 		void tableChanged(int col, int row);
 
@@ -46,12 +46,12 @@ class AirSpaceFormImpl: public QDialog, public Ui::AirSpaceForm
 		void closeEvent(QCloseEvent * e);
 
 		void paintEvent(QPaintEvent *pEvent);
-	
+
 	private:
 		typedef QVector<QPoint> PointArray;
 
 		enum Fields{Use, Longitude, Latitude};
-		
+
 		QRect m_drawRect;
 		AirSpace *m_pAirSpace;
 

@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
-#include <q3header.h>
-#include <q3textedit.h>
+
 #include <QBrush>
 #include <QPainter>
 #include <QCloseEvent>
 #include <QPaintEvent>
+#include <QStringList>
+#include <QTableWidget>
 #include "AirSpace.h"
 #include "AirSpaceFormImpl.h"
 
@@ -32,53 +32,57 @@ AirSpaceFormImpl::AirSpaceFormImpl(QWidget* parent, const QString &caption, AirS
 	:QDialog(parent),
 	m_drawRect(290, 10, 350, 350)
 {
-	Q3Header *pHeader;
+  QStringList nameList;
 
 	setupUi(this);
 	setWindowTitle(caption);
 
 	tableEdgePoints->setColumnWidth(Use, 20);
 	tableEdgePoints->setColumnWidth(Longitude, 95);
-	tableEdgePoints->setColumnReadOnly(Longitude, true);
 	tableEdgePoints->setColumnWidth(Latitude, 95);
-	tableEdgePoints->setColumnReadOnly(Latitude, true);
 
-	pHeader = tableEdgePoints->horizontalHeader();
-	pHeader->setLabel(Use, "");
-	pHeader->setLabel(Longitude, "Longitude\n[�,min]");
-	pHeader->setLabel(Latitude, "Latitude\n[�,min]");
+	nameList += tr("");
+	nameList += tr("Longitude\n[Deg,min]");
+	nameList += tr("Latitude\n[Deg,min]");
+	tableEdgePoints->setHorizontalHeaderLabels(nameList);
 
 	setAirSpace(pAirSpace);
 }
 
 void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
 {
+  QTableWidgetItem *pItem;
 	QString str;
-	Q3CheckTableItem *pTabItem;
 	uint ptNr;
 	uint maxPts;
 
 	m_pAirSpace = pAirSpace;
-	tableEdgePoints->setNumRows(0); // clear table
+	tableEdgePoints->setRowCount(0); // clear table
 
 	if(pAirSpace != NULL)
 	{
 		setWindowTitle(m_pAirSpace->name());
 		maxPts = m_pAirSpace->pointList().size();
+		tableEdgePoints->setRowCount(maxPts);
 
 		for(ptNr=0; ptNr<maxPts; ptNr++)
 		{
-			tableEdgePoints->insertRows(ptNr);
-			pTabItem = new Q3CheckTableItem(tableEdgePoints, "");
-			pTabItem->setChecked(true);
-			tableEdgePoints->setItem(ptNr, Use, pTabItem);
+      pItem = new QTableWidgetItem();
+      pItem->setFlags(Qt::ItemIsUserCheckable);
+      pItem->setCheckState(Qt::Checked);
+      tableEdgePoints->setItem(ptNr, Use, pItem);
 
-			str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).longitude());
-			tableEdgePoints->setText(ptNr, Longitude, str);
+      pItem = new QTableWidgetItem();
+      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).longitude());
+      pItem->setText(str);
+      tableEdgePoints->setItem(ptNr, Longitude, pItem);
 
-			str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).latitude());
-			tableEdgePoints->setText(ptNr, Latitude, str);
+      pItem = new QTableWidgetItem();
+      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).latitude());
+      pItem->setText(str);
+      tableEdgePoints->setItem(ptNr, Latitude, pItem);
 		}
+
 		repaint();
 	}
 }
@@ -98,7 +102,7 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	QPainter paint(this);
 	PointArray edgePts;
 	QRect boundRect;
-	Q3CheckTableItem *pTabItem;
+	QTableWidgetItem *pTabItem;
 	uint ptNr = 0;
 	uint maxPts;
 	uint nPts = 0;
@@ -128,9 +132,9 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 
 			for(ptNr=0; ptNr<maxPts; ptNr++)
 			{
-				pTabItem = (Q3CheckTableItem*)tableEdgePoints->item(ptNr, Use);
+				pTabItem = tableEdgePoints->item(ptNr, Use);
 
-				if(pTabItem->isChecked())
+				if(pTabItem->checkState() == Qt::Checked)
 				{
 					lat = (int)(m_pAirSpace->pointList().at(ptNr).longitude() * 1000);
 					lon = -(int)(m_pAirSpace->pointList().at(ptNr).latitude() * 1000); // y axis is inverse
