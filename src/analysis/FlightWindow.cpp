@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QDateTime>
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
+#include <QTableWidget>
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "FlightWindow.h"
@@ -48,7 +48,7 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable;
+	QTableWidget *pTable;
 	QAction *pAction;
 
 	pTable = TableWindow::getTable();
@@ -144,8 +144,8 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	// header
 	nameList += tr("Nr");
@@ -176,14 +176,15 @@ FlightWindow::FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 void FlightWindow::file_update()
 {
 	Pilot pilot;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable;
 	ProgressDlg progDlg(this);
 	uint flightNr;
 	uint maxFlightNr;
 
+  pTable = TableWindow::getTable();
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	m_flightList.clear();
-	pTable->setNumRows(0);
+	TableWindow::setNumRows(0);
 
 	if(m_pDb->open())
 	{
@@ -192,7 +193,7 @@ void FlightWindow::file_update()
 		if(m_pDb->flightList(pilot, m_flightList))
 		{
 			maxFlightNr = m_flightList.size();
-			pTable->setNumRows(maxFlightNr);
+			TableWindow::setNumRows(maxFlightNr);
 
 			for(flightNr=0; flightNr<maxFlightNr; flightNr++)
 			{
@@ -211,27 +212,28 @@ void FlightWindow::setFlightToRow(uint row, Flight &flight)
 	WayPoint wp;
 	QString str;
 	QTime duration;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable;
 
-	str.sprintf("%i",flight.number());
-	pTable->setText(row, Nr, str);
-	pTable->setText(row, Date, flight.date().toString("dd.MM.yyyy"));
-	pTable->setText(row, Time, flight.time().toString(Qt::ISODate));
+  pTable = TableWindow::getTable();
+	str.sprintf("%i", flight.number());
+	pTable->item(row, Nr)->setText(str);
+	pTable->item(row, Date)->setText(flight.date().toString("dd.MM.yyyy"));
+	pTable->item(row, Time)->setText(flight.time().toString(Qt::ISODate));
 
 	duration.setHMS(0, 0, 0);
-	pTable->setText(row, Duration, duration.addSecs(flight.duration()).toString(Qt::ISODate));
+	pTable->item(row, Duration)->setText(duration.addSecs(flight.duration()).toString(Qt::ISODate));
 
 	flight.glider().fullName(str);
-	pTable->setText(row, Model, str);
+	pTable->item(row, Model)->setText(str);
 	flight.startPt().fullName(str);
-	pTable->setText(row, StartPt, str);
+	pTable->item(row, StartPt)->setText(str);
 	flight.landPt().fullName(str);
-	pTable->setText(row, LandPt, str);
+	pTable->item(row, LandPt)->setText(str);
 
 	str.sprintf("%.3f", flight.distance()/1000.0);
-	pTable->setText(row, Distance, str);
+	pTable->item(row, Distance)->setText(str);
 
-	pTable->setText(row, Comment, flight.comment());
+	pTable->item(row, Comment)->setText(flight.comment());
 }
 
 void FlightWindow::file_AddToSqlDB()
@@ -283,7 +285,7 @@ void FlightWindow::file_AddToSqlDB()
 			progDlg.endProgress();
 
 			// nr
-			gpsFlightNr = getTable()->text(row, Nr).toUInt(); // store this for restore
+			gpsFlightNr = getTable()->item(row, Nr)->text().toUInt(); // store this for restore
 			newFlightNr = ISql::pInstance()->newFlightNr(pilot);
 			m_flightList[row].setNumber(newFlightNr);
 

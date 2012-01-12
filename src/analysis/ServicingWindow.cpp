@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QCursor>
+#include <QTableWidget>
 #include "ISql.h"
 #include "Servicing.h"
 #include "ServicingWindow.h"
@@ -30,7 +30,7 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
   QAction* pAction;
 
   pAction = new QAction(tr("&New..."), this);
@@ -49,8 +49,8 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
   TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_pDb = ISql::pInstance();
 	connect(m_pDb, SIGNAL(servicingsChanged()), this, SLOT(file_update()));
 
@@ -72,7 +72,7 @@ ServicingWindow::ServicingWindow(QWidget* parent, const char* name, Qt::WindowFl
 
 void ServicingWindow::file_update()
 {
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 	QString gliderName;
 	uint servNr;
 	uint maxServNr;
@@ -83,15 +83,15 @@ void ServicingWindow::file_update()
 	if(m_pDb->servicingList(m_servicingsList))
 	{
 		maxServNr = m_servicingsList.size();
-		pTable->setNumRows(maxServNr);
+		TableWindow::setNumRows(maxServNr);
 
 		for(servNr=0; servNr<maxServNr; servNr++)
 		{
 			m_servicingsList[servNr].glider().fullName(gliderName);
-			pTable->setText(servNr, Glider, gliderName);
-			pTable->setText(servNr, Date, m_servicingsList[servNr].date().toString("dd.MM.yyyy"));
-			pTable->setText(servNr, Responsibility, m_servicingsList[servNr].responsibility());
-			pTable->setText(servNr, Comment, m_servicingsList[servNr].comment());
+			pTable->item(servNr, Glider)->setText(gliderName);
+			pTable->item(servNr, Date)->setText(m_servicingsList[servNr].date().toString("dd.MM.yyyy"));
+			pTable->item(servNr, Responsibility)->setText(m_servicingsList[servNr].responsibility());
+			pTable->item(servNr, Comment)->setText(m_servicingsList[servNr].comment());
 		}
 	}
 

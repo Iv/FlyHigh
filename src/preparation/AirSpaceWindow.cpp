@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
 #include <QStringList>
+#include <QTableWidget>
 #include "AirSpace.h"
 #include "WebMapAirSpaceView.h"
 #include "AirSpaceWindow.h"
@@ -39,7 +39,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 {
 	QStringList nameList;
 	QAction* pAction;
-	Q3Table *pTable;
+	QTableWidget *pTable;
 
 	pTable = TableWindow::getTable();
   m_pWebMapView = NULL;
@@ -95,8 +95,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	// header
 	nameList += tr("Name");
@@ -139,15 +139,17 @@ void AirSpaceWindow::closeEvent(QCloseEvent *pEvent)
 
 void AirSpaceWindow::file_update()
 {
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable;
 	ProgressDlg progDlg(this);
 	uint airspaceNr;
 	uint maxAirspaceNr;
 
+	pTable = TableWindow::getTable();
+
   if(m_pDb != NULL)
   {
     m_airSpaceList.clear();
-    pTable->setNumRows(0);
+    TableWindow::setNumRows(0);
 
     if(m_pDb->open())
     {
@@ -156,7 +158,7 @@ void AirSpaceWindow::file_update()
       m_pDb->airspaceList(m_airSpaceList);
       progDlg.endProgress();
       maxAirspaceNr = m_airSpaceList.size();
-      pTable->setNumRows(maxAirspaceNr);
+      TableWindow::setNumRows(maxAirspaceNr);
 
       for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
       {
@@ -173,7 +175,6 @@ void AirSpaceWindow::file_update()
 
 void AirSpaceWindow::file_open()
 {
-	Q3Table *pTable = TableWindow::getTable();
 	QString fileName;
 	OpenAirFileParser parser;
 	uint airspaceNr;
@@ -193,7 +194,7 @@ void AirSpaceWindow::file_open()
 		{
 			m_airSpaceList.sort();
 			maxAirspaceNr = m_airSpaceList.size();
-			pTable->setNumRows(maxAirspaceNr);
+			TableWindow::setNumRows(maxAirspaceNr);
 
 			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
 			{
@@ -285,12 +286,12 @@ void AirSpaceWindow::selectionChanged()
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 {
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 
-	pTable->setText(row, Name, pAirSpace->name());
-	pTable->setText(row, High, pAirSpace->high());
-	pTable->setText(row, Low, pAirSpace->low());
-	pTable->setText(row, Class, pAirSpace->airspaceClass());
+	pTable->item(row, Name)->setText(pAirSpace->name());
+	pTable->item(row, High)->setText(pAirSpace->high());
+	pTable->item(row, Low)->setText(pAirSpace->low());
+	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
 }
 
 void AirSpaceWindow::airSpaceViewFinished(int res)

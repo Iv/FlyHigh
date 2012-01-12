@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QCursor>
 #include <QMenuBar>
 #include <QStringList>
 #include <QWidget>
+#include <QTableWidget>
 #include "ContainerDef.h"
 #include "GliderWindow.h"
 #include "IDataBase.h"
@@ -34,7 +34,7 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
-	Q3Table *pTable;
+	QTableWidget *pTable;
 	QAction* pAction;
 
   pTable = TableWindow::getTable();
@@ -55,8 +55,8 @@ GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wf
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_pDb = ISql::pInstance();
   connect(m_pDb, SIGNAL(glidersChanged()), this, SLOT(file_update()));
 
@@ -103,7 +103,6 @@ void GliderWindow::file_delete()
 
 void GliderWindow::file_update()
 {
-	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint gliderNr;
 	uint maxGliderNr;
@@ -114,7 +113,7 @@ void GliderWindow::file_update()
 	if(m_pDb->gliderList(m_gliderList))
 	{
 		maxGliderNr = m_gliderList.size();
-		pTable->setNumRows(maxGliderNr);
+		TableWindow::setNumRows(maxGliderNr);
 
 		for(gliderNr=0; gliderNr<maxGliderNr; gliderNr++)
 		{
@@ -128,13 +127,13 @@ void GliderWindow::file_update()
 void GliderWindow::setGliderToRow(uint row, Glider &glider)
 {
 	QString str;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 
-	pTable->setText(row, Manufacturer, glider.manufacturer());
-	pTable->setText(row, Model, glider.model());
-	pTable->setText(row, Serial, glider.serial());
+	pTable->item(row, Manufacturer)->setText(glider.manufacturer());
+	pTable->item(row, Model)->setText(glider.model());
+	pTable->item(row, Serial)->setText(glider.serial());
 	str.sprintf("%i", glider.fligths());
-	pTable->setText(row, Flights, str);
-	str.sprintf("%.2f",  glider.airtime()/3600.0);
-	pTable->setText(row, Airtime, str);
+	pTable->item(row, Flights)->setText(str);
+	str.sprintf("%.2f",  glider.airtime() / 3600.0);
+	pTable->item(row, Airtime)->setText(str);
 }

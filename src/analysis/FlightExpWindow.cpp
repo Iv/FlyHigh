@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QCursor>
 #include <QStringList>
+#include <QTableWidget>
 #include <QWidget>
 #include "ContainerDef.h"
 #include "FlightExpWindow.h"
@@ -34,7 +34,7 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
 {
 	QStringList nameList;
   QAction* pAction;
-	Q3Table *pTable;
+	QTableWidget *pTable;
 
   pTable = TableWindow::getTable();
 
@@ -46,8 +46,8 @@ FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFl
   TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::SingleRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_pDb = ISql::pInstance();
 	connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
 
@@ -69,7 +69,7 @@ void FlightExpWindow::file_update()
 {
 	FlightsPerYearListType fpyList;
 	Pilot pilot;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 	QString str;
 	uint yearNr;
 	uint maxYearNr;
@@ -84,7 +84,7 @@ void FlightExpWindow::file_update()
 	if(m_pDb->flightsPerYear(pilot, fpyList))
 	{
 		maxYearNr = fpyList.size();
-		pTable->setNumRows(maxYearNr);
+		TableWindow::setNumRows(maxYearNr + 2);
 
 		if(maxYearNr > 0)
 		{
@@ -92,30 +92,29 @@ void FlightExpWindow::file_update()
 			for(yearNr=0; yearNr<maxYearNr; yearNr++)
 			{
 				str.sprintf("%i", fpyList[yearNr].year);
-				pTable->setText(yearNr, Year, str);
+				pTable->item(yearNr, Year)->setText(str);
 				str.sprintf("%i", fpyList[yearNr].nFlights);
-				pTable->setText(yearNr, NrFlights, str);
-				str.sprintf("%.2f",  fpyList[yearNr].airTimeSecs/3600.0);
-				pTable->setText(yearNr, Airtime, str);
+				pTable->item(yearNr, NrFlights)->setText(str);
+				str.sprintf("%.2f",  fpyList[yearNr].airTimeSecs / 3600.0);
+				pTable->item(yearNr, Airtime)->setText(str);
 
 				flightsTotal += fpyList[yearNr].nFlights;
 				airtimeTotal += fpyList[yearNr].airTimeSecs;
 			}
 
 			// separator
-			pTable->insertRows(yearNr);
-			pTable->setText(yearNr, Year, "_______________________________");
-			pTable->setText(yearNr, NrFlights, "_______________________________");
-			pTable->setText(yearNr, Airtime, "_______________________________");
+			pTable->item(yearNr, Year)->setText("________");
+			pTable->item(yearNr, NrFlights)->setText("_____________________");
+			pTable->item(yearNr, Airtime)->setText("_______________");
 
 			// sum
-			pTable->insertRows(yearNr+1);
+			yearNr++;
 			str.sprintf("%i", fpyList[maxYearNr-1].year - fpyList[0].year + 1);
-			pTable->setText(yearNr+1, Year, str);
+			pTable->item(yearNr, Year)->setText(str);
 			str.sprintf("%i", flightsTotal);
-			pTable->setText(yearNr+1, NrFlights, str);
-			str.sprintf("%.2f",  airtimeTotal/3600.0);
-			pTable->setText(yearNr+1, Airtime, str);
+			pTable->item(yearNr, NrFlights)->setText(str);
+			str.sprintf("%.2f",  airtimeTotal / 3600.0);
+			pTable->item(yearNr, Airtime)->setText(str);
 		}
 	}
 

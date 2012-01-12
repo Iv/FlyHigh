@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <q3table.h>
 #include <QAction>
 #include <QCursor>
 #include <QDateTime>
@@ -26,6 +25,7 @@
 #include <QMenu>
 #include <QString>
 #include <QStringList>
+#include <QTableWidget>
 #include "IDataBase.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
@@ -42,7 +42,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 {
 	QStringList nameList;
 	QAction* pAction;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 
   m_pWayPointView = NULL;
   m_wpType = type;
@@ -140,8 +140,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlag
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
-	pTable->setReadOnly(true);
-	pTable->setSelectionMode(Q3Table::MultiRow);
+	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	// header
 	nameList += tr("Name");
@@ -201,7 +201,6 @@ void WayPointWindow::selectionChanged()
 
 void WayPointWindow::file_update()
 {
-	Q3Table *pTable = TableWindow::getTable();
 	ProgressDlg progDlg(this);
 	uint wpNr;
 	uint maxWpNr;
@@ -209,7 +208,7 @@ void WayPointWindow::file_update()
 	if(m_pDb != NULL)
 	{
     m_wpList.clear();
-    pTable->setNumRows(0); // clear table, because of different nr of waypoints
+    TableWindow::setNumRows(0); // clear table, because of different nr of waypoints
 
     if(m_pDb->open())
     {
@@ -220,7 +219,7 @@ void WayPointWindow::file_update()
     }
 
     maxWpNr = m_wpList.size();
-    pTable->setNumRows(maxWpNr);
+    TableWindow::setNumRows(maxWpNr);
 
     for(wpNr=0; wpNr<maxWpNr; wpNr++)
     {
@@ -233,12 +232,20 @@ void WayPointWindow::file_AddToGps()
 {
   WayPoint::WayPointListType wpList;
   ProgressDlg progDlg(this);
-	int numSel;
-	int sel;
-	int topRow;
-	int bottomRow;
-	int row;
 
+	selectionToList(wpList);
+
+	if((wpList.size() > 0) && IGPSDevice::pInstance()->open())
+	{
+	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress(tr("write waypoints..."), IGPSDevice::pInstance());
+    IGPSDevice::pInstance()->add(wpList);
+    progDlg.endProgress();
+		TableWindow::unsetCursor();
+		IGPSDevice::pInstance()->close();
+	}
+
+/**
 	numSel = getTable()->numSelections();
 
 	if((numSel > 0) && IGPSDevice::pInstance()->open())
@@ -262,18 +269,27 @@ void WayPointWindow::file_AddToGps()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
+*/
 }
 
 void WayPointWindow::file_delete()
 {
   WayPoint::WayPointListType wpList;
   ProgressDlg progDlg(this);
-	int numSel;
-	int sel;
-	int topRow;
-	int bottomRow;
-	int row;
 
+	selectionToList(wpList);
+
+	if((wpList.size() > 0) && m_pDb->open())
+	{
+	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress(tr("delete waypoints..."), m_pDb);
+    m_pDb->delWayPoints(wpList);
+    progDlg.endProgress();
+		TableWindow::unsetCursor();
+		m_pDb->close();
+	}
+
+/**
 	numSel = getTable()->numSelections();
 
 	if((numSel > 0) && m_pDb->open())
@@ -297,6 +313,7 @@ void WayPointWindow::file_delete()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
+*/
 }
 
 void WayPointWindow::file_deleteAll()
@@ -317,6 +334,7 @@ void WayPointWindow::file_addNewWp()
 
 	if(wayPointForm.exec() && m_pDb->open())
 	{
+	  wp.setType(m_wpType);
 		m_pDb->add(wp);
 		m_pDb->close();
 	}
@@ -326,12 +344,20 @@ void WayPointWindow::file_AddToSqlDB()
 {
   WayPoint::WayPointListType wpList;
   ProgressDlg progDlg(this);
-	int numSel;
-	int sel;
-	int topRow;
-	int bottomRow;
-	int row;
 
+	selectionToList(wpList);
+
+	if((wpList.size() > 0) && ISql::pInstance()->open())
+	{
+	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress(tr("add waypoints..."), ISql::pInstance());
+    ISql::pInstance()->add(wpList);
+    progDlg.endProgress();
+		TableWindow::unsetCursor();
+		ISql::pInstance()->close();
+	}
+
+/**
 	numSel = getTable()->numSelections();
 
 	if((numSel > 0) && ISql::pInstance()->open())
@@ -355,32 +381,12 @@ void WayPointWindow::file_AddToSqlDB()
 		TableWindow::unsetCursor();
 		ISql::pInstance()->close();
 	}
-
-
-/**
-	int row;
-
-	row = getTable()->currentRow();
-
-	if((row >= 0) && ISql::pInstance()->open())
-	{
-		IWayPointForm wayPointForm(this, tr("Add WayPoint to DB"), &m_wpList[row]);
-
-		if(wayPointForm.exec())
-		{
-			TableWindow::setCursor(QCursor(Qt::WaitCursor));
-			ISql::pInstance()->add(m_wpList[row]);
-			TableWindow::unsetCursor();
-		}
-
-		ISql::pInstance()->close();
-	}
 */
 }
 
 void WayPointWindow::file_open()
 {
-	Q3Table *pTable;
+	QTableWidget *pTable;
 	QString fileName;
 	WptFileParser parser;
 	uint wptNr;
@@ -400,7 +406,7 @@ void WayPointWindow::file_open()
 		{
 			maxWptNr = m_wpList.size();
 			pTable = TableWindow::getTable();
-			pTable->setNumRows(maxWptNr);
+			TableWindow::setNumRows(maxWptNr);
 
 			for(wptNr=0; wptNr<maxWptNr; wptNr++)
 			{
@@ -505,20 +511,44 @@ void WayPointWindow::wayPointChanged(int id)
 void WayPointWindow::setWpToRow(uint row, const WayPoint &wp)
 {
 	QString str;
-	Q3Table *pTable = TableWindow::getTable();
+	QTableWidget *pTable = TableWindow::getTable();
 
-	pTable->setText(row, Country, wp.country());
-	pTable->setText(row, Spot, wp.spot());
-	pTable->setText(row, Name, wp.name());
+	pTable->item(row, Country)->setText(wp.country());
+	pTable->item(row, Spot)->setText(wp.spot());
+	pTable->item(row, Name)->setText(wp.name());
 
 	str.sprintf("%.5f", wp.longitude());
-	pTable->setText(row, Longitude, str);
+	pTable->item(row, Longitude)->setText(str);
 
 	str.sprintf("%.5f", wp.latitude());
-	pTable->setText(row, Latitude, str);
+	pTable->item(row, Latitude)->setText(str);
 
 	str.sprintf("%i", wp.altitude());
-	pTable->setText(row, Altitude, str);
+	pTable->item(row, Altitude)->setText(str);
 
-	pTable->setText(row, Description, wp.description());
+	pTable->item(row, Description)->setText(wp.description());
+}
+
+void WayPointWindow::selectionToList(WayPoint::WayPointListType &wpList)
+{
+  QList<QTableWidgetSelectionRange> selRange;
+  QList<QTableWidgetSelectionRange>::iterator rangeIt;
+  QTableWidget *pTable;
+	int topRow;
+	int bottomRow;
+	int row;
+
+  pTable = TableWindow::getTable();
+  selRange = pTable->selectedRanges();
+
+  for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
+  {
+    topRow = (*rangeIt).topRow();
+    bottomRow = (*rangeIt).bottomRow();
+
+    for(row=topRow; row<=bottomRow; row++)
+    {
+      wpList.push_back(m_wpList[row]);
+    }
+  }
 }
