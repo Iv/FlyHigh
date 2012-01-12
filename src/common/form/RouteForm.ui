@@ -208,7 +208,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QListView" name="listBoxDBWayPoints">
+  <widget class="QListWidget" name="listBoxDBWayPoints">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -218,7 +218,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QListView" name="listBoxRouteWayPoints">
+  <widget class="QListWidget" name="listBoxRouteWayPoints">
    <property name="geometry">
     <rect>
      <x>300</x>
