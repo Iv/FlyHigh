@@ -132,7 +132,7 @@ void FlightFormImpl::accept()
 	m_pFlight->setDistance((uint)(lineEditDistance->text().toDouble()*1000.0));
 
 	// comment
-	m_pFlight->setComment(textEditComment->text());
+	m_pFlight->setComment(textEditComment->toPlainText());
 
   QDialog::accept();
 }

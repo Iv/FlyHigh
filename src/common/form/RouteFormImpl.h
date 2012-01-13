@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,7 @@
 #ifndef RouteFormImpl_h
 #define RouteFormImpl_h
 
-#include <q3ptrlist.h>
+#include <QList>
 #include "ui_RouteForm.h"
 #include "WayPoint.h"
 
@@ -37,19 +37,23 @@ class RouteFormImpl: public QDialog, public Ui_RouteForm
 		RouteFormImpl(QWidget* parent, const QString &caption, Route *pRoute);
 
 		void setReadOnly();
-	
+
 	public slots:
 		void accept();
+
 		void down();
+
 		void up();
+
 		void toRight();
+
 		void remove();
-		
+
 	private:
 		bool m_readOnly;
 		Route *m_pRoute;
 		WayPoint::WayPointListType m_wpDbList;
-		Q3PtrList<WayPoint> m_wpRouteList;
+		QList<WayPoint*> m_wpRouteList;
 
 		void showWpRoute();
 };
