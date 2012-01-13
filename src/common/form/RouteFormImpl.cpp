@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,10 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qwidget.h>
-#include <qstring.h>
+#include <QLineEdit>
+#include <QWidget>
+#include <QString>
 #include "ISql.h"
 #include "Route.h"
 #include "RouteFormImpl.h"
@@ -107,7 +106,7 @@ void RouteFormImpl::accept()
 
 void RouteFormImpl::down()
 {
-	uint curItem;
+	int curItem;
 	WayPoint *pWp;
 
 	curItem = listBoxRouteWayPoints->currentRow();
@@ -115,8 +114,8 @@ void RouteFormImpl::down()
 	if(curItem < (m_wpRouteList.count() - 1))
 	{
 		pWp = m_wpRouteList.at(curItem);
-		m_wpRouteList.remove(curItem);
-		m_wpRouteList.insert(curItem+1, pWp);
+		m_wpRouteList.removeAt(curItem);
+		m_wpRouteList.insert(curItem + 1, pWp);
 		showWpRoute();
 	}
 }
@@ -131,8 +130,8 @@ void RouteFormImpl::up()
 	if(curItem > 0)
 	{
 		pWp = m_wpRouteList.at(curItem);
-		m_wpRouteList.remove(curItem);
-		m_wpRouteList.insert(curItem-1, pWp);
+		m_wpRouteList.removeAt(curItem);
+		m_wpRouteList.insert(curItem - 1, pWp);
 		showWpRoute();
 	}
 }
@@ -169,7 +168,7 @@ void RouteFormImpl::remove()
 	uint curItem;
 
 	curItem = listBoxRouteWayPoints->currentRow();
-	m_wpRouteList.remove(curItem);
+	m_wpRouteList.removeAt(curItem);
 	showWpRoute();
 }
 

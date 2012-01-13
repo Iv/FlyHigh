@@ -35,28 +35,6 @@
     <number>5000</number>
    </property>
   </widget>
-  <widget class="Q3TextEdit" name="textEditComment">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>380</y>
-     <width>571</width>
-     <height>70</height>
-    </rect>
-   </property>
-   <property name="vScrollBarMode">
-    <enum>Q3ScrollView::Auto</enum>
-   </property>
-   <property name="text">
-    <string>Add here your comment</string>
-   </property>
-   <property name="readOnly">
-    <bool>false</bool>
-   </property>
-   <property name="autoFormatting">
-    <set>Q3TextEdit::AutoAll</set>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="lineEditDistance">
    <property name="geometry">
     <rect>
@@ -376,22 +354,19 @@
     <string>HH:mm:ss</string>
    </property>
   </widget>
+  <widget class="QTextEdit" name="textEditComment">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>380</y>
+     <width>571</width>
+     <height>71</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>spinBoxFlightNr</tabstop>
   <tabstop>comboBoxStart</tabstop>
@@ -404,7 +379,6 @@
   <tabstop>timeEditStart</tabstop>
   <tabstop>timeEditDuration</tabstop>
   <tabstop>lineEditDistance</tabstop>
-  <tabstop>textEditComment</tabstop>
   <tabstop>buttonOk</tabstop>
   <tabstop>buttonCancel</tabstop>
  </tabstops>
