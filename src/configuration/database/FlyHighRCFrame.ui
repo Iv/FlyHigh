@@ -13,40 +13,6 @@
   <property name="windowTitle">
    <string>FlyHighRC</string>
   </property>
-  <widget class="Q3DateEdit" name="dateEditDateOfBirth">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>120</y>
-     <width>160</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="order">
-    <enum>Q3DateEdit::DMY</enum>
-   </property>
-   <property name="date">
-    <date>
-     <year>2000</year>
-     <month>1</month>
-     <day>1</day>
-    </date>
-   </property>
-   <property name="maxValue">
-    <date>
-     <year>2020</year>
-     <month>12</month>
-     <day>31</day>
-    </date>
-   </property>
-   <property name="minValue">
-    <date>
-     <year>1900</year>
-     <month>1</month>
-     <day>1</day>
-    </date>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButtonGlider">
    <property name="geometry">
     <rect>
@@ -239,16 +205,22 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QDateEdit" name="dateEditDateOfBirth">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>120</y>
+     <width>161</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="displayFormat">
+    <string>dd.MM.yyyy</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3DateEdit</class>
-   <extends>QWidget</extends>
-   <header>Qt3Support/Q3DateEdit</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>lineEdit_FirstName</tabstop>
   <tabstop>lineEdit_LastName</tabstop>
@@ -256,6 +228,8 @@
   <tabstop>lineEdit_GliderID</tabstop>
   <tabstop>comboBoxModel</tabstop>
   <tabstop>pushButtonGlider</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
  </tabstops>
  <resources/>
  <connections>
