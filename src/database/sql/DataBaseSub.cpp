@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QSqlQuery>
+#include <QVariant>
 #include "DataBaseSub.h"
 
 DataBaseSub::DataBaseSub(QSqlDatabase db)
