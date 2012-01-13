@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,7 @@
 #ifndef MainFrameImpl_h
 #define MainFrameImpl_h
 
-#include <vector>
+#include <QList>
 #include "ui_MainFrame.h"
 
 class Q3ProgressBar;
@@ -35,7 +35,7 @@ class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 		MainFrameImpl(QWidget* parent = 0);
 
 	public slots:
-		virtual void addPage(QWidget * pFrame, int * pPos);
+		virtual void addPage(QWidget *pFrame);
 
 	protected slots:
 /**
@@ -48,15 +48,12 @@ class MainFrameImpl: public QMainWindow, public Ui::MainFrame
 		void write();
 
 	private:
-		typedef std::vector<Frame*> FrameListType;
+		typedef QList<Frame*> FrameListType;
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
 		FrameListType m_FrameList;
-		Q3ProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
-
-//		void execThreadCmd(CmdType cmd);
 
 		void updateFrames();
 

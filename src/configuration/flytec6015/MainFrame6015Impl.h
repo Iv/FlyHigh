@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,10 +34,11 @@ class MainFrame6015Impl: public QMainWindow, public Ui::MainFrame6015
 		MainFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 
 	public slots:
-		virtual void addPage(QWidget * pFrame6015, int * pPos);
+		virtual void addPage(QWidget *pFrame6015);
 
 	protected slots:
 		void read();
+
 		void write();
 
 	private:
@@ -45,12 +46,11 @@ class MainFrame6015Impl: public QMainWindow, public Ui::MainFrame6015
 		typedef enum CmdType{ReadConfig, WriteConfig, OpenConfig, SaveConfig}CmdType;
 
 		FrameListType m_frameList;
-//		Q3ProgressBar *m_pProgressBar;
 		QString m_fileName;
 		CmdType m_cmd;
 
-//		void execThreadCmd(CmdType cmd);
 		void updateFrames();
+
 		void storeFrames();
 };
 

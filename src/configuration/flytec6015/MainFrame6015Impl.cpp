@@ -49,74 +49,74 @@ MainFrame6015Impl::MainFrame6015Impl(QWidget* parent, const char* name, Qt::WFla
 	DeviceFrame6015Impl *pDeviceFrame6015;
 	MemoryFrame6015Impl *pMemoryFrame6015;
 	UnitFrame6015Impl *pUnitFrame6015;
-	int pos = 0;
-	
+
 	m_fileName = "";
-	
+
 	// make a clean table
-        pWidget = toolBox->widget(0);
-        toolBox->removeItem(toolBox->indexOf(pWidget));
-	pWidget = widgetStack->widget(0);
+  pWidget = toolBox->widget(0);
+  toolBox->removeItem(toolBox->indexOf(pWidget));
+	pWidget = widgetStack->widget(1);
 	widgetStack->removeWidget(pWidget);
-	
+  pWidget = widgetStack->widget(0);
+	widgetStack->removeWidget(pWidget);
+
 	// Correction
 	pCorrFrame6015 = new CorrFrame6015Impl(widgetStack);
-	addPage(pCorrFrame6015, &pos);
+	addPage(pCorrFrame6015);
 	pCorrFrame6015->setEnabled(true);
 	m_frameList.push_back(pCorrFrame6015);
-	
+
 	// Vario
 	pVarioFrame6015 = new VarioFrame6015Impl(widgetStack);
-	addPage((QWidget*)pVarioFrame6015, &pos);
+	addPage((QWidget*)pVarioFrame6015);
 	m_frameList.push_back(pVarioFrame6015);
 
 	// Acoustic
 	pAcousticFrame6015 = new AcousticFrame6015Impl(widgetStack);
-	addPage(pAcousticFrame6015, &pos);
+	addPage(pAcousticFrame6015);
 	m_frameList.push_back(pAcousticFrame6015);
-	
+
 	// Velocity
 	pVelocityFrame6015 = new VelocityFrame6015Impl(widgetStack);
-        addPage((QWidget*)pVelocityFrame6015, &pos);
+  addPage((QWidget*)pVelocityFrame6015);
 	m_frameList.push_back(pVelocityFrame6015);
-	
+
 	// GPS
 	pGPSFrame6015 = new GPSFrame6015Impl(widgetStack);
-	addPage(pGPSFrame6015, &pos);
+	addPage(pGPSFrame6015);
 	m_frameList.push_back(pGPSFrame6015);
 
 	// Device
 	pDeviceFrame6015 = new DeviceFrame6015Impl(widgetStack);
-	addPage(pDeviceFrame6015, &pos);
+	addPage(pDeviceFrame6015);
 	m_frameList.push_back(pDeviceFrame6015);
-	
+
 	// Memory
 	pMemoryFrame6015 = new MemoryFrame6015Impl(widgetStack);
-        addPage((QWidget*)pMemoryFrame6015, &pos);
+  addPage((QWidget*)pMemoryFrame6015);
 	m_frameList.push_back(pMemoryFrame6015);
-	
+
 	// Display
 	pDisplayFrame6015 = new DisplayFrame6015Impl(widgetStack);
-	addPage(pDisplayFrame6015, &pos);
+	addPage(pDisplayFrame6015);
 	m_frameList.push_back(pDisplayFrame6015);
-	
+
 	// Unit
 	pUnitFrame6015 = new UnitFrame6015Impl(widgetStack);
-        addPage((QWidget*)pUnitFrame6015, &pos);
+  addPage((QWidget*)pUnitFrame6015);
 	m_frameList.push_back(pUnitFrame6015);
-	
+
 /*	m_pProgressBar = new QProgressBar(statusBar());
 	m_pProgressBar->setProgress(0, ft_MemSize/ft_PageSize);
 	m_pProgressBar->setShown(false);
 	statusBar()->addWidget(m_pProgressBar, 1, true);*/
 }
 
-void MainFrame6015Impl::addPage( QWidget * pFrame6015, int * pPos)
+void MainFrame6015Impl::addPage(QWidget *pFrame6015)
 {
 	QWidget *pWidget;
-	
-	widgetStack->addWidget(pFrame6015, *pPos);
-	(*pPos)++;
+
+	widgetStack->addWidget(pFrame6015);
 	pWidget = new QWidget(toolBox);
 	toolBox->addItem(pWidget,  pFrame6015->windowTitle());
 }
@@ -124,7 +124,7 @@ void MainFrame6015Impl::addPage( QWidget * pFrame6015, int * pPos)
 void MainFrame6015Impl::read()
 {
 	ProgressDlg dlg(this);
-	
+
 	if(IGPSDevice::pInstance()->open())
 	{
 		dlg.beginProgress("read memory...", IGPSDevice::pInstance());
@@ -137,7 +137,7 @@ void MainFrame6015Impl::read()
 void MainFrame6015Impl::write()
 {
 	ProgressDlg dlg(this);
-		
+
 	if(QMessageBox::question(this,
 													 tr("write configuration"),
 													 tr("Write current configuration to the device?"),
@@ -157,7 +157,7 @@ void MainFrame6015Impl::write()
 void MainFrame6015Impl::storeFrames()
 {
 	FrameListType::iterator it;
-	
+
 	// update Frames
 	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
@@ -168,7 +168,7 @@ void MainFrame6015Impl::storeFrames()
 void MainFrame6015Impl::updateFrames()
 {
 	FrameListType::iterator it;
-	
+
 	// update Frames
 	for(it=m_frameList.begin(); it!=m_frameList.end(); it++)
 	{
