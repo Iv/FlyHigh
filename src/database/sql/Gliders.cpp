@@ -20,6 +20,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QVariant>
 #include "Error.h"
 #include "Flights.h"
 #include "Gliders.h"
