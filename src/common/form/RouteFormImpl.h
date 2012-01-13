@@ -55,7 +55,7 @@ class RouteFormImpl: public QDialog, public Ui_RouteForm
 		WayPoint::WayPointListType m_wpDbList;
 		QList<WayPoint*> m_wpRouteList;
 
-		void showWpRoute();
+		void showWpRoute(uint curItem);
 };
 
 #endif

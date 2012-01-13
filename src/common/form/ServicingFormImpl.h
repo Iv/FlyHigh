@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,16 +32,18 @@ class ServicingFormImpl: public QDialog, public Ui::ServicingForm
 
 	public:
 		ServicingFormImpl(QWidget* parent, const QString &caption, Servicing *pServicing);
-		
+
 	protected slots:
 		void accept();
+
 		void newGlider();
-		
+
 	private:
 		Servicing *m_pServicing;
 		Glider::GliderListType m_gliderList;
-	
+
 		void updateGlider();
+
 		void setServicing(Servicing *pServicing);
 };
 
