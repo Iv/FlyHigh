@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,12 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qpushbutton.h>
-#include <q3datetimeedit.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qstringlist.h>
-#include <q3textedit.h>
+#include <QDateTimeEdit>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QStringList>
+#include <QTextEdit>
 #include "Glider.h"
 #include "IGliderForm.h"
 #include "ISql.h"
@@ -33,9 +32,9 @@
 ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Servicing *pServicing)
 	:QDialog(parent)
 {
-        setupUi(this);
-        setWindowTitle(caption);
-        Q_CHECK_PTR(pServicing);
+  setupUi(this);
+  setWindowTitle(caption);
+  Q_CHECK_PTR(pServicing);
 	setServicing(pServicing);
 	updateGlider();
 }
@@ -45,7 +44,7 @@ void ServicingFormImpl::accept()
 	m_pServicing->setDate(dateEditDate->date());
 	m_pServicing->setGlider(m_gliderList[comboBoxModel->currentIndex()]);
 	m_pServicing->setResponsibility(lineEditRespons->text());
-	m_pServicing->setComment(textEditComment->text());
+	m_pServicing->setComment(textEditComment->toPlainText());
 
   QDialog::accept();
 }
@@ -54,7 +53,7 @@ void ServicingFormImpl::newGlider()
 {
 	Glider glider;
 	IGliderForm newGlider(this, "New Glider", &glider);
-	
+
 	if(newGlider.exec())
 	{
 		ISql::pInstance()->add(glider);
@@ -68,25 +67,24 @@ void ServicingFormImpl::updateGlider()
 	QString gliderModel;
 	Glider::GliderListType::iterator it;
 
-	m_gliderList.clear();	
+	m_gliderList.clear();
 	ISql::pInstance()->gliderList(m_gliderList);
 	comboBoxModel->clear();
-	
+
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
-                comboBoxModel->addItem(gliderModel);
+    comboBoxModel->addItem(gliderModel);
 	}
 }
 
 void ServicingFormImpl::setServicing(Servicing *pServicing)
 {
 	m_pServicing = pServicing;
-	
+
 	if(pServicing != NULL)
 	{
 		dateEditDate->setDate(m_pServicing->date());
 	}
 }
 
-#include "moc_ServicingFormImpl.cxx"

@@ -66,7 +66,7 @@ RouteFormImpl::RouteFormImpl(QWidget* parent, const QString &caption, Route *pRo
 		m_wpRouteList.append(pWp);
 	}
 
-	showWpRoute();
+	showWpRoute(0);
 }
 
 void RouteFormImpl::setReadOnly()
@@ -115,8 +115,9 @@ void RouteFormImpl::down()
 	{
 		pWp = m_wpRouteList.at(curItem);
 		m_wpRouteList.removeAt(curItem);
-		m_wpRouteList.insert(curItem + 1, pWp);
-		showWpRoute();
+		curItem++;
+		m_wpRouteList.insert(curItem, pWp);
+		showWpRoute(curItem);
 	}
 }
 
@@ -131,8 +132,9 @@ void RouteFormImpl::up()
 	{
 		pWp = m_wpRouteList.at(curItem);
 		m_wpRouteList.removeAt(curItem);
-		m_wpRouteList.insert(curItem - 1, pWp);
-		showWpRoute();
+    curItem--;
+		m_wpRouteList.insert(curItem, pWp);
+		showWpRoute(curItem);
 	}
 }
 
@@ -159,7 +161,7 @@ void RouteFormImpl::toRight()
 		}
 
 		m_wpRouteList.insert(curItem, pWp);
-		showWpRoute();
+		showWpRoute(curItem);
 	}
 }
 
@@ -169,25 +171,33 @@ void RouteFormImpl::remove()
 
 	curItem = listBoxRouteWayPoints->currentRow();
 	m_wpRouteList.removeAt(curItem);
-	showWpRoute();
+
+	if(curItem > 0)
+	{
+    curItem--;
+	}
+	else
+	{
+	  curItem = 0;
+	}
+
+	showWpRoute(curItem);
 }
 
-void RouteFormImpl::showWpRoute()
+void RouteFormImpl::showWpRoute(uint curItem)
 {
 	QString wpName;
 	uint nItems;
-	uint selItem;
-	uint curItem;
+	uint itemNr;
 
-	selItem = m_wpRouteList.at();
 	listBoxRouteWayPoints->clear();
 	nItems = m_wpRouteList.count();
 
-	for(curItem=0; curItem<nItems; curItem++)
+	for(itemNr=0; itemNr<nItems; itemNr++)
 	{
-		m_wpRouteList.at(curItem)->fullName(wpName);
+		m_wpRouteList.at(itemNr)->fullName(wpName);
 		listBoxRouteWayPoints->addItem(wpName);
 	}
 
-	listBoxRouteWayPoints->setCurrentRow(selItem);
+	listBoxRouteWayPoints->setCurrentRow(curItem);
 }
