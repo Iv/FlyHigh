@@ -57,77 +57,78 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	PolareFrameImpl *pPolareFrame;
 	UnitFrameImpl *pUnitFrame;
 	SmsFrameImpl *pSmsFrame;
-	int pos = 0;
 
 	m_fileName = "";
 
 	// make a clean table
 	pWidget = toolBox->widget(0);
 	toolBox->removeItem(toolBox->indexOf(pWidget));
-	pWidget = widgetStack->widget(0);
+	pWidget = widgetStack->widget(1);
+	widgetStack->removeWidget(pWidget);
+  pWidget = widgetStack->widget(0);
 	widgetStack->removeWidget(pWidget);
 
 	// Correction
-	pCorrFrame = new CorrFrameImpl(widgetStack);
-	addPage(pCorrFrame, &pos);
+	pCorrFrame = new CorrFrameImpl();
+	addPage(pCorrFrame);
 	pCorrFrame->setEnabled(true);
 	m_FrameList.push_back(pCorrFrame);
 
 	// Vario
-	pVarioFrame = new VarioFrameImpl(widgetStack);
-	addPage(pVarioFrame, &pos);
+	pVarioFrame = new VarioFrameImpl();
+	addPage(pVarioFrame);
 	m_FrameList.push_back(pVarioFrame);
 
 	// Acoustic
-	pAcousticFrame = new AcousticFrameImpl(widgetStack);
-	addPage(pAcousticFrame, &pos);
+	pAcousticFrame = new AcousticFrameImpl();
+	addPage(pAcousticFrame);
 	m_FrameList.push_back(pAcousticFrame);
 
 	// Velocity
-	pVelocityFrame = new VelocityFrameImpl(widgetStack);
-	addPage(pVelocityFrame, &pos);
+	pVelocityFrame = new VelocityFrameImpl();
+	addPage(pVelocityFrame);
 	m_FrameList.push_back(pVelocityFrame);
 
 	// GPS
-	pGPSFrame = new GPSFrameImpl(widgetStack);
-	addPage(pGPSFrame, &pos);
+	pGPSFrame = new GPSFrameImpl();
+	addPage(pGPSFrame);
 	m_FrameList.push_back(pGPSFrame);
 
 	// Fly Calculator (not available for 5020)
-	pFlyCalcFrame = new FlyCalcFrameImpl(widgetStack);
-	addPage(pFlyCalcFrame, &pos);
+	pFlyCalcFrame = new FlyCalcFrameImpl();
+	addPage(pFlyCalcFrame);
 	pFlyCalcFrame->setEnabled(false);
 	m_FrameList.push_back(pFlyCalcFrame);
 
 	// Device
-	pDeviceFrame = new DeviceFrameImpl(widgetStack);
-	addPage(pDeviceFrame, &pos);
+	pDeviceFrame = new DeviceFrameImpl();
+	addPage(pDeviceFrame);
 	m_FrameList.push_back(pDeviceFrame);
 
 	// Memory
-	pMemoryFrame = new MemoryFrameImpl(widgetStack);
-	addPage(pMemoryFrame, &pos);
+	pMemoryFrame = new MemoryFrameImpl();
+	addPage(pMemoryFrame);
 	m_FrameList.push_back(pMemoryFrame);
 
 	// Display
-	pDisplayFrame = new DisplayFrameImpl(widgetStack);
-	addPage(pDisplayFrame, &pos);
+	pDisplayFrame = new DisplayFrameImpl();
+	addPage(pDisplayFrame);
 	m_FrameList.push_back(pDisplayFrame);
 
 	// Polare
-	pPolareFrame = new PolareFrameImpl(widgetStack);
-	addPage(pPolareFrame, &pos);
+	pPolareFrame = new PolareFrameImpl();
+	addPage(pPolareFrame);
 	pPolareFrame->setEnabled(false);
 	m_FrameList.push_back(pPolareFrame);
 
 	// Unit
-	pUnitFrame = new UnitFrameImpl(widgetStack);
-	addPage(pUnitFrame, &pos);
+	pUnitFrame = new UnitFrameImpl();
+	addPage(pUnitFrame);
 	m_FrameList.push_back(pUnitFrame);
 
 	// SMS
-	pSmsFrame = new SmsFrameImpl(widgetStack);
-	addPage(pSmsFrame, &pos);
+	pSmsFrame = new SmsFrameImpl();
+	addPage(pSmsFrame);
 	pSmsFrame->setEnabled(false);
 	m_FrameList.push_back(pSmsFrame);
 
@@ -137,14 +138,13 @@ MainFrameImpl::MainFrameImpl(QWidget* parent)
 	statusBar()->addWidget(m_pProgressBar, 1, true);*/
 }
 
-void MainFrameImpl::addPage( QWidget * pFrame, int * pPos)
+void MainFrameImpl::addPage(QWidget *pFrame)
 {
 	QWidget *pWidget;
 
-	widgetStack->addWidget(pFrame, *pPos);
-	(*pPos)++;
+	widgetStack->addWidget(pFrame);
 	pWidget = new QWidget(toolBox);
-	toolBox->addItem(pWidget,  pFrame->windowTitle());
+	toolBox->addItem(pWidget, pFrame->windowTitle());
 }
 
 /**
