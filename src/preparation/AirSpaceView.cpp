@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2009 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,12 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include <QCloseEvent>
 #include <QPainter>
 #include <QWheelEvent>
-#include <Q3PointArray>
 #include <QMouseEvent>
-#include <QCloseEvent>
 #include <QPaintEvent>
+#include <QPolygon>
 #include "AirSpace.h"
 #include "AirSpaceList.h"
 #include "AirSpaceView.h"
@@ -132,7 +133,7 @@ void AirSpaceView::drawAirspace()
 	enum {Border = 5, MinSize = 50};
 	QPainter paint(this);
 	QRect viewRect;
-	Q3PointArray pointList;
+	QPolygon pointList;
 	BoundBox bbox;
 	AirSpaceList::iterator itAirSpace;
 	WayPoint::WayPointListType::const_iterator it;
