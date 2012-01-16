@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2009 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,11 +21,10 @@
 #define AirSpaceView_h
 
 #include <QDialog>
-#include <QPaintEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QCloseEvent>
 
+class QPaintEvent;
+class QMouseEvent;
+class QWheelEvent;
 class AirSpace;
 class AirSpaceList;
 
