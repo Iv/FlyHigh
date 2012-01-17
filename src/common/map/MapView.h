@@ -1,8 +1,6 @@
-//Added by qt3to4:
-#include <QKeyEvent>
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,14 +21,13 @@
 #ifndef _MapView_h
 #define _MapView_h
 
-class Map;
-
-#include <q3scrollview.h>
-#include <QPixmap>
-#include <QVector>
+#include <QMainWindow>
 #include "WayPoint.h"
 
-class MapView: public Q3ScrollView
+class QKeyEvent;
+class QScrollArea;
+
+class MapView: public QMainWindow
 {
 	public:
 		MapView(QWidget *parent=0, const char *name=0, Qt::WindowFlags wFlags=0);
@@ -40,20 +37,10 @@ class MapView: public Q3ScrollView
 		void showWayPointList(WayPoint::WayPointListType &wpList);
 
 	protected:
-		void keyPressEvent(QKeyEvent * e);
-
-		void drawContents(QPainter* p, int cx, int cy, int cw, int ch);
+		void keyPressEvent(QKeyEvent *pEvent);
 
 	private:
-		typedef QVector<QPoint> PointArray;
-
-		Map *m_pMap;
-		WayPoint::WayPointListType m_wpList;
-		PointArray m_wayPoints;
-		int m_maxAlt;
-		int m_minAlt;
-
-		void recalcWayPoints();
+    QScrollArea *m_pScrollArea;
 };
 
 #endif
