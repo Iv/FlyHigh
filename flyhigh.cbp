@@ -131,6 +131,8 @@
 		<Unit filename="src/common/map/MapTile.h" />
 		<Unit filename="src/common/map/MapView.cpp" />
 		<Unit filename="src/common/map/MapView.h" />
+		<Unit filename="src/common/map/MapWidget.cpp" />
+		<Unit filename="src/common/map/MapWidget.h" />
 		<Unit filename="src/common/map/SwissGrid.cpp" />
 		<Unit filename="src/common/map/SwissGrid.h" />
 		<Unit filename="src/common/map/SwissMap100.cpp" />
