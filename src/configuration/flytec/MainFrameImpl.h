@@ -24,7 +24,6 @@
 #include <QList>
 #include "ui_MainFrame.h"
 
-class Q3ProgressBar;
 class Frame;
 
 class MainFrameImpl: public QMainWindow, public Ui::MainFrame
