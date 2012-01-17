@@ -1156,7 +1156,7 @@ void FlightWindow::showOnMap()
 
 				pView = new MapView();
 				pView->showWayPointList(wpList);
-				pView->showMaximized();
+				pView->show();
 			}
 		}
 
