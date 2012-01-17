@@ -8,6 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
 set(map_SRCS Map.cpp
              MapTile.cpp
              MapView.cpp
+             MapWidget.cpp
              SwissGrid.cpp
              SwissMap100.cpp
 )
