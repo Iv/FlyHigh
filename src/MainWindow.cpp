@@ -18,38 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qmenubar.h>
-#include <qstatusbar.h>
-#include <qmessagebox.h>
-#include <qapplication.h>
-#include <qobject.h>
-#include <qmdiarea.h>
-#include <qmdisubwindow.h>
-#include <QSignalMapper>
+#include <QAction>
+#include <QActionGroup>
+#include <QApplication>
 #include <QCloseEvent>
-
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QObject>
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QSignalMapper>
+#include <QStatusBar>
 #include "AirSpaceWindow.h"
 #include "GliderWindow.h"
+#include "FlightWindow.h"
+#include "FlightExpWindow.h"
+#include "IDataBase.h"
+#include "IGPSDevice.h"
 #include "IFlytecConfig.h"
 #include "IFlytec6015Config.h"
 #include "IFlyHighRC.h"
-#include "IPortFrame.h"
-#include "FlightWindow.h"
-#include "FlightExpWindow.h"
 #include "IFlyHighRCFrame.h"
-#include "MDIWindow.h"
-#include "IDataBase.h"
-#include "IGPSDevice.h"
+#include "IPortFrame.h"
 #include "IRouteForm.h"
+#include "ISql.h"
+#include "MainWindow.h"
+#include "MDIWindow.h"
+#include "MigrationDlg.h"
+#include "PreferencesDlg.h"
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
-#include "PreferencesDlg.h"
-#include "MigrationDlg.h"
-#include "ISql.h"
-#include "MainWindow.h"
-
-#include <QDebug>
 
 MainWindow::MainWindow()
 //	:QMainWindow(0, Qt::WDestructiveClose)
