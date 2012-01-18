@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 
 project(flyhigh)
 
-# at least Qt 4.3 is required.
-find_package(Qt4 4.3.0 COMPONENTS QtCore QtGui QtXml QtWebKit QtNetwork QtSql REQUIRED)
+# at least Qt 4.6 is required.
+find_package(Qt4 4.6.0 COMPONENTS QtCore QtGui QtXml QtWebKit QtNetwork QtSql REQUIRED)
 
-set(QT_USE_QT3SUPPORT TRUE)
 set(QT_USE_QTWEBKIT TRUE)
 
 # default build type is Release
