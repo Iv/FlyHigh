@@ -37,68 +37,68 @@ class MigratorThread;
 class MigrationDlg : public QDialog
 {
 	Q_OBJECT
-	
-public:
 
-	/**
-	 * Creates a modal db migration dialog
-	 */
-	MigrationDlg(QWidget* parent = 0);
+  public:
 
-	~MigrationDlg();
+    /**
+     * Creates a modal db migration dialog
+     */
+    MigrationDlg(QWidget* parent = 0);
 
-private Q_SLOTS:
+    virtual ~MigrationDlg();
 
-		void performCopy();
-		void unlockInputFields();
-		void lockInputFields();
+  private Q_SLOTS:
 
-		void handleFinish(int finishState, QString errorMsg);
-		void handleStepStarted(const QString& stepName);
-		void handleSmallStepStarted(int currValue, int maxValue);
+      void performCopy();
+      void unlockInputFields();
+      void lockInputFields();
 
-		/**
-		 * Show a input dialog which provides db admin credentials
-		 */
-		void handleRequestCredentials();
+      void handleFinish(int finishState, QString errorMsg);
+      void handleStepStarted(const QString& stepName);
+      void handleSmallStepStarted(int currValue, int maxValue);
 
-Q_SIGNALS:
+      /**
+       * Show a input dialog which provides db admin credentials
+       */
+      void handleRequestCredentials();
 
-		/**
-		 * User entered db admin credentials in dialog box
-		 */
-		void credentialsEntered(QString,QString,bool);
+  Q_SIGNALS:
 
-private:
+      /**
+       * User entered db admin credentials in dialog box
+       */
+      void credentialsEntered(QString,QString,bool);
 
-	/**
-	 * Database configuration dialog
-	 */
-	DatabaseWidget* m_pFromDBConfig;
-	DatabaseWidget* m_pToDBConfig;
+  private:
 
-	/**
-	 * Progress bars
-	 */
-	QProgressBar* m_pProgressBar;
-	QProgressBar* m_pProgressBarSmallStep;
+    /**
+     * Database configuration dialog
+     */
+    DatabaseWidget* m_pFromDBConfig;
+    DatabaseWidget* m_pToDBConfig;
 
-	/**
-	 * Buttons
-	 */
-	QPushButton* m_pMigrateButton;
-	QPushButton* m_pCancelButton;
-	QDialogButtonBox* m_pButtonBox;
+    /**
+     * Progress bars
+     */
+    QProgressBar* m_pProgressBar;
+    QProgressBar* m_pProgressBarSmallStep;
 
-	/**
-	 * Label
-	 */
-	QLabel* m_pOverallStepTitle;
+    /**
+     * Buttons
+     */
+    QPushButton* m_pMigrateButton;
+    QPushButton* m_pCancelButton;
+    QDialogButtonBox* m_pButtonBox;
 
-	/**
-	 * thread that does the work
-	 */
-	MigratorThread* m_pMigratorThread;
+    /**
+     * Label
+     */
+    QLabel* m_pOverallStepTitle;
+
+    /**
+     * thread that does the work
+     */
+    MigratorThread* m_pMigratorThread;
 };
 
 #endif
