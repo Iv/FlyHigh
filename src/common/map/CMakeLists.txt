@@ -1,8 +1,8 @@
 include(${QT_USE_FILE})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
-                    ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/map
+                    ${CMAKE_SOURCE_DIR}/src/common/window
                     ${QT_INCLUDES})
 
 set(map_SRCS Map.cpp

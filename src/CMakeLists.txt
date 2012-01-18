@@ -7,6 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/webmap
+                    ${CMAKE_SOURCE_DIR}/src/common/window
                     ${CMAKE_SOURCE_DIR}/src/configuration/database
                     ${CMAKE_SOURCE_DIR}/src/configuration/flytec
                     ${CMAKE_SOURCE_DIR}/src/configuration/interface
@@ -42,6 +43,7 @@ target_link_libraries(flyhigh
 	cfgflytec
 	cfgflytec6015
 	cfginterface
+	window
 	database
 	dbflytec
 	dbgarmin
