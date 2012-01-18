@@ -31,7 +31,7 @@ class RouteWindow : public TableWindow
 	Q_OBJECT
 
 	public:
-		RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	private slots:
 		void file_new();

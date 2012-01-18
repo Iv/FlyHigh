@@ -36,7 +36,7 @@
 #include "WptFileParser.h"
 #include "WebMapWayPointView.h"
 
-WayPointWindow::WayPointWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags,
+WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags,
                                IDataBase::SourceType src, WayPoint::Type type)
 	:TableWindow(parent, name, wflags)
 {

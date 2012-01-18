@@ -30,7 +30,7 @@ class ServicingWindow: public TableWindow
 	Q_OBJECT
 
 	public:
-		ServicingWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		ServicingWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
 	private slots:
 		void file_update();

@@ -29,7 +29,7 @@
 #include "IFlyHighRC.h"
 #include "ISql.h"
 
-FlightExpWindow::FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
+FlightExpWindow::FlightExpWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;

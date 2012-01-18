@@ -30,7 +30,7 @@
 #include "ISql.h"
 #include "ProgressDlg.h"
 
-GliderWindow::GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
+GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;
