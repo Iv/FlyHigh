@@ -34,7 +34,7 @@
 #include "OpenAirFileParser.h"
 #include "ProgressDlg.h"
 
-AirSpaceWindow::AirSpaceWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
+AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;

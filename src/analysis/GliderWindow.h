@@ -30,7 +30,7 @@ class GliderWindow: public TableWindow
 {
 	Q_OBJECT
 	public:
-		GliderWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
 	private:
 		void setGliderToRow(uint row, Glider &glider);

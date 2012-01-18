@@ -29,7 +29,7 @@ class FlightExpWindow: public TableWindow
 {
 	Q_OBJECT
 	public:
-		FlightExpWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		FlightExpWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
 	private slots:
 		void file_update();

@@ -31,9 +31,7 @@
 #include "WayPoint.h"
 #include "WebMapRouteView.h"
 
-#include <QDebug>
-
-RouteWindow::RouteWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src)
+RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
 	QStringList nameList;

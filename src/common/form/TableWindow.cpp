@@ -29,8 +29,8 @@
 #include "IFlyHighRC.h"
 #include "TableWindow.h"
 
-TableWindow::TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags)
-    :MDIWindow(parent, name, wflags)
+TableWindow::TableWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
+  :MDIWindow(parent, name, wflags)
 {
 	m_pTable = new QTableWidget(this);
 //  m_pTable->verticalHeader()->hide();

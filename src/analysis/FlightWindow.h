@@ -20,18 +20,18 @@
 #ifndef FlightWindow_h
 #define FlightWindow_h
 
-#include <TableWindow.h>
 #include "FlightPointList.h"
 #include "IDataBase.h"
 #include "GnuPlot.h"
+#include <TableWindow.h>
 
 class QWidget;
 
-class FlightWindow : public TableWindow
+class FlightWindow: public TableWindow
 {
 	Q_OBJECT
 	public:
-		FlightWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
 
 	private slots:
 		void file_update();

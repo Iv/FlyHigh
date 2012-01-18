@@ -33,7 +33,7 @@ class TableWindow: public MDIWindow
 	Q_OBJECT
 
 	public:
-		TableWindow(QWidget* parent, const char* name, Qt::WindowFlags wflags);
+		TableWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
 		virtual ~TableWindow();
 
