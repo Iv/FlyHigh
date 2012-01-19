@@ -11,26 +11,20 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
 set(form_SRCS AirSpaceFormImpl.cpp
               FlightFormImpl.cpp
               GliderFormImpl.cpp
-              WayPointFormImpl.cpp
               IWayPointForm.cpp
               IGliderForm.cpp
               IFlightForm.cpp
-              RouteFormImpl.cpp
               IRouteForm.cpp
-              ServicingFormImpl.cpp
               IServicingForm.cpp
-							MigratorThread.cpp
-							DatabaseWidget.cpp
-							CredentialsDlg.cpp)
+              RouteFormImpl.cpp
+              ServicingFormImpl.cpp
+              WayPointFormImpl.cpp)
 
 set(form_HDRS FlightFormImpl.h
               GliderFormImpl.h
-              WayPointFormImpl.h
               RouteFormImpl.h
               ServicingFormImpl.h
-							MigratorThread.h
-							DatabaseWidget.h
-							CredentialsDlg.h)
+              WayPointFormImpl.h)
 
 set(form_UIS
 	AirSpaceForm.ui
