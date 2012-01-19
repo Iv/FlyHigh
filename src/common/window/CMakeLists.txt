@@ -5,12 +5,10 @@ include_directories(${CMAKE_SOURCE_DIR}/src/database/sql
 
 
 set(window_SRCS MDIWindow.cpp
-               MigrationDlg.cpp
                ProgressDlg.cpp
                TableWindow.cpp)
 
 set(window_HDRS MDIWindow.h
-              MigrationDlg.h
               ProgressDlg.h
               TableWindow.h)
 
