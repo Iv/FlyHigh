@@ -29,45 +29,43 @@ class QVBoxLayout;
 class DatabaseWidget;
 class DatabaseParameters;
 
-class DbSettingsDlg : public QDialog
+class DbSettingsDlg: public QDialog
 {
-	Q_OBJECT
+  public:
 
-public:
+    /**
+     * Creates a modal preferences dialog
+     */
+    DbSettingsDlg(QWidget* parent = 0);
 
-	/**
-	 * Creates a modal preferences dialog
-	 */
-	DbSettingsDlg(QWidget* parent = 0);
+    ~DbSettingsDlg();
 
-	~DbSettingsDlg();
+    /**
+     * Access to the db config
+     */
+    const DatabaseParameters getDBParameters() const;
 
-	/**
-	 * Access to the db config
-	 */
-	const DatabaseParameters getDBParameters() const;
+  private:
 
-private:
+    /**
+     * Tab container
+     */
+    QTabWidget* m_pTabWidget;
 
-	/**
-	 * Tab container
-	 */
-	QTabWidget* m_pTabWidget;
+    /**
+     * Ok/Cancel button
+     */
+    QDialogButtonBox* m_pButtonBox;
 
-	/**
-	 * Ok/Cancel button
-	 */
-	QDialogButtonBox* m_pButtonBox;
+    /**
+     * Layout manager
+     */
+    QVBoxLayout* m_pLayout;
 
-	/**
-	 * Layout manager
-	 */
-	QVBoxLayout* m_pLayout;
-
-	/**
-	 * Database configuration dialog
-	 */
-	DatabaseWidget* m_pDBConfig;
+    /**
+     * Database configuration dialog
+     */
+    DatabaseWidget* m_pDBConfig;
 };
 
 #endif
