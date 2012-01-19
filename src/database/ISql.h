@@ -20,8 +20,8 @@
 #ifndef ISql_h
 #define ISql_h
 
-#include <qstring.h>
-#include <qsqldatabase.h>
+#include <QString>
+#include <QSqlDatabase>
 #include "AirSpace.h"
 #include "ContainerDef.h"
 #include "IDataBase.h"
@@ -32,7 +32,6 @@
 #include "Pilot.h"
 #include "Servicing.h"
 #include "DatabaseParameters.h"
-
 
 class QTimer;
 //class AirSpaces;
@@ -63,7 +62,11 @@ class ISql: public IDataBase
 		 * Connects to the configured db.
 		 * If the db does not yet exist, it will be created.
 		 */
-		bool createAndConnect();
+		bool connectDb();
+
+		bool reqPwdForCreateDb();
+
+		bool createDb(const QString &usr = "", const QString &pwd = "");
 
 		void setDBParameters(const DatabaseParameters& params);
 
@@ -170,7 +173,7 @@ class ISql: public IDataBase
 
 		ISql();
 
-    bool connectDb();
+    bool connectDbPriv();
 
 		void upgradeTables();
 

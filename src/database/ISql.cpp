@@ -89,42 +89,32 @@ void ISql::close()
 {
 }
 
-bool ISql::createAndConnect()
+bool ISql::connectDb()
 {
 	bool ok;
 
 	// close open db first
-	if (open())
+	if(open())
 	{
 		m_DefaultDB.close();
 		QSqlDatabase::removeDatabase(m_DefaultDB.connectionName());
 	}
 
 	// which type of db?
-	if (m_dbParameters.isMySQL())
+	if(m_dbParameters.isMySQL())
 	{
 		// check for server host
 		QHostInfo info = QHostInfo::fromName(m_dbParameters.dBHostName());
-		if(info.error()!=QHostInfo::NoError)
+
+		if(info.error() != QHostInfo::NoError)
 		{
 			// todo: show error dialog
 			qDebug() << info.errorString();
 		}
-		ok = connectDb();
-		if(!ok)
-		{
-			// failed, we might need to create it
-			CredentialsDlg dlg(NULL,tr("Please enter MySQL administrator credentials"));
-			dlg.setUsername("root");
-			int ret = dlg.exec();
-			if (ret == QDialog::Accepted)
-			{
-				DatabaseUtilities::createDb(m_dbParameters, dlg.getUsername(), dlg.getPassword());
-				ok = connectDb();
-			}
-		}
+
+		ok = connectDbPriv();
 	}
-	else if (m_dbParameters.isSQLite())
+	else if(m_dbParameters.isSQLite())
 	{
     QFileInfo dbfile = QFileInfo(m_dbParameters.dBFile());
 
@@ -134,23 +124,39 @@ bool ISql::createAndConnect()
 			QDir().mkpath(dbfile.absolutePath());
 		}
 
-		ok = connectDb();
-
-		if(!ok)
-		{
-			DatabaseUtilities::createDb(m_dbParameters);
-			ok = connectDb();
-		}
+		ok = connectDbPriv();
 	}
 	else
 	{
 		qDebug() << "Unknown db type '" << m_dbParameters.dBType() << "'.";
 		return false;
 	}
+
 	return ok;
 }
 
-bool ISql::connectDb()
+bool ISql::reqPwdForCreateDb()
+{
+  return m_dbParameters.isMySQL();
+}
+
+bool ISql::createDb(const QString &usr, const QString &pwd)
+{
+  bool success = false;
+
+	if(m_dbParameters.isMySQL())
+	{
+    success = DatabaseUtilities::createDb(m_dbParameters, usr, pwd);
+  }
+	else if(m_dbParameters.isSQLite())
+	{
+    success = DatabaseUtilities::createDb(m_dbParameters);
+	}
+
+	return success;
+}
+
+bool ISql::connectDbPriv()
 {
 	bool success;
 
