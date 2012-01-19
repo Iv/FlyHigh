@@ -2,9 +2,11 @@ include_directories(${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/database/sql
                     ${QT_INCLUDES})
 
-set(dbmigrator_SRCS MigrationDlg.cpp)
+set(dbmigrator_SRCS MigrationDlg.cpp
+                    MigratorThread.cpp)
 
-set(dbmigrator_HDRS MigrationDlg.h)
+set(dbmigrator_HDRS MigrationDlg.h
+                    MigratorThread.h)
 
 QT4_WRAP_CPP(dbmigrator_SRCS ${dbmigrator_HDRS})
 
