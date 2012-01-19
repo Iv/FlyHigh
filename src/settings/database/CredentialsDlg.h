@@ -28,46 +28,43 @@ class QLineEdit;
 /**
  * Widget for entering username and password in one single dialog.
  */
-class CredentialsDlg : public QDialog
+class CredentialsDlg: public QDialog
 {
-	Q_OBJECT
+  public:
 
-public:
+    /**
+     * Creates a credentials dialog
+     * @param parent - the parent widget
+     * @param text - the explanation text to show in the dialog
+     */
+    CredentialsDlg(QWidget* parent=0, const QString& text="");
 
-	/**
-	 * Creates a credentials dialog
-	 * @param parent - the parent widget
-	 * @param text - the explanation text to show in the dialog
-	 */
-	CredentialsDlg(QWidget* parent=0, const QString& text="");
+    /**
+     * destruction
+     */
+    virtual ~CredentialsDlg();
 
-	/**
-	 * destruction
-	 */
-	virtual ~CredentialsDlg();
+    /**
+     * presets the username
+     * @param user - the username
+     */
+    void setUsername(const QString& user);
 
-	/**
-	 * presets the username
-	 * @param user - the username
-	 */
-	void setUsername(const QString& user);
+    /**
+     * Returns the username
+     * @return the username
+     */
+    QString getUsername() const;
 
-	/**
-	 * Returns the username
-	 * @return the username
-	 */
-	QString getUsername() const;
+    /**
+     * Returns the password
+     * @return the password
+     */
+    QString getPassword() const;
 
-	/**
-	 * Returns the password
-	 * @return the password
-	 */
-	QString getPassword() const;
-
-private:
-
-	QLineEdit* m_pUsername;
-	QLineEdit* m_pPassword;
+  private:
+    QLineEdit* m_pUsername;
+    QLineEdit* m_pPassword;
 };
 
 #endif
