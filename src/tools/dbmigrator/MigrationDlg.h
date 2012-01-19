@@ -34,7 +34,7 @@ class MigratorThread;
  * Dialog for migrating flyhigh databases
  * The source was lamely stolen and slipstreamed from www.digikam.org. Sorry & Thanks!
  */
-class MigrationDlg : public QDialog
+class MigrationDlg: public QDialog
 {
 	Q_OBJECT
 
@@ -47,14 +47,17 @@ class MigrationDlg : public QDialog
 
     virtual ~MigrationDlg();
 
-  private Q_SLOTS:
-
+  private slots:
       void performCopy();
+
       void unlockInputFields();
+
       void lockInputFields();
 
       void handleFinish(int finishState, QString errorMsg);
+
       void handleStepStarted(const QString& stepName);
+
       void handleSmallStepStarted(int currValue, int maxValue);
 
       /**
@@ -62,7 +65,7 @@ class MigrationDlg : public QDialog
        */
       void handleRequestCredentials();
 
-  Q_SIGNALS:
+  signals:
 
       /**
        * User entered db admin credentials in dialog box
@@ -70,22 +73,10 @@ class MigrationDlg : public QDialog
       void credentialsEntered(QString,QString,bool);
 
   private:
-
-    /**
-     * Database configuration dialog
-     */
     DatabaseWidget* m_pFromDBConfig;
     DatabaseWidget* m_pToDBConfig;
-
-    /**
-     * Progress bars
-     */
     QProgressBar* m_pProgressBar;
     QProgressBar* m_pProgressBarSmallStep;
-
-    /**
-     * Buttons
-     */
     QPushButton* m_pMigrateButton;
     QPushButton* m_pCancelButton;
     QDialogButtonBox* m_pButtonBox;
