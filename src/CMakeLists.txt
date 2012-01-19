@@ -8,20 +8,20 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/webmap
                     ${CMAKE_SOURCE_DIR}/src/common/window
-                    ${CMAKE_SOURCE_DIR}/src/configuration/database
-                    ${CMAKE_SOURCE_DIR}/src/configuration/flytec
-                    ${CMAKE_SOURCE_DIR}/src/configuration/interface
-                    ${CMAKE_SOURCE_DIR}/src/configuration/flytec6015
+                    ${CMAKE_SOURCE_DIR}/src/settings/database
+                    ${CMAKE_SOURCE_DIR}/src/settings/flytec
+                    ${CMAKE_SOURCE_DIR}/src/settings/port
+                    ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/preparation
                     ${QT_INCLUDES} )
 
 add_subdirectory(analysis)
 add_subdirectory(common)
-add_subdirectory(configuration)
 add_subdirectory(database)
-add_subdirectory(res)
 add_subdirectory(preparation)
+add_subdirectory(res)
+add_subdirectory(settings)
 
 set(flyhigh_SRCS main.cpp
                  MainWindow.cpp)
@@ -42,7 +42,7 @@ target_link_libraries(flyhigh
 	cfgdatabase
 	cfgflytec
 	cfgflytec6015
-	cfginterface
+	cfgport
 	window
 	database
 	dbflytec
