@@ -6,11 +6,14 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR} )
 
-set(cfgdatabase_SRCS DbSettingsDlg.cpp
+set(cfgdatabase_SRCS CredentialsDlg.cpp
+                     DatabaseWidget.cpp
+                     DbSettingsDlg.cpp
                      FlyHighRCFrameImpl.cpp
                      IFlyHighRCFrame.cpp)
 
-set(cfgdatabase_HDRS FlyHighRCFrameImpl.h)
+set(cfgdatabase_HDRS DatabaseWidget.h
+                     FlyHighRCFrameImpl.h)
 
 file (GLOB cfgdatabase_UI *.ui)
 
