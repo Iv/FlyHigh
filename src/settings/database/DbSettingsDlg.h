@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PREFERENCESDLG_H
-#define PREFERENCESDLG_H
+#ifndef DbSettingsDlg_H
+#define DbSettingsDlg_H
 
 #include <QDialog>
 
@@ -29,18 +29,18 @@ class QVBoxLayout;
 class DatabaseWidget;
 class DatabaseParameters;
 
-class PreferencesDlg : public QDialog
+class DbSettingsDlg : public QDialog
 {
 	Q_OBJECT
-	
+
 public:
 
 	/**
 	 * Creates a modal preferences dialog
 	 */
-	PreferencesDlg(QWidget* parent = 0);
+	DbSettingsDlg(QWidget* parent = 0);
 
-	~PreferencesDlg();
+	~DbSettingsDlg();
 
 	/**
 	 * Access to the db config
