@@ -21,14 +21,12 @@
 #include <QApplication>
 #include <QIcon>
 #include <QTextCodec>
-#include <QDebug>
 #include "MainWindow.h"
 #include "IFlyHighRC.h"
 #include "IGPSDevice.h"
 #include "ISql.h"
 
-
-int main( int argc, char ** argv ) 
+int main( int argc, char ** argv )
 {
 	int res;
 	QApplication appl(argc, argv);
@@ -41,21 +39,13 @@ int main( int argc, char ** argv )
 
 	// read config file
 	IFlyHighRC::pInstance()->loadRC();
-
-	// connect (and maybe create) database
 	ISql::pInstance()->setDBParameters(IFlyHighRC::pInstance()->getDBParameters());
-	if (!ISql::pInstance()->createAndConnect())
-	{
-		qDebug() << "Database connection failed";
-		return 1;
-	}
-	
+
 	pMainWin = new MainWindow();
 	pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
-	
 	pMainWin->show();
 	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
-	
+
 	res = appl.exec();
 
 	// exit
@@ -65,6 +55,6 @@ int main( int argc, char ** argv )
 	delete IGPSDevice::pInstance();
 	delete IFlyHighRC::pInstance();
 	delete ISql::pInstance();
-	
+
 	return res;
 }
