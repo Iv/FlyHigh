@@ -115,6 +115,8 @@ class MainWindow: public QMainWindow
 		MDIWindow* activeMdiChild();
 
 		void resizeSubWindow(MDIWindow *pWin);
+
+    bool createAndConnectDb();
 };
 
 #endif
