@@ -93,15 +93,15 @@ void FlightExpWindow::file_update()
 			for(fpyNr=0; fpyNr<fpyCount; fpyNr++)
 			{
 			  itemNr = (fpyCount - fpyNr - 1);
-				str.sprintf("%i", fpyList[itemNr].year);
+				str.sprintf("%i", fpyList[fpyNr].year);
 				pTable->item(itemNr, Year)->setText(str);
-				str.sprintf("%i", fpyList[itemNr].nFlights);
+				str.sprintf("%i", fpyList[fpyNr].nFlights);
 				pTable->item(itemNr, NrFlights)->setText(str);
-				str.sprintf("%.2f",  fpyList[itemNr].airTimeSecs / 3600.0);
+				str.sprintf("%.2f",  fpyList[fpyNr].airTimeSecs / 3600.0);
 				pTable->item(itemNr, Airtime)->setText(str);
 
-				flightsTotal += fpyList[itemNr].nFlights;
-				airtimeTotal += fpyList[itemNr].airTimeSecs;
+				flightsTotal += fpyList[fpyNr].nFlights;
+				airtimeTotal += fpyList[fpyNr].airTimeSecs;
 			}
 
 			// separator
