@@ -8,12 +8,13 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/webmap
                     ${CMAKE_SOURCE_DIR}/src/common/window
-                    ${CMAKE_SOURCE_DIR}/src/settings/database
-                    ${CMAKE_SOURCE_DIR}/src/settings/flytec
-                    ${CMAKE_SOURCE_DIR}/src/settings/port
-                    ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/preparation
+                    ${CMAKE_SOURCE_DIR}/src/settings/database
+                    ${CMAKE_SOURCE_DIR}/src/settings/flytec
+                    ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
+                    ${CMAKE_SOURCE_DIR}/src/settings/port
+                    ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
                     ${QT_INCLUDES} )
 
 add_subdirectory(analysis)
@@ -22,6 +23,7 @@ add_subdirectory(database)
 add_subdirectory(preparation)
 add_subdirectory(res)
 add_subdirectory(settings)
+add_subdirectory(tools)
 
 set(flyhigh_SRCS main.cpp
                  MainWindow.cpp)
@@ -39,16 +41,17 @@ endif(WIN32)
 
 target_link_libraries(flyhigh
 	analysis
+  preparation
 	cfgdatabase
 	cfgflytec
 	cfgflytec6015
 	cfgport
+	dbmigrator
 	window
 	database
 	dbflytec
 	dbgarmin
 	dbsql
-	preparation
 	container
 	form
 	map
