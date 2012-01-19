@@ -34,11 +34,8 @@
 #include "IFlyHighRC.h"
 #include "DatabaseWidget.h"
 
-#include "QDebug"
-
-
 DatabaseWidget::DatabaseWidget(QWidget* parent, const QString& title)
-	: QWidget(parent)
+	:QWidget(parent)
 {
 	setAutoFillBackground(false);
 
