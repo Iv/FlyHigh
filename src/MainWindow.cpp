@@ -22,6 +22,7 @@
 #include <QActionGroup>
 #include <QApplication>
 #include <QCloseEvent>
+#include <QDebug>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -31,6 +32,7 @@
 #include <QSignalMapper>
 #include <QStatusBar>
 #include "AirSpaceWindow.h"
+#include "CredentialsDlg.h"
 #include "GliderWindow.h"
 #include "FlightWindow.h"
 #include "FlightExpWindow.h"
@@ -63,6 +65,8 @@ MainWindow::MainWindow()
 	uint devNr;
 	uint curDev;
 	uint maxDevNr;
+
+  createAndConnectDb();
 
 	// Workspace
 	m_pMdiArea = new QMdiArea(this);
@@ -446,7 +450,7 @@ void MainWindow::settings_configure_flyhigh()
 
 		// notify database mngr
 		ISql::pInstance()->setDBParameters(dbparams);
-		ISql::pInstance()->createAndConnect();
+    createAndConnectDb();
 
 		// todo: notify open windows
 	}
@@ -643,4 +647,36 @@ MDIWindow* MainWindow::activeMdiChild()
 void MainWindow::resizeSubWindow(MDIWindow *pWin)
 {
 	pWin->resize(m_pMdiArea->width() / 2, m_pMdiArea->height() / 2);
+}
+
+bool MainWindow::createAndConnectDb()
+{
+  bool success = false;
+
+  if(!ISql::pInstance()->connectDb())
+  {
+    if(ISql::pInstance()->reqPwdForCreateDb())
+    {
+      CredentialsDlg dlg(NULL, QObject::tr("Please enter MySQL administrator credentials"));
+      dlg.setUsername("root");
+
+      if(dlg.exec() == QDialog::Accepted)
+      {
+        ISql::pInstance()->createDb(dlg.getUsername(), dlg.getPassword());
+      }
+    }
+    else
+    {
+      ISql::pInstance()->createDb();
+    }
+
+    success = ISql::pInstance()->connectDb();
+
+    if(!success)
+    {
+      qDebug() << "Database connection failed";
+    }
+  }
+
+  return success;
 }
