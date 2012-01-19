@@ -46,7 +46,7 @@
 #include "MainWindow.h"
 #include "MDIWindow.h"
 #include "MigrationDlg.h"
-#include "PreferencesDlg.h"
+#include "DbSettingsDlg.h"
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
@@ -436,7 +436,7 @@ void MainWindow::settings_configure_device()
 
 void MainWindow::settings_configure_flyhigh()
 {
-	PreferencesDlg dlg(this);
+	DbSettingsDlg dlg(this);
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
