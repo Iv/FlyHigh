@@ -42,11 +42,11 @@ endif(WIN32)
 target_link_libraries(flyhigh
 	analysis
   preparation
-	cfgdatabase
 	cfgflytec
 	cfgflytec6015
 	cfgport
 	dbmigrator
+	cfgdatabase
 	window
 	database
 	dbflytec
