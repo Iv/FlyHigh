@@ -6,8 +6,9 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR} )
 
-set(cfgdatabase_SRCS FlyHighRCFrameImpl.cpp
-                     IFlyHighRCFrame.cpp )
+set(cfgdatabase_SRCS DbSettingsDlg.cpp
+                     FlyHighRCFrameImpl.cpp
+                     IFlyHighRCFrame.cpp)
 
 set(cfgdatabase_HDRS FlyHighRCFrameImpl.h)
 
