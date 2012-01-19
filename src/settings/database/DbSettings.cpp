@@ -23,9 +23,9 @@
 #include <QVBoxLayout>
 #include "DatabaseWidget.h"
 #include "DatabaseParameters.h"
-#include "PreferencesDlg.h"
+#include "DbSettingsDlg.h"
 
-PreferencesDlg::PreferencesDlg(QWidget* parent)
+DbSettingsDlg::DbSettingsDlg(QWidget* parent)
 	:QDialog(parent)
 {
 	setWindowTitle(tr("Configure - FlyHigh"));
@@ -35,12 +35,11 @@ PreferencesDlg::PreferencesDlg(QWidget* parent)
 	m_pTabWidget = new QTabWidget();
 
 	// a tab for database preferences
-	m_pDBConfig = new DatabaseWidget(this,tr("Database Settings"));
-	m_pTabWidget->addTab(m_pDBConfig, tr("Database") );
+	m_pDBConfig = new DatabaseWidget(this, tr("Database Settings"));
+	m_pTabWidget->addTab(m_pDBConfig, tr("Database"));
 
 	// ok/cancel button
-	m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
-																			QDialogButtonBox::Cancel);
+	m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
 	// wire buttons to dialog slots
 	connect(m_pButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -55,7 +54,7 @@ PreferencesDlg::PreferencesDlg(QWidget* parent)
 	show();
 }
 
-PreferencesDlg::~PreferencesDlg()
+DbSettingsDlg::~DbSettingsDlg()
 {
 	delete m_pDBConfig;
 	delete m_pTabWidget;
@@ -63,7 +62,7 @@ PreferencesDlg::~PreferencesDlg()
 	delete m_pLayout;
 }
 
-const DatabaseParameters PreferencesDlg::getDBParameters() const
+const DatabaseParameters DbSettingsDlg::getDBParameters() const
 {
 	return m_pDBConfig->getDatabaseParameters();
 }
