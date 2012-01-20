@@ -67,10 +67,6 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 		{
 			m_pDb = NULL;
 
-			pAction = new QAction(tr("&Import..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
-			MDIWindow::addAction(pAction);
-
 			pAction = new QAction(tr("&Add to GPS..."), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
 			MDIWindow::addAction(pAction);
@@ -78,17 +74,32 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 		break;
 	}
 
-  connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
+	// import/export
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+	if(src == IDataBase::File)
+	{
+    pAction = new QAction(tr("&Import..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
+    MDIWindow::addAction(pAction);
+	}
 
 	pAction = new QAction(tr("&Export all..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
 	MDIWindow::addAction(pAction);
 
-  pAction = new QAction(tr("View Airspace..."), this);
+	// view
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+  pAction = new QAction(tr("&View..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
 	MDIWindow::addAction(pAction);
 
-  pAction = new QAction(tr("View Webmap..."), this);
+  pAction = new QAction(tr("View &Web Map..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	MDIWindow::addAction(pAction);
 
@@ -109,6 +120,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 	pTable->setColumnWidth(High, 100);
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
+
+  connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
   if(src == IDataBase::File)
   {

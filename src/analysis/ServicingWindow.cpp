@@ -33,6 +33,9 @@ ServicingWindow::ServicingWindow(QWidget* parent, const QString &name, Qt::Windo
 	QTableWidget *pTable = TableWindow::getTable();
   QAction* pAction;
 
+  m_pDb = ISql::pInstance();
+
+  // menu
   pAction = new QAction(tr("&New..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
   MDIWindow::addAction(pAction);
@@ -41,18 +44,19 @@ ServicingWindow::ServicingWindow(QWidget* parent, const QString &name, Qt::Windo
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
   MDIWindow::addAction(pAction);
 
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
   pAction = new QAction(tr("&Export all..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
   MDIWindow::addAction(pAction);
 
-  TableWindow::setWindowTitle(tr("Servicings"));
   TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
 	// configure the table
 	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_pDb = ISql::pInstance();
-	connect(m_pDb, SIGNAL(servicingsChanged()), this, SLOT(file_update()));
 
 	// header
 	nameList += tr("Glider");
@@ -66,6 +70,8 @@ ServicingWindow::ServicingWindow(QWidget* parent, const QString &name, Qt::Windo
 	pTable->setColumnWidth(Date, 100);
 	pTable->setColumnWidth(Responsibility, 120);
 	pTable->setColumnWidth(Comment, 1000);
+
+	connect(m_pDb, SIGNAL(servicingsChanged()), this, SLOT(file_update()));
 
 	file_update();
 }

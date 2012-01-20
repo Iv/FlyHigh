@@ -54,9 +54,9 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_newWebMap()));
 			MDIWindow::addAction(pAction);
 
-			pAction = new QAction(tr("&Add to GPS..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			MDIWindow::addAction(pAction);
+      pAction = new QAction(tr("&Copy..."), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
+      MDIWindow::addAction(pAction);
 		}
 		break;
 		case IDataBase::GPSdevice:
@@ -74,7 +74,34 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 		break;
 	}
 
-  connect(m_pDb, SIGNAL(routesChanged()), this, SLOT(file_update()));
+	pAction = new QAction(tr("&Delete"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+	MDIWindow::addAction(pAction);
+
+	if(src == IDataBase::SqlDB)
+	{
+    pAction = new QAction(tr("&Add to GPS..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+    MDIWindow::addAction(pAction);
+	}
+
+	pAction = new QAction(tr("&Update"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+	MDIWindow::addAction(pAction);
+
+  // import/export
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("&Export all..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+	MDIWindow::addAction(pAction);
+
+  // view
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
 
 	pAction = new QAction(tr("&View"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_view()));
@@ -82,26 +109,10 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 
 	if(src == IDataBase::SqlDB)
 	{
-    pAction = new QAction(tr("&View Web Map"), this);
+    pAction = new QAction(tr("View Web &Map"), this);
 		connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 		MDIWindow::addAction(pAction);
-
-		pAction = new QAction(tr("&Copy from..."), this);
-		connect(pAction, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
-		MDIWindow::addAction(pAction);
 	}
-
-	pAction = new QAction(tr("&Delete"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
-	MDIWindow::addAction(pAction);
-
-	pAction = new QAction(tr("&Update"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
-	MDIWindow::addAction(pAction);
-
-	pAction = new QAction(tr("&Export all..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
-	MDIWindow::addAction(pAction);
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
@@ -116,6 +127,8 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(Type, 300);
+
+  connect(m_pDb, SIGNAL(routesChanged()), this, SLOT(file_update()));
 
 	file_update();
 }

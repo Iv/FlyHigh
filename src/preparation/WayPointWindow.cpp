@@ -48,52 +48,23 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
   m_wpType = type;
   m_externSelect = false;
 
-  if(src != IDataBase::File)
-  {
-    pAction = new QAction(tr("&Update"), this);
-    connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
-    MDIWindow::addAction(pAction);
-  }
-
 	switch(src)
 	{
 		case IDataBase::SqlDB:
 		{
 			m_pDb = ISql::pInstance();
-
-			pAction = new QAction(tr("Add to GPS..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
-			MDIWindow::addAction(pAction);
-
-      pAction = new QAction(tr("Edit..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_Edit()));
-			MDIWindow::addAction(pAction);
-
       connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 		}
 		break;
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
-
-			pAction = new QAction(tr("Add to DB..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			MDIWindow::addAction(pAction);
-
       connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 		}
 		break;
     case IDataBase::File:
 		{
 			m_pDb = NULL;
-
-      pAction = new QAction(tr("&Import File..."), this);
-      connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
-      MDIWindow::addAction(pAction);
-
-      pAction = new QAction(tr("Add to DB..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			MDIWindow::addAction(pAction);
 		}
 		break;
 		default:
@@ -106,7 +77,17 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
     pAction = new QAction(tr("New..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_addNewWp()));
     MDIWindow::addAction(pAction);
+  }
 
+  if(src == IDataBase::SqlDB)
+  {
+    pAction = new QAction(tr("Edit..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_Edit()));
+    MDIWindow::addAction(pAction);
+  }
+
+  if(src != IDataBase::File)
+  {
     // 6016 doesn't support delete of single waypoints
     if(!((src == IDataBase::GPSdevice) &&
       (IGPSDevice::pInstance()->deviceId() == IFlyHighRC::DevFlytec6015)))
@@ -126,13 +107,51 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
     MDIWindow::addAction(pAction);
   }
 
-	pAction = new QAction(tr("View WebMap..."), this);
+  if(src == IDataBase::SqlDB)
+  {
+    pAction = new QAction(tr("Add to GPS..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
+    MDIWindow::addAction(pAction);
+  }
+
+  if(src != IDataBase::SqlDB)
+  {
+    pAction = new QAction(tr("Add to DB..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+    MDIWindow::addAction(pAction);
+  }
+
+  if(src != IDataBase::File)
+  {
+    pAction = new QAction(tr("&Update"), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+    MDIWindow::addAction(pAction);
+  }
+
+  // import/export
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+  if(src == IDataBase::File)
+  {
+    pAction = new QAction(tr("&Import File..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
+    MDIWindow::addAction(pAction);
+  }
+
+  // view
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+	pAction = new QAction(tr("View &Web Map..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
 	MDIWindow::addAction(pAction);
 
   if(src == IDataBase::SqlDB)
   {
-    pAction = new QAction(tr("Edit WebMap..."), this);
+    pAction = new QAction(tr("Edit Web &Map..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
     MDIWindow::addAction(pAction);
   }
