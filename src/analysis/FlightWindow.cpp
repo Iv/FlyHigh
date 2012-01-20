@@ -53,10 +53,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 	pTable = TableWindow::getTable();
 
-	pAction = new QAction(tr("&Update"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
-	MDIWindow::addAction(pAction);
-
+  // menu
 	switch(src)
 	{
 		case IDataBase::SqlDB:
@@ -74,10 +71,6 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 			pAction = new QAction(tr("&Delete"), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
 			MDIWindow::addAction(pAction);
-
-			pAction = new QAction(tr("&Import..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_import()));
-			MDIWindow::addAction(pAction);
 		}
 		break;
 		case IDataBase::GPSdevice:
@@ -94,8 +87,21 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 		break;
 	}
 
-  connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
-  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
+  pAction = new QAction(tr("&Update"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+	MDIWindow::addAction(pAction);
+
+  // import/export
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
+ 	if(src == IDataBase::SqlDB)
+ 	{
+    pAction = new QAction(tr("&Import..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_import()));
+    MDIWindow::addAction(pAction);
+ 	}
 
 	pAction = new QAction(tr("&Export IGC..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
@@ -133,17 +139,16 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_OLC()));
 	MDIWindow::addAction(pAction);
 
-	pAction = new QAction(tr("&Web Map View"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
-	MDIWindow::addAction(pAction);
-
-	pAction = new QAction(tr("&Map View"), this);
+	pAction = new QAction(tr("&View Map"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnMap()));
 	MDIWindow::addAction(pAction);
 
-	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
+	pAction = new QAction(tr("View &Web Map"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
+	MDIWindow::addAction(pAction);
 
 	// configure the table
+	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -168,6 +173,9 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	pTable->setColumnWidth(LandPt, 150);
 	pTable->setColumnWidth(Distance, 70);
 	pTable->setColumnWidth(Comment, 1000);
+
+  connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
+  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
 	m_fileName = "";
   file_update();

@@ -38,6 +38,7 @@ GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	QAction* pAction;
 
   pTable = TableWindow::getTable();
+	m_pDb = ISql::pInstance();
 
 	pAction = new QAction(tr("&New..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
@@ -47,18 +48,18 @@ GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
 	MDIWindow::addAction(pAction);
 
+	pAction = new QAction(this);
+	pAction->setSeparator(true);
+	MDIWindow::addAction(pAction);
+
 	pAction = new QAction(tr("&Export all..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
 	MDIWindow::addAction(pAction);
 
-	TableWindow::setWindowTitle(tr("Gliders"));
-	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
-
 	// configure the table
+	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_pDb = ISql::pInstance();
-  connect(m_pDb, SIGNAL(glidersChanged()), this, SLOT(file_update()));
 
 	// header
 	nameList += tr("Manufacturer");
@@ -74,6 +75,8 @@ GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	pTable->setColumnWidth(Serial, 100);
 	pTable->setColumnWidth(Flights, 100);
 	pTable->setColumnWidth(Airtime, 100);
+
+  connect(m_pDb, SIGNAL(glidersChanged()), this, SLOT(file_update()));
 
 	file_update();
 }

@@ -125,13 +125,15 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
 	m_pMenuPreparation->addAction(pAction);
 
+	pAction = new QAction(tr("Waypoints (G&PS)"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
+	m_pMenuPreparation->addAction(pAction);
+
 	pAction = new QAction(tr("&Waypoints (File)"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
 	m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("Waypoints (G&PS)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
-	m_pMenuPreparation->addAction(pAction);
+	// routes
 	m_pMenuPreparation->addSeparator();
 
 	pAction = new QAction(tr("&Routes (DB)"), this);
@@ -275,7 +277,7 @@ void MainWindow::flights_fromSQL()
 {
 	MDIWindow *pWin;
 
-	pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::SqlDB);
+	pWin = new FlightWindow(m_pMdiArea, "Flights (DB)", 0, IDataBase::SqlDB);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -284,7 +286,7 @@ void MainWindow::flights_fromGPS()
 {
   MDIWindow* pWin;
 
-  pWin = new FlightWindow(m_pMdiArea, "Flights", 0, IDataBase::GPSdevice);
+  pWin = new FlightWindow(m_pMdiArea, "Flights (GPS)", 0, IDataBase::GPSdevice);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -320,7 +322,7 @@ void MainWindow::startLand_fromSQL()
 {
 	MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Start/Land from DB", 0, IDataBase::SqlDB, WayPoint::TypeStartLand);
+	pWin = new WayPointWindow(m_pMdiArea, "Start/Land (DB)", 0, IDataBase::SqlDB, WayPoint::TypeStartLand);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -329,7 +331,7 @@ void MainWindow::buoys_fromSQL()
 {
 	MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints from DB", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
+	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (DB)", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -338,7 +340,7 @@ void MainWindow::buoys_fromFile()
 {
 	MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints from file", 0, IDataBase::File, WayPoint::TypeBuoy);
+	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (File)", 0, IDataBase::File, WayPoint::TypeBuoy);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -347,7 +349,7 @@ void MainWindow::waypoints_fromGPS()
 {
 	MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints from GPS", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
+	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (GPS)", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -356,7 +358,7 @@ void MainWindow::routes_fromSQL()
 {
 	MDIWindow* pWin;
 
-	pWin = new RouteWindow(m_pMdiArea, "Routes from DB", 0, IDataBase::SqlDB);
+	pWin = new RouteWindow(m_pMdiArea, "Routes (DB)", 0, IDataBase::SqlDB);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -365,7 +367,7 @@ void MainWindow::routes_fromGPS()
 {
 	MDIWindow* pWin;
 
-	pWin = new RouteWindow(m_pMdiArea, "Routes from GPS", 0, IDataBase::GPSdevice);
+	pWin = new RouteWindow(m_pMdiArea, "Routes (GPS)", 0, IDataBase::GPSdevice);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -373,7 +375,7 @@ void MainWindow::routes_fromGPS()
 /*
 void MainWindow::airspaces_fromSQL()
 {
-	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces from DB", WDestructiveClose, IDataBase::SqlDB);
+	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces (DB)", WDestructiveClose, IDataBase::SqlDB);
 
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
@@ -384,7 +386,7 @@ void MainWindow::airspaces_fromGPS()
 {
 	MDIWindow* pWin;
 
-	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces from GPS", 0, IDataBase::GPSdevice);
+	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (GPS)", 0, IDataBase::GPSdevice);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
@@ -393,7 +395,7 @@ void MainWindow::airspaces_fromFile()
 {
 	MDIWindow* pWin;
 
-	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces from OpenAirTextFile", 0, IDataBase::File);
+	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (File)", 0, IDataBase::File);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
