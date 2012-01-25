@@ -184,12 +184,10 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 void FlightWindow::file_update()
 {
 	Pilot pilot;
-	QTableWidget *pTable;
 	ProgressDlg progDlg(this);
 	uint flightNr;
 	uint maxFlightNr;
 
-  pTable = TableWindow::getTable();
 	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 	m_flightList.clear();
 	TableWindow::setNumRows(0);
@@ -1035,7 +1033,6 @@ void FlightWindow::showOnWebMap()
 	uint distFree;
 	int row;
 	bool success;
-	bool tri;
 
 	row = getTable()->currentRow();
 
@@ -1067,7 +1064,6 @@ void FlightWindow::showOnWebMap()
 					// fai triangle
 					distFai = olcOptimizer.FAITriangle(fpIndexList);
 					tpList.clear();
-					tri = true;
 
 					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 					{
@@ -1080,7 +1076,6 @@ void FlightWindow::showOnWebMap()
 					if((distFai * 1.4) < (distFlat * 1.2))
 					{
 						tpList.clear();
-						tri = true;
 
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{
@@ -1094,7 +1089,6 @@ void FlightWindow::showOnWebMap()
 					if(((distFlat * 1.2) < distFree) && ((distFai * 1.4) < distFree))
 					{
 						tpList.clear();
-						tri = false;
 
 						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
 						{

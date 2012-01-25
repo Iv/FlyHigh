@@ -152,12 +152,9 @@ void AirSpaceWindow::closeEvent(QCloseEvent *pEvent)
 
 void AirSpaceWindow::file_update()
 {
-	QTableWidget *pTable;
 	ProgressDlg progDlg(this);
 	uint airspaceNr;
 	uint maxAirspaceNr;
-
-	pTable = TableWindow::getTable();
 
   if(m_pDb != NULL)
   {

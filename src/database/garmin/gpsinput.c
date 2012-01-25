@@ -1701,7 +1701,6 @@ int32 GPS_Input_Get_Route(GPS_PWay **way, FILE *inf)
     int32 rtype=0;
     int32 atype=0;
     int32 i;
-    long pos;
     int32 ret;
     char *p;
     int32 d;
@@ -1743,7 +1742,6 @@ int32 GPS_Input_Get_Route(GPS_PWay **way, FILE *inf)
     if(strncmp(s,"Start",5))
 	return gps_errno;
 
-    pos = ftell(inf);
     n = 1;
     while(strncmp(s,"End",3))
     {
@@ -1907,7 +1905,6 @@ static int32 GPS_Input_Get_Route201(GPS_PWay **way, FILE *inf)
     int32 type;
     int32 rtype;
     int32 i;
-    long pos;
     int32 ret;
     char *p;
     int32 d;
@@ -1925,7 +1922,6 @@ static int32 GPS_Input_Get_Route201(GPS_PWay **way, FILE *inf)
 	return gps_errno;
 
 
-    pos = ftell(inf);
     n = 1;
     while(strncmp(s,"End",3))
     {

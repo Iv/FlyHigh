@@ -108,8 +108,6 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 	uint nPts = 0;
 	int lat;
 	int lon;
-	int dx;
-	int dy;
 	double sx;
 	double sy;
 	int minLat;
@@ -152,8 +150,6 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 
 			// calc translation and scale
 			boundRect = QRect(QPoint(maxLat, minLon), QPoint(minLat, maxLon)); // edgePts.boundingRect();
-			dx = boundRect.left() - m_drawRect.left();
-			dy = boundRect.top() - m_drawRect.top();
 			sx = (double)(boundRect.right() - boundRect.left()) / (double)(m_drawRect.right() - m_drawRect.left());
 			sy=  (double)(boundRect.bottom() - boundRect.top()) / (double)(m_drawRect.bottom() - m_drawRect.top());
 
