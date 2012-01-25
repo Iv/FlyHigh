@@ -405,7 +405,6 @@ void WayPointWindow::file_AddToSqlDB()
 
 void WayPointWindow::file_open()
 {
-	QTableWidget *pTable;
 	QString fileName;
 	WptFileParser parser;
 	uint wptNr;
@@ -424,7 +423,6 @@ void WayPointWindow::file_open()
 		if(parser.parse(fileName, m_wpList))
 		{
 			maxWptNr = m_wpList.size();
-			pTable = TableWindow::getTable();
 			TableWindow::setNumRows(maxWptNr);
 
 			for(wptNr=0; wptNr<maxWptNr; wptNr++)
