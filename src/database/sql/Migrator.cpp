@@ -18,14 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QDebug>
 #include <QSqlQuery>
 #include <QSqlDriver>
 #include <QSqlError>
+#include <QSqlRecord>
 #include <QVariant>
 #include <QSemaphore>
-
-#include <QDebug>
-
 #include "ISql.h"
 #include "DatabaseUtilities.h"
 #include "QueryExecutor.h"
