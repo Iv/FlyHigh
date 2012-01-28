@@ -41,7 +41,7 @@ endif()
 
 
 add_definitions(${QT_DEFINITIONS})
-add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS -DCOMPILE_USE_QT4)
+add_definitions(-DCOMPILE_USE_QT4)
 add_definitions(-Wall)
 
 include(${QT_USE_FILE})
