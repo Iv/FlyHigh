@@ -50,10 +50,10 @@ void QueryStore::init()
 					 "INSERT INTO RouteItems (Id, RouteId, WayPointId) VALUES (:Id, :RouteId, :WayPointId)");
 	addQuery("migrate-read-waypoints",
 					 "common",
-					 "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type, Radius FROM WayPoints");
+					 "SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type FROM WayPoints");
 	addQuery("migrate-write-waypoints",
 					 "common",
-					 "INSERT INTO WayPoints (Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type, Radius) VALUES (:Id, :Name, :Spot, :Country, :Longitude, :Latitude, :Altitude, :Description, :Type, :Radius)");
+					 "INSERT INTO WayPoints (Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type) VALUES (:Id, :Name, :Spot, :Country, :Longitude, :Latitude, :Altitude, :Description, :Type)");
 	addQuery("migrate-read-gliders",
 					 "common",
 					 "SELECT Id, Manufacturer, Model, Serial FROM Gliders");
