@@ -1,3 +1,22 @@
+/***************************************************************************
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #include <math.h>
 #include "SwissGrid.h"
@@ -13,7 +32,7 @@ double a = 6377397; //Bessel ellipsoid
 double CorrRatio(double LatRad, const double C);
 double NewtonRaphson(const double initEstimate);
 
-void LLtoSwissGrid(const double Lat, const double Long, 
+void LLtoSwissGrid(const double Lat, const double Long,
 			 double &SwissNorthing, double &SwissEasting)
 {
 //converts lat/long to Swiss Grid coords.  Equations from "Supplementary PROJ.4 Notes-
@@ -31,26 +50,26 @@ void LLtoSwissGrid(const double Lat, const double Long,
 	double LatOriginRad = LatOrigin*deg2rad;
 	double LongOriginRad = LongOrigin*deg2rad;
 
-	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared))); 
-	
+	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared)));
+
 	double equivLatOrgRadPrime = asin(sin(LatOriginRad) / c);
 
 	//eqn. 1
 	double K = log(tan(FOURTHPI + equivLatOrgRadPrime/2))
-				-c*(log(tan(FOURTHPI + LatOriginRad/2)) 
+				-c*(log(tan(FOURTHPI + LatOriginRad/2))
 					- ecc/2 * log((1+ecc*sin(LatOriginRad)) / (1-ecc*sin(LatOriginRad))));
 
-	
+
 	double LongRadPrime = c*(LongRad - LongOriginRad); //eqn 2
-	double w = c*(log(tan(FOURTHPI + LatRad/2)) 
+	double w = c*(log(tan(FOURTHPI + LatRad/2))
 				- ecc/2 * log((1+ecc*sin(LatRad)) / (1-ecc*sin(LatRad)))) + K; //eqn 1
 	double LatRadPrime = 2 * (atan(exp(w)) - FOURTHPI); //eqn 1
-	
+
 	//eqn 3
-	double sinLatDoublePrime = cos(equivLatOrgRadPrime) * sin(LatRadPrime) 
+	double sinLatDoublePrime = cos(equivLatOrgRadPrime) * sin(LatRadPrime)
 								- sin(equivLatOrgRadPrime) * cos(LatRadPrime) * cos(LongRadPrime);
 	double LatRadDoublePrime = asin(sinLatDoublePrime);
-	
+
 	//eqn 4
 	double sinLongDoublePrime = cos(LatRadPrime)*sin(LongRadPrime) / cos(LatRadDoublePrime);
 	double LongRadDoublePrime = asin(sinLongDoublePrime);
@@ -62,7 +81,7 @@ void LLtoSwissGrid(const double Lat, const double Long,
 }
 
 
-void SwissGridtoLL(const double SwissNorthing, const double SwissEasting, 
+void SwissGridtoLL(const double SwissNorthing, const double SwissEasting,
 					double& Lat, double& Long)
 {
 	double LongOrigin = 7.43958333; //E7d26'22.500"
@@ -77,7 +96,7 @@ void SwissGridtoLL(const double SwissNorthing, const double SwissEasting,
 	double LongRadDoublePrime = (SwissEasting - 600000.0)/R; //eqn. 8 with equation corrected
 
 
-	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared))); 
+	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared)));
 	double equivLatOrgRadPrime = asin(sin(LatOriginRad) / c);
 
 	double sinLatRadPrime = cos(equivLatOrgRadPrime)*sin(LatRadDoublePrime)
@@ -102,13 +121,13 @@ double NewtonRaphson(const double initEstimate)
 	double LatOrigin = 46.95240556; //N46d57'8.660"
 	double LatOriginRad = LatOrigin*deg2rad;
 
-	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared))); 
-	
+	double c = sqrt(1+((eccSquared * pow(cos(LatOriginRad), 4)) / (1-eccSquared)));
+
 	double equivLatOrgRadPrime = asin(sin(LatOriginRad) / c);
 
 	//eqn. 1
 	double K = log(tan(FOURTHPI + equivLatOrgRadPrime/2))
-				-c*(log(tan(FOURTHPI + LatOriginRad/2)) 
+				-c*(log(tan(FOURTHPI + LatOriginRad/2))
 					- ecc/2 * log((1+ecc*sin(LatOriginRad)) / (1-ecc*sin(LatOriginRad))));
 	double C = (K - log(tan(FOURTHPI + initEstimate/2)))/c;
 
@@ -125,7 +144,7 @@ double NewtonRaphson(const double initEstimate)
 double CorrRatio(double LatRad, const double C)
 {
 	double ecc = sqrt(eccSquared);
-	double corr = (C + log(tan(FOURTHPI + LatRad/2)) 
+	double corr = (C + log(tan(FOURTHPI + LatRad/2))
 				- ecc/2 * log((1+ecc*sin(LatRad)) / (1-ecc*sin(LatRad)))) *
 				(((1-eccSquared*sin(LatRad)*sin(LatRad)) * cos(LatRad)) / (1-eccSquared));
 
