@@ -20,8 +20,11 @@
 
 #include <QKeyEvent>
 #include <QScrollArea>
+#include <QScrollBar>
 #include "MapView.h"
 #include "MapWidget.h"
+
+#include <QDebug>
 
 MapView::MapView(QWidget *parent, const char *name, Qt::WindowFlags wFlags)
 {
@@ -34,6 +37,8 @@ MapView::MapView(QWidget *parent, const char *name, Qt::WindowFlags wFlags)
   resize(1000, 850);
 
   pWidget->show();
+
+m_pScrollArea->viewport()->installEventFilter(this);
 }
 
 MapView::~MapView()
@@ -66,3 +71,63 @@ void MapView::keyPressEvent(QKeyEvent *pEvent)
 		break;
 	}
 }
+
+bool MapView::eventFilter(QObject *pObject, QEvent *pEvent)
+{
+  QWheelEvent *pWheelEvent;
+  QMouseEvent *pMouseEvent;
+  bool used = false;
+
+  switch(pEvent->type())
+  {
+    case QEvent::Wheel:
+      pWheelEvent = static_cast<QWheelEvent*>(pEvent);
+      wheel(pWheelEvent);
+      used = true;
+    break;
+    case QEvent::MouseMove:
+      pMouseEvent = static_cast<QMouseEvent*>(pEvent);
+      mouseMove(pMouseEvent);
+      used = true;
+    break;
+    case QEvent::MouseButtonPress:
+      pMouseEvent = static_cast<QMouseEvent*>(pEvent);
+      m_prevMousePos = pMouseEvent->pos();
+      used = true;
+    break;
+    default:
+    break;
+  }
+
+  return used;
+}
+
+void MapView::mouseMove(QMouseEvent *pEvent)
+{
+  QPoint delta;
+  int value;
+
+  delta = m_prevMousePos - pEvent->pos();
+  m_prevMousePos = pEvent->pos();
+  value = m_pScrollArea->horizontalScrollBar()->value() + delta.x();
+  m_pScrollArea->horizontalScrollBar()->setValue(value);
+  value = m_pScrollArea->verticalScrollBar()->value() + delta.y();
+  m_pScrollArea->verticalScrollBar()->setValue(value);
+}
+
+void MapView::wheel(QWheelEvent *pEvent)
+{
+  MapWidget *pWidget;
+
+  pWidget = static_cast<MapWidget*>(m_pScrollArea->widget());
+
+  if(pEvent->delta() > 0)
+  {
+    pWidget->zoomIn();
+  }
+  else
+  {
+    pWidget->zoomOut();
+  }
+}
+
