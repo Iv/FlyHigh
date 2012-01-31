@@ -11,57 +11,17 @@ Map::~Map()
 	clean();
 }
 
-bool Map::loadMap(double n, double e, double s, double w)
+bool Map::loadMap(double north, double east, double south, double west)
 {
-	(void)n;
-	(void)e;
-	(void)s;
-	(void)w;
-
 	return false;
 }
 
 void Map::LLtoPix(double lat, double lon, QPoint &pt)
 {
-	double rX;
-	double rY;
-	double x;
-	double y;
-	double n;
-	double w;
-
-	pixRatio(n, w, rX, rY);
-	x = (lon - w) * rX;
-	y = (n - lat) * rY;
-
-	pt.setX((int)x);
-	pt.setY((int)y);
 }
 
-void Map::pixToLL(const QPoint &pt, double &lat, double &lon)
+void Map::LLrect(double &north, double &east, double &south, double &west)
 {
-	double rX;
-	double rY;
-	double x;
-	double y;
-	double n;
-	double w;
-
-	pixRatio(n, w, rX, rY);
-	x = (double)(pt.x()) / rX;
-	y = (double)(pt.y()) / rY;
-
-	lon = w + x;
-	lat = n - y;
-}
-
-
-void Map::LLrect(double &n, double &e, double &s, double &w)
-{
-	(void)n;
-	(void)e;
-	(void)s;
-	(void)w;
 }
 
 void Map::pixRect(QRect &rect)
@@ -72,7 +32,7 @@ void Map::pixRect(QRect &rect)
 	int pixY;
 
 	rows = m_tileMatrix.size();
-	
+
 	if(rows > 0)
 	{
 		cols = m_tileMatrix[0].size();
@@ -151,7 +111,7 @@ void Map::clean()
 				delete pTile;
 			}
 		}
-		
+
 		m_tileMatrix[rowNr].clear();
 	}
 
@@ -166,17 +126,4 @@ void Map::pixTileSize(int &pixX, int &pixY)
 
 void Map::cancel()
 {
-}
-
-void Map::pixRatio(double &n, double &w, double &rX, double &rY)
-{
-	double e;
-	double s;
-	QRect rect;
-
-	pixRect(rect);
-	LLrect(n, e, s, w);
-
-	rX = (double)(rect.width()) / (e - w);
-	rY = (double)(rect.height()) / (n - s);
 }

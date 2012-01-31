@@ -1,3 +1,23 @@
+/***************************************************************************
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #include <math.h>
 #include "SwissMap100.h"
 #include "SwissGrid.h"
@@ -22,15 +42,15 @@
 	###########******** Block 3 (110 pics on 19 lines)
 */
 
-const uint SwissMap100::max_swiss_n = 302000;
-const uint SwissMap100::max_swiss_w = 480000;
+const uint SwissMap100::MaxSwissN = 302000;
+const uint SwissMap100::MaxSwissW = 480000;
 
 SwissMap100::SwissMap100(const QString &tilePath)
 	:Map(tilePath)
 {
 }
 
-bool SwissMap100::loadMap(double n, double e, double s, double w)
+bool SwissMap100::loadMap(double north, double east, double south, double west)
 {
 	double northing;
 	double easting;
@@ -39,28 +59,28 @@ bool SwissMap100::loadMap(double n, double e, double s, double w)
 	uint swiss_s;
 	uint swiss_w;
 
-	LLtoSwissGrid(n, e, northing, easting);
+	LLtoSwissGrid(north, east, northing, easting);
 	swiss_n = (uint)round(northing);
 	swiss_e = (uint)round(easting);
-	LLtoSwissGrid(s, w, northing, easting);
+	LLtoSwissGrid(south, west, northing, easting);
 	swiss_s = (uint)round(northing);
 	swiss_w = (uint)round(easting);
 
 	return loadSwissMap(swiss_n, swiss_e, swiss_s, swiss_w);
 }
 
-void SwissMap100::LLrect(double &n, double &e, double &s, double &w)
+void SwissMap100::LLrect(double &north, double &east, double &south, double &west)
 {
 	uint swiss_n;
 	uint swiss_e;
 
-	swiss_n = max_swiss_n - m_tilesRect.top() * (TILE_PIX_Y * PIX_Y_M);
-	swiss_e = max_swiss_w + m_tilesRect.left() * (TILE_PIX_X * PIX_X_M);
-	SwissGridtoLL(swiss_n, swiss_e, n, w);
+	swiss_n = MaxSwissN - m_tilesRect.top() * (TILE_PIX_Y * PIX_Y_M);
+	swiss_e = MaxSwissW + m_tilesRect.left() * (TILE_PIX_X * PIX_X_M);
+	SwissGridtoLL(swiss_n, swiss_e, north, west);
 
-	swiss_n = max_swiss_n - (m_tilesRect.bottom() + 1) * (TILE_PIX_Y * PIX_Y_M);
-	swiss_e = max_swiss_w + (m_tilesRect.right() + 1) * (TILE_PIX_X * PIX_X_M);
-	SwissGridtoLL(swiss_n, swiss_e, s, e);
+	swiss_n = MaxSwissN - (m_tilesRect.bottom() + 1) * (TILE_PIX_Y * PIX_Y_M);
+	swiss_e = MaxSwissW + (m_tilesRect.right() + 1) * (TILE_PIX_X * PIX_X_M);
+	SwissGridtoLL(swiss_n, swiss_e, south, east);
 }
 
 void SwissMap100::pixTileSize(int &pixX, int &pixY)
@@ -87,6 +107,34 @@ void SwissMap100::pixTileSize(int &pixX, int &pixY)
 	}
 }
 
+void SwissMap100::LLtoPix(double lat, double lon, QPoint &pt)
+{
+	double ptSwissN;
+	double ptSwissE;
+	double mapSwissN;
+	double mapSwissE;
+	double deltaN;
+	double deltaE;
+	double ptX;
+	double ptY;
+	int pixX;
+	int pixY;
+
+  // offset to top left
+	LLtoSwissGrid(lat, lon, ptSwissN, ptSwissE);
+	mapSwissN = MaxSwissN - m_tilesRect.top() * (TILE_PIX_Y * PIX_Y_M);
+	mapSwissE = MaxSwissW + m_tilesRect.left() * (TILE_PIX_X * PIX_X_M);
+	deltaN = mapSwissN - ptSwissN;
+	deltaE = ptSwissE - mapSwissE;
+
+  // scale to pixel
+  pixTileSize(pixX, pixY);
+  ptX = deltaE * (double)pixX / (double)(TILE_PIX_X * PIX_X_M);
+  pt.setX(ptX);
+  ptY = deltaN * (double)pixY / (double)(TILE_PIX_Y * PIX_Y_M);
+  pt.setY(ptY);
+}
+
 void SwissMap100::cancel()
 {
 	m_cancel = true;
@@ -96,10 +144,10 @@ bool SwissMap100::loadSwissMap(uint swiss_n, uint swiss_e, uint swiss_s, uint sw
 {
 	QRect tilesRect;
 
-	tilesRect.setTop((max_swiss_n - swiss_n) / (TILE_PIX_Y * PIX_Y_M) - 1);
-	tilesRect.setRight((swiss_e - max_swiss_w) / (TILE_PIX_X * PIX_X_M) + 1);
-	tilesRect.setBottom((max_swiss_n - swiss_s) / (TILE_PIX_Y * PIX_Y_M) + 1);
-	tilesRect.setLeft((swiss_w - max_swiss_w) / (TILE_PIX_Y * PIX_Y_M) - 1);
+	tilesRect.setTop((MaxSwissN - swiss_n) / (TILE_PIX_Y * PIX_Y_M) - 1);
+	tilesRect.setRight((swiss_e - MaxSwissW) / (TILE_PIX_X * PIX_X_M) + 1);
+	tilesRect.setBottom((MaxSwissN - swiss_s) / (TILE_PIX_Y * PIX_Y_M) + 1);
+	tilesRect.setLeft((swiss_w - MaxSwissW) / (TILE_PIX_Y * PIX_Y_M) - 1);
 
 	return loadTiles(tilesRect);
 }
@@ -139,18 +187,18 @@ bool SwissMap100::loadTiles(QRect &tilesRect)
 			{
 				pTile = NULL;
 			}
-			
+
 			emit progress(tilesLoaded * 100 / (tilesRect.width() * tilesRect.height()));
 			tileRow.push_back(pTile);
 			tilesLoaded++;
 		}
-		
+
 		tileMatrix().push_back(tileRow);
 		tileRow.clear();
 	}
 
 	m_tilesRect = tilesRect;
-	
+
 	return true;
 }
 
