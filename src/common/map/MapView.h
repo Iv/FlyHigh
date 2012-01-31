@@ -41,6 +41,13 @@ class MapView: public QMainWindow
 
 	private:
     QScrollArea *m_pScrollArea;
+    QPoint m_prevMousePos;
+
+    bool eventFilter(QObject *pObject, QEvent *pEvent);
+
+		void mouseMove(QMouseEvent *pEvent);
+
+		void wheel(QWheelEvent *pEvent);
 };
 
 #endif
