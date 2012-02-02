@@ -21,9 +21,12 @@
 #include <QPainter>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QWheelEvent>
 #include "MapWidget.h"
 #include "ProgressDlg.h"
 #include "SwissMap100.h"
+
+#include <QDebug>
 
 MapWidget::MapWidget(QScrollArea *pScrollArea)
 {
@@ -112,22 +115,35 @@ void MapWidget::showWayPointList(WayPoint::WayPointListType &wpList)
 
 void MapWidget::zoomOut()
 {
-  QRect rect;
-
-  m_pMap->setZoom(m_pMap->zoom() + 1);
-  recalcWayPoints();
-  m_pMap->pixRect(rect);
-  resize(rect.width(), rect.height());
+  zoom(false);
 }
 
 void MapWidget::zoomIn()
 {
-  QRect rect;
+  zoom(true);
+}
 
-  m_pMap->setZoom(m_pMap->zoom() - 1);
-  recalcWayPoints();
-  m_pMap->pixRect(rect);
-  resize(rect.width(), rect.height());
+void MapWidget::zoom(const QPoint &pt, bool in)
+{
+  QPoint ptAbs;
+  double lat;
+  double lon;
+  int scrollX;
+  int scrollY;
+
+  scrollX = m_pScrollArea->horizontalScrollBar()->value();
+  scrollY = m_pScrollArea->verticalScrollBar()->value();
+  ptAbs.setX(pt.x() + scrollX);
+  ptAbs.setY(pt.y() + scrollY);
+  m_pMap->pixToLL(ptAbs, lat, lon);
+
+  zoom(in);
+
+  m_pMap->LLtoPix(lat, lon, ptAbs);
+  scrollX = ptAbs.x() - pt.x();
+  scrollY = ptAbs.y() - pt.y();
+  m_pScrollArea->horizontalScrollBar()->setValue(scrollX);
+  m_pScrollArea->verticalScrollBar()->setValue(scrollY);
 }
 
 void MapWidget::paintEvent(QPaintEvent *pEvent)
@@ -220,6 +236,24 @@ void MapWidget::paintEvent(QPaintEvent *pEvent)
       }
     }
   }
+}
+
+void MapWidget::zoom(bool in)
+{
+  QRect rect;
+
+  if(in)
+  {
+    m_pMap->setZoom(m_pMap->zoom() - 1);
+  }
+  else
+  {
+    m_pMap->setZoom(m_pMap->zoom() + 1);
+  }
+
+  recalcWayPoints();
+  m_pMap->pixRect(rect);
+  resize(rect.width(), rect.height());
 }
 
 void MapWidget::recalcWayPoints()

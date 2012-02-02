@@ -21,6 +21,7 @@
 #ifndef _MapWidget_h
 #define _MapWidget_h
 
+#include <QPoint>
 #include <QVector>
 #include <QWidget>
 #include "WayPoint.h"
@@ -36,11 +37,27 @@ class MapWidget: public QWidget
 
     ~MapWidget();
 
+    /**
+      Shows waypoints on map.
+    */
     void showWayPointList(WayPoint::WayPointListType &wpList);
 
+    /**
+      Zooms map out. Does not care about same location.
+    */
     void zoomOut();
 
+    /**
+      Zooms map in. Does not care about same location.
+    */
     void zoomIn();
+
+    /**
+      Zooms map at pt. This means that pt is on the same location after zoom.
+      @param pt Point to where to zoom.
+      @param in true = zoom in
+    */
+    void zoom(const QPoint &pt, bool in);
 
   protected:
     void paintEvent(QPaintEvent *pEvent);
@@ -50,10 +67,13 @@ class MapWidget: public QWidget
 
     QScrollArea *m_pScrollArea;
     Map *m_pMap;
+    QPoint m_prevMousePos;
 		WayPoint::WayPointListType m_wpList;
 		PointArray m_wayPoints;
 		int m_maxAlt;
 		int m_minAlt;
+
+		void zoom(bool in);
 
 		void recalcWayPoints();
 };

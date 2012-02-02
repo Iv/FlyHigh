@@ -60,7 +60,21 @@ class SwissMap100: public Map
     */
 		void cancel();
 
+    /**
+      Converts WGS84 lat, lon to pixel coordinate.
+      @param lat latitude
+      @param lon longitude
+      @param pt Pixel coordinate
+    */
 		void LLtoPix(double lat, double lon, QPoint &pt);
+
+    /**
+      Converts pixel coordinate to WGS84 lat, lon.
+      @param pt Pixel coordinate
+      @param lat latitude
+      @param lon longitude
+    */
+		void pixToLL(const QPoint &pt, double &lat, double &lon);
 
 	private:
 		static const uint MaxSwissN;
