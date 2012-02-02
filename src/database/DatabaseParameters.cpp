@@ -211,7 +211,14 @@ void DatabaseParameters::validateDBFile()
 		m_dBFile.prepend(QDir::separator()).prepend(QDir::homePath());
 	}
 	// normalize
-	m_dBFile = QFileInfo(m_dBFile).canonicalFilePath();
+  if(QFileInfo(m_dBFile).exists())
+  {
+    m_dBFile = QFileInfo(m_dBFile).canonicalFilePath();
+  }
+  else
+  {
+    m_dBFile = QFileInfo(m_dBFile).absoluteFilePath();
+  }
 }
 
 const QString& DatabaseParameters::dBType() const
