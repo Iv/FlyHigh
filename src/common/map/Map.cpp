@@ -20,6 +20,10 @@ void Map::LLtoPix(double lat, double lon, QPoint &pt)
 {
 }
 
+void Map::pixToLL(const QPoint &pt, double &lat, double &lon)
+{
+}
+
 void Map::LLrect(double &north, double &east, double &south, double &west)
 {
 }

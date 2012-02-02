@@ -46,6 +46,8 @@ class Map: public QObject
 
 		virtual void LLtoPix(double lat, double lon, QPoint &pt);
 
+		virtual void pixToLL(const QPoint &pt, double &lat, double &lon);
+
 		virtual void setZoom(int z); // < 0 shrink; 0 nothing; > 0 enlarge
 
 		int zoom();

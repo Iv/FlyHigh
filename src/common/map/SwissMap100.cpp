@@ -135,6 +135,30 @@ void SwissMap100::LLtoPix(double lat, double lon, QPoint &pt)
   pt.setY(ptY);
 }
 
+void SwissMap100::pixToLL(const QPoint &pt, double &lat, double &lon)
+{
+	double ptSwissN;
+	double ptSwissE;
+	double mapSwissN;
+	double mapSwissE;
+	double deltaN;
+	double deltaE;
+	int pixX;
+	int pixY;
+
+  // pixel to offset top left
+  pixTileSize(pixX, pixY);
+  deltaE = pt.x() * (double)(TILE_PIX_X * PIX_X_M) / (double)pixX;
+  deltaN = pt.y() * (double)(TILE_PIX_Y * PIX_Y_M) / (double)pixY;
+
+  // swiss coordinates
+	mapSwissN = MaxSwissN - m_tilesRect.top() * (TILE_PIX_Y * PIX_Y_M);
+	mapSwissE = MaxSwissW + m_tilesRect.left() * (TILE_PIX_X * PIX_X_M);
+	ptSwissE = mapSwissE + deltaE;
+	ptSwissN = mapSwissN - deltaN;
+  SwissGridtoLL(ptSwissN, ptSwissE, lat, lon);
+}
+
 void SwissMap100::cancel()
 {
 	m_cancel = true;

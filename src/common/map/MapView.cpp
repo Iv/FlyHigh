@@ -120,14 +120,6 @@ void MapView::wheel(QWheelEvent *pEvent)
   MapWidget *pWidget;
 
   pWidget = static_cast<MapWidget*>(m_pScrollArea->widget());
-
-  if(pEvent->delta() > 0)
-  {
-    pWidget->zoomIn();
-  }
-  else
-  {
-    pWidget->zoomOut();
-  }
+  pWidget->zoom(pEvent->pos(), (pEvent->delta() > 0));
 }
 
