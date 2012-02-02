@@ -181,7 +181,7 @@ void QueryStore::init()
 					 "`Latitude` FLOAT NOT NULL,"
 					 "`Altitude` INTEGER NOT NULL,"
 					 "`Description` VARCHAR(200) DEFAULT '',"
-					 "`Type` INTEGER NOT NULL");
+           "`Type` INTEGER NOT NULL)");
 
 	addQuery("setup-create-flights",
 					 "QMYSQL",
