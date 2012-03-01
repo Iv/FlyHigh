@@ -107,7 +107,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
     MDIWindow::addAction(pAction);
   }
 
-  if(src == IDataBase::SqlDB)
+  if(src != IDataBase::GPSdevice)
   {
     pAction = new QAction(tr("Add to GPS..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
