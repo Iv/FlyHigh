@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,21 +22,25 @@
 #define GliderFormImpl_h
 
 #include "ui_GliderForm.h"
+#include <Glider.h>
 
-class Glider;
-
-class GliderFormImpl : public QDialog, public Ui::GliderForm
+class GliderFormImpl: public QDialog, public Ui::GliderForm
 {
 	Q_OBJECT
 
 	public:
-		GliderFormImpl(QWidget* parent, const QString &caption, Glider *pGlider);
-  
+		GliderFormImpl(QWidget* parent, const QString &caption, Glider *pGlider,
+                   const Glider::GliderListType& gliderList);
+
 	protected slots:
 		void accept();
-		
+
 	private:
 		Glider *m_pGlider;
+
+	private slots:
+		void updateGlider(int index);
+
 };
 
 #endif

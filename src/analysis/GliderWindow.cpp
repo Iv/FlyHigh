@@ -83,8 +83,11 @@ GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 void GliderWindow::file_new()
 {
+  Glider::GliderListType gliders;
 	Glider glider;
-	IGliderForm newGlider(this, "New Glider", &glider);
+
+  ISql::pInstance()->gliderList(gliders);
+	IGliderForm newGlider(this, "New Glider", &glider, gliders);
 
 	if(newGlider.exec())
 	{
