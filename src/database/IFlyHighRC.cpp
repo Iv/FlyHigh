@@ -80,8 +80,8 @@ IFlyHighRC::IFlyHighRC()
 	m_pilotId = -1;
 	m_versionInfo = "FlyHigh Version 0.9.3";
 	m_copyInfo =
-			"Copyright (c): 2004-2012 by Alex Graf <grafal@sf.net> and\n"
-			"Jurg Allemann <ja_kern@sf.net>.\n"
+			"Copyright (c): 2004-2012 by Alex Graf <grafal@sf.net>, \n"
+			"Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
 			"Thank you Manolis Andreadakis, Victor Berchet, Petr Chromec,\n"
 			"Alex Graf, Marcus Kroiss, Jonty Lawson, Tom Payne and\n"
 			"Marc Poulhies for xcplanner. Thank you Xiaoxi Wu for MarkerClusterer.\n"
