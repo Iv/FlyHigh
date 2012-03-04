@@ -200,8 +200,11 @@ void FlightFormImpl::selectGlider()
 
 void FlightFormImpl::newGlider()
 {
+  Glider::GliderListType gliders;
 	Glider glider;
-	IGliderForm newGlider(this, "New Glider", &glider);
+
+	ISql::pInstance()->gliderList(gliders);
+	IGliderForm newGlider(this, "New Glider", &glider, gliders);
 
 	if(newGlider.exec())
 	{
@@ -241,6 +244,3 @@ void FlightFormImpl::limitDistance()
 	text.sprintf("%.5f", dist);
 	lineEditDistance->setText(text);
 }
-
-#include "moc_FlightFormImpl.cxx"
-

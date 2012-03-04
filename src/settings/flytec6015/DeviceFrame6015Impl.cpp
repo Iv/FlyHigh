@@ -43,8 +43,11 @@ DeviceFrame6015Impl::~DeviceFrame6015Impl()
 
 void DeviceFrame6015Impl::newGlider()
 {
+  Glider::GliderListType gliders;
 	Glider glider;
-	IGliderForm newGlider(this, "New Glider", &glider);
+
+	ISql::pInstance()->gliderList(gliders);
+	IGliderForm newGlider(this, "New Glider", &glider, gliders);
 
 	if(newGlider.exec())
 	{

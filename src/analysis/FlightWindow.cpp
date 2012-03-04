@@ -248,6 +248,7 @@ void FlightWindow::file_AddToSqlDB()
 	ProgressDlg progDlg(this);
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
+  Glider::GliderListType gliders;
 	QTime time;
 	Glider glider;
 	Pilot pilot;
@@ -343,11 +344,15 @@ void FlightWindow::file_AddToSqlDB()
 			// glider
 			if(!ISql::pInstance()->glider(igcParser.model(), glider))
 			{
-				IGliderForm newGlider(this, tr("New Glider"), &glider);
+				ISql::pInstance()->gliderList(gliders);
+				IGliderForm newGlider(this, tr("New Glider"), &glider, gliders);
 
 				if(newGlider.exec())
 				{
-					ISql::pInstance()->add(glider);
+					if(!ISql::pInstance()->glider(glider.model(), glider))
+					{
+					  ISql::pInstance()->add(glider);
+					}
 				}
 			}
 
@@ -375,6 +380,7 @@ void FlightWindow::file_import()
 	ProgressDlg progDlg(this);
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
+  Glider::GliderListType gliders;
 	QTime time;
 	Flight flight;
 	Glider glider;
@@ -479,7 +485,8 @@ void FlightWindow::file_import()
 			// glider
 			if(!ISql::pInstance()->glider(igcParser.model(), glider))
 			{
-				IGliderForm newGlider(this, tr("New Glider"), &glider);
+				ISql::pInstance()->gliderList(gliders);
+				IGliderForm newGlider(this, tr("New Glider"), &glider, gliders);
 
 				if(newGlider.exec())
 				{

@@ -41,9 +41,12 @@ FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent)
 
 void FlyHighRCFrameImpl::newGlider()
 {
+  Glider::GliderListType gliders;
 	Glider glider;
-	IGliderForm newGlider(this, "New Glider", &glider);
-	
+
+	ISql::pInstance()->gliderList(gliders);
+	IGliderForm newGlider(this, "New Glider", &glider, gliders);
+
 	if(newGlider.exec())
 	{
 		ISql::pInstance()->add(glider);
@@ -57,13 +60,13 @@ void FlyHighRCFrameImpl::selectGlider(Glider &glider)
 	int index;
 	int maxIndex;
 	bool found = false;
-	
+
 	maxIndex = comboBoxModel->count();
-	
+
 	for(index=0; index<maxIndex; index++)
 	{
 		found = (m_gliderList[index] == glider);
-		
+
 		if(found)
 		{
 			comboBoxModel->setCurrentIndex(index);
@@ -77,11 +80,11 @@ void FlyHighRCFrameImpl::updateGlider()
 	QStringList list;
 	QString gliderModel;
 	Glider::GliderListType::iterator it;
-	
+
 	m_gliderList.clear();
 	ISql::pInstance()->gliderList(m_gliderList);
 	comboBoxModel->clear();
-	
+
 	for(it=m_gliderList.begin(); it!=m_gliderList.end(); it++)
 	{
 		(*it).fullName(gliderModel);
@@ -111,7 +114,7 @@ void FlyHighRCFrameImpl::ok()
 		{
 			ISql::pInstance()->add(m_curPilot);
 		}
-	
+
 		IFlyHighRC::pInstance()->setPilotId(m_curPilot.id());
 	}
 	else
