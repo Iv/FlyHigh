@@ -83,7 +83,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
   {
     pAction = new QAction(tr("Edit..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_Edit()));
-    MDIWindow::addAction(pAction);
+    MDIWindow::addAction(pAction, true);
   }
 
   if(src != IDataBase::File)
@@ -111,14 +111,14 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
   {
     pAction = new QAction(tr("Add to GPS..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGps()));
-    MDIWindow::addAction(pAction);
+    MDIWindow::addAction(pAction, true);
   }
 
   if(src != IDataBase::SqlDB)
   {
     pAction = new QAction(tr("Add to DB..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-    MDIWindow::addAction(pAction);
+    MDIWindow::addAction(pAction, true);
   }
 
   if(src != IDataBase::File)
@@ -143,17 +143,17 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
   // view
 	pAction = new QAction(this);
 	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	pAction = new QAction(tr("View &Web Map..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
   if(src == IDataBase::SqlDB)
   {
     pAction = new QAction(tr("Edit Web &Map..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_editWebMap()));
-    MDIWindow::addAction(pAction);
+    MDIWindow::addAction(pAction, true);
   }
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));

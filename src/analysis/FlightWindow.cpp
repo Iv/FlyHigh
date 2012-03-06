@@ -66,7 +66,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 			pAction = new QAction(tr("&Edit..."), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
-			MDIWindow::addAction(pAction);
+			MDIWindow::addAction(pAction, true);
 
 			pAction = new QAction(tr("&Delete"), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
@@ -79,7 +79,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 			pAction = new QAction(tr("&Add to DB..."), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
-			MDIWindow::addAction(pAction);
+			MDIWindow::addAction(pAction, true);
 		}
 		break;
 		default:
@@ -94,7 +94,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   // import/export
 	pAction = new QAction(this);
 	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
  	if(src == IDataBase::SqlDB)
  	{
@@ -105,7 +105,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 	pAction = new QAction(tr("&Export IGC..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	pAction = new QAction(tr("&Export KML..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportKML()));
@@ -121,7 +121,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 - 3D plot of flight*/
 	pAction = new QAction(this);
 	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	pAction = new QAction(tr("&Speed vs Time"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
@@ -145,7 +145,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 	pAction = new QAction(tr("View &Web Map"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	// configure the table
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));

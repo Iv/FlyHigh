@@ -25,15 +25,30 @@
 MDIWindow::MDIWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags)
 	:QMdiSubWindow(parent, wflags)
 {
+  int actionNr;
+
   m_pMenu = new QMenu(name, this);
 	setWindowTitle(name);
 	setAttribute(Qt::WA_DeleteOnClose);
 	setMinimumSize(400, 200);
+
+	// remove all default actions
+	for(actionNr=(actions().size()-1); actionNr>=0; actionNr--)
+	{
+	  removeAction(actions().at(actionNr));
+	}
+
+	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void MDIWindow::addAction(QAction *pAction)
+void MDIWindow::addAction(QAction *pAction, bool addToContextMenu)
 {
   m_pMenu->addAction(pAction);
+
+  if(addToContextMenu)
+  {
+    QMdiSubWindow::addAction(pAction);
+  }
 }
 
 QMenu* MDIWindow::menu()
