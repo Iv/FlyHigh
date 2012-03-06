@@ -56,7 +56,7 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 
       pAction = new QAction(tr("&Copy..."), this);
       connect(pAction, SIGNAL(triggered()), this, SLOT(file_copyFrom()));
-      MDIWindow::addAction(pAction);
+      MDIWindow::addAction(pAction, true);
 		}
 		break;
 		case IDataBase::GPSdevice:
@@ -82,7 +82,7 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
 	{
     pAction = new QAction(tr("&Add to GPS..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-    MDIWindow::addAction(pAction);
+    MDIWindow::addAction(pAction, true);
 	}
 
 	pAction = new QAction(tr("&Update"), this);
@@ -101,17 +101,17 @@ RouteWindow::RouteWindow(QWidget* parent, const QString &name, Qt::WindowFlags w
   // view
 	pAction = new QAction(this);
 	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	pAction = new QAction(tr("&View"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_view()));
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	if(src == IDataBase::SqlDB)
 	{
     pAction = new QAction(tr("View Web &Map"), this);
 		connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-		MDIWindow::addAction(pAction);
+		MDIWindow::addAction(pAction, true);
 	}
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));

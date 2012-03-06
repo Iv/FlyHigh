@@ -35,7 +35,7 @@ class MDIWindow: public QMdiSubWindow
 	public:
 		MDIWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
-		void addAction(QAction *pAction);
+		void addAction(QAction *pAction, bool addToContextMenu = false);
 
     QMenu* menu();
 
