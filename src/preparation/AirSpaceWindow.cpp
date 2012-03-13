@@ -69,7 +69,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 
 			pAction = new QAction(tr("&Add to GPS..."), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			MDIWindow::addAction(pAction);
+			MDIWindow::addAction(pAction, true);
 		}
 		break;
 	}
@@ -101,7 +101,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 
   pAction = new QAction(tr("View &Web Map..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	MDIWindow::addAction(pAction);
+	MDIWindow::addAction(pAction, true);
 
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
