@@ -21,6 +21,8 @@
 #include <math.h>
 #include "AirSpace.h"
 
+#include <QDebug>
+
 AirSpace::AirSpace()
 {
   m_id = -1;
@@ -138,6 +140,8 @@ void AirSpace::createPointList()
 	int stepNr;
 	WayPoint curPt;
 
+qDebug() << "Airspace=" << name();
+
 	m_pointList.clear();
 
 	for(it=m_airSpaceItemList.begin(); it!=m_airSpaceItemList.end(); it++)
@@ -150,6 +154,7 @@ void AirSpace::createPointList()
 				if(pPoint != NULL)
 				{
 					m_pointList.push_back(pPoint->pos());
+qDebug() << pPoint->pos().longitude() << "," << pPoint->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pPoint->pos());
 				}
 			break;
@@ -190,50 +195,100 @@ void AirSpace::createPointList()
 					center = pSegCenter->pos();
 					center.distBear(pSegBegin->pos(), dist1, beginArc);
 					center.distBear(pSegEnd->pos(), dist2, endArc);
-					inc = pSegBegin->dir();
 					m_pointList.push_back(pSegBegin->pos());
+qDebug() << "beginArc=" << beginArc << "endArc=" << endArc;
+//qDebug() << pSegBegin->pos().longitude() << ","  << pSegBegin->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pSegBegin->pos());
+
+          if(beginArc > endArc)
+          {
+            stepCnt = (uint)((360 - beginArc) + endArc);
+          }
+          else
+          {
+            stepCnt = (uint)(endArc - beginArc);
+          }
 
 					if(pSegBegin->dir())
 					{
-						if(beginArc > endArc)
-						{
-							stepCnt = (uint)((360 - beginArc) + endArc);
-						}
-						else
-						{
-							stepCnt = (uint)(endArc - beginArc);
-						}
+					  inc = 1;
 					}
 					else
 					{
-						if(beginArc > endArc)
-						{
-							stepCnt = (uint)((360 - endArc) + beginArc);
-						}
-						else
-						{
-							stepCnt = (uint)(beginArc - endArc);
-						}
+					  inc = -1;
 					}
+
+qDebug() << "direction=" << pSegBegin->dir();
 
 					centerLat = (center.latitude() * M_PI) / 180;
 					centerLon = (center.longitude() * M_PI) / 180;
 					angDist = ((dist1 + dist2) / 2) / WayPoint::earthRadius;
 
-					for(stepNr=1; stepNr<stepCnt; stepNr+=10)
-					{
-						bear = (beginArc + (stepNr * inc)) * M_PI / 180;
-						curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear));
-						curLon = ((centerLon + atan2(sin(bear) * sin(angDist) * cos(centerLat), cos(angDist) - sin(centerLat) * sin(centerLat))) *
-									180) / M_PI;
-						curLat = (curLat * 180) / M_PI;
-						curPt.setCoordinates(curLat, curLon);
-						m_pointList.push_back(curPt);
-						m_boundBox.setMinMax(curPt);
-					}
+bool over;
+double prev;
+
+over = false;
+prev = beginArc;
+
+if(pSegBegin->dir())
+{
+  bear = (beginArc + 10);
+  over = ((prev <= endArc) && (bear >= endArc));
+}
+else
+{
+  bear = (beginArc - 10);
+  over = ((prev >= endArc) && (bear <= endArc));
+}
+
+while(!over)
+{
+  curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear * M_PI / 180));
+  curLon = ((centerLon + atan2(sin(bear * M_PI / 180) * sin(angDist) * cos(centerLat),
+             cos(angDist) - sin(centerLat) * sin(centerLat))) * 180) / M_PI;
+  curLat = (curLat * 180) / M_PI;
+  curPt.setCoordinates(curLat, curLon);
+  m_pointList.push_back(curPt);
+
+qDebug() << bear;
+  prev = bear;
+
+  if(pSegBegin->dir())
+  {
+    bear += 10;
+    if(bear > 360) bear -= 360;
+
+    if(prev < bear)
+    {
+      over = ((prev <= endArc) && (bear >= endArc));
+    }
+    else
+    {
+      over = (bear >= endArc);
+    }
+///    over = ((prev <= endArc) && (bear >= endArc));
+  }
+  else
+  {
+    bear -= 10;
+    if(bear < 0) bear += 360;
+
+    if(prev > bear)
+    {
+      over = ((prev >= endArc) && (bear <= endArc));
+    }
+    else
+    {
+      over = (bear <= endArc);
+    }
+///    over = ((prev >= endArc) && (bear <= endArc));
+  }
+}
+
+
 
 					m_pointList.push_back(pSegEnd->pos());
+///qDebug() << pSegEnd->pos().longitude() << ","  << pSegEnd->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pSegEnd->pos());
 				}
 			break;
