@@ -125,6 +125,7 @@ void AirSpace::createPointList()
 	AirSpaceItemCircle *pCircle = NULL;
 	AirSpaceItemPoint *pPoint;
 	WayPoint center;
+  WayPoint curPt;
 	double centerLat;
 	double centerLon;
 	double curLat;
@@ -132,15 +133,12 @@ void AirSpace::createPointList()
 	double dist1;
 	double dist2;
 	double bear;
+  double prev;
 	double beginArc;
 	double endArc;
 	double angDist;
-	int inc;
-	int stepCnt;
 	int stepNr;
-	WayPoint curPt;
-
-qDebug() << "Airspace=" << name();
+  bool over;
 
 	m_pointList.clear();
 
@@ -154,7 +152,6 @@ qDebug() << "Airspace=" << name();
 				if(pPoint != NULL)
 				{
 					m_pointList.push_back(pPoint->pos());
-qDebug() << pPoint->pos().longitude() << "," << pPoint->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pPoint->pos());
 				}
 			break;
@@ -196,99 +193,30 @@ qDebug() << pPoint->pos().longitude() << "," << pPoint->pos().latitude() << ",0"
 					center.distBear(pSegBegin->pos(), dist1, beginArc);
 					center.distBear(pSegEnd->pos(), dist2, endArc);
 					m_pointList.push_back(pSegBegin->pos());
-qDebug() << "beginArc=" << beginArc << "endArc=" << endArc;
-//qDebug() << pSegBegin->pos().longitude() << ","  << pSegBegin->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pSegBegin->pos());
-
-          if(beginArc > endArc)
-          {
-            stepCnt = (uint)((360 - beginArc) + endArc);
-          }
-          else
-          {
-            stepCnt = (uint)(endArc - beginArc);
-          }
-
-					if(pSegBegin->dir())
-					{
-					  inc = 1;
-					}
-					else
-					{
-					  inc = -1;
-					}
-
-qDebug() << "direction=" << pSegBegin->dir();
-
 					centerLat = (center.latitude() * M_PI) / 180;
 					centerLon = (center.longitude() * M_PI) / 180;
 					angDist = ((dist1 + dist2) / 2) / WayPoint::earthRadius;
 
-bool over;
-double prev;
+					// interpolate arc
+          over = false;
+          prev = beginArc;
+          bear = ((int)(beginArc / 10)) * 10; // quantize to 10
+          over = getNextBear(pSegBegin->dir(), endArc, prev, bear);
 
-over = false;
-prev = beginArc;
-
-if(pSegBegin->dir())
-{
-  bear = (beginArc + 10);
-  over = ((prev <= endArc) && (bear >= endArc));
-}
-else
-{
-  bear = (beginArc - 10);
-  over = ((prev >= endArc) && (bear <= endArc));
-}
-
-while(!over)
-{
-  curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear * M_PI / 180));
-  curLon = ((centerLon + atan2(sin(bear * M_PI / 180) * sin(angDist) * cos(centerLat),
-             cos(angDist) - sin(centerLat) * sin(centerLat))) * 180) / M_PI;
-  curLat = (curLat * 180) / M_PI;
-  curPt.setCoordinates(curLat, curLon);
-  m_pointList.push_back(curPt);
-
-qDebug() << bear;
-  prev = bear;
-
-  if(pSegBegin->dir())
-  {
-    bear += 10;
-    if(bear > 360) bear -= 360;
-
-    if(prev < bear)
-    {
-      over = ((prev <= endArc) && (bear >= endArc));
-    }
-    else
-    {
-      over = (bear >= endArc);
-    }
-///    over = ((prev <= endArc) && (bear >= endArc));
-  }
-  else
-  {
-    bear -= 10;
-    if(bear < 0) bear += 360;
-
-    if(prev > bear)
-    {
-      over = ((prev >= endArc) && (bear <= endArc));
-    }
-    else
-    {
-      over = (bear <= endArc);
-    }
-///    over = ((prev >= endArc) && (bear <= endArc));
-  }
-}
-
-
+          while(!over)
+          {
+            curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear * M_PI / 180));
+            curLon = ((centerLon + atan2(sin(bear * M_PI / 180) * sin(angDist) * cos(centerLat),
+                       cos(angDist) - sin(centerLat) * sin(centerLat))) * 180) / M_PI;
+            curLat = (curLat * 180) / M_PI;
+            curPt.setCoordinates(curLat, curLon);
+            m_pointList.push_back(curPt);
+            prev = bear;
+            over = getNextBear(pSegBegin->dir(), endArc, prev, bear);
+          }
 
 					m_pointList.push_back(pSegEnd->pos());
-///qDebug() << pSegEnd->pos().longitude() << ","  << pSegEnd->pos().latitude() << ",0";
 					m_boundBox.setMinMax(pSegEnd->pos());
 				}
 			break;
@@ -331,4 +259,50 @@ bool AirSpace::isInside(const WayPoint &wp) const
   }
 
 	return (cross) && (wp.altitude() >= m_low.toInt()) && (wp.altitude() <= m_high.toInt());
+}
+
+bool AirSpace::getNextBear(bool dir, double endBear, double prevBear, double &bear)
+{
+  bool over;
+
+  if(dir)
+  {
+    // clock wise
+    bear += 10;
+
+    if(bear > 360)
+    {
+      bear -= 360;
+    }
+
+    if(prevBear < bear)
+    {
+      over = ((prevBear <= endBear) && (bear >= endBear));
+    }
+    else
+    {
+      over = (bear >= endBear);
+    }
+  }
+  else
+  {
+    // counter clock wise
+    bear -= 10;
+
+    if(bear < 0)
+    {
+      bear += 360;
+    }
+
+    if(prevBear > bear)
+    {
+      over = ((prevBear >= endBear) && (bear <= endBear));
+    }
+    else
+    {
+      over = (bear <= endBear);
+    }
+  }
+
+  return over;
 }

@@ -81,8 +81,10 @@ class AirSpace
 		AirSpaceItem::AirSpaceItemListType m_airSpaceItemList;
 		WayPoint::WayPointListType m_pointList;
 		BoundBox m_boundBox;
-		uint m_warnDist;
 		QString m_remark;
+    uint m_warnDist;
+
+		bool getNextBear(bool dir, double endBear, double prevBear, double &bear);
 };
 
 #endif
