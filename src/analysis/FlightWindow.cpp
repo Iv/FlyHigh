@@ -526,13 +526,19 @@ void FlightWindow::file_exportIGC()
 	double ptsFAI;
 	double ptsFlat;
 	int row;
+	bool success;
 
 	row = getTable()->currentRow();
 
 	if((row >= 0) && m_pDb->open())
 	{
-		if(m_pDb->loadIGCFile(m_flightList[row]))
+    progDlg.beginProgress(tr("read igc file..."), m_pDb);
+    success = m_pDb->loadIGCFile(m_flightList[row]);
+
+		if(success)
 		{
+		  progDlg.endProgress();
+
 			// IGC file
 			igcParser.parse(m_flightList[row].igcData());
 
@@ -547,7 +553,7 @@ void FlightWindow::file_exportIGC()
 																																								+ ".igc",
 																							"IGC Files (*.igc)");
 
-			if(selected!="")
+			if(selected != "")
 			{
 				IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
 
@@ -611,9 +617,9 @@ void FlightWindow::file_exportIGC()
 
 					olcWebForm.save(olcFileName);
 				}
-
-				progDlg.endProgress();
 			}
+
+			progDlg.endProgress();
 		}
 
 		m_pDb->close();
