@@ -140,7 +140,7 @@ function rt_setOk(ok)
 
 		turnpointMarkers.each(function(marker, i)
 		{
-			wpName = routeName + "_" + i;
+			wpName = i + routeName;
 			WebMapRoute.saveWayPoint(wpName, marker.getLatLng().lat(), marker.getLatLng().lng(), marker.ele);
 		});
 		
