@@ -97,7 +97,7 @@ bool Device::recieveTlg(int tout, bool head)
 
 	do
 	{
-		if(getChar(ch))
+		if(getChar(ch) && isascii(ch))
 		{
 			if(state == SearchHead)
 			{
