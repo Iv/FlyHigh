@@ -109,3 +109,9 @@ input.spin_value
 	border: none;
 	background-color: #eeeee6;
 }
+
+/* submit */
+div.submit {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}

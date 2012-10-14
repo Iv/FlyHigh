@@ -61,17 +61,6 @@ function rt_init(width, height)
 			route = new Route(map);
 			route.setChangeCallback(rt_change);
 
-/**
-			turnPt = new TurnPt(route, new google.maps.LatLng(47.0, 8.5), TurnPt.Type.WayPoint);
-			route.addTurnPt(turnPt);
-
-			turnPt = new TurnPt(route, new google.maps.LatLng(47.0, 9.0), TurnPt.Type.WayPoint);
-			route.addTurnPt(turnPt);
-
-			updateSpeed();
-			calcDuration();
-*/
-
 			wm_emitAppReady();
 		}
 	});
@@ -115,6 +104,20 @@ function rt_setTurnPts(turnPts)
 
 function rt_getTurnPts()
 {
+	var turnPts;
+	var turnPt;
+	var turnPtArray = [];
+	var tpNr;
+
+	turnPts = route.getTurnPts();
+
+	for(tpNr=0; tpNr<turnPts.length; tpNr++)
+	{
+		turnPt = turnPts[tpNr];
+		turnPtArray.push(new Array(turnPt.getPosition().lat(), turnPt.getPosition().lng(), turnPt.getAltitude()));
+	}
+
+	return turnPtArray;
 }
 
 function rt_getType()
@@ -129,6 +132,7 @@ function rt_getDist()
 
 function rt_setEditable(en)
 {
+	route.setEditable(en);
 }
 
 function rt_change()
@@ -171,18 +175,6 @@ function rt_speedDown()
 	}
 }
 
-function calcSpeed()
-{
-	m_speed = Math.round((route.getTrackDist() / m_duration) * 2) / 2
-	updateSpeed();
-}
-
-function updateSpeed()
-{
-	locInput = document.getElementById("speed");
-	locInput.value = m_speed.toFixed(1) + " km/h";
-}
-
 function rt_durationUp()
 {
 	if(m_duration < 24)
@@ -203,6 +195,23 @@ function rt_durationDown()
 	}
 }
 
+function rt_setOk(ok)
+{
+	wm_emitOk(ok);
+}
+
+function calcSpeed()
+{
+	m_speed = Math.round((route.getTrackDist() / m_duration) * 2) / 2
+	updateSpeed();
+}
+
+function updateSpeed()
+{
+	locInput = document.getElementById("speed");
+	locInput.value = m_speed.toFixed(1) + " km/h";
+}
+
 function calcDuration()
 {
 	m_duration = Math.round((route.getTrackDist() / m_speed) * 2) / 2; // * 10 / 5
@@ -213,31 +222,4 @@ function updateDuration()
 {
 	locInput = document.getElementById("duration");
 	locInput.value = m_duration.toFixed(1) + " h";
-}
-
-function rt_setOk(ok)
-{
-	wm_emitSetOk();
-
-/*
-	var wpName;
-	var type;
-
-	if(ok && RouteEditable)
-	{
-		type = rt_getFlightType();
-		WebMapRoute.beginSaveRoute();
-		WebMapRoute.saveRoute(routeId, routeName, type);
-
-		turnpointMarkers.each(function(marker, i)
-		{
-			wpName = i + routeName;
-			WebMapRoute.saveWayPoint(wpName, marker.getLatLng().lat(), marker.getLatLng().lng(), marker.ele);
-		});
-
-		WebMapRoute.endSaveRoute();
-	}
-
-	WebMap.setOk(ok);
-*/
 }

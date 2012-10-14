@@ -21,6 +21,14 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
+Route.ScoreType =
+{
+	Free: 1,
+	Straight: 2,
+	Flat: 3,
+	Fai: 4
+};
+
 function Route(map)
 {
 	this.map = map;
@@ -101,6 +109,26 @@ Route.prototype.addTurnPt = function(turnPt)
 
 	this.turnPtCount++;
 };
+
+Route.prototype.getTurnPts = function()
+{
+	var turnPts = [];
+	var turnPt;
+
+	turnPt = this.firstTurnPt;
+
+	while(turnPt != null)
+	{
+		turnPts.push(turnPt);
+		turnPt = turnPt.getNextTurnPt();
+	}
+
+	return turnPts;
+};
+
+Route.prototype.setEditable = function(en)
+{
+}
 
 Route.prototype.spliceLeg = function(turnPt)
 {
@@ -204,7 +232,7 @@ Route.prototype.update = function()
 	optimizer = new Optimizer();
 	optimizer.optimize(turnPts);
 
-	scoreType = Optimizer.ScoreType.Free;
+	scoreType = Route.ScoreType.Free;
 	dist = optimizer.getFreeDist() / 1000.0;
 	indexs = optimizer.getFreeIndex();
 	bestDist = dist;
@@ -215,7 +243,7 @@ Route.prototype.update = function()
 
 	if(score > bestScore)
 	{
-		scoreType = Optimizer.ScoreType.Straight;
+		scoreType = Route.ScoreType.Straight;
 		bestDist = dist;
 		bestScore = score;
 		indexs = optimizer.getStraightIndex();
@@ -226,7 +254,7 @@ Route.prototype.update = function()
 
 	if(score > bestScore)
 	{
-		scoreType = Optimizer.ScoreType.Flat;
+		scoreType = Route.ScoreType.Flat;
 		bestDist = dist;
 		bestScore = score;
 		indexs = optimizer.getFlatIndex();
@@ -237,7 +265,7 @@ Route.prototype.update = function()
 
 	if(score > bestScore)
 	{
-		scoreType = Optimizer.ScoreType.Fai;
+		scoreType = Route.ScoreType.Fai;
 		bestDist = dist;
 		bestScore = score;
 		indexs = optimizer.getFaiIndex();
@@ -245,7 +273,7 @@ Route.prototype.update = function()
 
 	switch(scoreType)
 	{
-		case Optimizer.ScoreType.Free:
+		case Route.ScoreType.Free:
 			path.push(turnPts[indexs[0]].getPosition());
 			path.push(turnPts[indexs[1]].getPosition());
 			path.push(turnPts[indexs[2]].getPosition());
@@ -253,13 +281,13 @@ Route.prototype.update = function()
 			path.push(turnPts[indexs[4]].getPosition());
 			this.fai.show(null);
 		break;
-		case Optimizer.ScoreType.Straight:
+		case Route.ScoreType.Straight:
 			path.push(turnPts[indexs[0]].getPosition());
 			path.push(turnPts[indexs[1]].getPosition());
 			this.fai.show(null);
 		break;
-		case Optimizer.ScoreType.Flat:
-		case Optimizer.ScoreType.Fai:
+		case Route.ScoreType.Flat:
+		case Route.ScoreType.Fai:
 			path.push(turnPts[indexs[0]].getPosition());
 			path.push(turnPts[indexs[1]].getPosition());
 			path.push(turnPts[indexs[2]].getPosition());

@@ -56,7 +56,7 @@ function wm_emitAppReady()
 	WebMap.appReady();
 }
 
-function wm_emitSetOk(ok)
+function wm_emitOk(ok)
 {
 	WebMap.setOk(ok);
 }

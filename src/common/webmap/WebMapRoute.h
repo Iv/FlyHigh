@@ -43,16 +43,17 @@ class WebMapRoute: public QObject
 
     void setName(const QString &name);
 
+    QString name() const;
+
+    Route::Type type() const;
+
 		void setTurnPointList(const WayPoint::WayPointListType &tpList);
+
+		void turnPointList(WayPoint::WayPointListType &tpList) const;
 
     void setEditable(bool en);
 
-    void setLocation(const QString &loc);
-
-		QString getLocation();
-
-    void setFlightType(Route::Type type);
-
+/**
     void setRouteToStore(Route *pRoute);
 
 	protected slots:
@@ -63,6 +64,7 @@ class WebMapRoute: public QObject
 		void saveWayPoint(const QString &name, double lat, double lon, int alt);
 
     void endSaveRoute();
+*/
 
 	private:
 		WebMap *m_pWebMap;
