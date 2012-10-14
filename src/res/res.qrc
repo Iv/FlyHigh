@@ -26,5 +26,16 @@
      <file>js/chartFX/chart.js</file>
      <file>js/chartFX/excanvas.js</file>
      <file>js/markerclusterer.js</file>
+
+     <file>route/route.html</file>
+     <file>route/css/webmap.css</file>
+     <file>route/images/quad.png</file>
+     <file>route/js/fai.js</file>
+     <file>route/js/iroute.js</file>
+     <file>route/js/leg.js</file>
+     <file>route/js/optimizer.js</file>
+     <file>route/js/route.js</file>
+     <file>route/js/turnpt.js</file>
+     <file>route/js/webmap.js</file>
  </qresource>
  </RCC>
