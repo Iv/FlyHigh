@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>FlyHigh route</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="css/webmap.css" type="text/css"/>
+		<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		<script src="js/webmap.js"></script>
+		<script src="js/iroute.js"></script>
+	</head>
+	<body>
+		<div id="left" class="container">
+			<div class="keyvalue">
+				<dl>
+					<dt>Name</dt>
+					<dd><input id="name" class="lineedit" type="text" maxlength="17" value="FIE_100"/></dd>
+				</dl>
+			</div>
+			<div class="separator"/>
+			<div class="keyvalue">
+				<dl>
+					<dt>Type</dt>
+					<dd id="type"/>
+					<dt>Distance</dt>
+					<dd id="distance"/>
+					<dt>Score</dt>
+					<dd id="score"/>
+				</dl>
+			</div>
+			<div class="separator"/>
+			<div class="keyvalue">
+				<dl>
+					<dt>Track</dt>
+					<dd id="track"/>
+					<dt>Speed</dt>
+					<dd>
+						<input id="speed" class="spin_value" type="text" value=""/>
+						<ul class="spin_updown">
+							<li>
+								<input type="button" value="&#9650;" onclick="rt_speedUp();"/>
+							</li>
+							<li>
+								<input type="button" value="&#9660;" onclick="rt_speedDown();"/>
+							</li>
+						</ul>
+					</dd>
+					<dt>Duration</dt>
+					<dd>
+						<input id="duration" class="spin_value" type="text" value=""/>
+						<ul class="spin_updown">
+							<li>
+								<input type="button" value="&#9650;" onclick="rt_durationUp();"/>
+							</li>
+							<li>
+								<input type="button" value="&#9660;" onclick="rt_durationDown();"/>
+							</li>
+						</ul>
+					</dd>
+				</dl>
+			</div>
+		</div>
+		<div id="map"></div>
+	</body>
+</html>
