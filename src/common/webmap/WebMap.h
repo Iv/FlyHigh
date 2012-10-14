@@ -57,6 +57,8 @@ class WebMap: public QWebView
 		bool isMapReady() const;
 
 	signals:
+		void appReady();
+
 		void mapReady();
 
 		void finished(int result);

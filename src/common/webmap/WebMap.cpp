@@ -153,7 +153,7 @@ void WebMap::setSize(uint width, uint height)
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
 	  break;
 	  case MapRoute:
-      code = "setMapSize(%1, %2);";
+      code = "wm_setMapSize(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
 	  break;
 	  case MapWayPoint:

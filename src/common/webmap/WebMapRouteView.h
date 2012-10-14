@@ -55,6 +55,8 @@ class WebMapRouteView: public QDialog
 		bool m_editable;
 
 	private slots:
+    void appReady();
+
 		void mapReady();
 
 		void finished(int res);
