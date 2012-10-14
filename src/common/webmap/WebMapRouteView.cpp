@@ -35,6 +35,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	m_editable = true;
 	pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+  connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
 	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
 }
@@ -51,7 +52,7 @@ void WebMapRouteView::setRoute(Route *pRoute)
 
 void WebMapRouteView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/route.html");
+	m_pWebMap->loadUrl("qrc:/route/route.html");
 }
 
 void WebMapRouteView::setEditable(bool en)
@@ -66,18 +67,20 @@ void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapRouteView::mapReady()
 {
-	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
+	m_pWebMap->getRoute()->init();
+}
+
+void WebMapRouteView::appReady()
+{
+  m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 	m_pWebMap->getRoute()->setEditable(m_editable);
 
 	if(m_pRoute != NULL)
 	{
 		m_pWebMap->getRoute()->setName(m_pRoute->name());
 		m_pWebMap->getRoute()->setTurnPointList(m_pRoute->wayPointList());
-    m_pWebMap->getRoute()->setFlightType(m_pRoute->type());
     m_pWebMap->getRoute()->setRouteToStore(m_pRoute);
 	}
-
-	m_pWebMap->getRoute()->init();
 }
 
 void WebMapRouteView::finished(int res)
