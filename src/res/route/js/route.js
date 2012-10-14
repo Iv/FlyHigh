@@ -1,0 +1,283 @@
+/***************************************************************************
+ *   Copyright (C) 2012 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ *                                                                         *
+ *   It is prohibited to serve or run this code over network p.e. as web   *
+ *   service in combination with closed source.                            *
+ ***************************************************************************/
+
+function Route(map)
+{
+	this.map = map;
+	this.changeCallback = null;
+	this.firstTurnPt = null;
+	this.turnPtCount = 0;
+	this.type = 0;
+	this.dist = 0;
+	this.score = 0;
+	this.fai = new Fai(this);
+	this.trackDist = 0;
+
+	this.line = new google.maps.Polyline({
+		strokeColor: '#FFCC00',
+		strokeOpacity: 1.0,
+		strokeWeight: 3,
+		map: null,
+		zIndex: 3
+	});
+}
+
+Route.prototype.getMap = function()
+{
+	return this.map;
+};
+
+Route.prototype.setChangeCallback = function(callback)
+{
+	this.changeCallback = callback;
+};
+
+Route.prototype.getType = function()
+{
+	return this.type;
+};
+
+Route.prototype.getScore = function()
+{
+	return this.score;
+};
+
+Route.prototype.getDist = function()
+{
+	return this.dist;
+};
+
+Route.prototype.getTrackDist = function()
+{
+	return this.trackDist;
+};
+
+Route.prototype.addTurnPt = function(turnPt)
+{
+	var beginTurnPt;
+	var leg;
+
+	if(this.firstTurnPt == null)
+	{
+		this.firstTurnPt = turnPt;
+	}
+	else
+	{
+		beginTurnPt = this.firstTurnPt;
+
+		while(beginTurnPt.getNextTurnPt() != null)
+		{
+			beginTurnPt = beginTurnPt.getNextTurnPt();
+		}
+
+		beginTurnPt.setNextTurnPt(turnPt);
+		leg = new Leg(this);
+		leg.setTurnPts(beginTurnPt, turnPt);
+		beginTurnPt.setNextLeg(leg);
+		turnPt.setPrevLeg(leg);
+
+		this.update();
+	}
+
+	this.turnPtCount++;
+};
+
+Route.prototype.spliceLeg = function(turnPt)
+{
+	var leg;
+	var beginTurnPt;
+	var endTurnPt;
+
+	// turnPt is cross on the middle of the line between two turn points
+	// after: beginTurnPt-------turnPt--------endTurnPt
+
+	// get begin and end
+	leg = turnPt.getPrevLeg();
+	beginTurnPt = leg.getBeginTurnPt();
+	endTurnPt = leg.getEndTurnPt();
+
+	// reconnect leg to turnPt
+	leg.setTurnPts(beginTurnPt, turnPt);
+	turnPt.setPrevLeg(leg);
+	beginTurnPt.setNextTurnPt(turnPt);
+
+	// create new leg between turnPt and endTurnPt
+	leg = new Leg(this);
+	leg.setTurnPts(turnPt, endTurnPt);
+	turnPt.setNextLeg(leg);
+	endTurnPt.setPrevLeg(leg);
+	turnPt.setNextTurnPt(endTurnPt);
+	
+	turnPt.setType(TurnPt.Type.WayPoint);
+	this.turnPtCount++;
+	this.update();
+};
+
+Route.prototype.removeMarker = function(turnPt)
+{
+	var leg;
+	var beginTurnPt;
+	var endTurnPt;
+
+	if(this.turnPtCount > 2)
+	{
+		prevLeg = turnPt.getPrevLeg();
+		nextLeg = turnPt.getNextLeg();
+
+		if((prevLeg != null) && (nextLeg != null))
+		{
+			// turnPt is between two legs
+			beginTurnPt = prevLeg.getBeginTurnPt();
+			endTurnPt = turnPt.getNextTurnPt();
+			prevLeg.setEndTurnPt(endTurnPt);
+			endTurnPt.setPrevLeg(prevLeg);
+			beginTurnPt.setNextTurnPt(endTurnPt);
+			nextLeg.remove();
+		}
+		else if(prevLeg == null)
+		{ 
+			// turnPt is first turn point
+			endTurnPt = turnPt.getNextTurnPt();
+			endTurnPt.setPrevLeg(null);
+			nextLeg.remove();
+			this.firstTurnPt = endTurnPt;
+		}
+		else if(nextLeg == null)
+		{
+			// turnPt is last turn point
+			beginTurnPt = prevLeg.getBeginTurnPt();
+			beginTurnPt.setNextLeg(null);
+			beginTurnPt.setNextTurnPt(null);
+			prevLeg.remove();
+		}
+
+		turnPt.remove();
+		this.turnPtCount--;
+		this.update();
+	}
+}
+
+Route.prototype.update = function()
+{
+	var locInput;
+	var turnPt;
+	var turnPts = [];
+	var faiPts = [];
+	var path = [];
+	var scoreType;
+	var bestScore;
+	var score;
+	var bestDist;
+	var dist;
+	var nr;
+	var indexs = null;
+	var optimizer;
+
+	turnPt = this.firstTurnPt;
+
+	while(turnPt != null)
+	{
+		turnPts.push(turnPt);
+		turnPt = turnPt.getNextTurnPt();
+	}
+
+	optimizer = new Optimizer();
+	optimizer.optimize(turnPts);
+
+	scoreType = Optimizer.ScoreType.Free;
+	dist = optimizer.getFreeDist() / 1000.0;
+	indexs = optimizer.getFreeIndex();
+	bestDist = dist;
+	bestScore = dist * 1.0;
+
+	dist = optimizer.getStraightDist() / 1000.0;
+	score = dist * 1.2;
+
+	if(score > bestScore)
+	{
+		scoreType = Optimizer.ScoreType.Straight;
+		bestDist = dist;
+		bestScore = score;
+		indexs = optimizer.getStraightIndex();
+	}
+
+	dist = optimizer.getFlatDist() / 1000.0;
+	score = dist * 1.2;
+
+	if(score > bestScore)
+	{
+		scoreType = Optimizer.ScoreType.Flat;
+		bestDist = dist;
+		bestScore = score;
+		indexs = optimizer.getFlatIndex();
+	}
+
+	dist = optimizer.getFaiDist() / 1000.0;
+	score = dist * 1.3;
+
+	if(score > bestScore)
+	{
+		scoreType = Optimizer.ScoreType.Fai;
+		bestDist = dist;
+		bestScore = score;
+		indexs = optimizer.getFaiIndex();
+	}
+
+	switch(scoreType)
+	{
+		case Optimizer.ScoreType.Free:
+			path.push(turnPts[indexs[0]].getPosition());
+			path.push(turnPts[indexs[1]].getPosition());
+			path.push(turnPts[indexs[2]].getPosition());
+			path.push(turnPts[indexs[3]].getPosition());
+			path.push(turnPts[indexs[4]].getPosition());
+			this.fai.show(null);
+		break;
+		case Optimizer.ScoreType.Straight:
+			path.push(turnPts[indexs[0]].getPosition());
+			path.push(turnPts[indexs[1]].getPosition());
+			this.fai.show(null);
+		break;
+		case Optimizer.ScoreType.Flat:
+		case Optimizer.ScoreType.Fai:
+			path.push(turnPts[indexs[0]].getPosition());
+			path.push(turnPts[indexs[1]].getPosition());
+			path.push(turnPts[indexs[2]].getPosition());
+			path.push(turnPts[indexs[3]].getPosition());
+			path.push(turnPts[indexs[4]].getPosition());
+			this.fai.show(path);
+		break;
+	}
+
+	this.line.setMap(this.getMap());
+	this.line.setPath(path);
+	this.type = scoreType;
+	this.dist = bestDist;
+	this.score = bestScore;
+	this.trackDist = optimizer.getTrackDist() / 1000.0;
+
+	if(this.changeCallback != null)
+	{
+		this.changeCallback();
+	}
+}
