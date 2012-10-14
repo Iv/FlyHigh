@@ -79,12 +79,18 @@ void WebMapRouteView::appReady()
 	{
 		m_pWebMap->getRoute()->setName(m_pRoute->name());
 		m_pWebMap->getRoute()->setTurnPointList(m_pRoute->wayPointList());
-    m_pWebMap->getRoute()->setRouteToStore(m_pRoute);
 	}
 }
 
 void WebMapRouteView::finished(int res)
 {
+  if((res > 0) && (m_pRoute != NULL))
+  {
+    m_pRoute->setName(m_pWebMap->getRoute()->name());
+    m_pRoute->setType(m_pWebMap->getRoute()->type());
+    m_pWebMap->getRoute()->turnPointList(m_pRoute->wayPointList());
+  }
+
 	done(res);
 }
 

@@ -28,14 +28,6 @@
 	port to javascript by Alex Graf grafal@sf.net 2012
 */
 
-Optimizer.ScoreType =
-{
-	Free: 1,
-	Straight: 2,
-	Flat: 3,
-	Fai: 4
-};
-
 function Optimizer()
 {
 	this.indexFree = new Array(5);

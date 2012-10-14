@@ -33,6 +33,7 @@ function TurnPt(route, latlng, type)
 
 	this.route = route;
 	this.type = TurnPt.Type.Undefined;
+	this.altitude = -1;
 	this.nextTurnPt = null;
 	this.prevLeg = null;
 	this.nextLeg = null;
@@ -114,6 +115,21 @@ TurnPt.prototype.setPosition = function(latlng)
 TurnPt.prototype.getPosition = function()
 {
 	return this.marker.getPosition();
+};
+
+TurnPt.prototype.setAltitude = function(alt)
+{
+	this.altitude = alt;
+};
+
+TurnPt.prototype.getAltitude = function()
+{
+	return this.altitude;
+};
+
+TurnPt.prototype.setDraggable = function(en)
+{
+	this.marker.setDraggable(en);
 };
 
 TurnPt.prototype.updateIcon = function()
