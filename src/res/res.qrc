@@ -26,11 +26,11 @@
      <file>js/chartFX/chart.js</file>
      <file>js/chartFX/excanvas.js</file>
      <file>js/markerclusterer.js</file>
-
      <file>route/route.html</file>
      <file>route/css/webmap.css</file>
      <file>route/images/quad.png</file>
      <file>route/js/fai.js</file>
+     <file>route/js/infobox.js</file>
      <file>route/js/iroute.js</file>
      <file>route/js/leg.js</file>
      <file>route/js/optimizer.js</file>
