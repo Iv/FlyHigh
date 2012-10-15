@@ -113,7 +113,7 @@
     <bool>false</bool>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>0</number>
    </property>
    <item>
     <property name="text">
@@ -122,27 +122,22 @@
    </item>
    <item>
     <property name="text">
-     <string>Free flight</string>
+     <string>Free distance</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Free flight via a turnpoint</string>
+     <string>Straight distance</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Free flight via 2 turnpoints</string>
+     <string>Flat triangle</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Free flight via 3 turnpoints</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Flat or FAI triangle</string>
+     <string>FAI triangle</string>
     </property>
    </item>
    <item>
