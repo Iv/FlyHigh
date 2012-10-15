@@ -316,6 +316,15 @@
 		<Unit filename="src/res/js/waypoint.js" />
 		<Unit filename="src/res/js/webmap.js" />
 		<Unit filename="src/res/js/xcplanner.js" />
+		<Unit filename="src/res/route/css/webmap.css" />
+		<Unit filename="src/res/route/js/fai.js" />
+		<Unit filename="src/res/route/js/iroute.js" />
+		<Unit filename="src/res/route/js/leg.js" />
+		<Unit filename="src/res/route/js/optimizer.js" />
+		<Unit filename="src/res/route/js/route.js" />
+		<Unit filename="src/res/route/js/turnpt.js" />
+		<Unit filename="src/res/route/js/webmap.js" />
+		<Unit filename="src/res/route/route.html" />
 		<Unit filename="src/settings/CMakeLists.txt" />
 		<Unit filename="src/settings/database/CMakeLists.txt" />
 		<Unit filename="src/settings/database/CredentialsDlg.cpp" />
