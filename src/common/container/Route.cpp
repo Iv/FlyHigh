@@ -23,11 +23,10 @@
 
 QStringList TypeTextList = QStringList()
 << QObject::tr("Undefined")
-<< QObject::tr("Free flight")
-<< QObject::tr("Free flight via a turnpoint")
-<< QObject::tr("Free flight via 2 turnpoints")
-<< QObject::tr("Free flight via 3 turnpoints")
-<< QObject::tr("Flat or FAI triangle")
+<< QObject::tr("Free distance")
+<< QObject::tr("Straight distance")
+<< QObject::tr("Flat triangle")
+<< QObject::tr("FAI triangle")
 << QObject::tr("Competition");
 
 Route::Route()

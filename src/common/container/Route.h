@@ -30,7 +30,7 @@ class Route
 	public:
 		typedef QVector<Route> RouteListType;
 
-		typedef enum Type{Undefined, Free, Free1Tp, Free2Tp, Free3Tp, FlatOrFaiTri, Competition}Type;
+		typedef enum Type{Undefined, Free, Straight, FlatTri, FaiTri, Competition}Type;
 
 		Route();
 
