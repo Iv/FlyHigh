@@ -198,7 +198,7 @@ void RouteWindow::file_newWebMap()
 
 	// default route
 	route.setName("New route");
-	route.setType(Route::Free3Tp);
+	route.setType(Route::Straight);
 	route.wayPointList().push_back(WayPoint(47.0, 8.5));
 	route.wayPointList().push_back(WayPoint(47.0, 9.0));
 	newWebMap(route);
@@ -230,16 +230,11 @@ void RouteWindow::file_viewWebMap()
 	if(row >= 0)
 	{
 		route = m_routeList[row];
-
-		if((route.type() != Route::Undefined) &&
-       (route.type() != Route::Competition))
-    {
-      pView = new WebMapRouteView(tr("View Route"));
-      pView->setRoute(&route);
-      pView->setEditable(false);
-      pView->loadMap();
-      pView->exec();
-    }
+    pView = new WebMapRouteView(tr("View Route"));
+    pView->setRoute(&route);
+    pView->setEditable(false);
+    pView->loadMap();
+    pView->exec();
 	}
 }
 
@@ -276,12 +271,6 @@ void RouteWindow::file_AddToGPS()
 		for(tpNr=0; tpNr<nTps; tpNr++)
 		{
 			route.wayPointList().push_back(m_routeList[row].wayPointList().at(tpNr));
-		}
-
-		if(((nTps == 2) && (route.type() == Route::Free)) ||
-				((nTps == 5) && (route.type() == Route::FlatOrFaiTri)))
-		{
-			route.wayPointList().push_back(m_routeList[row].wayPointList().at(0));
 		}
 
 		IGPSDevice::pInstance()->add(route);
