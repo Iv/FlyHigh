@@ -37,18 +37,24 @@ function TurnPt(route, latlng, type)
 	this.nextTurnPt = null;
 	this.prevLeg = null;
 	this.nextLeg = null;
+	this.editable = true;
+	this.stpos = null;
 	this.marker = new google.maps.Marker({
 		map: route.getMap(),
 		draggable: true,
 		raiseOnDrag: false
 	});
+	this.infoBox = null;
 	
 	this.setType(type);
 	this.setPosition(latlng);
 
-	google.maps.event.addListener(this.marker, 'dblclick', function(){dblclick(turnPt);});
-	google.maps.event.addListener(this.marker, 'dragstart', function(event) {dragstart(turnPt);});
-	google.maps.event.addListener(this.marker, 'position_changed', function(){position_changed(turnPt);});
+	google.maps.event.addListener(this.marker, 'dragstart', function(event) {tp_dragstart(turnPt);});
+	google.maps.event.addListener(this.marker, 'drag', function(event) {tp_drag(turnPt);});
+	google.maps.event.addListener(this.marker, 'position_changed', function(event){tp_position_changed(turnPt);});
+	google.maps.event.addListener(this.marker, 'dblclick', function(event){tp_dblclick(turnPt);});
+	google.maps.event.addListener(this.marker, 'mouseover', function(event){tp_mouseover(turnPt);});
+	google.maps.event.addListener(this.marker, 'mouseout', function(event){tp_mouseout(turnPt);});
 }
 
 TurnPt.prototype.getRoute = function()
@@ -127,10 +133,38 @@ TurnPt.prototype.getAltitude = function()
 	return this.altitude;
 };
 
-TurnPt.prototype.setDraggable = function(en)
+TurnPt.prototype.setEditable = function(en)
 {
-	this.marker.setDraggable(en);
+	this.editable = en;
 };
+
+TurnPt.prototype.getEditable = function()
+{
+	return this.editable;
+}
+
+TurnPt.prototype.getInfoBox = function()
+{
+	return this.infoBox;
+}
+
+/*
+	This is an ugly hack, to restore position while drag. Because Qt 4.6 won't display
+	markers which are not draggable. In a later version, this should be fixed through
+	setting markers draggable=this.editable.
+*/
+TurnPt.prototype.storePos = function()
+{
+	this.stpos = new google.maps.LatLng(this.getPosition().lat(), this.getPosition().lng());
+};
+
+TurnPt.prototype.restorePos = function()
+{
+	if(this.storePos != null)
+	{
+		this.setPosition(this.stpos);
+	}
+}
 
 TurnPt.prototype.updateIcon = function()
 {
@@ -152,6 +186,8 @@ TurnPt.prototype.updateIcon = function()
 				// normal
 				this.marker.setIcon('http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,0000EE,000000&ext=.png');
 			}
+
+			this.infoBox = null;
 		break;
 		case TurnPt.Type.Cross:
 			var image = new google.maps.MarkerImage('images/quad.png',
@@ -164,13 +200,14 @@ TurnPt.prototype.updateIcon = function()
 			};
 
 			this.marker.setIcon(image);
+			this.infoBox = new InfoBox(this.getRoute().getMap());
 		break;
 	}
 };
 
-function position_changed(turnPt)
+function tp_position_changed(turnPt)
 {
-	if(turnPt.getType() == TurnPt.Type.WayPoint)
+	if(turnPt.getEditable() && (turnPt.getType() == TurnPt.Type.WayPoint))
 	{
 		if(turnPt.getPrevLeg() != null)
 		{
@@ -186,19 +223,82 @@ function position_changed(turnPt)
 	}
 }
 
-function dragstart(turnPt)
+function tp_dragstart(turnPt)
 {
-	if((turnPt.getType() == TurnPt.Type.Cross) &&
-			(turnPt.getPrevLeg() != null))
+	if(turnPt.getEditable())
 	{
-		turnPt.getRoute().spliceLeg(turnPt);
+		if((turnPt.getType() == TurnPt.Type.Cross) &&
+				(turnPt.getPrevLeg() != null))
+		{
+			turnPt.getInfoBox().hide();
+			turnPt.getRoute().spliceLeg(turnPt);
+		}
+	}
+	else
+	{
+		turnPt.storePos();
 	}
 }
 
-function dblclick(turnPt)
+function tp_drag(turnPt)
 {
-	if(turnPt.getType() == TurnPt.Type.WayPoint)
+	if(!turnPt.getEditable())
+	{
+		turnPt.restorePos();
+	}
+}
+
+function tp_dblclick(turnPt)
+{
+	if(turnPt.getEditable() && (turnPt.getType() == TurnPt.Type.WayPoint))
 	{
 		turnPt.getRoute().removeMarker(turnPt);
 	}
+}
+
+function tp_mouseover(turnPt)
+{
+	var leg;
+	var dist;
+	var duration;
+	var latlng;
+	var msg;
+
+	if(turnPt.getInfoBox() != null)
+	{
+		// msg
+		leg = turnPt.getPrevLeg();
+		dist = tp_distance(leg.getBeginTurnPt().getPosition(), leg.getEndTurnPt().getPosition());
+		duration = dist / turnPt.getRoute().getSpeed();
+		duration = Math.round(duration * 10) / 10;
+		msg = "Distance: " + dist.toFixed(2) + " km ";
+		msg += "Duration: " + duration.toFixed(1) + " h";
+
+		latlng = turnPt.getPosition();
+		turnPt.getInfoBox().show(latlng, 180, 50, msg);
+	}
+}
+
+function tp_mouseout(turnPt)
+{
+	if(turnPt.getInfoBox() != null)
+	{
+		turnPt.getInfoBox().hide();
+	}
+}
+
+function tp_distance(latlng1, latlng2)
+{
+	var R = 6371; // km
+	var dLat = (latlng2.lat() - latlng1.lat()) * Math.PI / 180;
+	var dLon = (latlng2.lng() - latlng1.lng()) * Math.PI / 180;
+	var lat1 = latlng1.lat() * Math.PI / 180;
+	var lat2 = latlng2.lat() * Math.PI / 180;
+
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+					Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	var d = R * c;
+
+	return d;
 }

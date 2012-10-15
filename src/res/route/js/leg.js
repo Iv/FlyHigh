@@ -35,6 +35,7 @@ function Leg(route)
 	this.beginTurnPt = null;
 	this.endTurnPt = null;
 	this.cross = null;
+	this.editable = true;
 }
 
 Leg.prototype.getRoute = function()
@@ -64,8 +65,9 @@ Leg.prototype.setTurnPts = function(beginTurnPt, endTurnPt)
 	this.endTurnPt = endTurnPt;
 	this.line.setPath(path);
 
-	pos = getMidPoint(beginTurnPt.getPosition(), endTurnPt.getPosition());
+	pos = lg_getMidPoint(beginTurnPt.getPosition(), endTurnPt.getPosition());
 	this.cross = new TurnPt(this.getRoute(), pos, TurnPt.Type.Cross);
+	this.cross.setEditable(this.getEditable());
 	this.cross.setPrevLeg(this);
 };
 
@@ -83,9 +85,6 @@ Leg.prototype.getBeginTurnPt = function()
 Leg.prototype.setEndTurnPt = function(turnPt)
 {
 	this.endTurnPt = turnPt;
-	
-var pos = turnPt.getPosition();
-
 	this.setEndPosition(turnPt.getPosition());
 };
 
@@ -106,15 +105,30 @@ Leg.prototype.setEndPosition = function(pos)
 	this.updateCross();
 };
 
+Leg.prototype.setEditable = function(en)
+{
+	this.editable = en;
+
+	if(this.cross != null)
+	{
+		this.cross.setEditable(en);
+	}
+};
+
+Leg.prototype.getEditable = function()
+{
+	return this.editable;
+}
+
 Leg.prototype.updateCross = function()
 {
 	var pos;
 	
-	pos = getMidPoint(this.beginTurnPt.getPosition(), this.endTurnPt.getPosition());
+	pos = lg_getMidPoint(this.beginTurnPt.getPosition(), this.endTurnPt.getPosition());
 	this.cross.setPosition(pos);
 };
 
-function getMidPoint(pos1, pos2)
+function lg_getMidPoint(pos1, pos2)
 {
 	var midX;
 	var midY;

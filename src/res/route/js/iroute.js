@@ -26,6 +26,7 @@ wm_include('js/leg.js');
 wm_include('js/optimizer.js');
 wm_include('js/route.js');
 wm_include('js/turnpt.js');
+wm_include('js/infobox.js');
 
 var map;
 var route;
@@ -59,8 +60,8 @@ function rt_init(width, height)
 			wm_setMapSize(width, height);
 
 			route = new Route(map);
+			route.setSpeed(m_speed);
 			route.setChangeCallback(rt_change);
-
 			wm_emitAppReady();
 		}
 	});
@@ -70,7 +71,6 @@ function rt_setName(name)
 {
 	locInput = document.getElementById("name");
 	locInput.value = name;
-	// route.setName(name);
 }
 
 function rt_getName()
@@ -132,7 +132,23 @@ function rt_getDist()
 
 function rt_setEditable(en)
 {
+	var name;
+	var sname;
+
 	route.setEditable(en);
+	name = document.getElementById("name");
+	sname = document.getElementById("sname");
+
+	if(en)
+	{
+		name.style.display = "";
+		sname.style.display = "none";
+	}
+	else
+	{
+		name.style.display = "none";
+		sname.style.display = "";
+	}
 }
 
 function rt_change()
@@ -157,7 +173,7 @@ function rt_change()
 
 function rt_speedUp()
 {
-	if(m_speed < 50.0)
+	if(route.getEditable() && (m_speed < 50.0))
 	{
 		m_speed += 0.5;
 		updateSpeed();
@@ -167,7 +183,7 @@ function rt_speedUp()
 
 function rt_speedDown()
 {
-	if(m_speed > 0.0)
+	if(route.getEditable() && (m_speed > 0.0))
 	{
 		m_speed -= 0.5;
 		updateSpeed();
@@ -177,7 +193,7 @@ function rt_speedDown()
 
 function rt_durationUp()
 {
-	if(m_duration < 24)
+	if(route.getEditable() && (m_duration < 24))
 	{
 		m_duration += 0.5;
 		updateDuration();
@@ -187,7 +203,7 @@ function rt_durationUp()
 
 function rt_durationDown()
 {
-	if(m_duration > 1)
+	if(route.getEditable() && (m_duration > 1))
 	{
 		m_duration -= 0.5;
 		updateDuration();
@@ -202,12 +218,15 @@ function rt_setOk(ok)
 
 function calcSpeed()
 {
-	m_speed = Math.round((route.getTrackDist() / m_duration) * 2) / 2
+	m_speed = Math.round((route.getTrackDist() / m_duration) * 2) / 2;
 	updateSpeed();
 }
 
 function updateSpeed()
 {
+	var locInput;
+
+	route.setSpeed(m_speed);
 	locInput = document.getElementById("speed");
 	locInput.value = m_speed.toFixed(1) + " km/h";
 }
@@ -220,6 +239,8 @@ function calcDuration()
 
 function updateDuration()
 {
+	var locInput;
+
 	locInput = document.getElementById("duration");
 	locInput.value = m_duration.toFixed(1) + " h";
 }

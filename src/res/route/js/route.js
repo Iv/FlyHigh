@@ -40,6 +40,8 @@ function Route(map)
 	this.score = 0;
 	this.fai = new Fai(this);
 	this.trackDist = 0;
+	this.editable = true;
+	this.speed = 0;
 
 	this.line = new google.maps.Polyline({
 		strokeColor: '#FFCC00',
@@ -80,10 +82,22 @@ Route.prototype.getTrackDist = function()
 	return this.trackDist;
 };
 
+Route.prototype.setSpeed = function(speed)
+{
+	this.speed = speed;
+};
+
+Route.prototype.getSpeed = function()
+{
+	return this.speed;
+};
+
 Route.prototype.addTurnPt = function(turnPt)
 {
 	var beginTurnPt;
 	var leg;
+	
+	turnPt.setEditable(this.getEditable());
 
 	if(this.firstTurnPt == null)
 	{
@@ -100,10 +114,10 @@ Route.prototype.addTurnPt = function(turnPt)
 
 		beginTurnPt.setNextTurnPt(turnPt);
 		leg = new Leg(this);
+		leg.setEditable(this.getEditable());
 		leg.setTurnPts(beginTurnPt, turnPt);
 		beginTurnPt.setNextLeg(leg);
 		turnPt.setPrevLeg(leg);
-
 		this.update();
 	}
 
@@ -128,6 +142,29 @@ Route.prototype.getTurnPts = function()
 
 Route.prototype.setEditable = function(en)
 {
+	var turnPt;
+	var leg;
+
+	this.editable = en;
+	turnPt = this.firstTurnPt;
+
+	while(turnPt != null)
+	{
+		turnPt.setEditable(en);
+		leg = turnPt.getNextLeg();
+
+		if(leg != null)
+		{
+			leg.setEditable(en);
+		}
+
+		turnPt = turnPt.getNextTurnPt();
+	}
+}
+
+Route.prototype.getEditable = function(en)
+{
+	return this.editable;
 }
 
 Route.prototype.spliceLeg = function(turnPt)
