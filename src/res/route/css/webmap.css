@@ -37,16 +37,15 @@ div#left {
 /*	overflow: scroll;*/
 }
 
-
 .editing .edit, .editing .view {
  display: inline;
 }
 
 label {
-    clear: left;
-    float: left;
-    width: 7em; /* or whatever length suits */
-    text-align: left;
+	clear: left;
+	float: left;
+	width: 7em; /* or whatever length suits */
+	text-align: left;
 }
 
 /* key/value pairs */
@@ -90,17 +89,17 @@ div.separator {
 /* spin box */
 .spin_updown
 {
-		list-style: none;
-		display: inline-block;
-		line-height: 0;
-		vertical-align: middle;
+	list-style: none;
+	display: inline-block;
+	line-height: 0;
+	vertical-align: middle;
 }
 .spin_updown input
 {
-		font-size: .45em;
-		border-width: .5px;
-		height: 1.6em;
-		width: 2em;
+	font-size: .45em;
+	border-width: .5px;
+	height: 1.6em;
+	width: 2em;
 }
 
 input.spin_value
