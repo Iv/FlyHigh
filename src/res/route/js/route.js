@@ -23,6 +23,7 @@
 
 Route.ScoreType =
 {
+	Undefined: 0,
 	Free: 1,
 	Straight: 2,
 	Flat: 3,
@@ -42,6 +43,7 @@ function Route(map)
 	this.trackDist = 0;
 	this.editable = true;
 	this.speed = 0;
+	this.duration = 0;
 
 	this.line = new google.maps.Polyline({
 		strokeColor: '#FFCC00',
@@ -85,11 +87,23 @@ Route.prototype.getTrackDist = function()
 Route.prototype.setSpeed = function(speed)
 {
 	this.speed = speed;
+	this.calcDuration();
 };
 
 Route.prototype.getSpeed = function()
 {
 	return this.speed;
+};
+
+Route.prototype.setDuration = function(duration)
+{
+	this.duration = duration;
+	this.calcSpeed();
+};
+
+Route.prototype.getDuration = function()
+{
+	return this.duration;
 };
 
 Route.prototype.addTurnPt = function(turnPt)
@@ -165,6 +179,16 @@ Route.prototype.setEditable = function(en)
 Route.prototype.getEditable = function(en)
 {
 	return this.editable;
+}
+
+Route.prototype.calcSpeed = function()
+{
+	this.speed = Math.round((this.getTrackDist() / this.getDuration()) * 2) / 2; // * 10 / 5
+}
+
+Route.prototype.calcDuration = function()
+{
+	this.duration = Math.round((this.getTrackDist() / this.getSpeed()) * 2) / 2; // * 10 / 5
 }
 
 Route.prototype.spliceLeg = function(turnPt)
@@ -340,6 +364,7 @@ Route.prototype.update = function()
 	this.dist = bestDist;
 	this.score = bestScore;
 	this.trackDist = optimizer.getTrackDist() / 1000.0;
+	this.calcDuration();
 
 	if(this.changeCallback != null)
 	{

@@ -30,13 +30,9 @@ wm_include('js/infobox.js');
 
 var map;
 var route;
-var m_speed = 20.0;
-var m_duration;
 
 function rt_init(width, height)
 {
-	var turnPt;
-	var nextTurnPt;
 	var mapLoaded = false;
 	var mapOptions =
 	{
@@ -60,7 +56,7 @@ function rt_init(width, height)
 			wm_setMapSize(width, height);
 
 			route = new Route(map);
-			route.setSpeed(m_speed);
+			route.setSpeed(22.0);
 			route.setChangeCallback(rt_change);
 			wm_emitAppReady();
 		}
@@ -119,8 +115,7 @@ function rt_setTurnPts(turnPts)
 		route.addTurnPt(turnPt);
 	}
 
-	updateSpeed();
-	calcDuration();
+	updateDurationAndSpeed();
 	map.fitBounds(bounds);
 }
 
@@ -192,47 +187,71 @@ function rt_change()
 
 	locInput = document.getElementById("score");
 	locInput.innerHTML = route.getScore().toFixed(2) + " points";
-
-	calcDuration();
+	
+	updateDurationAndSpeed();
 }
 
 function rt_speedUp()
 {
-	if(route.getEditable() && (m_speed < 50.0))
+	var speed;
+
+	if(route.getEditable())
 	{
-		m_speed += 0.5;
-		updateSpeed();
-		calcDuration();
+		speed = route.getSpeed();
+
+		if(speed < 50.0)
+		{
+			route.setSpeed(speed + 0.5);
+			updateDurationAndSpeed();
+		}
 	}
 }
 
 function rt_speedDown()
 {
-	if(route.getEditable() && (m_speed > 0.0))
+	var speed;
+
+	if(route.getEditable())
 	{
-		m_speed -= 0.5;
-		updateSpeed();
-		calcDuration();
+		speed = route.getSpeed();
+
+		if(speed > 0.0)
+		{
+			route.setSpeed(speed - 0.5);
+			updateDurationAndSpeed();
+		}
 	}
 }
 
 function rt_durationUp()
 {
-	if(route.getEditable() && (m_duration < 24))
+	var duration;
+
+	if(route.getEditable())
 	{
-		m_duration += 0.5;
-		updateDuration();
-		calcSpeed();
+		duration = route.getDuration();
+
+		if(duration < 24)
+		{
+			route.setDuration(duration + 0.5);
+			updateDurationAndSpeed();
+		}
 	}
 }
 
 function rt_durationDown()
 {
-	if(route.getEditable() && (m_duration > 1))
+	var duration;
+
+	if(route.getEditable())
 	{
-		m_duration -= 0.5;
-		updateDuration();
-		calcSpeed();
+		duration = route.getDuration();
+		
+		if(duration > 1)
+		{
+			route.setDuration(duration - 0.5);
+			updateDurationAndSpeed();
+		}
 	}
 }
 
@@ -241,31 +260,12 @@ function rt_setOk(ok)
 	wm_emitOk(ok);
 }
 
-function calcSpeed()
-{
-	m_speed = Math.round((route.getTrackDist() / m_duration) * 2) / 2;
-	updateSpeed();
-}
-
-function updateSpeed()
+function updateDurationAndSpeed()
 {
 	var locInput;
 
-	route.setSpeed(m_speed);
 	locInput = document.getElementById("speed");
-	locInput.value = m_speed.toFixed(1) + " km/h";
-}
-
-function calcDuration()
-{
-	m_duration = Math.round((route.getTrackDist() / m_speed) * 2) / 2; // * 10 / 5
-	updateDuration();
-}
-
-function updateDuration()
-{
-	var locInput;
-
+	locInput.value = route.getSpeed().toFixed(1) + " km/h";
 	locInput = document.getElementById("duration");
-	locInput.value = m_duration.toFixed(1) + " h";
+	locInput.value = route.getDuration().toFixed(1) + " h";
 }
