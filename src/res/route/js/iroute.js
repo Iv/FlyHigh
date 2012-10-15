@@ -69,15 +69,37 @@ function rt_init(width, height)
 
 function rt_setName(name)
 {
-	locInput = document.getElementById("name");
-	locInput.value = name;
+	var locInput;
+
+	if(route.getEditable())
+	{
+		locInput = document.getElementById("name");
+		locInput.value = name;
+	}
+	else
+	{
+		locInput = document.getElementById("sname");
+		locInput.innerHTML = name;
+	}
 }
 
 function rt_getName()
 {
-	locInput = document.getElementById("name");
+	var locInput;
+	var name;
 
-	return locInput.value;
+	if(route.getEditable())
+	{
+		locInput = document.getElementById("name");
+		name = locInput.value;
+	}
+	else
+	{
+		locInput = document.getElementById("sname");
+		name = locInput.innerHTML;
+	}
+
+	return name;
 }
 
 function rt_setTurnPts(turnPts)
@@ -132,22 +154,25 @@ function rt_getDist()
 
 function rt_setEditable(en)
 {
+	var nameInput;
+	var snameInput;
 	var name;
-	var sname;
 
+	name = rt_getName();
 	route.setEditable(en);
-	name = document.getElementById("name");
-	sname = document.getElementById("sname");
+	rt_setName(name);
+	nameInput = document.getElementById("name");
+	snameInput = document.getElementById("sname");
 
 	if(en)
 	{
-		name.style.display = "";
-		sname.style.display = "none";
+		nameInput.style.display = "";
+		snameInput.style.display = "none";
 	}
 	else
 	{
-		name.style.display = "none";
-		sname.style.display = "";
+		nameInput.style.display = "none";
+		snameInput.style.display = "";
 	}
 }
 
