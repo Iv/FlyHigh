@@ -263,12 +263,16 @@ function tp_mouseover(turnPt)
 	var duration;
 	var latlng;
 	var msg;
+	var beginPos;
+	var endPos;
 
 	if(turnPt.getInfoBox() != null)
 	{
-		// msg
 		leg = turnPt.getPrevLeg();
-		dist = tp_distance(leg.getBeginTurnPt().getPosition(), leg.getEndTurnPt().getPosition());
+		beginPos = leg.getBeginTurnPt().getPosition();
+		endPos = leg.getEndTurnPt().getPosition();
+		dist = google.maps.geometry.spherical.computeDistanceBetween(beginPos, endPos);
+		dist /= 1000.0;
 		duration = dist / turnPt.getRoute().getSpeed();
 		duration = Math.round(duration * 10) / 10;
 		msg = "Distance: " + dist.toFixed(2) + " km ";
@@ -285,20 +289,4 @@ function tp_mouseout(turnPt)
 	{
 		turnPt.getInfoBox().hide();
 	}
-}
-
-function tp_distance(latlng1, latlng2)
-{
-	var R = 6371; // km
-	var dLat = (latlng2.lat() - latlng1.lat()) * Math.PI / 180;
-	var dLon = (latlng2.lng() - latlng1.lng()) * Math.PI / 180;
-	var lat1 = latlng1.lat() * Math.PI / 180;
-	var lat2 = latlng2.lat() * Math.PI / 180;
-
-	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-					Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-	var d = R * c;
-
-	return d;
 }
