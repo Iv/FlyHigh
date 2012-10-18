@@ -32,6 +32,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 	m_pWebMap->getFlight()->setPlotEnable(true);
 	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+  connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(done(int)));
 }
 
@@ -72,7 +73,7 @@ void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioL
 
 void WebMapFlightView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/flight.html");
+	m_pWebMap->loadUrl("qrc:/flight/flight.html");
 }
 
 void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
@@ -82,11 +83,14 @@ void WebMapFlightView::resizeEvent(QResizeEvent *pEvent)
 
 void WebMapFlightView::mapReady()
 {
-	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
-///	m_pWebMap->getRoute()->setFlightType(Route::Free3Tp);
-///	m_pWebMap->getRoute()->setLocation(m_location);
-
 	m_pWebMap->getFlight()->init();
+}
+
+void WebMapFlightView::appReady()
+{
+  m_pWebMap->setSize(width(), height());
+
+	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
 	m_pWebMap->getFlight()->setFlightPointList(m_fpList);
 	m_pWebMap->getFlight()->setSogList(m_sogList);
 	m_pWebMap->getFlight()->setVarioList(m_varioList);
