@@ -39,7 +39,7 @@ WebMapFlight::~WebMapFlight()
 
 void WebMapFlight::init()
 {
-	QString code = "fl_init();";
+	QString code = "fl_init(720, 860);";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -122,8 +122,10 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
 		code = "fl_setFlightAlt([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
+/*
 		code = "fl_setFlightLatLon([%1], [%2]);";
 		pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon));
+*/
 	}
 }
 
