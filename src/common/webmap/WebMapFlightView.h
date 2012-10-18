@@ -65,6 +65,8 @@ class WebMapFlightView: public QDialog
 
 	private slots:
 		void mapReady();
+
+		void appReady();
 };
 
 #endif
