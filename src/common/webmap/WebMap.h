@@ -56,6 +56,8 @@ class WebMap: public QWebView
 
 		bool isMapReady() const;
 
+		void setSize(uint width, uint height);
+
 	signals:
 		void appReady();
 
@@ -95,8 +97,6 @@ class WebMap: public QWebView
 		NetRequestList m_netReqList;
     MapType m_mapType;
 		bool m_mapReady;
-
-		void setSize(uint width, uint height);
 
 	private slots:
 		void loadFinished(bool ok);

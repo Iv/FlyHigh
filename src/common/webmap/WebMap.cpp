@@ -147,7 +147,7 @@ void WebMap::setSize(uint width, uint height)
 	switch(m_mapType)
 	{
 	  case MapFlight:
-      code = "setMapSize(%1, %2);";
+      code = "wm_setMapSize(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
       code = "fl_setPlotSize(%1, %2);";
       pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
