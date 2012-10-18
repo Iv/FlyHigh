@@ -190,7 +190,7 @@ TurnPt.prototype.updateIcon = function()
 			this.infoBox = null;
 		break;
 		case TurnPt.Type.Cross:
-			var image = new google.maps.MarkerImage('images/quad.png',
+			var image = new google.maps.MarkerImage('../route/images/quad.png',
 						new google.maps.Size(7, 7), // This marker is 15 pixels wide by 15 pixels tall.
 						new google.maps.Point(0, 0), // The origin for this image is 0,0.
 						new google.maps.Point(4, 4));// The anchor for this image is the base of the flagpole at 7,7.
