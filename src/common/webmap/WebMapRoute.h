@@ -53,19 +53,6 @@ class WebMapRoute: public QObject
 
     void setEditable(bool en);
 
-/**
-    void setRouteToStore(Route *pRoute);
-
-	protected slots:
-    void beginSaveRoute();
-
-    void saveRoute(int id, const QString &name, int type);
-
-		void saveWayPoint(const QString &name, double lat, double lon, int alt);
-
-    void endSaveRoute();
-*/
-
 	private:
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
