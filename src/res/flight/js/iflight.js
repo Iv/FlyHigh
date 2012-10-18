@@ -21,6 +21,8 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
+wm_include('js/flight.js');
+wm_include('js/plot.js');
 wm_include('../route/js/fai.js');
 wm_include('../route/js/leg.js');
 wm_include('../route/js/optimizer.js');
@@ -34,24 +36,30 @@ wm_include('../lib/chartFX/canvaschartpainter.js');
 var FlightData={
 	time: [], elev: [], elevGnd: [], lat: [], lon: [],
 	speed: [], vario: [], distance: [] , labels: []};
-var StartTime = 61516;
-var Duration = 1856;
+/* unused
+	var StartTime = 61516;
+	var Duration = 1856;
+*/
 var chartDiv;
 var cursorDiv;
 var altDiv;
 var sogDiv;
 var varioDiv;
 var timeDiv;
+/*
 var ChartMarginLeft = 20;
 var ChartMarginRight = 38;
 var LeftWidth = 280;
 var LegendHeight = 20;
+*/
 var mapHeight;
 var plotWidth;
 var chart;
 var glider;
-var route;
-var map;
+
+var route = null;
+var map = null;
+var plot = null;
 
 function fl_init(width, height)
 {
@@ -79,6 +87,8 @@ function fl_init(width, height)
 
 			route = new Route(map);
 			route.setSpeed(22.0);
+
+			plot = new Plot(map);
 
 			wm_emitAppReady();
 		}
@@ -110,7 +120,7 @@ function fl_setTrack(encTrack, encLevels, weight, color)
 {
 	var line;
 	var path;
-	
+
 	line = new google.maps.Polyline({
 		strokeColor: color,
 		strokeOpacity: 1.0,
@@ -126,6 +136,12 @@ function fl_setTrack(encTrack, encLevels, weight, color)
 
 function fl_setPlotSize(width, height)
 {
+	if(plot != null)
+	{
+		plot.setSize(width, height);
+	}
+
+/*
 	var div;
 	var plotHeight;
 
@@ -149,17 +165,27 @@ function fl_setPlotSize(width, height)
 
 	// redraw chart
 	chart.draw();
+*/
 }
 
-function fl_setFlightTime(time, start, duration)
+function fl_setFlightTime(timeList, start, duration)
 {
+	plot.setTimeList(timeList);
+/*
 	FlightData.time = time;
+*/
+/** unused
 	StartTime = start;
 	Duration = duration;
+*/
 }
 
 function fl_setFlightAlt(alt, minAlt, maxAlt)
 {
+	plot.setAltList(alt);
+	plot.setMinMaxAlt(minAlt, maxAlt);
+
+/*
 	FlightData.elev = alt;
 	FlightData.min_alt = minAlt;
 	FlightData.max_alt = maxAlt;
@@ -176,6 +202,7 @@ function fl_setFlightAlt(alt, minAlt, maxAlt)
 	{
 		ChartMarginLeft = 20;
 	}
+*/
 }
 
 function fl_setFlightLatLon(lat, lon)
@@ -196,6 +223,9 @@ function fl_setVario(vario)
 
 function fl_showPlot()
 {
+	plot.show();
+
+	/*
 	var nbPts;
 	var horLabelNum = 8;
 	var verLabelNum = 5;
@@ -236,7 +266,7 @@ function fl_showPlot()
 	chart.add("Altitude", "#ff3333", FlightData.elev);
 //				chart.add('Ground Elev',  '#C0AF9C', FlightData.elevGnd, CHART_AREA);
 	chart.draw();
-
+*/
 	// glider
 /*
 	var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: "G", primaryColor: "#ffffff"});
@@ -245,9 +275,10 @@ function fl_showPlot()
 	glider.ele = -9999;
 	map.addOverlay(glider);
 */
-
+/*
 	addMouseEvents();
 	setLegend(0);
+*/
 }
 
 function fl_setOk(ok)
