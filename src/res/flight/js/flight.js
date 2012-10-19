@@ -26,16 +26,30 @@ function Flight(map)
 	var flight = this;
 
 	this.map = map;
+
 	this.glider = new google.maps.Marker({
-		map: route.getMap(),
+		map: map,
 		draggable: true,
-		raiseOnDrag: false
+		raiseOnDrag: false,
+		zIndex: 15,
+		icon: 'http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,FFFFFF,000000&ext=.png'
 	});
+
+	this.track = new google.maps.Polyline({
+		strokeColor: '#FFBB00',
+		strokeOpacity: 1.0,
+		strokeWeight: 3,
+		map: map,
+		zIndex: 1
+	});
+
 	this.stpos = null;
 	this.trackPts = null;
 	this.sogList = null;
 	this.varioList = null;
 	this.altList = null;
+	this.minAlt = 0;
+	this.maxAlt = 0;
 	this.timeList = null;
 
 	google.maps.event.addListener(this.glider, 'dragstart', function(event) {fl_dragstart(flight);});
@@ -50,18 +64,12 @@ Flight.prototype.getMap = function()
 Flight.prototype.setTrackPts = function(trackPts)
 {
 	this.trackPts = trackPts;
+	this.track.setPath(trackPts);
 }
 
-Flight.prototype.getPositionAt = function(index)
+Flight.prototype.getTrackPts = function()
 {
-	var pos = null;
-
-	if((this.trackPts != null) && (index < this.trackPts.length)
-	{
-		pos = this.trackPts[index];
-	}
-
-	return pos;
+	return this.trackPts;
 }
 
 Flight.prototype.setSogList = function(sogList)
@@ -73,7 +81,7 @@ Flight.prototype.getSogAt = function(index)
 {
 	var sog = null;
 
-	if((this.sogList != null) && (index < this.sogList.length)
+	if((this.sogList != null) && (index < this.sogList.length))
 	{
 		sog = this.sogList[index];
 	}
@@ -90,7 +98,7 @@ Flight.prototype.getVarioAt = function(index)
 {
 	var vario = null;
 
-	if((this.varioList != null) && (index < this.varioList.length)
+	if((this.varioList != null) && (index < this.varioList.length))
 	{
 		vario = this.varioList[index];
 	}
@@ -98,16 +106,23 @@ Flight.prototype.getVarioAt = function(index)
 	return vario;
 }
 
-Flight.prototype.setAltList= function(altList)
+Flight.prototype.setAltList= function(altList, minAlt, maxAlt)
 {
 	this.altList = altList;
+	this.minAlt = minAlt;
+	this.maxAlt = maxAlt;
+}
+
+Flight.prototype.getAltList= function()
+{
+	return this.altList;
 }
 
 Flight.prototype.getAltAt = function(index)
 {
 	var alt = null;
 
-	if((this.altList != null) && (index < this.altList.length)
+	if((this.altList != null) && (index < this.altList.length))
 	{
 		alt = this.altList[index];
 	}
@@ -115,16 +130,31 @@ Flight.prototype.getAltAt = function(index)
 	return alt;
 }
 
+Flight.prototype.getMinAlt = function()
+{
+	return this.minAlt;
+}
+
+Flight.prototype.getMaxAlt = function()
+{
+	return this.maxAlt;
+}
+
 Flight.prototype.setTimeList = function(timeList)
 {
 	this.timeList = timeList;
+}
+
+Flight.prototype.getTimeList = function()
+{
+	return this.timeList;
 }
 
 Flight.prototype.getTimeAt = function(index)
 {
 	var time = null;
 
-	if((this.timeList != null) && (index < this.timeList.length)
+	if((this.timeList != null) && (index < this.timeList.length))
 	{
 		time = this.timeList[index];
 	}
@@ -134,13 +164,11 @@ Flight.prototype.getTimeAt = function(index)
 
 Flight.prototype.moveGliderTo = function(index)
 {
-	var pos;
+	var time = null;
 
-	pos = this.getPositionAt(index);
-
-	if(pos != null)
+	if((this.trackPts != null) && (index < this.trackPts.length))
 	{
-		this.glider.setPosition(pos);
+		this.glider.setPosition(this.trackPts[index]);
 	}
 }
 
