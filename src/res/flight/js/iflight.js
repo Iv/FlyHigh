@@ -33,22 +33,6 @@ wm_include('../lib/chartFX/chart.js');
 wm_include('../lib/chartFX/excanvas.js');
 wm_include('../lib/chartFX/canvaschartpainter.js');
 
-/*
-var FlightData={
-	time: [], elev: [], elevGnd: [], lat: [], lon: [],
-	speed: [], vario: [], distance: [] , labels: []};
-
-var chartDiv;
-var cursorDiv;
-var altDiv;
-var sogDiv;
-var varioDiv;
-var timeDiv;
-var mapHeight;
-var plotWidth;
-var chart;
-var glider;
-*/
 var route = null;
 var map = null;
 var flight = null;
@@ -81,7 +65,7 @@ function fl_init(width, height)
 			flight = new Flight(map);
 
 			route = new Route(map);
-			route.setSpeed(22.0);
+			route.setChangeCallback(routeChanged);
 
 			plot = new Plot(map);
 			plot.setFlight(flight);
@@ -108,11 +92,18 @@ function rt_setTurnPts(turnPts)
 		route.addTurnPt(turnPt);
 	}
 
-//	updateDurationAndSpeed();
 	map.fitBounds(bounds);
 }
 
-function fl_setTrack(encTrack, encLevels, weight, color)
+function rt_setName(name)
+{
+	var locInput;
+
+	locInput = document.getElementById("sname");
+	locInput.innerHTML = name;
+}
+
+function fl_setTrack(encTrack)
 {
 	var path;
 
@@ -131,15 +122,13 @@ function fl_setPlotSize(width, height)
 function fl_setFlightTime(timeList, start, duration)
 {
 	flight.setTimeList(timeList);
+	route.setDuration(duration / 3600);
+	updateDurationAndSpeed();
 }
 
 function fl_setFlightAlt(altList, minAlt, maxAlt)
 {
 	flight.setAltList(altList, minAlt, maxAlt);
-}
-
-function fl_setFlightLatLon(lat, lon)
-{
 }
 
 function fl_setSog(sogList)
@@ -160,4 +149,90 @@ function fl_showPlot()
 function fl_setOk(ok)
 {
 	wm_emitOk(ok);
+}
+
+function fl_speedUp()
+{
+	var speed;
+
+	speed = route.getSpeed();
+
+	if(speed < 50.0)
+	{
+		route.setSpeed(speed + 0.5);
+		updateDurationAndSpeed();
+	}
+}
+
+function fl_speedDown()
+{
+	var speed;
+
+	if(route.getEditable())
+	{
+		speed = route.getSpeed();
+
+		if(speed > 0.0)
+		{
+			route.setSpeed(speed - 0.5);
+			updateDurationAndSpeed();
+		}
+	}
+}
+
+function fl_durationUp()
+{
+	var duration;
+
+	if(route.getEditable())
+	{
+		duration = route.getDuration();
+
+		if(duration < 24)
+		{
+			route.setDuration(duration + 0.5);
+			updateDurationAndSpeed();
+		}
+	}
+}
+
+function fl_durationDown()
+{
+	var duration;
+
+	if(route.getEditable())
+	{
+		duration = route.getDuration();
+
+		if(duration > 1)
+		{
+			route.setDuration(duration - 0.5);
+			updateDurationAndSpeed();
+		}
+	}
+}
+
+function routeChanged()
+{
+	var div;
+
+	div = document.getElementById("type");
+	div.innerHTML = Route.ScoreTypeText[route.getType()];
+	div = document.getElementById("distance");
+	div.innerHTML = route.getDist().toFixed(2) + " km";
+	div = document.getElementById("score");
+	div.innerHTML = route.getScore().toFixed(2) + " points";
+	div = document.getElementById("track");
+	div.innerHTML = route.getTrackDist().toFixed(0) + " km";
+	updateDurationAndSpeed();
+}
+
+function updateDurationAndSpeed()
+{
+	var div;
+
+	div = document.getElementById("speed");
+	div.value = route.getSpeed().toFixed(1) + " km/h";
+	div = document.getElementById("duration");
+	div.value = route.getDuration().toFixed(1) + " h";
 }

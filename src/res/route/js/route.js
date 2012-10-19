@@ -30,6 +30,8 @@ Route.ScoreType =
 	Fai: 4
 };
 
+Route.ScoreTypeText = ["Undefined", "Free distance", "Straight distance", "Flat triangle", "FAI triangle"];
+
 function Route(map)
 {
 	this.map = map;

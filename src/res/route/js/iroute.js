@@ -57,7 +57,7 @@ function rt_init(width, height)
 
 			route = new Route(map);
 			route.setSpeed(22.0);
-			route.setChangeCallback(rt_change);
+			route.setChangeCallback(routeChanged);
 			wm_emitAppReady();
 		}
 	});
@@ -115,7 +115,6 @@ function rt_setTurnPts(turnPts)
 		route.addTurnPt(turnPt);
 	}
 
-	updateDurationAndSpeed();
 	map.fitBounds(bounds);
 }
 
@@ -169,26 +168,6 @@ function rt_setEditable(en)
 		nameInput.style.display = "none";
 		snameInput.style.display = "";
 	}
-}
-
-function rt_change()
-{
-	var RouteType = ["Undefined", "Free distance", "Straight distance", "Flat triangle", "FAI triangle"];
-	var locInput;
-
-	locInput = document.getElementById("type");
-	locInput.innerHTML = RouteType[route.getType()];
-
-	locInput = document.getElementById("track");
-	locInput.innerHTML = route.getTrackDist().toFixed(0) + " km";
-
-	locInput = document.getElementById("distance");
-	locInput.innerHTML = route.getDist().toFixed(2) + " km";
-
-	locInput = document.getElementById("score");
-	locInput.innerHTML = route.getScore().toFixed(2) + " points";
-	
-	updateDurationAndSpeed();
 }
 
 function rt_speedUp()
@@ -258,6 +237,25 @@ function rt_durationDown()
 function rt_setOk(ok)
 {
 	wm_emitOk(ok);
+}
+
+function routeChanged()
+{
+	var locInput;
+
+	locInput = document.getElementById("type");
+	locInput.innerHTML = Route.ScoreTypeText[route.getType()];
+
+	locInput = document.getElementById("track");
+	locInput.innerHTML = route.getTrackDist().toFixed(0) + " km";
+
+	locInput = document.getElementById("distance");
+	locInput.innerHTML = route.getDist().toFixed(2) + " km";
+
+	locInput = document.getElementById("score");
+	locInput.innerHTML = route.getScore().toFixed(2) + " points";
+
+	updateDurationAndSpeed();
 }
 
 function updateDurationAndSpeed()
