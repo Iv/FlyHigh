@@ -172,6 +172,11 @@ Flight.prototype.moveGliderTo = function(index)
 	}
 }
 
+Flight.prototype.getGliderPosition = function()
+{
+	return this.glider.getPosition();
+}
+
 /*
 	This is an ugly hack, to restore position while drag. Because Qt 4.6 won't display
 	markers which are not draggable. In a later version, this should be fixed through

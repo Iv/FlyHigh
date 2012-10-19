@@ -45,7 +45,8 @@ function Plot(map)
 	this.legendHeight = 20;
 	this.chart = new Chart(this.chartDiv);
 
-	this.plotDiv.addEventListener('mousemove', function(event) {pl_mousemove(event, plot);}, true);
+	this.plotDiv.addEventListener('mousemove', function(event){pl_mousemove(event, plot);}, true);
+	this.plotDiv.addEventListener('click', function(event){pl_click(plot);}, true);
 }
 
 Plot.prototype.getMap = function()
@@ -180,10 +181,10 @@ Plot.prototype.setGlider = function(posX)
 
 Plot.prototype.setLegend = function(index)
 {
-	this.altDiv.innerHTML = "ALT: " + flight.getAltAt(index) + " m";
-	this.sogDiv.innerHTML = "SOG: " + flight.getSogAt(index) + " km/h";
-	this.varioDiv.innerHTML = "Vario: " + flight.getVarioAt(index) + " m/s";
-	this.timeDiv.innerHTML = "Time: " + flight.getTimeAt(index);
+	this.altDiv.innerHTML = "ALT: " + this.flight.getAltAt(index) + " m";
+	this.sogDiv.innerHTML = "SOG: " + this.flight.getSogAt(index) + " km/h";
+	this.varioDiv.innerHTML = "Vario: " + this.flight.getVarioAt(index) + " m/s";
+	this.timeDiv.innerHTML = "Time: " + this.flight.getTimeAt(index);
 }
 
 function pl_mousemove(event, plot)
@@ -201,4 +202,9 @@ function pl_mousemove(event, plot)
 
 	plot.setTimeLine(posX);
 	plot.setGlider(posX);
+}
+
+function pl_click(plot)
+{
+	plot.getMap().setCenter(plot.flight.getGliderPosition());
 }
