@@ -33,32 +33,25 @@ wm_include('../lib/chartFX/chart.js');
 wm_include('../lib/chartFX/excanvas.js');
 wm_include('../lib/chartFX/canvaschartpainter.js');
 
+/*
 var FlightData={
 	time: [], elev: [], elevGnd: [], lat: [], lon: [],
 	speed: [], vario: [], distance: [] , labels: []};
-/* unused
-	var StartTime = 61516;
-	var Duration = 1856;
-*/
+
 var chartDiv;
 var cursorDiv;
 var altDiv;
 var sogDiv;
 var varioDiv;
 var timeDiv;
-/*
-var ChartMarginLeft = 20;
-var ChartMarginRight = 38;
-var LeftWidth = 280;
-var LegendHeight = 20;
-*/
 var mapHeight;
 var plotWidth;
 var chart;
 var glider;
-
+*/
 var route = null;
 var map = null;
+var flight = null;
 var plot = null;
 
 function fl_init(width, height)
@@ -85,10 +78,13 @@ function fl_init(width, height)
 			mapLoaded = true;
 			wm_setMapSize(width, height);
 
+			flight = new Flight(map);
+
 			route = new Route(map);
 			route.setSpeed(22.0);
 
 			plot = new Plot(map);
+			plot.setFlight(flight);
 
 			wm_emitAppReady();
 		}
@@ -118,20 +114,10 @@ function rt_setTurnPts(turnPts)
 
 function fl_setTrack(encTrack, encLevels, weight, color)
 {
-	var line;
 	var path;
 
-	line = new google.maps.Polyline({
-		strokeColor: color,
-		strokeOpacity: 1.0,
-		strokeWeight: weight,
-		map: null,
-		zIndex: 1,
-		map: map
-	});
-
 	path = google.maps.geometry.encoding.decodePath(encTrack);
-	line.setPath(path);
+	flight.setTrackPts(path);
 }
 
 function fl_setPlotSize(width, height)
@@ -140,193 +126,38 @@ function fl_setPlotSize(width, height)
 	{
 		plot.setSize(width, height);
 	}
-
-/*
-	var div;
-	var plotHeight;
-
-	plotWidth = width;
-	plotHeight = height;
-
-	// plot
-	div = document.getElementById("plot");
-	div.style.top = mapHeight + "px";
-	div.style.width = plotWidth + "px";
-
-	// chart
-	div = document.getElementById("chart");
-	div.style.width = plotWidth + "px";
-	div.style.height = (height - LegendHeight) + "px";
-
-	// legend
-	div = document.getElementById("legend");
-	div.style.width = plotWidth + "px";
-	div.style.height = LegendHeight + "px";
-
-	// redraw chart
-	chart.draw();
-*/
 }
 
 function fl_setFlightTime(timeList, start, duration)
 {
-	plot.setTimeList(timeList);
-/*
-	FlightData.time = time;
-*/
-/** unused
-	StartTime = start;
-	Duration = duration;
-*/
+	flight.setTimeList(timeList);
 }
 
-function fl_setFlightAlt(alt, minAlt, maxAlt)
+function fl_setFlightAlt(altList, minAlt, maxAlt)
 {
-	plot.setAltList(alt);
-	plot.setMinMaxAlt(minAlt, maxAlt);
-
-/*
-	FlightData.elev = alt;
-	FlightData.min_alt = minAlt;
-	FlightData.max_alt = maxAlt;
-
-	if(maxAlt > 999)
-	{
-		ChartMarginLeft = 34;
-	}
-	else if(maxAlt > 99)
-	{
-		ChartMarginLeft = 27;
-	}
-	else if(maxAlt > 9)
-	{
-		ChartMarginLeft = 20;
-	}
-*/
+	flight.setAltList(altList, minAlt, maxAlt);
 }
 
 function fl_setFlightLatLon(lat, lon)
 {
-	FlightData.lat = lat;
-	FlightData.lon = lon;
 }
 
-function fl_setSog(sog)
+function fl_setSog(sogList)
 {
-	FlightData.speed = sog;
+	flight.setSogList(sogList);
 }
 
-function fl_setVario(vario)
+function fl_setVario(varioList)
 {
-	FlightData.vario = vario;
+	flight.setVarioList(varioList);
 }
 
 function fl_showPlot()
 {
 	plot.show();
-
-	/*
-	var nbPts;
-	var horLabelNum = 8;
-	var verLabelNum = 5;
-	var idx = 0;
-	var roundIdx;
-	var step;
-	var labelNr;
-
-	nbPts = FlightData.time.length;
-	step = (nbPts - 1) / (horLabelNum - 1);
-
-	// divs
-	cursorDiv = document.getElementById("cursor").style;
-	chartDiv = document.getElementById("chart");
-	altDiv = document.getElementById("alt");
-	sogDiv = document.getElementById("sog");
-	varioDiv = document.getElementById("vario");
-	timeDiv = document.getElementById("time");
-
-	for(labelNr=0; labelNr<horLabelNum; labelNr++)
-	{
-		roundIdx = Math.round(idx);
-		FlightData.labels[labelNr] = FlightData.time[roundIdx].substr(0, 5);
-		idx += step;
-	}
-
-	// add some spaces to the last legend
-	FlightData.labels[FlightData.labels.length - 1] += "   ___";
-
-	// chart
-	chart = new Chart(chartDiv);
-	chart.setDefaultType(CHART_LINE);
-	chart.setGridDensity(horLabelNum, verLabelNum);
-	chart.setVerticalRange(FlightData.min_alt, FlightData.max_alt);
-	chart.setShowLegend(false);
-	chart.setLabelPrecision(0);
-	chart.setHorizontalLabels(FlightData.labels);
-	chart.add("Altitude", "#ff3333", FlightData.elev);
-//				chart.add('Ground Elev',  '#C0AF9C', FlightData.elevGnd, CHART_AREA);
-	chart.draw();
-*/
-	// glider
-/*
-	var icon = MapIconMaker.createLabeledMarkerIcon({width: 32, height: 32, label: "G", primaryColor: "#ffffff"});
-	glider = new GMarker(new GLatLng(FlightData.lat[0], FlightData.lon[0]), {draggable: false, icon: icon});
-	glider.rev = 0;
-	glider.ele = -9999;
-	map.addOverlay(glider);
-*/
-/*
-	addMouseEvents();
-	setLegend(0);
-*/
 }
 
 function fl_setOk(ok)
 {
 	wm_emitOk(ok);
-}
-
-function addMouseEvents()
-{
-	chartDiv.addEventListener('mousemove', function(e)
-	{
-		var posX = (e.pageX - LeftWidth);
-
-		if(posX < ChartMarginLeft)
-		{
-			posX = ChartMarginLeft;
-		}
-		else if(posX > (plotWidth + ChartMarginLeft - ChartMarginRight))
-		{
-			posX = (plotWidth + ChartMarginLeft - ChartMarginRight);
-		}
-
-		setTimeLine(posX);
-		setGlider(posX);
-	}, true);
-}
-
-function setTimeLine(posX)
-{
-	cursorDiv.left = posX + "px";
-}
-
-function setGlider(posX)
-{
-	var lat;
-	var lon;
-	var idx;
-
-	idx = (posX - ChartMarginLeft) * (FlightData.time.length - 1) / (plotWidth - ChartMarginRight);
-	idx = Math.round(idx);
-///	glider.setLatLng(new GLatLng(FlightData.lat[idx], FlightData.lon[idx]));
-	setLegend(idx);
-}
-
-function setLegend(idx)
-{
-	altDiv.innerHTML = "ALT: " + FlightData.elev[idx] + " m";
-	sogDiv.innerHTML = "SOG: " + FlightData.speed[idx] + " km/h";
-	varioDiv.innerHTML = "Vario: " + FlightData.vario[idx] + " m/s";
-	timeDiv.innerHTML = "Time: " + FlightData.time[idx];
 }
