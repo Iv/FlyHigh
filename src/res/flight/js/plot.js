@@ -21,16 +21,6 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
-function pl_sayHello()
-{
-	alert("hello");
-}
-
-var ChartMarginLeft = 20;
-var ChartMarginRight = 38;
-var LeftWidth = 280;
-var LegendHeight = 20;
-
 function Plot(map)
 {
 	var plot = this;
@@ -50,9 +40,12 @@ function Plot(map)
 	this.flight = null;
 	this.width = 0;
 	this.height = 0;
+	this.marginLeft = 20;
+	this.marginRight = 51;
+	this.legendHeight = 20;
 	this.chart = new Chart(this.chartDiv);
 
-	this.chartDiv.addEventListener('mousemove', function(event) {pl_mousemove(event, plot);}, true);
+	this.plotDiv.addEventListener('mousemove', function(event) {pl_mousemove(event, plot);}, true);
 }
 
 Plot.prototype.getMap = function()
@@ -76,13 +69,13 @@ Plot.prototype.setSize = function(width, height)
 
 	// chart
 	div = this.chartDiv;
-	div.style.width = width + "px";
-	div.style.height = (height - LegendHeight) + "px";
+	div.style.width = width - 5 + "px";
+	div.style.height = (height - this.legendHeight) + "px";
 
 	// legend
 	div = this.legendDiv;
 	div.style.width = width + "px";
-	div.style.height = LegendHeight + "px";
+	div.style.height = this.legendHeight + "px";
 
 	// redraw chart
 	this.chart.draw();
@@ -123,15 +116,15 @@ Plot.prototype.show = function()
 
 	if(this.flight.getMaxAlt() > 999)
 	{
-		ChartMarginLeft = 34;
+		this.marginLeft = 41;
 	}
 	else if(this.flight.getMaxAlt() > 99)
 	{
-		ChartMarginLeft = 27;
+		this.marginLeft = 34;
 	}
 	else if(this.flight.getMaxAlt() > 9)
 	{
-		ChartMarginLeft = 20;
+		this.marginLeft = 27;
 	}
 
 	timeList = this.flight.getTimeList();
@@ -159,9 +152,10 @@ Plot.prototype.show = function()
 //				chart.add('Ground Elev',  '#C0AF9C', FlightData.elevGnd, CHART_AREA);
 	this.chart.draw();
 
-	// glider
+	// initial values
 	this.flight.moveGliderTo(0);
 	this.setLegend(0);
+	this.setTimeLine(plot.marginLeft);
 }
 
 Plot.prototype.setTimeLine = function(posX)
@@ -174,12 +168,12 @@ Plot.prototype.setGlider = function(posX)
 	var index;
 
 	// legend
-	index = (posX - ChartMarginLeft) * (this.flight.getTimeList().length - 1) / (this.getWidth() - ChartMarginRight);
+	index = (posX - this.marginLeft) * (this.flight.getTimeList().length - 1) / (this.getWidth() - this.marginRight);
 	index = Math.round(index);
 	this.setLegend(index);
 
 	// glider
-	index = (posX - ChartMarginLeft) * (this.flight.getTrackPts().length - 1) / (this.getWidth() - ChartMarginRight);
+	index = (posX - this.marginLeft) * (this.flight.getTrackPts().length - 1) / (this.getWidth() - this.marginRight);
 	index = Math.round(index);
 	this.flight.moveGliderTo(index);
 }
@@ -194,15 +188,15 @@ Plot.prototype.setLegend = function(index)
 
 function pl_mousemove(event, plot)
 {
-	var posX = (event.pageX - LeftWidth);
+	var posX = (event.pageX - plot.plotDiv.offsetLeft - 5);
 
-	if(posX < ChartMarginLeft)
+	if(posX < plot.marginLeft)
 	{
-		posX = ChartMarginLeft;
+		posX = plot.marginLeft;
 	}
-	else if(posX > (plot.getWidth() + ChartMarginLeft - ChartMarginRight))
+	else if(posX > (plot.getWidth() + plot.marginLeft - plot.marginRight))
 	{
-		posX = (plot.getWidth() + ChartMarginLeft - ChartMarginRight);
+		posX = (plot.getWidth() + plot.marginLeft - plot.marginRight);
 	}
 
 	plot.setTimeLine(posX);
