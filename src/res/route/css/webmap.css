@@ -65,6 +65,15 @@ div.keyvalue dt {
 	padding-bottom: 5px;
 }
 
+div.keyvalue dt.spinlabel{
+	float: left;
+	clear: both;
+	width: 40%;
+	font-weight: bold;
+	padding-top: 9px;
+	padding-bottom: 0px;
+}
+
 div.keyvalue dt:after {
 	content: ":";
 }
@@ -96,10 +105,9 @@ div.separator {
 }
 .spin_updown input
 {
-	font-size: .45em;
-	border-width: .5px;
-	height: 1.6em;
-	width: 2em;
+	font-size: 5px;
+	height: 15px;
+	width: 20px;
 }
 
 input.spin_value

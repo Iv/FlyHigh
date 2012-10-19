@@ -194,7 +194,7 @@ function rt_speedDown()
 	{
 		speed = route.getSpeed();
 
-		if(speed > 0.0)
+		if(speed > 1.0)
 		{
 			route.setSpeed(speed - 0.5);
 			updateDurationAndSpeed();
