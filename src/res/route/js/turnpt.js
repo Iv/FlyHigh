@@ -42,7 +42,8 @@ function TurnPt(route, latlng, type)
 	this.marker = new google.maps.Marker({
 		map: route.getMap(),
 		draggable: true,
-		raiseOnDrag: false
+		raiseOnDrag: false,
+		zIndex: 10,
 	});
 	this.infoBox = null;
 	
