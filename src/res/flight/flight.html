@@ -15,9 +15,9 @@
 		<div id="left" class="container">
 			<div class="keyvalue">
 				<dl>
-					<dt>Name</dt>
+					<dt>Starting Point</dt>
 					<dd>
-						<div id="sname" class="svalue">FIE_100</div>
+						<div id="sname" class="svalue"></div>
 					</dd>
 				</dl>
 			</div>
@@ -40,10 +40,26 @@
 					<dt>Speed</dt>
 					<dd>
 						<input id="speed" class="spin_value" type="text" value=""/>
+						<ul class="spin_updown">
+							<li>
+								<input type="button" value="&#9650;" onclick="fl_speedUp();"/>
+							</li>
+							<li>
+								<input type="button" value="&#9660;" onclick="fl_speedDown();"/>
+							</li>
+						</ul>
 					</dd>
 					<dt>Duration</dt>
 					<dd>
 						<input id="duration" class="spin_value" type="text" value=""/>
+						<ul class="spin_updown">
+							<li>
+								<input type="button" value="&#9650;" onclick="fl_durationUp();"/>
+							</li>
+							<li>
+								<input type="button" value="&#9660;" onclick="fl_durationDown();"/>
+							</li>
+						</ul>
 					</dd>
 				</dl>
 			</div>
