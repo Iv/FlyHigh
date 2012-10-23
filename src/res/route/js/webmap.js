@@ -51,6 +51,11 @@ function wm_setMapSize(width, height)
 	google.maps.event.trigger(map, 'resize');
 }
 
+function wm_emitNetRequest(id, req, callback)
+{
+	WebMap.netRequest(id, req, callback);
+}
+
 function wm_emitAppReady()
 {
 	WebMap.appReady();
