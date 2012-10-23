@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>FlyHigh flight</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../route/css/webmap.css" type="text/css"/>
+		<script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
+		<script src="../route/js/webmap.js" type="text/javascript"></script>
+		<script src="js/iwaypoint.js" type="text/javascript"></script>
+	</head>
+	<body onload="wp_init()">
+    <div id="left">
+			<div class="keyvalue">
+				<dl>
+					<dt>Name</dt>
+					<dd>
+						<input id="name" class="lineedit" type="text" onchange="wp_setWayPtName(this.value);" maxlength="17" value=""/>
+						<div id="sname" class="svalue" style="display:none;"></div>
+					</dd>
+					<dt>Spot</dt>
+					<dd>
+						<input id="spot" class="lineedit" type="text" onchange="wp_setWayPtSpot(this.value);" maxlength="17" value=""/>
+						<div id="sspot" class="svalue" style="display:none;"></div>
+					</dd>
+					<dt>Country</dt>
+					<dd>
+						<input id="country" class="lineedit" type="text" onchange="wp_setWayPtCountry(this.value);" maxlength="2" value=""/>
+						<div id="scountry" class="svalue" style="display:none;"></div>
+					</dd>
+					<dt>Lat [°]</dt>
+					<dd>
+						<input id="lat" class="lineedit" type="text" onchange="wp_setWayPtLat(this.value);" maxlength="8" value=""/>
+						<div id="slat" class="svalue" style="display:none;"></div>
+					</dd>
+					<dt>Lng [°]</dt>
+					<dd>
+						<input id="lng" class="lineedit" type="text" onchange="wp_setWayPtLng(this.value);" maxlength="9" value=""/>
+						<div id="slng" class="svalue" style="display:none;"></div>
+					</dd>
+					<dt>Alt [m]</dt>
+					<dd>
+						<input id="alt" class="lineedit" type="text" onchange="wp_setWayPtAlt(this.value);" maxlength="5" value=""/>
+						<div id="salt" class="svalue" style="display:none;"></div>
+					</dd>
+				</dl>
+			</div>
+			<div class="separator"/>
+			<div class="submit">
+				<input type="submit" onclick="wp_setOk(true);" value="OK"/>
+				<input type="submit" onclick="wp_setOk(false);" value="Cancel"/>
+			</div>
+		</div>
+    <div id="right"></div>
+    <div id="map"></div>
+	</body>
+</html>
