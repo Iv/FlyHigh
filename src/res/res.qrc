@@ -20,6 +20,7 @@
      <file>lib/chartFX/canvaschartpainter.js</file>
      <file>lib/chartFX/chart.js</file>
      <file>lib/chartFX/excanvas.js</file>
+     <file>lib/markerclusterer.js</file>
      <file>js/flight.js</file>
      <file>js/webmap.js</file>
      <file>js/jscoord-1.1.1.js</file>
@@ -46,5 +47,8 @@
      <file>route/js/route.js</file>
      <file>route/js/turnpt.js</file>
      <file>route/js/webmap.js</file>
+     <file>waypoint/waypoint.html</file>
+     <file>waypoint/js/iwaypoint.js</file>
+     <file>waypoint/js/waypoint.js</file>
  </qresource>
  </RCC>
