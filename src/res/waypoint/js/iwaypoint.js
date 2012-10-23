@@ -58,8 +58,6 @@ function wp_init()
 
 			cluster = new MarkerClusterer(map);
 
-wp_setEditable(false);
-
 var opts;
 
 opts = {id: 1, name: "wp 1", spot: "spot 1", country: "CH", lat: 47.0, lng: 8.5,
@@ -367,6 +365,7 @@ function wayPtChanged(event, wayPt)
 		break;
 		case WayPoint.CallbackType.DragEnd:
 			updateWayPtAlt(wayPt);
+			cluster.redraw();
 		break;
 	}
 }
