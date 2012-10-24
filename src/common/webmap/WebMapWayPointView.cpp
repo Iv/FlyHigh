@@ -35,6 +35,7 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
   pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+	connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
   connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
 
@@ -61,7 +62,7 @@ void WebMapWayPointView::selectWayPoint(uint id)
 
 void WebMapWayPointView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/waypoint.html");
+	m_pWebMap->loadUrl("qrc:/waypoint/waypoint.html");
 }
 
 void WebMapWayPointView::setEditable(bool en)
@@ -74,37 +75,34 @@ void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 }
 
-void WebMapWayPointView::setWayPointList()
+void WebMapWayPointView::mapReady()
+{
+	m_pWebMap->getWayPoint()->init();
+}
+
+void WebMapWayPointView::appReady()
 {
 	int itemNr;
 	int listSize;
 
-	listSize = m_pWpList->size();
-
-	if(listSize > 0)
-	{
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
-      m_pWebMap->getWayPoint()->pushWayPoint(m_pWpList->at(itemNr));
-		}
-	}
-}
-
-void WebMapWayPointView::mapReady()
-{
-	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
+  m_pWebMap->setSize(width(), height());
 	m_pWebMap->getWayPoint()->setEditable(m_editable);
 
   if(m_pWpList != NULL)
   {
-    setWayPointList();
-  }
+    listSize = m_pWpList->size();
 
-	m_pWebMap->getWayPoint()->init();
+    for(itemNr=0; itemNr<listSize; itemNr++)
+    {
+      m_pWebMap->getWayPoint()->pushWayPoint(m_pWpList->at(itemNr));
+    }
+  }
 }
 
 void WebMapWayPointView::finished(int res)
 {
+// load here modified waypoints back?
+
 	done(res);
 }
 
