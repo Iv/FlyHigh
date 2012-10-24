@@ -22,7 +22,6 @@
  ***************************************************************************/
 
 wm_include('js/waypoint.js');
-wm_include('js/webmap.js');
 wm_include('../lib/markerclusterer.js');
 
 var map = null;
@@ -54,10 +53,8 @@ function wp_init()
 		if(!mapLoaded)
 		{
 			mapLoaded = true;
-//			wm_setMapSize(width, height);
-
 			cluster = new MarkerClusterer(map);
-
+/*
 var opts;
 
 opts = {id: 1, name: "wp 1", spot: "spot 1", country: "CH", lat: 47.0, lng: 8.5,
@@ -69,7 +66,7 @@ opts = {id: 2, name: "wp 2", spot: "spot 2", country: "CH", lat: 47.0, lng: 8.6,
 wp_pushWayPoint(opts);
 
 wp_selectWayPoint(1);
-
+*/
 			wm_emitAppReady();
 		}
 	});
@@ -205,7 +202,7 @@ function wp_setWayPtLng(lng)
 
 	if(curWayPt != null)
 	{
-		numValue = parseFloat(lon);
+		numValue = parseFloat(lng);
 
 		if(WpEditable && ((numValue >= -180) && (numValue <= 180)))
 		{
@@ -304,6 +301,7 @@ function wp_setOk(ok)
 
 	if(ok && WpEditable)
 	{
+/*
 		WebMapWayPoint.beginSaveWayPoint();
 
 		for(nr=0; nr<markers.length; nr++)
@@ -319,6 +317,7 @@ function wp_setOk(ok)
 		}
 
 		WebMapWayPoint.endSaveWayPoint();
+*/
 	}
 
 	wm_emitOk(ok);
