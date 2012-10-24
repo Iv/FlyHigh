@@ -45,7 +45,7 @@ void WebMapWayPoint::init()
 void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
 {
 	QString code = "wp_pushWayPoint({id: %1, name: '%2', spot: '%3', country: '%4',"
-                 " lat: %5, lon: %6, alt: %7});";
+                 " lat: %5, lng: %6, alt: %7});";
 	QWebFrame *pFrame;
 	QString name;
 	QString country;
