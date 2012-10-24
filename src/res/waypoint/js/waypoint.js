@@ -75,8 +75,9 @@ WayPoint.prototype.getId = function()
 
 WayPoint.prototype.setName = function(name)
 {
+
 	this.name = name;
-	wayPoint.setModified(true);
+	this.setModified(true);
 }
 
 WayPoint.prototype.getName = function()
@@ -87,7 +88,7 @@ WayPoint.prototype.getName = function()
 WayPoint.prototype.setSpot = function(spot)
 {
 	this.spot = spot;
-	wayPoint.setModified(true);
+	this.setModified(true);
 }
 
 WayPoint.prototype.getSpot = function()
@@ -98,7 +99,7 @@ WayPoint.prototype.getSpot = function()
 WayPoint.prototype.setCountry = function(country)
 {
 	this.country = country;
-	wayPoint.setModified(true);
+	this.setModified(true);
 }
 
 WayPoint.prototype.getCountry = function()
@@ -109,7 +110,7 @@ WayPoint.prototype.getCountry = function()
 WayPoint.prototype.setAlt = function(alt)
 {
 	this.alt = alt;
-	wayPoint.setModified(true);
+	this.setModified(true);
 }
 
 WayPoint.prototype.getAlt = function()
@@ -120,7 +121,7 @@ WayPoint.prototype.getAlt = function()
 WayPoint.prototype.setPosition = function(latlng)
 {
 	this.marker.setPosition(latlng);
-	wayPoint.setModified(true);
+	this.setModified(true);
 };
 
 WayPoint.prototype.setLat = function(lat)
@@ -129,7 +130,7 @@ WayPoint.prototype.setLat = function(lat)
 
 	pos = this.getPosition();
 	this.setPosition(new google.maps.LatLng(lat, pos.lng()));
-	wayPoint.setModified(true);
+	this.setModified(true);
 };
 
 WayPoint.prototype.setLng = function(lng)
@@ -138,7 +139,7 @@ WayPoint.prototype.setLng = function(lng)
 
 	pos = this.getPosition();
 	this.setPosition(new google.maps.LatLng(pos.lat(), lng));
-	wayPoint.setModified(true);
+	this.setModified(true);
 };
 
 WayPoint.prototype.getPosition = function()
