@@ -44,8 +44,8 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	QAction* pAction;
 	QTableWidget *pTable = TableWindow::getTable();
 
-  m_pWayPointView = NULL;
   m_wpType = type;
+  m_pWayPointView = NULL;
   m_externSelect = false;
 
 	switch(src)
@@ -194,15 +194,6 @@ WayPointWindow::~WayPointWindow()
 {
 }
 
-void WayPointWindow::closeEvent(QCloseEvent *pEvent)
-{
-  if(m_pWayPointView != NULL)
-  {
-    delete m_pWayPointView;
-    m_pWayPointView = NULL;
-  }
-}
-
 void WayPointWindow::selectionChanged()
 {
   int row;
@@ -263,32 +254,6 @@ void WayPointWindow::file_AddToGps()
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
 	}
-
-/**
-	numSel = getTable()->numSelections();
-
-	if((numSel > 0) && IGPSDevice::pInstance()->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		for(sel=0; sel<numSel; sel++)
-		{
-			topRow = getTable()->selection(sel).topRow();
-			bottomRow = getTable()->selection(sel).bottomRow();
-
-			for(row=topRow; row<=bottomRow; row++)
-			{
-			  wpList.push_back(m_wpList[row]);
-			}
-		}
-
-    progDlg.beginProgress(tr("write waypoints..."), IGPSDevice::pInstance());
-    IGPSDevice::pInstance()->add(wpList);
-    progDlg.endProgress();
-		TableWindow::unsetCursor();
-		IGPSDevice::pInstance()->close();
-	}
-*/
 }
 
 void WayPointWindow::file_delete()
@@ -307,32 +272,6 @@ void WayPointWindow::file_delete()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
-
-/**
-	numSel = getTable()->numSelections();
-
-	if((numSel > 0) && m_pDb->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		for(sel=0; sel<numSel; sel++)
-		{
-			topRow = getTable()->selection(sel).topRow();
-			bottomRow = getTable()->selection(sel).bottomRow();
-
-			for(row=topRow; row<=bottomRow; row++)
-			{
-				wpList.push_back(m_wpList[row]);
-			}
-		}
-
-    progDlg.beginProgress(tr("delete waypoints..."), m_pDb);
-    m_pDb->delWayPoints(wpList);
-    progDlg.endProgress();
-		TableWindow::unsetCursor();
-		m_pDb->close();
-	}
-*/
 }
 
 void WayPointWindow::file_deleteAll()
@@ -375,32 +314,6 @@ void WayPointWindow::file_AddToSqlDB()
 		TableWindow::unsetCursor();
 		ISql::pInstance()->close();
 	}
-
-/**
-	numSel = getTable()->numSelections();
-
-	if((numSel > 0) && ISql::pInstance()->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-
-		for(sel=0; sel<numSel; sel++)
-		{
-			topRow = getTable()->selection(sel).topRow();
-			bottomRow = getTable()->selection(sel).bottomRow();
-
-			for(row=topRow; row<=bottomRow; row++)
-			{
-				wpList.push_back(m_wpList[row]);
-			}
-		}
-
-    progDlg.beginProgress(tr("add waypoints..."), ISql::pInstance());
-    ISql::pInstance()->add(wpList);
-    progDlg.endProgress();
-		TableWindow::unsetCursor();
-		ISql::pInstance()->close();
-	}
-*/
 }
 
 void WayPointWindow::file_open()
@@ -458,51 +371,44 @@ void WayPointWindow::file_Edit()
 
 void WayPointWindow::file_editWebMap()
 {
-	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
-	{
-    menu()->setEnabled(false);
-		m_pWayPointView = new WebMapWayPointView(tr("Edit WayPoints"));
-    connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
-		connect(m_pWayPointView, SIGNAL(wayPointsChanged(WayPoint::WayPointListType&)), this,
-            SLOT(wayPointsChanged(WayPoint::WayPointListType&)));
-    connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
-		m_pWayPointView->setWayPointList(&m_wpList);
-		m_pWayPointView->loadMap();
-    m_pWayPointView->setWindowModality(Qt::NonModal);
-		m_pWayPointView->show();
-	}
+  WebMapWayPointView *pView;
+
+  if(m_wpList.size() > 0)
+  {
+    pView = new WebMapWayPointView(tr("View WayPoints"), m_wpType);
+    connect(pView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
+    pView->setEditable(true);
+		pView->setWayPointList(&m_wpList);
+		pView->loadMap();
+		m_pWayPointView = pView;
+
+    if((pView->exec() == QDialog::Accepted) && m_pDb->open())
+    {
+      // save modified waypoints
+      TableWindow::setCursor(QCursor(Qt::WaitCursor));
+      m_pDb->update(pView->getModifiedWayPointList());
+      m_pDb->close();
+      TableWindow::unsetCursor();
+    }
+
+    m_pWayPointView = NULL;
+  }
 }
 
 void WayPointWindow::file_viewWebMap()
 {
-	if((m_pWayPointView == NULL) && (m_wpList.size() > 0))
-	{
-    menu()->setEnabled(false);
-		m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"));
-    connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
-    connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
-    m_pWayPointView->setEditable(false);
-		m_pWayPointView->setWayPointList(&m_wpList);
-		m_pWayPointView->loadMap();
-    m_pWayPointView->setWindowModality(Qt::NonModal);
-		m_pWayPointView->show();
-	}
-}
+  WebMapWayPointView *pView;
 
-void WayPointWindow::wayPointViewFinished(int res)
-{
-  m_pWayPointView = NULL;
-  menu()->setEnabled(true);
-}
-
-void WayPointWindow::wayPointsChanged(WayPoint::WayPointListType &wpList)
-{
-  if(m_pDb->open())
+  if(m_wpList.size() > 0)
   {
-    m_externSelect = true;
-    m_pDb->update(wpList);
-    m_externSelect = false;
-    m_pDb->close();
+    pView = new WebMapWayPointView(tr("View WayPoints"), m_wpType);
+    connect(pView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
+    pView->setEditable(false);
+		pView->setWayPointList(&m_wpList);
+		pView->loadMap();
+		m_pWayPointView = pView;
+    pView->exec();
+    m_pWayPointView = NULL;
   }
 }
 

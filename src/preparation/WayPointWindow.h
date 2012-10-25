@@ -38,8 +38,6 @@ class WayPointWindow: public TableWindow
 		~WayPointWindow();
 
 	protected:
-    void closeEvent(QCloseEvent *pEvent);
-
 		void selectionChanged();
 
 	private slots:
@@ -62,10 +60,6 @@ class WayPointWindow: public TableWindow
 		void file_viewWebMap();
 
 		void file_open();
-
-		void wayPointViewFinished(int res);
-
-		void wayPointsChanged(WayPoint::WayPointListType &wpList);
 
 		void wayPointChanged(int id);
 
