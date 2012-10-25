@@ -29,6 +29,7 @@ var cluster = null;
 var wayPts = [];
 var curWayPt = null;
 var WpEditable = true;
+var nextModified = 0;
 
 function wp_init()
 {
@@ -295,31 +296,30 @@ function wp_getAlt()
 	return getDivValue("alt");
 }
 
-function wp_setOk(ok)
+function wp_getNextModified()
 {
-	var marker;
+	var opts = null;
 
-	if(ok && WpEditable)
+	for(nr=nextModified; nr<wayPts.length; nr++)
 	{
-/*
-		WebMapWayPoint.beginSaveWayPoint();
+		wayPt = wayPts[nr];
 
-		for(nr=0; nr<markers.length; nr++)
+		if(wayPt.getModified())
 		{
-			marker = markers[nr];
-
-			if(marker.getModified())
-			{
-				WebMapWayPoint.saveWayPoint(marker.getId(),
-					marker.getName(), marker.getSpot(), marker.getCountry(),
-					marker.getLat(), marker.getLon(), marker.getAlt());
-			}
+			nextModified = (nr + 1);
+			opts = {id: wayPt.getId(), name: wayPt.getName(), spot: wayPt.getSpot(),
+							country: wayPt.getCountry(), lat: wayPt.getPosition().lat(),
+							lng: wayPt.getPosition().lng(), alt: wayPt.getAlt()};
+			break;
 		}
-
-		WebMapWayPoint.endSaveWayPoint();
-*/
 	}
 
+	return opts;
+}
+
+function wp_setOk(ok)
+{
+	nextModified = 0;
 	wm_emitOk(ok);
 }
 
@@ -357,6 +357,7 @@ function wayPtChanged(event, wayPt)
 				wp_setCountry(wayPt.getCountry());
 				wp_setLatLng(wayPt.getPosition().lat(), wayPt.getPosition().lng());
 				wp_setAlt(wayPt.getAlt());
+				wm_emitLineChanged(wayPt.getId());
 			}
 		break;
 		case WayPoint.CallbackType.Position:
