@@ -61,6 +61,11 @@ function wm_emitAppReady()
 	WebMap.appReady();
 }
 
+function wm_emitLineChanged(line)
+{
+	WebMap.setLine(line);
+}
+
 function wm_emitOk(ok)
 {
 	WebMap.setOk(ok);
