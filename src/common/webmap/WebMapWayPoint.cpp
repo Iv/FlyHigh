@@ -90,6 +90,44 @@ void WebMapWayPoint::setEditable(bool en)
 	pFrame->evaluateJavaScript(code.arg(en));
 }
 
+/**
+bool WebMapWayPoint::getFirstModified(WayPoint &wp)
+{
+  QString code = "wp_initNextModified();";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code);
+
+	return getNextModified(wp);
+}
+*/
+
+bool WebMapWayPoint::getNextModified(WayPoint &wp)
+{
+  QString code = "wp_getNextModified();";
+  QWebFrame *pFrame;
+	QVariantMap wpMap;
+	bool valid;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	wpMap = pFrame->evaluateJavaScript(code).toMap();
+	valid = !wpMap.empty();
+
+  if(valid)
+	{
+    wp.setId(wpMap["id"].toInt());
+    wp.setName(wpMap["name"].toString());
+    wp.setSpot(wpMap["spot"].toString());
+    wp.setCountry(wpMap["country"].toString());
+    wp.setLatitude(wpMap["lat"].toDouble());
+    wp.setLongitude(wpMap["lng"].toDouble());
+    wp.setAltitude(wpMap["alt"].toInt());
+	}
+
+	return valid;
+}
+
 void WebMapWayPoint::beginSaveWayPoint()
 {
   m_wpList.clear();
@@ -114,5 +152,5 @@ void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &sp
 
 void WebMapWayPoint::endSaveWayPoint()
 {
-  emit wayPointsChanged(m_wpList);
+//  emit wayPointsChanged(m_wpList);
 }

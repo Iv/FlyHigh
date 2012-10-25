@@ -45,8 +45,10 @@ class WebMapWayPoint: public QObject
 
     void setEditable(bool en);
 
+    bool getNextModified(WayPoint &wp);
+
 	signals:
-		void wayPointsChanged(WayPoint::WayPointListType &wpList);
+		void wayPointsChanged(WayPoint::WayPointListType &wpList); /// ####### to be removed
 
 	protected slots:
     void beginSaveWayPoint();
