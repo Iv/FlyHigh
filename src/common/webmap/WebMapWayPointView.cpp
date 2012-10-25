@@ -24,12 +24,13 @@
 
 #include <QDebug>
 
-WebMapWayPointView::WebMapWayPointView(const QString &name)
+WebMapWayPointView::WebMapWayPointView(const QString &name, WayPoint::Type type)
 {
   QWebFrame *pFrame;
 	QWidget::setWindowTitle(name);
 	resize(1000, 850);
 
+  m_wpType = type;
 	m_pWpList = NULL;
 	m_editable = true;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
@@ -37,11 +38,6 @@ WebMapWayPointView::WebMapWayPointView(const QString &name)
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
-  connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
-
-  connect(m_pWebMap->getWayPoint(), SIGNAL(wayPointsChanged(WayPoint::WayPointListType&)), this,
-          SIGNAL(wayPointsChanged(WayPoint::WayPointListType&)));
-
   connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SIGNAL(wayPointChanged(int)));
 }
 
@@ -53,6 +49,11 @@ WebMapWayPointView::~WebMapWayPointView()
 void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
 {
 	m_pWpList = pWpList;
+}
+
+WayPoint::WayPointListType& WebMapWayPointView::getModifiedWayPointList()
+{
+  return m_modWayPointList;
 }
 
 void WebMapWayPointView::selectWayPoint(uint id)
@@ -101,12 +102,19 @@ void WebMapWayPointView::appReady()
 
 void WebMapWayPointView::finished(int res)
 {
-// load here modified waypoints back?
+  WayPoint wp;
+
+  m_modWayPointList.clear();
+
+  if(res)
+  {
+    wp.setType(m_wpType); // restore type
+
+    while(m_pWebMap->getWayPoint()->getNextModified(wp))
+    {
+      m_modWayPointList.push_back(wp);
+    }
+  }
 
 	done(res);
-}
-
-void WebMapWayPointView::populateObject()
-{
-  m_pWebMap->getWayPoint()->populateObject();
 }
