@@ -211,7 +211,7 @@ WayPoint.prototype.restorePos = function()
 {
 	if(this.stPos != null)
 	{
-		this.setPosition(this.stPos);
+		this.marker.setPosition(this.stPos);
 	}
 }
 
@@ -252,10 +252,11 @@ function wp_click(wayPoint)
 
 function wp_dragstart(wayPoint)
 {
+	wayPoint.setSelected(true);
+
 	if(wayPoint.getEditable())
 	{
 		wayPoint.setModified(true);
-		wayPoint.setSelected(true);
 	}
 	else
 	{
