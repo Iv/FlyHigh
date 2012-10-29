@@ -200,7 +200,8 @@ Route.prototype.spliceLeg = function(turnPt)
 	var endTurnPt;
 
 	// turnPt is cross on the middle of the line between two turn points
-	// after: beginTurnPt-------turnPt--------endTurnPt
+	// after: WayPoint-------Cross--------WayPoint
+	// this is not the neatest solution, but this is the simplest
 
 	// get begin and end
 	leg = turnPt.getPrevLeg();
