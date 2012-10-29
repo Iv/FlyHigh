@@ -90,6 +90,7 @@ void WebMapFlightView::appReady()
 {
   m_pWebMap->setSize(width(), height());
 
+  m_pWebMap->getRoute()->setName(m_location);
 	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
 	m_pWebMap->getFlight()->setFlightPointList(m_fpList);
 	m_pWebMap->getFlight()->setSogList(m_sogList);
