@@ -59,123 +59,123 @@ function Flight(map)
 Flight.prototype.getMap = function()
 {
 	return this.map;
-}
+};
 
 Flight.prototype.setTrackPts = function(trackPts)
 {
 	this.trackPts = trackPts;
 	this.track.setPath(trackPts);
-}
+};
 
 Flight.prototype.getTrackPts = function()
 {
 	return this.trackPts;
-}
+};
 
 Flight.prototype.setSogList = function(sogList)
 {
 	this.sogList = sogList;
-}
+};
 
 Flight.prototype.getSogAt = function(index)
 {
 	var sog = null;
 
-	if((this.sogList != null) && (index < this.sogList.length))
+	if((this.sogList !== null) && (index < this.sogList.length))
 	{
 		sog = this.sogList[index];
 	}
 
 	return sog;
-}
+};
 
 Flight.prototype.setVarioList = function(varioList)
 {
 	this.varioList = varioList;
-}
+};
 
 Flight.prototype.getVarioAt = function(index)
 {
 	var vario = null;
 
-	if((this.varioList != null) && (index < this.varioList.length))
+	if((this.varioList !== null) && (index < this.varioList.length))
 	{
 		vario = this.varioList[index];
 	}
 
 	return vario;
-}
+};
 
 Flight.prototype.setAltList= function(altList, minAlt, maxAlt)
 {
 	this.altList = altList;
 	this.minAlt = minAlt;
 	this.maxAlt = maxAlt;
-}
+};
 
 Flight.prototype.getAltList= function()
 {
 	return this.altList;
-}
+};
 
 Flight.prototype.getAltAt = function(index)
 {
 	var alt = null;
 
-	if((this.altList != null) && (index < this.altList.length))
+	if((this.altList !== null) && (index < this.altList.length))
 	{
 		alt = this.altList[index];
 	}
 
 	return alt;
-}
+};
 
 Flight.prototype.getMinAlt = function()
 {
 	return this.minAlt;
-}
+};
 
 Flight.prototype.getMaxAlt = function()
 {
 	return this.maxAlt;
-}
+};
 
 Flight.prototype.setTimeList = function(timeList)
 {
 	this.timeList = timeList;
-}
+};
 
 Flight.prototype.getTimeList = function()
 {
 	return this.timeList;
-}
+};
 
 Flight.prototype.getTimeAt = function(index)
 {
 	var time = null;
 
-	if((this.timeList != null) && (index < this.timeList.length))
+	if((this.timeList !== null) && (index < this.timeList.length))
 	{
 		time = this.timeList[index];
 	}
 
 	return time;
-}
+};
 
 Flight.prototype.moveGliderTo = function(index)
 {
 	var time = null;
 
-	if((this.trackPts != null) && (index < this.trackPts.length))
+	if((this.trackPts !== null) && (index < this.trackPts.length))
 	{
 		this.glider.setPosition(this.trackPts[index]);
 	}
-}
+};
 
 Flight.prototype.getGliderPosition = function()
 {
 	return this.glider.getPosition();
-}
+};
 
 /*
 	This is an ugly hack, to restore position while drag. Because Qt 4.6 won't display
@@ -189,11 +189,11 @@ Flight.prototype.storePos = function()
 
 Flight.prototype.restorePos = function()
 {
-	if(this.storePos != null)
+	if(this.storePos !== null)
 	{
 		this.glider.setPosition(this.stpos);
 	}
-}
+};
 
 function fl_dragstart(flight)
 {

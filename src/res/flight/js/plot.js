@@ -52,7 +52,7 @@ function Plot(map)
 Plot.prototype.getMap = function()
 {
 	return this.map;
-}
+};
 
 Plot.prototype.setSize = function(width, height)
 {
@@ -80,27 +80,27 @@ Plot.prototype.setSize = function(width, height)
 
 	// redraw chart
 	this.chart.draw();
-}
+};
 
 Plot.prototype.getWidth = function()
 {
 	return this.width;
-}
+};
 
 Plot.prototype.getHeigth = function()
 {
 	return this.height;
-}
+};
 
 Plot.prototype.setChangeCallback = function(callback)
 {
 	this.changeCallback = callback;
-}
+};
 
 Plot.prototype.setFlight= function(flight)
 {
 	this.flight = flight;
-}
+};
 
 Plot.prototype.show = function()
 {
@@ -157,12 +157,12 @@ Plot.prototype.show = function()
 	this.flight.moveGliderTo(0);
 	this.setLegend(0);
 	this.setTimeLine(plot.marginLeft);
-}
+};
 
 Plot.prototype.setTimeLine = function(posX)
 {
 	this.cursorDiv.left = posX + "px";
-}
+};
 
 Plot.prototype.setGlider = function(posX)
 {
@@ -177,7 +177,7 @@ Plot.prototype.setGlider = function(posX)
 	index = (posX - this.marginLeft) * (this.flight.getTrackPts().length - 1) / (this.getWidth() - this.marginRight);
 	index = Math.round(index);
 	this.flight.moveGliderTo(index);
-}
+};
 
 Plot.prototype.setLegend = function(index)
 {
@@ -185,7 +185,7 @@ Plot.prototype.setLegend = function(index)
 	this.sogDiv.innerHTML = "SOG: " + this.flight.getSogAt(index) + " km/h";
 	this.varioDiv.innerHTML = "Vario: " + this.flight.getVarioAt(index) + " m/s";
 	this.timeDiv.innerHTML = "Time: " + this.flight.getTimeAt(index);
-}
+};
 
 function pl_mousemove(event, plot)
 {

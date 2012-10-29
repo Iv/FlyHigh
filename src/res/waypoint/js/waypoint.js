@@ -47,7 +47,7 @@ function WayPoint(map, opts)
 		draggable: true,
 		raiseOnDrag: false,
 		position: new google.maps.LatLng(opts.lat, opts.lng),
-		zIndex: 10,
+		zIndex: 10
 	});
 
 	google.maps.event.addListener(this.marker, 'click', function(event) {wp_click(wayPoint);});
@@ -61,62 +61,61 @@ function WayPoint(map, opts)
 WayPoint.prototype.getMap = function()
 {
 	return this.map;
-}
+};
 
 WayPoint.prototype.getMarker = function()
 {
 	return this.marker;
-}
+};
 
 WayPoint.prototype.getId = function()
 {
 	return this.id;
-}
+};
 
 WayPoint.prototype.setName = function(name)
 {
-
 	this.name = name;
 	this.setModified(true);
-}
+};
 
 WayPoint.prototype.getName = function()
 {
 	return this.name;
-}
+};
 
 WayPoint.prototype.setSpot = function(spot)
 {
 	this.spot = spot;
 	this.setModified(true);
-}
+};
 
 WayPoint.prototype.getSpot = function()
 {
 	return this.spot;
-}
+};
 
 WayPoint.prototype.setCountry = function(country)
 {
 	this.country = country;
 	this.setModified(true);
-}
+};
 
 WayPoint.prototype.getCountry = function()
 {
 	return this.country;
-}
+};
 
 WayPoint.prototype.setAlt = function(alt)
 {
 	this.alt = alt;
 	this.setModified(true);
-}
+};
 
 WayPoint.prototype.getAlt = function()
 {
 	return this.alt;
-}
+};
 
 WayPoint.prototype.setPosition = function(latlng)
 {
@@ -150,52 +149,52 @@ WayPoint.prototype.getPosition = function()
 WayPoint.prototype.setChangeCallback = function(callback)
 {
 	this.changeCallback = callback;
-}
+};
 
 WayPoint.prototype.setEditable = function(editable)
 {
 	this.editable = editable;
-}
+};
 
 WayPoint.prototype.getEditable = function()
 {
 	return this.editable;
-}
+};
 
 WayPoint.prototype.setSelected = function(selected)
 {
 	this.selected = selected;
 	this.updateIcon();
 
-	if(selected && (this.changeCallback != null))
+	if(selected && (this.changeCallback !== null))
 	{
 		this.emitChange(WayPoint.CallbackType.Selected);
 	}
-}
+};
 
 WayPoint.prototype.getSelected = function()
 {
 	return this.selected;
-}
+};
 
 WayPoint.prototype.setModified = function(modified)
 {
 	this.modified = modified;
 	this.updateIcon();
-}
+};
 
 WayPoint.prototype.getModified = function()
 {
 	return this.modified;
-}
+};
 
 WayPoint.prototype.emitChange = function(type)
 {
-	if(this.changeCallback != null)
+	if(this.changeCallback !== null)
 	{
 		this.changeCallback(type, this);
 	}
-}
+};
 
 /*
 	This is an ugly hack, to restore position while drag. Because Qt 4.6 won't display
@@ -205,15 +204,15 @@ WayPoint.prototype.emitChange = function(type)
 WayPoint.prototype.storePos = function()
 {
 	this.stPos = new google.maps.LatLng(this.getPosition().lat(), this.getPosition().lng());
-}
+};
 
 WayPoint.prototype.restorePos = function()
 {
-	if(this.stPos != null)
+	if(this.stPos !== null)
 	{
 		this.marker.setPosition(this.stPos);
 	}
-}
+};
 
 WayPoint.prototype.updateIcon = function()
 {
@@ -243,7 +242,7 @@ WayPoint.prototype.updateIcon = function()
 	}
 	
 	this.marker.setIcon(icon);
-}
+};
 
 function wp_click(wayPoint)
 {

@@ -51,7 +51,7 @@ InfoBox.prototype.show = function(latlng, width, height, msg)
 	ptY += mapDiv.offsetTop;
 	ptY += 20;
 
-	if(this.infoDiv == null)
+	if(this.infoDiv === null)
 	{
 		this.createInfoDiv();
 	}
@@ -63,15 +63,15 @@ InfoBox.prototype.show = function(latlng, width, height, msg)
 	infoDiv.style.height = height + "px";
 	infoDiv.innerHTML = msg;
 	infoDiv.style.display = "block";
-}
+};
 
 InfoBox.prototype.hide = function()
 {
-	if(this.infoDiv != null)
+	if(this.infoDiv !== null)
 	{
 		this.infoDiv.style.display = "none";
 	}
-}
+};
 
 InfoBox.prototype.createInfoDiv = function()
 {
@@ -83,4 +83,4 @@ InfoBox.prototype.createInfoDiv = function()
 	infoDiv.style.border = "1px solid";
 	document.body.appendChild(infoDiv);
 	this.infoDiv = infoDiv;
-}
+};

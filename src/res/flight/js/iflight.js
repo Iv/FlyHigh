@@ -113,7 +113,7 @@ function fl_setTrack(encTrack)
 
 function fl_setPlotSize(width, height)
 {
-	if(plot != null)
+	if(plot !== null)
 	{
 		plot.setSize(width, height);
 	}

@@ -124,7 +124,7 @@ function wp_selectWayPoint(id)
 
 function wp_setWayPtName(name)
 {
-	if((curWayPt != null) && WpEditable)
+	if((curWayPt !== null) && WpEditable)
 	{
 		curWayPt.setName(name);
 	}
@@ -142,7 +142,7 @@ function wp_getName()
 
 function wp_setWayPtSpot(spot)
 {
-	if((curWayPt != null) && WpEditable)
+	if((curWayPt !== null) && WpEditable)
 	{
 		curWayPt.setSpot(spot);
 	}
@@ -160,7 +160,7 @@ function wp_getSpot()
 
 function wp_setWayPtCountry(country)
 {
-	if((curWayPt != null) && WpEditable)
+	if((curWayPt !== null) && WpEditable)
 	{
 		curWayPt.setCountry(country);
 	}
@@ -180,7 +180,7 @@ function wp_setWayPtLat(lat)
 {
 	var numValue;
 
-	if(curWayPt != null)
+	if(curWayPt !== null)
 	{
 		numValue = parseFloat(lat);
 
@@ -201,7 +201,7 @@ function wp_setWayPtLng(lng)
 {
 	var numValue;
 
-	if(curWayPt != null)
+	if(curWayPt !== null)
 	{
 		numValue = parseFloat(lng);
 
@@ -271,9 +271,9 @@ function wp_setWayPtAlt(alt)
 {
 	var numValue;
 
-	if(curWayPt != null)
+	if(curWayPt !== null)
 	{
-		numValue = parseInt(alt);
+		numValue = parseInt(alt, 10);
 
 		if(WpEditable && ((numValue >= -500) && (numValue <= 8000)))
 		{
@@ -346,7 +346,7 @@ function wayPtChanged(event, wayPt)
 		case WayPoint.CallbackType.Selected:
 			if(curWayPt != wayPt)
 			{
-				if(curWayPt != null)
+				if(curWayPt !== null)
 				{
 					curWayPt.setSelected(false);
 				}
