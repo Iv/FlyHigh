@@ -11,6 +11,9 @@
      <file>route.html</file>
      <file>waypoint.html</file>
      <file>css/webmap.css</file>
+     <file>airspace/airspace.html</file>
+     <file>airspace/js/iairspace.js</file>
+     <file>airspace/js/airspace.js</file>
      <file>flight/flight.html</file>
      <file>flight/css/plot.css</file>
      <file>flight/js/iflight.js</file>
