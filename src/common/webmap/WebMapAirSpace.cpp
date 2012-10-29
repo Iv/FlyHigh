@@ -46,13 +46,12 @@ void WebMapAirSpace::init()
 
 void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 {
-	QString code = "as_pushAirSpace([%1], [%2], {id: %3});";
-	QString value = "%1";
+	QString code = "as_pushAirSpace(%1, {id: %2});";
+	QString coords = "[";
+	QString coord = "[%1,%2]";
 	QWebFrame *pFrame;
 	uint wpNr;
 	uint wpListSize;
-	QString strLat = "";
-	QString strLon = "";
 	float lat;
 	float lon;
   float endLat;
@@ -70,15 +69,13 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
     {
       if(!first)
       {
-        strLat += ",";
-        strLon += ",";
+        coords += ",";
       }
 
       first = false;
       lat = pAirSpace->pointList().at(wpNr).latitude();
       lon = pAirSpace->pointList().at(wpNr).longitude();
-      strLat += value.arg(lat);
-      strLon += value.arg(lon);
+      coords += coord.arg(lat).arg(lon);
     }
 
     lat = pAirSpace->pointList().at(0).latitude();
@@ -88,15 +85,15 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 
     if((lat != endLat) || (lon !=endLon))
     {
-      strLat += ",";
-      strLon += ",";
-      strLat += value.arg(lat);
-      strLon += value.arg(lon);
+      coords += ",";
+      coords += coord.arg(lat).arg(lon);
     }
+
+    coords += "]";
   }
 
   id = pAirSpace->id();
-  pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon).arg(id));
+  pFrame->evaluateJavaScript(code.arg(coords).arg(id));
 }
 
 void WebMapAirSpace::selectAirSpace(int nr)
