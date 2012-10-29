@@ -39,17 +39,16 @@ if(NOT FLYHIGH_DOC_DIR)
  set(FLYHIGH_DOC_DIR "${CMAKE_INSTALL_PREFIX}/usr/share/doc/flyhigh")
 endif()
 
-
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DCOMPILE_USE_QT4)
 add_definitions(-Wall)
 
 include(${QT_USE_FILE})
+include(Functions.cmake) # custom functions
 include_directories(${CMAKE_SOURCE_DIR} ${QT_INCLUDES})
 
 add_subdirectory(src)
 add_subdirectory(tools)
-
 
 # install files
 install(FILES AUTHORS DESTINATION ${FLYHIGH_DOC_DIR})
