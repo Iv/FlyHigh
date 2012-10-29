@@ -81,7 +81,7 @@ Fai.prototype.show = function(latlngs)
 	var pixels;
 	var path;
 
-	if(latlngs != null)
+	if(latlngs !== null)
 	{
 		pixels = this.toPixels(latlngs);
 
@@ -108,7 +108,7 @@ Fai.prototype.show = function(latlngs)
 		this.sectors[2].setMap(null);
 		this.sectors[3].setMap(null);
 	}
-}
+};
 
 Fai.prototype.toPixels = function(latlngs)
 {
@@ -126,7 +126,7 @@ Fai.prototype.toPixels = function(latlngs)
 	}
 
 	return pixels;
-}
+};
 
 Fai.prototype.faiSector = function(pixels)
 {
@@ -188,7 +188,7 @@ Fai.prototype.faiSector = function(pixels)
 	}
 
 	return result;
-}
+};
 
 Fai.prototype.endSector = function(latlngs)
 {
@@ -217,7 +217,7 @@ Fai.prototype.endSector = function(latlngs)
 	result.push(latLngStart);
 
 	return result;
-}
+};
 
 function isClockwise(pixels)
 {

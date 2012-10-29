@@ -115,7 +115,7 @@ Route.prototype.addTurnPt = function(turnPt)
 	
 	turnPt.setEditable(this.getEditable());
 
-	if(this.firstTurnPt == null)
+	if(this.firstTurnPt === null)
 	{
 		this.firstTurnPt = turnPt;
 	}
@@ -123,7 +123,7 @@ Route.prototype.addTurnPt = function(turnPt)
 	{
 		beginTurnPt = this.firstTurnPt;
 
-		while(beginTurnPt.getNextTurnPt() != null)
+		while(beginTurnPt.getNextTurnPt() !== null)
 		{
 			beginTurnPt = beginTurnPt.getNextTurnPt();
 		}
@@ -147,7 +147,7 @@ Route.prototype.getTurnPts = function()
 
 	turnPt = this.firstTurnPt;
 
-	while(turnPt != null)
+	while(turnPt !== null)
 	{
 		turnPts.push(turnPt);
 		turnPt = turnPt.getNextTurnPt();
@@ -164,34 +164,34 @@ Route.prototype.setEditable = function(en)
 	this.editable = en;
 	turnPt = this.firstTurnPt;
 
-	while(turnPt != null)
+	while(turnPt !== null)
 	{
 		turnPt.setEditable(en);
 		leg = turnPt.getNextLeg();
 
-		if(leg != null)
+		if(leg !== null)
 		{
 			leg.setEditable(en);
 		}
 
 		turnPt = turnPt.getNextTurnPt();
 	}
-}
+};
 
 Route.prototype.getEditable = function(en)
 {
 	return this.editable;
-}
+};
 
 Route.prototype.calcSpeed = function()
 {
 	this.speed = Math.round((this.getTrackDist() / this.getDuration()) * 2) / 2; // * 10 / 5
-}
+};
 
 Route.prototype.calcDuration = function()
 {
 	this.duration = Math.round((this.getTrackDist() / this.getSpeed()) * 2) / 2; // * 10 / 5
-}
+};
 
 Route.prototype.spliceLeg = function(turnPt)
 {
@@ -235,7 +235,7 @@ Route.prototype.removeMarker = function(turnPt)
 		prevLeg = turnPt.getPrevLeg();
 		nextLeg = turnPt.getNextLeg();
 
-		if((prevLeg != null) && (nextLeg != null))
+		if((prevLeg !== null) && (nextLeg !== null))
 		{
 			// turnPt is between two legs
 			beginTurnPt = prevLeg.getBeginTurnPt();
@@ -245,7 +245,7 @@ Route.prototype.removeMarker = function(turnPt)
 			beginTurnPt.setNextTurnPt(endTurnPt);
 			nextLeg.remove();
 		}
-		else if(prevLeg == null)
+		else if(prevLeg === null)
 		{ 
 			// turnPt is first turn point
 			endTurnPt = turnPt.getNextTurnPt();
@@ -253,7 +253,7 @@ Route.prototype.removeMarker = function(turnPt)
 			nextLeg.remove();
 			this.firstTurnPt = endTurnPt;
 		}
-		else if(nextLeg == null)
+		else if(nextLeg === null)
 		{
 			// turnPt is last turn point
 			beginTurnPt = prevLeg.getBeginTurnPt();
@@ -266,7 +266,7 @@ Route.prototype.removeMarker = function(turnPt)
 		this.turnPtCount--;
 		this.update();
 	}
-}
+};
 
 Route.prototype.update = function()
 {
@@ -286,7 +286,7 @@ Route.prototype.update = function()
 
 	turnPt = this.firstTurnPt;
 
-	while(turnPt != null)
+	while(turnPt !== null)
 	{
 		turnPts.push(turnPt);
 		turnPt = turnPt.getNextTurnPt();
@@ -368,8 +368,8 @@ Route.prototype.update = function()
 	this.trackDist = optimizer.getTrackDist() / 1000.0;
 	this.calcDuration();
 
-	if(this.changeCallback != null)
+	if(this.changeCallback !== null)
 	{
 		this.changeCallback();
 	}
-}
+};

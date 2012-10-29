@@ -45,7 +45,7 @@ Leg.prototype.getRoute = function()
 
 Leg.prototype.remove = function()
 {
-	if(this.cross != null)
+	if(this.cross !== null)
 	{
 		this.cross.remove();
 		this.cross = null;
@@ -109,7 +109,7 @@ Leg.prototype.setEditable = function(en)
 {
 	this.editable = en;
 
-	if(this.cross != null)
+	if(this.cross !== null)
 	{
 		this.cross.setEditable(en);
 	}
@@ -118,7 +118,7 @@ Leg.prototype.setEditable = function(en)
 Leg.prototype.getEditable = function()
 {
 	return this.editable;
-}
+};
 
 Leg.prototype.updateCross = function()
 {

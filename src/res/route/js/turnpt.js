@@ -43,10 +43,9 @@ function TurnPt(route, latlng, type)
 		map: route.getMap(),
 		draggable: true,
 		raiseOnDrag: false,
-		zIndex: 10,
+		zIndex: 10
 	});
 	this.infoBox = null;
-	
 	this.setType(type);
 	this.setPosition(latlng);
 
@@ -142,12 +141,12 @@ TurnPt.prototype.setEditable = function(en)
 TurnPt.prototype.getEditable = function()
 {
 	return this.editable;
-}
+};
 
 TurnPt.prototype.getInfoBox = function()
 {
 	return this.infoBox;
-}
+};
 
 /*
 	This is an ugly hack, to restore position while drag. Because Qt 4.6 won't display
@@ -161,23 +160,23 @@ TurnPt.prototype.storePos = function()
 
 TurnPt.prototype.restorePos = function()
 {
-	if(this.storePos != null)
+	if(this.storePos !== null)
 	{
 		this.setPosition(this.stpos);
 	}
-}
+};
 
 TurnPt.prototype.updateIcon = function()
 {
 	switch(this.getType())
 	{
 		case TurnPt.Type.WayPoint:
-			if(this.getPrevLeg() == null)
+			if(this.getPrevLeg() === null)
 			{
 				// start
 				this.marker.setIcon('http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,00EE00,000000&ext=.png');
 			}
-			else if(this.getNextLeg() == null)
+			else if(this.getNextLeg() === null)
 			{
 				// end
 				this.marker.setIcon('http://chart.apis.google.com/chart?cht=mm&chs=20x32&chco=FFFFFF,EE0000,000000&ext=.png');
@@ -210,12 +209,12 @@ function tp_position_changed(turnPt)
 {
 	if(turnPt.getEditable() && (turnPt.getType() == TurnPt.Type.WayPoint))
 	{
-		if(turnPt.getPrevLeg() != null)
+		if(turnPt.getPrevLeg() !== null)
 		{
 			turnPt.getPrevLeg().setEndPosition(turnPt.getPosition());
 		}
 
-		if(turnPt.getNextLeg() != null)
+		if(turnPt.getNextLeg() !== null)
 		{
 			turnPt.getNextLeg().setBeginPosition(turnPt.getPosition());
 		}
@@ -229,7 +228,7 @@ function tp_dragstart(turnPt)
 	if(turnPt.getEditable())
 	{
 		if((turnPt.getType() == TurnPt.Type.Cross) &&
-				(turnPt.getPrevLeg() != null))
+				(turnPt.getPrevLeg() !== null))
 		{
 			turnPt.getInfoBox().hide();
 			turnPt.getRoute().spliceLeg(turnPt);
@@ -267,7 +266,7 @@ function tp_mouseover(turnPt)
 	var beginPos;
 	var endPos;
 
-	if(turnPt.getInfoBox() != null)
+	if(turnPt.getInfoBox() !== null)
 	{
 		leg = turnPt.getPrevLeg();
 		beginPos = leg.getBeginTurnPt().getPosition();
@@ -286,7 +285,7 @@ function tp_mouseover(turnPt)
 
 function tp_mouseout(turnPt)
 {
-	if(turnPt.getInfoBox() != null)
+	if(turnPt.getInfoBox() !== null)
 	{
 		turnPt.getInfoBox().hide();
 	}

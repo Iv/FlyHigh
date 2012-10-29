@@ -49,7 +49,7 @@ function Optimizer()
 	this.dminindex = [];
 	this.maxenddist = [];
 	this.maxendpunkt = [];
-};
+}
 
 Optimizer.prototype.optimize = function(turnPts)
 {
