@@ -131,11 +131,11 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 
 void WebMapFlight::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
 {
-	QString code = "fl_setTrack('%1', '%2', %3, '%4');";
+	QString code = "fl_setTrack('%1');";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(encPoints).arg(encLevels).arg(weight).arg(color));
+	pFrame->evaluateJavaScript(code.arg(encPoints));
 }
 
 void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList)
