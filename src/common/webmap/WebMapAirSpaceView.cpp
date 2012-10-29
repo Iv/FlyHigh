@@ -33,6 +33,7 @@ WebMapAirSpaceView::WebMapAirSpaceView(const QString &name)
 	m_pAirSpaceList = NULL;
 	m_pWebMap = new WebMap(this, WebMap::MapAirSpace);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
+	connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
   connect(m_pWebMap, SIGNAL(lineChanged(int)), this, SIGNAL(airSpaceChanged(int)));
 }
@@ -44,7 +45,7 @@ WebMapAirSpaceView::~WebMapAirSpaceView()
 
 void WebMapAirSpaceView::loadMap()
 {
-	m_pWebMap->loadUrl("qrc:/airspace.html");
+	m_pWebMap->loadUrl("qrc:/airspace/airspace.html");
 }
 
 void WebMapAirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList)
@@ -62,34 +63,29 @@ void WebMapAirSpaceView::resizeEvent(QResizeEvent *pEvent)
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
 }
 
-void WebMapAirSpaceView::setAirSpaceList()
+void WebMapAirSpaceView::mapReady()
+{
+	m_pWebMap->getAirSpace()->init();
+}
+
+void WebMapAirSpaceView::appReady()
 {
   AirSpace *pAirSpace;
 	int airSpaceNr;
 	int airSpaceListSize;
 
-	airSpaceListSize = m_pAirSpaceList->size();
+  m_pWebMap->setSize(width(), height());
 
-	if(airSpaceListSize > 0)
-	{
-		for(airSpaceNr=0; airSpaceNr<airSpaceListSize; airSpaceNr++)
-		{
-		  pAirSpace = m_pAirSpaceList->at(airSpaceNr);
-		  m_pWebMap->getAirSpace()->pushAirSpace(pAirSpace);
-		}
-	}
-}
+  if(m_pAirSpaceList != NULL)
+  {
+    airSpaceListSize = m_pAirSpaceList->size();
 
-void WebMapAirSpaceView::mapReady()
-{
-	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
-
-	if(m_pAirSpaceList != NULL)
-	{
-		setAirSpaceList();
-	}
-
-	m_pWebMap->getAirSpace()->init();
+    for(airSpaceNr=0; airSpaceNr<airSpaceListSize; airSpaceNr++)
+    {
+      pAirSpace = m_pAirSpaceList->at(airSpaceNr);
+      m_pWebMap->getAirSpace()->pushAirSpace(pAirSpace);
+    }
+  }
 }
 
 void WebMapAirSpaceView::finished(int res)
