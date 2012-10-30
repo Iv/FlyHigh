@@ -22,21 +22,34 @@
  ***************************************************************************/
 
 wm_include('js/flight.js');
-wm_include('js/plot.js');
+// wm_include('js/plot.js');
 wm_include('../route/js/fai.js');
 wm_include('../route/js/leg.js');
 wm_include('../route/js/optimizer.js');
 wm_include('../route/js/route.js');
 wm_include('../route/js/turnpt.js');
 wm_include('../route/js/infobox.js');
+wm_include('../lib/plot/context.js');
+wm_include('../lib/plot/cursor.js');
+wm_include('../lib/plot/legend.js');
+wm_include('../lib/plot/plot.js');
+wm_include('../lib/plot/value.js');
+
+/*
 wm_include('../lib/chartFX/chart.js');
 wm_include('../lib/chartFX/excanvas.js');
 wm_include('../lib/chartFX/canvaschartpainter.js');
+*/
 
 var route = null;
 var map = null;
 var flight = null;
 var plot = null;
+
+// tbrm
+var data = [];
+var sogs = [];
+var varios = [];
 
 function fl_init(width, height)
 {
@@ -67,8 +80,39 @@ function fl_init(width, height)
 			route = new Route(map);
 			route.setChangeCallback(routeChanged);
 
+/*
 			plot = new Plot(map);
 			plot.setFlight(flight);
+*/
+
+var startTime = Date.UTC(2012, 7, 18, 8, 5, 11) / 1000;
+var nr;
+var nofData;
+var time = 0;
+var alt = 600;
+var prevAlt;
+var duration = 36000;
+var interval = 5;
+
+prevAlt = alt;
+nofData = (duration / interval);
+
+for(nr=0; nr<nofData; nr++)
+{
+	time = (startTime + (nr * interval));
+	alt += (Math.random() - 0.5) * 15;
+	data.push({valueX: time, valueY: alt});
+	sogs.push(37 + (Math.random() - 0.5) * 10);
+	varios.push((alt - prevAlt) / interval);
+	prevAlt = alt;
+}
+
+			plot = new Plot(document.getElementById('plot'));
+			plot.adjustMinMaxX(data);
+			plot.setMinMaxY(0, 1100);
+			plot.setValueLabels(["TIME", "ALT", "SOG", "VARIO"]);
+//			plot.setUpdateCursorPosCb(updateCursorPos);
+			plot.plot(data);
 
 			wm_emitAppReady();
 		}
@@ -113,9 +157,18 @@ function fl_setTrack(encTrack)
 
 function fl_setPlotSize(width, height)
 {
-	if(plot !== null)
+	var left;
+	var top;
+	var mapDiv;
+
+	if((map !== null) && (plot !== null))
 	{
-		plot.setSize(width, height);
+		mapDiv = document.getElementById('map');
+		
+		left = 280; // mapDiv.style.left;
+		top = 660; // (mapDiv.style.top + mapDiv.style.height);
+// alert("left=" + left + " top=" + top);
+		plot.setGeometry(left, top, width, height);
 	}
 }
 
@@ -143,7 +196,7 @@ function fl_setVario(varioList)
 
 function fl_showPlot()
 {
-	plot.show();
+//	plot.show();
 }
 
 function fl_setOk(ok)
