@@ -19,11 +19,12 @@
      <file>flight/js/iflight.js</file>
      <file>flight/js/flight.js</file>
      <file>flight/js/plot.js</file>
-     <file>lib/chartFX/canvaschart.css</file>
-     <file>lib/chartFX/canvaschartpainter.js</file>
-     <file>lib/chartFX/chart.js</file>
-     <file>lib/chartFX/excanvas.js</file>
      <file>lib/markerclusterer.js</file>
+     <file>lib/plot/context.js</file>
+     <file>lib/plot/cursor.js</file>
+     <file>lib/plot/legend.js</file>
+     <file>lib/plot/plot.js</file>
+     <file>lib/plot/value.js</file>
      <file>js/flight.js</file>
      <file>js/webmap.js</file>
      <file>js/jscoord-1.1.1.js</file>
