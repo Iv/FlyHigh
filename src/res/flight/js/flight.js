@@ -72,6 +72,18 @@ Flight.prototype.getTrackPts = function()
 	return this.trackPts;
 };
 
+Flight.prototype.getTrackPtAt = function(index)
+{
+	var trackPt = null;
+
+	if((this.trackPts !== null) && (index < this.trackPts.length))
+	{
+		trackPt = this.trackPts[index];
+	}
+
+	return trackPt;
+};
+
 Flight.prototype.setSogList = function(sogList)
 {
 	this.sogList = sogList;

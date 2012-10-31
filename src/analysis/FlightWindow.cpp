@@ -1066,7 +1066,7 @@ void FlightWindow::showOnWebMap()
 				pView->setLocation(m_flightList[row].startPt().name());
 
 				// set flight points
-				pView->setFlightPointList(igcParser.flightPointList());
+				pView->setFlightPointList(m_flightList[row].date(), igcParser.flightPointList());
 
 				// optimize flight
 				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);

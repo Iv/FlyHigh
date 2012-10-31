@@ -11,8 +11,15 @@ function Cursor(parentDiv, base, id, width)
 	this.pos = 0;
 	this.width = width;
 	this.updatePosCb = null;
+	this.updateClickCb = null;
 
-	base.getCanvas().addEventListener('mousemove', function(event) {cu_mousemove(event, cursor);}, false);
+	base.getParent().addEventListener('mousemove', function(event) {cu_mousemove(event, cursor);}, false);
+	base.getParent().addEventListener('mousedown', function(event) {cu_mousedown(event, cursor);}, false);
+}
+
+function on_canvas_click(ev)
+{
+	alert("click");
 }
 
 Cursor.prototype.resize = function()
@@ -55,6 +62,11 @@ Cursor.prototype.setUpdatePosCb = function(updatePosCb)
 	this.updatePosCb = updatePosCb;
 };
 
+Cursor.prototype.setUpdateClickCb = function(updateClickCb)
+{
+	this.updateClickCb = updateClickCb;
+};
+
 Cursor.prototype.getBase = function()
 {
 	return this.base;
@@ -79,13 +91,46 @@ Cursor.prototype.createCursor = function(id, left, top, width, height)
 
 function cu_mousemove(event, cursor)
 {
-	var MysteriousOffset = 7;
 	var pos;
 
-	pos = (event.pageX - cursor.parentDiv.offsetLeft - cursor.getBase().getLeft()) - MysteriousOffset;
+	pos = getCursorPos(event, cursor);
 
-	if((pos >= 0) && (pos < cursor.getBase().getWidth()))
+	if(pos >= 0)
 	{
 		cursor.setPos(pos);
 	}
+}
+
+function cu_mousedown(event, cursor)
+{
+	var pos;
+
+	if(cursor.updateClickCb !== null)
+	{
+		pos = getCursorPos(event, cursor);
+
+		if(pos >= 0)
+		{
+			cursor.updateClickCb(pos);
+		}
+	}
+}
+
+function getCursorPos(event, cursor)
+{
+	var MysteriousOffset = 7;
+	var posX;
+	var posY;
+	var pos = -1;
+
+	posX = (event.pageX - cursor.parentDiv.offsetLeft - cursor.getBase().getLeft()) - MysteriousOffset;
+	posY = (event.pageY - cursor.parentDiv.offsetTop - cursor.getBase().getTop() - cursor.base.getBorder());
+
+	if(((posX >= 0) && (posX < cursor.getBase().getWidth())) &&
+		((posY >= 0) && (posY < cursor.getBase().getHeight())))
+	{
+		pos = posX;
+	}
+
+	return pos;
 }
