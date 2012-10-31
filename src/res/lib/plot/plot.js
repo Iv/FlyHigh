@@ -16,7 +16,7 @@ function Plot(plotDiv)
 	this.width = this.plotDiv.getAttribute('width');
 	this.height = this.plotDiv.getAttribute('height');
 	this.labelHeightX = 18;
-	this.labelWidthY = 100;
+	this.labelWidthY = 40;
 	this.minValueX = 0;
 	this.maxValueX = 0;
 	this.minValueY = 0;
@@ -72,48 +72,50 @@ Plot.prototype.setGeometry = function(left, top, width, height)
 	this.plotDiv.style.top = top + 'px';
 	this.plotDiv.style.width = width + 'px';
 	this.plotDiv.style.height = height + 'px';
-this.plotDiv.style.backgroundColor = 'red';
 
 	// base
 	x = this.labelWidthY;
 	y = this.labelHeightX;
-	w = (width - this.labelWidthY);
-	h = (height - 2 * this.labelHeightX);
+	w = (width - this.labelWidthY - 2 * this.border);
+	h = (height - 2 * this.labelHeightX - this.border);
 	this.base.setGeometry(x, y, w, h);
 
 	// cursor
 	this.cursor.resize();
 
-	// x-axis
+	// x-axis legend
 	x = this.labelWidthY + this.border;
 	y = (height - this.labelHeightX + this.border);
-	w = (width - this.labelWidthY);
+	w = (width - this.labelWidthY - 2 * this.border);
 	h = this.labelHeightX;
 	this.horLegend.setGeometry(x, y, w, h);
 
-	// y-axis
+	// y-axis legend
 	x = 0;
 	y = this.border + this.labelHeightX;
 	w = this.labelWidthY - this.border;
-	h = (height - 2 * this.labelHeightX);
+	h = (height - 2 * this.labelHeightX - 2 * this.border);
 	this.verLegend.setGeometry(x, y, w, h);
 	
 	// value
 	x = this.labelWidthY + this.border;
 	y = 0;
-	w = (width - this.labelWidthY);
+	w = (width - this.labelWidthY - 2 * this.border);
 	h = this.labelHeightX;
 	this.value.setGeometry(x, y, w, h);
+
+	// redraw
+	this.plot(this.data);
 };
 
 Plot.prototype.getWidth = function()
 {
-	return this.plotDiv.style.width;
+	return this.width;
 };
 
 Plot.prototype.getHeight = function()
 {
-	return this.plotDiv.style.height;
+	return this.height;
 };
 
 Plot.prototype.getPlotAreaWidth = function()
@@ -160,9 +162,13 @@ Plot.prototype.setValues = function(values)
 Plot.prototype.plot = function(data)
 {
 	this.data = data;
-	this.drawGrid(data);
-	this.drawData(data);
-	this.cursor.setPos(0);
+
+	if(data !== null)
+	{
+		this.drawGrid(data);
+		this.drawData(data);
+		this.cursor.setPos(0);
+	}
 };
 
 Plot.prototype.drawData = function(data)
@@ -260,12 +266,16 @@ Plot.prototype.drawGrid = function(data)
 	{
 		incValue = 500;
 	}
-	else if(delta < 4000)
+	else if(delta < 5000)
 	{
 		incValue = 1000;
 	}
-
-	value = (this.minValueY + incValue);
+	else
+	{
+		incValue = 2000;
+	}
+	
+	value = this.minValueY + incValue;
 	convFactor = this.base.getHeight() / delta;
 	lines = [];
 	labels = [];

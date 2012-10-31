@@ -19,8 +19,8 @@ Context.prototype.setGeometry = function(left, top, width, height)
 	this.height = height;
 	this.canvas.style.left = left + 'px';
 	this.canvas.style.top = top + 'px';
-	this.canvas.style.width = width + 'px';
-	this.canvas.style.height = height + 'px';
+	this.canvas.width = width;
+	this.canvas.height = height;
 };
 
 Context.prototype.getLeft = function()
@@ -63,7 +63,7 @@ Context.prototype.createCanvas = function(id, left, top, width, height, border)
 	canvas.style.top = top;
 	canvas.style.left = left;
 	canvas.style.border = border + "px solid black";
-canvas.style.backgroundColor = 'white';
+	canvas.style.backgroundColor = 'white';
 	canvas.width = width;
 	canvas.height = height;
 	this.parentDiv.appendChild(canvas);

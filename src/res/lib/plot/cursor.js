@@ -25,7 +25,7 @@ Cursor.prototype.resize = function()
 	
 	div = this.cursorDiv;
 	left = this.getBase().getBorder();
-	top = 0;
+	top = this.getBase().getBorder();
 	width = this.width;
 	height = this.getBase().getHeight();
 	div.style.left = (left + this.getBase().getLeft() + this.getBase().getBorder()) + 'px';
@@ -37,7 +37,7 @@ Cursor.prototype.resize = function()
 Cursor.prototype.setPos = function(pos)
 {
 	this.pos = pos;
-	this.cursorDiv.style.left = (this.getBase().getLeft() + this.getBase().getBorder() + pos) + 'px';
+	this.cursorDiv.style.left = (this.getBase().getLeft() + pos + this.getBase().getBorder()) + 'px';
 
 	if(this.updatePosCb !== null)
 	{
@@ -79,11 +79,12 @@ Cursor.prototype.createCursor = function(id, left, top, width, height)
 
 function cu_mousemove(event, cursor)
 {
+	var MysteriousOffset = 7;
 	var pos;
 
-	pos = (event.pageX - cursor.parentDiv.offsetLeft - cursor.getBase().getLeft());
+	pos = (event.pageX - cursor.parentDiv.offsetLeft - cursor.getBase().getLeft()) - MysteriousOffset;
 
-	if(pos < cursor.getBase().getWidth())
+	if((pos >= 0) && (pos < cursor.getBase().getWidth()))
 	{
 		cursor.setPos(pos);
 	}
