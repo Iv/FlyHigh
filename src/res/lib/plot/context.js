@@ -48,6 +48,11 @@ Context.prototype.getBorder = function()
 	return this.border;
 };
 
+Context.prototype.getParent = function()
+{
+	return this.parentDiv;
+};
+
 Context.prototype.getCanvas = function()
 {
 	return this.canvas;

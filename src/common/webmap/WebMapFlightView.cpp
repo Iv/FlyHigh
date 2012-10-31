@@ -56,8 +56,9 @@ void WebMapFlightView::setLocation(const QString &location)
 	m_location = location;
 }
 
-void WebMapFlightView::setFlightPointList(const FlightPointList &fpList)
+void WebMapFlightView::setFlightPointList(const QDate &date, const FlightPointList &fpList)
 {
+  m_date = date;
 	m_fpList = fpList;
 }
 
@@ -92,7 +93,7 @@ void WebMapFlightView::appReady()
 
   m_pWebMap->getRoute()->setName(m_location);
 	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
-	m_pWebMap->getFlight()->setFlightPointList(m_fpList);
+	m_pWebMap->getFlight()->setFlightPointList(m_date, m_fpList);
 	m_pWebMap->getFlight()->setSogList(m_sogList);
 	m_pWebMap->getFlight()->setVarioList(m_varioList);
 	m_pWebMap->getFlight()->showPlot();

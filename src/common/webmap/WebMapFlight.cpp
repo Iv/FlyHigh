@@ -46,7 +46,7 @@ void WebMapFlight::init()
 	pFrame->evaluateJavaScript(code);
 }
 
-void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
+void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &fpList)
 {
 	QString code;
 	QWebFrame *pFrame;
@@ -57,8 +57,6 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 	QString value = "%1";
 	QString strTime = "";
 	QString strAlt = "";
-	QString strLat = "";
-	QString strLon = "";
 	QTime time;
 	WayPoint wp;
 	uint fpNr;
@@ -67,6 +65,10 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 	uint duration;
 	int minAlt;
 	int maxAlt;
+	int epochDate;
+	int epochTime;
+	int secsOfDay;
+	int prevSecsOfDay;
 	bool first = true;
 
 	fpListSize = fpList.size();
@@ -79,6 +81,8 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 		start = time.hour() * 3600 + time.minute() * 60 + time.second();
 		time = fpList.at(fpListSize - 1).time;
 		duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
+    epochDate = QDateTime(date).toTime_t();
+    prevSecsOfDay = start;
 
 		for(fpNr=0; fpNr<fpListSize; fpNr++)
 		{
@@ -88,27 +92,28 @@ void WebMapFlight::setFlightPointList(const FlightPointList &fpList)
 			{
 				strTime += ",";
 				strAlt += ",";
-				strLat += ",";
-				strLon += ",";
 			}
 
 			first = false;
 
 			// time
-			strTime += "'";
-			strTime += fpList.at(fpNr).time.toString("hh:mm:ss");
-			strTime += "'";
+      time = fpList.at(fpNr).time;
+			secsOfDay = time.hour() * 3600 + time.minute() * 60 + time.second();
 
-			wp = fpList.at(fpNr).wp;
+			if(secsOfDay < prevSecsOfDay)
+			{
+			  epochDate += 86400; // next day
+			}
+
+      epochTime = (epochDate + secsOfDay);
+      prevSecsOfDay = secsOfDay;
+			strTime += value.arg(epochTime);
 
 			// altitude
+      wp = fpList.at(fpNr).wp;
 			minAlt = qMin(wp.altitude(), minAlt);
 			maxAlt = qMax(wp.altitude(), maxAlt);
 			strAlt += value.arg(wp.altitude());
-
-			// lat, lon
-			strLat += value.arg(wp.latitude());
-			strLon += value.arg(wp.longitude());
 		}
 
 		minAlt = floor(minAlt / 100.0) * 100;

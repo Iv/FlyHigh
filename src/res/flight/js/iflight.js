@@ -22,7 +22,6 @@
  ***************************************************************************/
 
 wm_include('js/flight.js');
-// wm_include('js/plot.js');
 wm_include('../route/js/fai.js');
 wm_include('../route/js/leg.js');
 wm_include('../route/js/optimizer.js');
@@ -34,12 +33,6 @@ wm_include('../lib/plot/cursor.js');
 wm_include('../lib/plot/legend.js');
 wm_include('../lib/plot/plot.js');
 wm_include('../lib/plot/value.js');
-
-/*
-wm_include('../lib/chartFX/chart.js');
-wm_include('../lib/chartFX/excanvas.js');
-wm_include('../lib/chartFX/canvaschartpainter.js');
-*/
 
 var route = null;
 var map = null;
@@ -80,38 +73,10 @@ function fl_init(width, height)
 			route = new Route(map);
 			route.setChangeCallback(routeChanged);
 
-/*
-			plot = new Plot(map);
-			plot.setFlight(flight);
-*/
-
-var startTime = Date.UTC(2012, 7, 18, 8, 5, 11) / 1000;
-var nr;
-var nofData;
-var time = 0;
-var alt = 600;
-var prevAlt;
-var duration = 36000;
-var interval = 5;
-
-prevAlt = alt;
-nofData = (duration / interval);
-
-for(nr=0; nr<nofData; nr++)
-{
-	time = (startTime + (nr * interval));
-	alt += (Math.random() - 0.5) * 15;
-	data.push({valueX: time, valueY: alt});
-	sogs.push(37 + (Math.random() - 0.5) * 10);
-	varios.push((alt - prevAlt) / interval);
-	prevAlt = alt;
-}
-
 			plot = new Plot(document.getElementById('plot'));
-			plot.adjustMinMaxX(data);
-			plot.setMinMaxY(0, 1500);
 			plot.setValueLabels(["TIME", "ALT", "SOG", "VARIO"]);
 			plot.setUpdateCursorPosCb(updateCursorPos);
+			plot.setUpdateCursorClickCb(updateCursorClick);
 
 			wm_emitAppReady();
 		}
@@ -195,8 +160,21 @@ function fl_setVario(varioList)
 
 function fl_showPlot()
 {
-//	plot.show();
+	var index;
+	var maxIndex;
+
+	maxIndex = flight.getTimeList().length;
+	data = [];
+
+	for(index=0; index<maxIndex; index++)
+	{
+		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index)});
+	}
+
+	plot.adjustMinMaxX(data);
+	plot.setMinMaxY(0, flight.getMaxAlt());
 	plot.plot(data);
+	flight.moveGliderTo(0);
 }
 
 function fl_setOk(ok)
@@ -299,8 +277,9 @@ function updateCursorPos(pos)
 	var sog;
 	var vario;
 
-	index = Math.round(pos * data.length / plot.getPlotAreaWidth());
-	date = new Date(data[index].valueX * 1000);
+	// legend-values
+	index = Math.round(pos * flight.getTimeList().length / plot.getPlotAreaWidth());
+	date = new Date(flight.getTimeAt(index) * 1000);
 	time = date.getHours() + ":";
 
 	if(date.getMinutes() < 10)
@@ -309,9 +288,21 @@ function updateCursorPos(pos)
 	}
 
 	time += date.getMinutes();
-
-	alt = data[index].valueY.toFixed(0) + " m";
-	sog = sogs[index].toFixed(1) + " km/h";
-	vario = varios[index].toFixed(1) + " m/s";
+	alt = flight.getAltAt(index).toFixed(0) + " m";
+	sog = flight.getSogAt(index).toFixed(1) + " km/h";
+	vario = flight.getVarioAt(index).toFixed(1) + " m/s";
 	plot.setValues([time, alt, sog, vario]);
+
+	// glider
+	index = Math.round(pos * flight.getTrackPts().length / plot.getPlotAreaWidth());
+	flight.moveGliderTo(index);
+}
+
+function updateCursorClick(pos)
+{
+	var index;
+
+	index = Math.round(pos * flight.getTrackPts().length / plot.getPlotAreaWidth());
+	map.setCenter(flight.getTrackPtAt(index));
+	map.setZoom(14);
 }

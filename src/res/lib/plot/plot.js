@@ -113,6 +113,11 @@ Plot.prototype.setUpdateCursorPosCb = function(updatePosCb)
 	this.cursor.setUpdatePosCb(updatePosCb);
 };
 
+Plot.prototype.setUpdateCursorClickCb = function(updateClickCb)
+{
+	this.cursor.setUpdateClickCb(updateClickCb);
+};
+
 Plot.prototype.setValueLabels = function(labels)
 {
 	this.value.setLabels(labels);
