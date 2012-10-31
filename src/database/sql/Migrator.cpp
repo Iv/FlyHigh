@@ -173,7 +173,23 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 		res = false;
 	}
 
-	if (res && !copyTable(tr("Copy Gliders..."),
+  if (res && !copyTable(tr("Copy AirSpaces..."),
+                 "migrate-read-airspaces",
+                 "migrate-write-airspaces"))
+  {
+    err =  tr("Error while migrating AirSpaces");
+    res = false;
+  }
+
+  if (res && !copyTable(tr("Copy AirSpaceItems..."),
+                 "migrate-read-airspaceitems",
+                 "migrate-write-airspaceitems"))
+  {
+    err =  tr("Error while migrating AirSpaceItems");
+    res = false;
+  }
+
+  if (res && !copyTable(tr("Copy Gliders..."),
 								 "migrate-read-gliders",
 								 "migrate-write-gliders"))
 	{
