@@ -34,7 +34,8 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_3_2 = QDateTime(QDate(
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_5_0 = QDateTime(QDate(2006, 11, 14), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(2011,  1, 18), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_2 = QDateTime(QDate(2011,  2, 20), QTime( 0, 0));
-const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_2 = QDateTime(QDate(2011,  12, 1), QTime( 0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_2 = QDateTime(QDate(2011, 12,  1), QTime( 0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_5 = QDateTime(QDate(2012, 10, 31), QTime( 0, 0));
 // don't forget to replace new version string on setup-set-lastmodified statement!
 
 Upgrade::Upgrade(QSqlDatabase DB)
@@ -109,10 +110,12 @@ bool Upgrade::setup(const DatabaseParameters& params)
 	m_pExecutor->executeQuery("setup-create-routeitems", db());
 	m_pExecutor->executeQuery("setup-create-servicings", db());
 	m_pExecutor->executeQuery("setup-create-lastmodified", db());
+  m_pExecutor->executeQuery("setup-create-airspaces", db());
+  m_pExecutor->executeQuery("setup-create-airspaceitems", db());
 
 	// finalize db setup
 	replacements.clear();
-	replacements["%versiontimestamp"] = DataBaseVersion_0_9_2.toString("yyyy-MM-dd hh:mm:ss");
+  replacements["%versiontimestamp"] = DataBaseVersion_0_9_5.toString("yyyy-MM-dd hh:mm:ss");
 	m_pExecutor->executeQuery("setup-set-lastmodified",
 														QueryExecutor::TBindMap(),
 														replacements,
@@ -156,6 +159,14 @@ bool Upgrade::upgrade()
 	  m_pExecutor->executeQuery("upgrade-waypoints-add-type", db());
 		setDataBaseVersion(DataBaseVersion_0_9_2);
 	}
+
+  if(dataBaseVersion() < DataBaseVersion_0_9_5)
+  {
+    m_pExecutor->executeQuery("setup-create-airspaces", db());
+    m_pExecutor->executeQuery("setup-create-airspaceitems", db());
+    DataBaseSub::setLastModified("AirSpaces");
+    setDataBaseVersion(DataBaseVersion_0_9_5);
+  }
 
 	return res;
 }

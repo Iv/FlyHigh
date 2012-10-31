@@ -90,6 +90,18 @@ void QueryStore::init()
 	addQuery("migrate-write-flights",
 					 "common",
 					 "INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile) VALUES (:Id, :Number, :PilotId, :Date, :Time, :GliderId, :StartPtId, :LandPtId, :Duration, :Distance, :Comment, :IGCFile)");
+  addQuery("migrate-read-airspaceitems",
+           "common",
+           "SELECT Id, AirSpaceId, Longitude, Latitude FROM AirSpaceItems");
+  addQuery("migrate-write-airspaceitems",
+           "common",
+           "INSERT INTO AirSpaceItems (Id, AirSpaceId, Longitude, Latitude) VALUES (:Id, :AirSpaceId, :Longitude, :Latitude)");
+  addQuery("migrate-read-airspaces",
+           "common",
+           "SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces");
+  addQuery("migrate-write-airspaces",
+           "common",
+           "INSERT INTO AirSpaces (Id, Name, Class, Lower, Upper, Comment) VALUES (:Id, :Name, :Class, :Lower, :Upper, :Comment)");
 
 	// multiple statements separated by ';' does not work with sqlite: http://bugreports.qt.nokia.com/browse/QTBUG-8689
 	// therefore we need to use a list of statements
@@ -101,7 +113,9 @@ void QueryStore::init()
 								"DROP TABLE IF EXISTS Pilots" <<
 								"DROP TABLE IF EXISTS Servicings" <<
 								"DROP TABLE IF EXISTS Gliders" <<
-								"DROP TABLE IF EXISTS WayPoints";
+                "DROP TABLE IF EXISTS WayPoints" <<
+                "DROP TABLE IF EXISTS AirSpaceItems" <<
+                "DROP TABLE IF EXISTS AirSpaces";
 	addQuery("migrate-drop-tables",
 					 "common",
 					 droptables);
@@ -314,6 +328,52 @@ void QueryStore::init()
 					 "`Name` VARCHAR(16) NOT NULL,"
 					 "`Time` datetime NOT NULL)");
 
+  addQuery("setup-create-airspaces",
+           "QMYSQL",
+           "CREATE TABLE `AirSpaces`"
+           "("
+           "`Id` INT NULL AUTO_INCREMENT,"
+           "`Name` VARCHAR(16) NOT NULL,"
+           "`Class` VARCHAR(1) NOT NULL,"
+           "`Lower` INT,"
+           "`Upper` INT,"
+           "`Comment` VARCHAR(500) DEFAULT '',"
+           "PRIMARY KEY(`Id`),"
+           "UNIQUE KEY (`Name`)"
+           ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+  addQuery("setup-create-airspaces",
+           "QSQLITE",
+           "CREATE TABLE `AirSpaces`"
+           "("
+           "`Id` INTEGER PRIMARY KEY AUTOINCREMENT,"
+           "`Name` VARCHAR(16) NOT NULL,"
+           "`Class` VARCHAR(1) NOT NULL,"
+           "`Lower` INTEGER,"
+           "`Upper` INTEGER,"
+           "`Comment` VARCHAR(500) DEFAULT '')");
+
+  addQuery("setup-create-airspaceitems",
+           "QMYSQL",
+           "CREATE TABLE `AirSpaceItems`"
+           "("
+           "`Id` INT NULL AUTO_INCREMENT,"
+           "`AirSpaceId` INT NOT NULL,"
+           "`Longitude` FLOAT,"
+           "`Latitude` FLOAT,"
+           "PRIMARY KEY(`Id`),"
+           "FOREIGN KEY(`AirSpaceId`) REFERENCES AirSpaces(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE"
+           ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+  addQuery("setup-create-airspaceitems",
+           "QSQLITE",
+           "CREATE TABLE `AirSpaceItems`"
+           "("
+           "`Id` INTEGER PRIMARY KEY AUTOINCREMENT,"
+           "`AirSpaceId` INTEGER NOT NULL,"
+           "`Longitude` FLOAT,"
+           "`Latitude` FLOAT,"
+           "CONSTRAINT AirSpaceItems_fk1 FOREIGN KEY(`AirSpaceId`)"
+           " REFERENCES `AirSpaces` (`Id`) ON DELETE RESTRICT ON UPDATE CASCADE)");
+
 	addQuery("setup-create-db",
 					 "QMYSQL",
 					 "CREATE DATABASE IF NOT EXISTS `%dbname` DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
@@ -348,7 +408,8 @@ void QueryStore::init()
 									 "(4, 'Servicings',      '1970-01-01 01:01:00'),"
 									 "(5, 'WayPoints',       '1970-01-01 01:01:00'),"
 									 "(6, 'DataBaseVersion', '%versiontimestamp'),"
-									 "(7, 'Routes',          '1970-01-01 01:01:00')");
+                   "(7, 'Routes',          '1970-01-01 01:01:00'),"
+                   "(8, 'AirSpaces',       '1970-01-01 01:01:00')");
 	QStringList setlastmod;
 	setlastmod << "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (1, 'Pilots',          '1970-01-01 01:01:00')" <<
 								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (2, 'Flights',         '1970-01-01 01:01:00')" <<
@@ -356,8 +417,9 @@ void QueryStore::init()
 								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (4, 'Servicings',      '1970-01-01 01:01:00')" <<
 								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (5, 'WayPoints',       '1970-01-01 01:01:00')" <<
 								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (6, 'DataBaseVersion', '%versiontimestamp'  )" <<
-								"INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (7, 'Routes',          '1970-01-01 01:01:00')";
-	addQuery("setup-set-lastmodified",
+                "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (7, 'Routes',          '1970-01-01 01:01:00')" <<
+                "INSERT INTO `LastModified` (`Id`, `Name`, `Time`) VALUES (8, 'AirSpaces',       '1970-01-01 01:01:00')";
+  addQuery("setup-set-lastmodified",
 					 "QSQLITE",
 					 setlastmod);
 
