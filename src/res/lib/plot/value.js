@@ -1,14 +1,12 @@
-function Value(parentDiv, id, left, top, width, height)
+function Value(parentDiv, id)
 {
 	this.parentDiv = parentDiv;
 	this.id = id;
-	this.left = left;
-	this.top = top;
-	this.width = width;
-	this.height = height;
-	this.horizontal = (width > height);
-	this.labels = [];
-	this.legendDiv = this.createEmptyLegend(id, left, top, width, height);
+	this.left = 0;
+	this.top = 0;
+	this.width = 0;
+	this.height = 0;
+	this.legendDiv = this.createEmptyLegend(id);
 	this.labelH = 15;
 	this.divs = [];
 	this.labels = null;
@@ -112,17 +110,13 @@ Value.prototype.setValues = function(values)
 	}
 };
 
-Value.prototype.createEmptyLegend = function(id, left, top, width, height)
+Value.prototype.createEmptyLegend = function(id)
 {
 	var div;
 
 	div = document.createElement('div');
 	div.setAttribute("id", id);
 	div.style.position = 'absolute';
-	div.style.top = top;
-	div.style.left = left;
-	div.style.width = width;
-	div.style.height = height;
 	this.parentDiv.appendChild(div);
 
 	return div;
