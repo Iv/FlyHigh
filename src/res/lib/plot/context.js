@@ -1,13 +1,13 @@
-function Context(parentDiv, id, left, top, width, height, border)
+function Context(parentDiv, id, border)
 {
 	this.parentDiv = parentDiv;
 	this.id = id;
-	this.left = left;
-	this.top = top;
-	this.width = width;
-	this.height = height;
+	this.left = 0;
+	this.top = 0;
+	this.width = 0;
+	this.height = 0;
 	this.border = border;
-	this.canvas = this.createCanvas(id, left, top, width, height, border);
+	this.canvas = this.createCanvas(id, border);
 	this.context = this.canvas.getContext('2d');
 }
 
@@ -53,19 +53,15 @@ Context.prototype.getCanvas = function()
 	return this.canvas;
 };
 
-Context.prototype.createCanvas = function(id, left, top, width, height, border)
+Context.prototype.createCanvas = function(id, border)
 {
 	var canvas;
 
 	canvas = document.createElement('canvas');
 	canvas.setAttribute("id", id);
 	canvas.style.position = 'absolute';
-	canvas.style.top = top;
-	canvas.style.left = left;
 	canvas.style.border = border + "px solid black";
 	canvas.style.backgroundColor = 'white';
-	canvas.width = width;
-	canvas.height = height;
 	this.parentDiv.appendChild(canvas);
 
 	return canvas;

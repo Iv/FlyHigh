@@ -1,15 +1,5 @@
 function Plot(plotDiv)
 {
-	var plot = this;
-	var canvas;
-	var base;
-	var line = [];
-	var lines = [];
-	var x;
-	var y;
-	var width;
-	var height;
-
 	this.plotDiv = plotDiv;
 	this.top = 0;
 	this.left = 0;
@@ -24,37 +14,11 @@ function Plot(plotDiv)
 	this.border = 2;
 	this.data = null;
 
-	// base
-	x = 0; //this.labelWidthY;
-	y = 0; //this.labelHeightX;
-	width = 0; //(this.width - this.labelWidthY);
-	height = 0; // (this.height - 2 * this.labelHeightX);
-	this.base = new Context(plotDiv, 'base', x, y, width, height, this.border);
-
-	// x-axis
-	x = this.labelWidthY + this.border;
-	y = this.height - this.labelHeightX + this.border;
-	width = (this.width - this.labelWidthY);
-	height = this.labelHeightX;
-	this.horLegend = new Legend(plotDiv, 'horleg', x, y, width, height);
-
-	// y-axis
-	x = 0;
-	y = this.border + this.labelHeightX;
-	width = this.labelWidthY - this.border;
-	height = (this.getHeight() - 2 * this.labelHeightX);
-	this.verLegend = new Legend(plotDiv, 'verleg', x, y, width, height);
-
-	// cursor
-	width = 1;
-	this.cursor = new Cursor(plotDiv, this.base, 'cursor', width);
-
-	// value
-	x = this.labelWidthY + this.border;
-	y = 0;
-	width = (this.width - this.labelWidthY);
-	height = this.labelHeightX;
-	this.value = new Value(plotDiv, 'value', x, y, width, height);
+	this.base = new Context(plotDiv, 'base', this.border);
+	this.horLegend = new Legend(plotDiv, 'horleg');
+	this.verLegend = new Legend(plotDiv, 'verleg');
+	this.cursor = new Cursor(plotDiv, this.base, 'cursor', 1);
+	this.value = new Value(plotDiv, 'value');
 }
 
 Plot.prototype.setGeometry = function(left, top, width, height)
