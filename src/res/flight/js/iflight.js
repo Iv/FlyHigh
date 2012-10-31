@@ -109,10 +109,9 @@ for(nr=0; nr<nofData; nr++)
 
 			plot = new Plot(document.getElementById('plot'));
 			plot.adjustMinMaxX(data);
-			plot.setMinMaxY(0, 1100);
+			plot.setMinMaxY(0, 1500);
 			plot.setValueLabels(["TIME", "ALT", "SOG", "VARIO"]);
-//			plot.setUpdateCursorPosCb(updateCursorPos);
-			plot.plot(data);
+			plot.setUpdateCursorPosCb(updateCursorPos);
 
 			wm_emitAppReady();
 		}
@@ -197,6 +196,7 @@ function fl_setVario(varioList)
 function fl_showPlot()
 {
 //	plot.show();
+	plot.plot(data);
 }
 
 function fl_setOk(ok)
@@ -288,4 +288,30 @@ function updateDurationAndSpeed()
 	div.value = route.getSpeed().toFixed(1) + " km/h";
 	div = document.getElementById("duration");
 	div.value = route.getDuration().toFixed(1) + " h";
+}
+
+function updateCursorPos(pos)
+{
+	var index;
+	var date;
+	var time;
+	var alt;
+	var sog;
+	var vario;
+
+	index = Math.round(pos * data.length / plot.getPlotAreaWidth());
+	date = new Date(data[index].valueX * 1000);
+	time = date.getHours() + ":";
+
+	if(date.getMinutes() < 10)
+	{
+		time += '0';
+	}
+
+	time += date.getMinutes();
+
+	alt = data[index].valueY.toFixed(0) + " m";
+	sog = sogs[index].toFixed(1) + " km/h";
+	vario = varios[index].toFixed(1) + " m/s";
+	plot.setValues([time, alt, sog, vario]);
 }

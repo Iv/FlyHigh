@@ -143,22 +143,23 @@ void WebMap::setSize(uint width, uint height)
 	QWebFrame *pFrame;
 
 	pFrame = page()->mainFrame();
+	width = (width - LeftWidth - Margin);
 
 	switch(m_mapType)
 	{
 	  case MapFlight:
       code = "wm_setMapSize(%1, %2);";
-      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height - PlotHeight));
+      pFrame->evaluateJavaScript(code.arg(width).arg(height - PlotHeight));
       code = "fl_setPlotSize(%1, %2);";
-      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(PlotHeight));
+      pFrame->evaluateJavaScript(code.arg(width).arg(PlotHeight));
 	  break;
 	  case MapRoute:
       code = "wm_setMapSize(%1, %2);";
-      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+      pFrame->evaluateJavaScript(code.arg(width).arg(height));
 	  break;
 	  case MapWayPoint:
       code = "wm_setMapSize(%1, %2);";
-      pFrame->evaluateJavaScript(code.arg(width - LeftWidth).arg(height));
+      pFrame->evaluateJavaScript(code.arg(width).arg(height));
 	  break;
 	  case MapAirSpace:
 	  	code = "wm_setMapSize(%1, %2);";

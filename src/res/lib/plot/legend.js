@@ -64,7 +64,6 @@ Legend.prototype.setLabels = function(labels)
 			label = labels[labelNr];
 			div = document.createElement('div');
 			div.style.position = 'absolute';
-			div.style.top = 0;
 
 			// overlapping labels
 			if((label.pos + labelW / 2) > this.getWidth())
@@ -78,9 +77,10 @@ Legend.prototype.setLabels = function(labels)
 				pos = (label.pos - labelW / 2);
 			}
 
-			div.style.left = pos.toFixed(0);
-			div.style.width = labelW.toFixed(0);
-			div.style.height = labelH;
+			div.style.top = 0 + 'px';
+			div.style.left = pos.toFixed(0) + 'px';
+			div.style.width = labelW.toFixed(0) + 'px';
+			div.style.height = labelH + 'px';
 			div.innerHTML = label.value;
 			this.legendDiv.appendChild(div);
 			this.divs.push(div);
@@ -96,10 +96,10 @@ Legend.prototype.setLabels = function(labels)
 			label = labels[labelNr];
 			div = document.createElement('div');
 			div.style.position = 'absolute';
-			div.style.top = (label.pos - labelH / 2).toFixed(0);
-			div.style.left = 0;
-			div.style.width = labelW;
-			div.style.height = labelH;
+			div.style.top = (label.pos - labelH / 2).toFixed(0) + 'px';
+			div.style.left = 0  + 'px';
+			div.style.width = labelW + 'px';
+			div.style.height = labelH + 'px';
 			div.style.textAlign = 'right';
 			div.innerHTML = label.value;
 			this.legendDiv.appendChild(div);
@@ -119,7 +119,6 @@ Legend.prototype.createEmptyLegend = function(id, left, top, width, height)
 	div.style.left = left;
 	div.style.width = width;
 	div.style.height = height;
-div.style.backgroundColor = 'blue';
 	this.parentDiv.appendChild(div);
 
 	return div;

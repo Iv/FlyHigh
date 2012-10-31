@@ -78,7 +78,7 @@ class WebMap: public QWebView
 		void netRequest(int id, const QString &request, const QString &callback);
 
 	private:
-		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140};
+		enum {ProgressW = 200, ProgressH = 15, LeftWidth = 280, PlotHeight = 140, Margin = 5};
 
 		typedef struct NetRequest
 		{

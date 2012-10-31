@@ -10,12 +10,15 @@ function Value(parentDiv, id, left, top, width, height)
 	this.labels = [];
 	this.legendDiv = this.createEmptyLegend(id, left, top, width, height);
 	this.labelH = 15;
-	this.divList = [];
+	this.divs = [];
 	this.labels = null;
 }
 
 Value.prototype.setGeometry = function(left, top, width, height)
 {
+	var labelW;
+	var pos = 0;
+
 	this.left = left;
 	this.top = top;
 	this.width = width;
@@ -24,6 +27,22 @@ Value.prototype.setGeometry = function(left, top, width, height)
 	this.legendDiv.style.top = top + 'px';
 	this.legendDiv.style.width = width + 'px';
 	this.legendDiv.style.height = height + 'px';
+
+	// resize labels
+	if(this.divs.length > 0)
+	{
+		labelW = (width / this.divs.length);
+
+		for(nr=0; nr<this.divs.length; nr++)
+		{
+			div = this.divs[nr];
+			div.style.top = 0 + 'px';
+			div.style.left = pos.toFixed(0) + 'px';
+			div.style.width = labelW.toFixed(0) + 'px';
+			div.style.height = height + 'px';
+			pos += labelW;
+		}
+	}
 };
 
 Value.prototype.getWidth = function()
@@ -45,7 +64,14 @@ Value.prototype.setLabels = function(labels)
 	var nr;
 	var pos = 0;
 
-	this.divList = [];
+	// clean labels
+	for(nr=0; nr<this.divs.length; nr++)
+	{
+		div = this.divs[nr];
+		this.legendDiv.removeChild(div);
+	}
+
+	this.divs = [];
 	this.labels = labels;
 	labelW = (this.getWidth() / labels.length);
 	labelH = this.getHeight();
@@ -61,7 +87,7 @@ Value.prototype.setLabels = function(labels)
 		div.style.height = labelH;
 		div.style.textAlign = 'left';
 		this.legendDiv.appendChild(div);
-		this.divList.push(div);
+		this.divs.push(div);
 		pos += labelW;
 	}
 };
@@ -72,7 +98,7 @@ Value.prototype.setValues = function(values)
 	var nr;
 	var length;
 
-	length = this.divList.length;
+	length = this.divs.length;
 
 	if(length > values.length)
 	{
@@ -81,7 +107,7 @@ Value.prototype.setValues = function(values)
 
 	for(nr=0; nr<length; nr++)
 	{
-		div = this.divList[nr];
+		div = this.divs[nr];
 		div.innerHTML = this.labels[nr] + ": " + values[nr];
 	}
 };
@@ -97,7 +123,6 @@ Value.prototype.createEmptyLegend = function(id, left, top, width, height)
 	div.style.left = left;
 	div.style.width = width;
 	div.style.height = height;
-div.style.backgroundColor = 'green';
 	this.parentDiv.appendChild(div);
 
 	return div;
