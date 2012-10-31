@@ -72,7 +72,7 @@ void WebMapRouteView::mapReady()
 
 void WebMapRouteView::appReady()
 {
-  m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
+  m_pWebMap->setSize(width(), height());
 	m_pWebMap->getRoute()->setEditable(m_editable);
 
 	if(m_pRoute != NULL)
