@@ -53,6 +53,8 @@ class OpenAirFileParser
 		void parseCircle(char *pRecord, AirSpace *pAirspace);
 
 		bool parseCoordinate(char *pRecord, double &latitude, double &longitude);
+
+		bool parseAlt(const QString &str, float &alt);
 };
 
 #endif

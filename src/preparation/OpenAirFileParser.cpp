@@ -20,8 +20,11 @@
 
 #include <QFile>
 #include <QBuffer>
+#include <QRegExp>
 #include <QString>
+#include <QStringList>
 #include <QTextStream>
+#include <QDebug>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -45,6 +48,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
   QByteArray byteLine;
 	char* pRecord;
 	int id = 0;
+	float alt;
   bool success;
 
 	airspaceList.clear();
@@ -81,6 +85,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 				if(pAirspace != NULL)
 				{
 					parseString(pRecord, strValue);
+parseAlt(strValue, alt);
 					pAirspace->setHigh(strValue);
 				}
 			}
@@ -89,6 +94,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 				if(pAirspace != NULL)
 				{
 					parseString(pRecord, strValue);
+parseAlt(strValue, alt);
 					pAirspace->setLow(strValue);
 				}
 			}
@@ -223,7 +229,7 @@ void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
 	double endLon;
 
 	parseCoordinate(pRecord + 3, beginLat, beginLon);
-        parseCoordinate(pRecord+str.indexOf(',')+1, endLat, endLon);
+  parseCoordinate(pRecord+str.indexOf(',')+1, endLat, endLon);
 
 	// center
 	pCenter = new AirSpaceItemPoint(AirSpaceItem::Center);
@@ -257,43 +263,137 @@ void OpenAirFileParser::parseCircle(char *pRecord, AirSpace *pAirspace)
 
 bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double &longitude)
 {
-	char lat[15];
-	char NS[5];
-	char lon[15];
-	char EW[5];
-	int deg;
-	int min;
-	int sec;
-	bool success;
+  // DB 48:47.900N,007:45.200E,48:46.500N,007:49.000E
+  // DB 47:28:55 N   007:23:42 E , 47:45:37 N   007:20:26 E
+  QString str;
+  QString coord;
+  QStringList strList;
+  int begin;
+  int index;
+  bool success;
 
-	success = (sscanf(pRecord, "%s %1s %s %1s", lat, NS, lon, EW) == 4);
+  str = pRecord;
+  index = str.indexOf(QRegExp("[NS]"));
+  success = ((index > 0) && (index < str.size()));
 
-	if(success)
-	{
-		success = (sscanf(lat, "%d:%d:%d", &deg, &min, &sec) == 3);
+  if(success)
+  {
+    coord = str.left(index);
+    strList = coord.split(':');
+    success = (strList.size() == 3);
 
-		if(success)
-		{
-			latitude = deg + min / 60.0 + sec / 3600.0;
+    if((strList.size() == 3))
+    {
+      latitude = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
+      success = true;
+    }
+    else if(strList.size() == 2)
+    {
+      latitude = strList[0].toInt() + strList[1].toFloat() / 60.0;
+      success = true;
+    }
 
-			if(strcmp(NS, "S") == 0)
-			{
-				latitude *= -1;
-			}
-		}
+    if(str.at(index) == 'S')
+    {
+      latitude *= -1;
+    }
+  }
 
-		success = (sscanf(lon, "%d:%d:%d", &deg, &min, &sec) == 3);
+  if(success)
+  {
+    begin = (index + 2);
+    index = str.indexOf(QRegExp("[EW]"), begin);
+    success = ((index > 0) && (index < str.size()));
 
-		if(success)
-		{
-			longitude = deg + min / 60.0 + sec / 3600.0;
+    if(success)
+    {
+      coord = str.mid(begin, (index - begin));
+      strList = coord.split(':');
 
-			if(strcmp(EW, "W") == 0)
-			{
-				longitude *= -1;
-			}
-		}
-	}
+      if(strList.size() == 3)
+      {
+        longitude = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
+        success = true;
+      }
+      else if(strList.size() == 2)
+      {
+        longitude = strList[0].toInt() + strList[1].toFloat() / 60.0;
+qDebug() << "convert" << str << strList[0] << strList[1] << "to" << longitude;
+        success = true;
+      }
 
-	return success;
+      if(str.at(index) == 'W')
+      {
+        longitude *= -1;
+      }
+    }
+  }
+
+qDebug() << "parse" << str << latitude << longitude;
+
+  return success;
+}
+
+bool OpenAirFileParser::parseAlt(const QString &str, float &alt)
+{
+  QString trimStr;
+  bool success = true;
+
+  trimStr = str.trimmed();
+
+
+std::string stdstr;
+stdstr = str.toStdString();
+
+  // all values in feets. 1 foot = 12 inches = 30.48 cm = 0.3048 m,
+  if((trimStr == "SFC") || (trimStr == "GND"))
+  {
+    alt = 0;
+  }
+  else if(trimStr.startsWith("UNLIM", Qt::CaseInsensitive))
+  {
+    alt = 10000;
+  }
+  else if(trimStr.startsWith("FL", Qt::CaseInsensitive))
+  {
+    // FL is in 1/100 feets
+    alt = trimStr.right(trimStr.size() - 2).toFloat() * 30.48;
+  }
+  else if(trimStr.endsWith("FT MSL", Qt::CaseInsensitive))
+  {
+    alt = trimStr.left(trimStr.size() - 6).toFloat() * 0.3048;
+  }
+  else if(trimStr.endsWith("F AMSL", Qt::CaseInsensitive) ||
+          trimStr.endsWith("FTAMSL", Qt::CaseInsensitive))
+  {
+    alt = trimStr.left(trimStr.size() - 5).toFloat() * 0.3048;
+  }
+  else if(trimStr.endsWith("FT", Qt::CaseInsensitive))
+  {
+    alt = trimStr.left(trimStr.size() - 2).toFloat() * 0.3048;
+  }
+  else if(trimStr.endsWith("ALT", Qt::CaseInsensitive) ||
+          trimStr.endsWith("MSL", Qt::CaseInsensitive))
+  {
+    alt = trimStr.left(trimStr.size() - 3).toFloat() * 0.3048;
+  }
+  else if(trimStr.endsWith("FT AGL", Qt::CaseInsensitive) ||
+          trimStr.endsWith("AGL", Qt::CaseInsensitive) ||
+          trimStr.endsWith("M AGL", Qt::CaseInsensitive))
+  {
+    qDebug() << "warning: no elevation avail:" << trimStr;
+    alt = 0; // alt = trimStr.toFloat() + elevation;
+    success = false;
+  }
+  else
+  {
+    alt = trimStr.toFloat() * 0.3048;
+  }
+
+  alt = floor(alt / 50) * 50;
+
+if(success)
+  qDebug() << trimStr << "=" << alt;
+
+  return success;
 }

@@ -22,15 +22,19 @@
  ***************************************************************************/
 
 // class AirSpace
-function AirSpace(map, opts)
+function AirSpace(map, path, opts)
 {
 	var vertexNr;
 	var vertex;
 
 	this.id = opts.id;
+	this.name = opts.name;
+	this.low = opts.low;
+	this.high = opts.high;
+	this.airclass = opts.airclass;
 	this.polygon = new google.maps.Polygon({
 		map: map,
-		paths: opts.path,
+		paths: path,
 		strokeColor: "#000000",
 		strokeOpacity: 0.8,
 		strokeWeight: 1,
@@ -49,6 +53,26 @@ AirSpace.prototype.getMap = function()
 AirSpace.prototype.getId = function()
 {
 	return this.id;
+};
+
+AirSpace.prototype.getName = function()
+{
+	return this.name;
+};
+
+AirSpace.prototype.getLow = function()
+{
+	return this.low;
+};
+
+AirSpace.prototype.getHigh = function()
+{
+	return this.high;
+};
+
+AirSpace.prototype.getClass = function()
+{
+	return this.airclass;
 };
 
 AirSpace.prototype.isInside = function(latlng)
