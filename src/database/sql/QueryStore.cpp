@@ -334,7 +334,7 @@ void QueryStore::init()
            "("
            "`Id` INT NULL AUTO_INCREMENT,"
            "`Name` VARCHAR(16) NOT NULL,"
-           "`Class` VARCHAR(1) NOT NULL,"
+           "`Class` VARCHAR(16) NOT NULL,"
            "`Lower` INT,"
            "`Upper` INT,"
            "`Comment` VARCHAR(500) DEFAULT '',"
@@ -347,7 +347,7 @@ void QueryStore::init()
            "("
            "`Id` INTEGER PRIMARY KEY AUTOINCREMENT,"
            "`Name` VARCHAR(16) NOT NULL,"
-           "`Class` VARCHAR(1) NOT NULL,"
+           "`Class` VARCHAR(16) NOT NULL,"
            "`Lower` INTEGER,"
            "`Upper` INTEGER,"
            "`Comment` VARCHAR(500) DEFAULT '')");
