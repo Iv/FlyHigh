@@ -98,8 +98,8 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 
   id = pAirSpace->id();
   name = pAirSpace->name();
-  low = 0; // pAirSpace->low();
-  high = 0; // pAirSpace->high();
+  low = pAirSpace->low();
+  high = pAirSpace->high();
   airClass = pAirSpace->airspaceClass();
   pFrame->evaluateJavaScript(code.arg(coords).arg(id).arg(name).arg(low).arg(high).arg(airClass));
 }
