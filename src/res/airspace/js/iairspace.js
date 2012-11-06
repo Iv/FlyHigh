@@ -87,7 +87,7 @@ function as_pushAirSpace(coords, opts)
 		latlngs.push(new google.maps.LatLng(coords[nr][0], coords[nr][1]));
 	}
 
-	airspace = new AirSpace(map, {id: opts.id, path: latlngs});
+	airspace = new AirSpace(map, latlngs, opts);
 	airspaces.push(airspace);
 }
 
@@ -105,14 +105,31 @@ function as_selectAirSpace(num)
 		oldSelect = num;
 		airspace = airspaces[num];
 		airspace.setSelect(true);
-
-/**
 		as_setName(airspace.getName());
 		as_setLow(airspace.getLow());
 		as_setHigh(airspace.getHigh());
 		as_setClass(airspace.getClass());
-*/
 	}
+}
+
+function as_setName(name)
+{
+	setDivValue("name", name);
+}
+
+function as_setLow(low)
+{
+	setDivValue("low", low);
+}
+
+function as_setHigh(high)
+{
+	setDivValue("high", high);
+}
+
+function as_setClass(airclass)
+{
+	setDivValue("class", airclass);
 }
 
 function as_setOk(ok)
@@ -120,3 +137,20 @@ function as_setOk(ok)
 	wm_emitOk(ok);
 }
 
+function setDivValue(divId, value)
+{
+	var div;
+
+/*
+	if(AsEditable)
+	{
+		div = document.getElementById(divId);
+		div.value = value;
+	}
+	else
+*/
+	{
+		div = document.getElementById('s' + divId);
+		div.innerHTML = value;
+	}
+}
