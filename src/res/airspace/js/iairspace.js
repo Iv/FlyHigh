@@ -119,12 +119,19 @@ function as_setName(name)
 
 function as_setLow(low)
 {
-	setDivValue("low", low);
+	if(low === 0)
+	{
+		setDivValue("low", "GND");
+	}
+	else
+	{
+		setDivValue("low", low + " m");
+	}
 }
 
 function as_setHigh(high)
 {
-	setDivValue("high", high);
+	setDivValue("high", high + " m");
 }
 
 function as_setClass(airclass)
