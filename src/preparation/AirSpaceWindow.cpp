@@ -111,8 +111,8 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 
 	// header
 	nameList += tr("Name");
-	nameList += tr("Low");
-	nameList += tr("High");
+	nameList += tr("Low [m]");
+	nameList += tr("High [m]");
 	nameList += tr("Class");
 	setupHeader(nameList);
 
@@ -297,10 +297,20 @@ void AirSpaceWindow::selectionChanged()
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 {
 	QTableWidget *pTable = TableWindow::getTable();
+	QString str = "%1";
 
 	pTable->item(row, Name)->setText(pAirSpace->name());
-	pTable->item(row, High)->setText(pAirSpace->high());
-	pTable->item(row, Low)->setText(pAirSpace->low());
+	pTable->item(row, High)->setText(str.arg(pAirSpace->high()));
+
+  if(pAirSpace->low() == 0)
+  {
+    pTable->item(row, Low)->setText(tr("GND"));
+  }
+  else
+  {
+    pTable->item(row, Low)->setText(str.arg(pAirSpace->low()));
+  }
+
 	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
 }
 
