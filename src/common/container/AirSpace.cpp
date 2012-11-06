@@ -28,8 +28,8 @@ AirSpace::AirSpace()
   m_id = -1;
 	m_name = "";
 	m_airspaceClass = "";
-	m_high = "";
-	m_low = "";
+  m_high = 0;
+	m_low = 0;
 	m_warnDist = 0;
 	m_remark = "";
 }
@@ -61,22 +61,22 @@ void AirSpace::setName(const QString &name)
 	m_name = locName.trimmed();
 }
 
-const QString& AirSpace::high() const
+int AirSpace::high() const
 {
 	return m_high;
 }
 
-void AirSpace::setHigh(const QString &high)
+void AirSpace::setHigh(int high)
 {
 	m_high = high;
 }
 
-const QString& AirSpace::low() const
+int AirSpace::low() const
 {
 	return m_low;
 }
 
-void AirSpace::setLow(const QString &low)
+void AirSpace::setLow(int low)
 {
 	m_low = low;
 }
@@ -249,16 +249,16 @@ bool AirSpace::isInside(const WayPoint &wp) const
 
   for(i = 0, j = nvert-1; i < nvert; j = i++)
 	{
-    if(((m_pointList[i].latitude()>wp.latitude()) != (m_pointList[j].latitude()>wp.latitude())) &&
+    if(((m_pointList[i].latitude() > wp.latitude()) != (m_pointList[j].latitude() > wp.latitude())) &&
 				(wp.longitude() < (m_pointList[j].longitude() - m_pointList[i].longitude()) *
-				(wp.latitude()-m_pointList[i].latitude()) / (m_pointList[j].latitude()-m_pointList[i].latitude()) +
+				(wp.latitude() - m_pointList[i].latitude()) / (m_pointList[j].latitude() - m_pointList[i].latitude()) +
 				m_pointList[i].longitude()))
 		{
        cross = !cross;
 		}
   }
 
-	return (cross) && (wp.altitude() >= m_low.toInt()) && (wp.altitude() <= m_high.toInt());
+	return (cross) && (wp.altitude() >= m_low) && (wp.altitude() <= m_high);
 }
 
 bool AirSpace::getNextBear(bool dir, double endBear, double prevBear, double &bear)

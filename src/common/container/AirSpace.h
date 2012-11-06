@@ -42,13 +42,13 @@ class AirSpace
 
 		void setName(const QString &name);
 
-		const QString& high() const;
+		int high() const;
 
-		void setHigh(const QString & high);
+		void setHigh(int high);
 
-		const QString& low() const;
+		int low() const;
 
-		void setLow(const QString & low);
+		void setLow(int low);
 
 		const QString& airspaceClass() const;
 
@@ -76,8 +76,8 @@ class AirSpace
     int m_id;
 		QString m_name;
 		QString m_airspaceClass;
-		QString m_high;
-		QString m_low;
+		int m_high;
+		int m_low;
 		AirSpaceItem::AirSpaceItemListType m_airSpaceItemList;
 		WayPoint::WayPointListType m_pointList;
 		BoundBox m_boundBox;
