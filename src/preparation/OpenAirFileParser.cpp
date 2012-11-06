@@ -66,6 +66,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
 				pAirspace = new AirSpace();
+        m_arcDir = true; // reset
         id++;
 				pAirspace->setId(id);
 				airspaceList.push_back(pAirspace);
@@ -85,8 +86,8 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 				if(pAirspace != NULL)
 				{
 					parseString(pRecord, strValue);
-parseAlt(strValue, alt);
-					pAirspace->setHigh(strValue);
+          parseAlt(strValue, alt);
+					pAirspace->setHigh(alt);
 				}
 			}
 			else if(strncmp(pRecord, "AL", 2) == 0)
@@ -94,8 +95,8 @@ parseAlt(strValue, alt);
 				if(pAirspace != NULL)
 				{
 					parseString(pRecord, strValue);
-parseAlt(strValue, alt);
-					pAirspace->setLow(strValue);
+          parseAlt(strValue, alt);
+					pAirspace->setLow(alt);
 				}
 			}
 			else if(strncmp(pRecord, "V", 1) == 0)
@@ -228,8 +229,11 @@ void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
 	double endLat;
 	double endLon;
 
+  // DB 51:13:51 N 001:47:59 W, 51:13:54 N 001:42:25 W
+  // DB 46:10.92N 7:13.98E 46:13.00N 7:13.33E
+  // DB 48:50:07 N 002:57:55 E,48:52:28 N 003:02:09 E
 	parseCoordinate(pRecord + 3, beginLat, beginLon);
-  parseCoordinate(pRecord+str.indexOf(',')+1, endLat, endLon);
+  parseCoordinate(pRecord + str.indexOf(QRegExp("[EW]")) + 2, endLat, endLon);
 
 	// center
 	pCenter = new AirSpaceItemPoint(AirSpaceItem::Center);
@@ -318,7 +322,6 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double 
       else if(strList.size() == 2)
       {
         longitude = strList[0].toInt() + strList[1].toFloat() / 60.0;
-qDebug() << "convert" << str << strList[0] << strList[1] << "to" << longitude;
         success = true;
       }
 
@@ -340,10 +343,6 @@ bool OpenAirFileParser::parseAlt(const QString &str, float &alt)
   bool success = true;
 
   trimStr = str.trimmed();
-
-
-std::string stdstr;
-stdstr = str.toStdString();
 
   // all values in feets. 1 foot = 12 inches = 30.48 cm = 0.3048 m,
   if((trimStr == "SFC") || (trimStr == "GND"))
@@ -391,9 +390,6 @@ stdstr = str.toStdString();
   }
 
   alt = floor(alt / 50) * 50;
-
-if(success)
-  qDebug() << trimStr << "=" << alt;
 
   return success;
 }
