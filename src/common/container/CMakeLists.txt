@@ -4,6 +4,7 @@ include_directories(${QT_INCLUDES} )
 
 set(container_SRCS AirSpace.cpp
                    AirSpaceItem.cpp
+                   AirSpaceItemList.cpp
                    AirSpaceList.cpp
                    BoundBox.cpp
                    Flight.cpp

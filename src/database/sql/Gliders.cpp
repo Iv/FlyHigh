@@ -70,7 +70,7 @@ bool Gliders::glider(const QString &modelOfGlider, Glider &glider)
 	QString dbModel;
 	bool success = false;
 
-	sqls.sprintf("SELECT Id, Manufacturer, Model, Serial FROM Gliders;");
+	sqls = "SELECT Id, Manufacturer, Model, Serial FROM Gliders;";
 
 	if(query.exec(sqls))
 	{

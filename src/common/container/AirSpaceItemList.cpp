@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,37 +18,61 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef AirSpaces_h
-#define AirSpaces_h
+#include "AirSpaceItem.h"
+#include "AirSpaceItemList.h"
 
-#include "DataBaseSub.h"
-#include "AirSpace.h"
-
-class QSqlDatabase;
-class AirSpaceList;
-
-class AirSpaces: public DataBaseSub
+AirSpaceItemList::AirSpaceItemList()
 {
-	public:
-		AirSpaces(QSqlDatabase DB);
+}
 
-		bool add(AirSpace &airspace);
+AirSpaceItemList::~AirSpaceItemList()
+{
+  clear();
+}
 
-		bool delAirSpace(const AirSpace &airspace);
+void AirSpaceItemList::push_back(AirSpaceItem *pItem)
+{
+  m_itemList.push_back(pItem);
+}
 
-		bool airspace(const QString &name, AirSpace &airspace);
+void AirSpaceItemList::clear()
+{
+  iterator it;
 
-		bool airspaceList(AirSpaceList &airspaceList);
+  for(it=m_itemList.begin(); it!=m_itemList.end(); it++)
+  {
+    delete *it;
+  }
 
-		bool setAirSpaceId(AirSpace &airspace);
+  m_itemList.clear();
+}
 
-		bool checkModified();
+int AirSpaceItemList::size() const
+{
+  return m_itemList.size();
+}
 
-  signals:
-		void changed();
+AirSpaceItem* AirSpaceItemList::at(int pos)
+{
+  return m_itemList.at(pos);
+}
 
-	private:
-		bool airSpaceItems(int id, AirSpaceItemList &itemList);
-};
+AirSpaceItemList::iterator AirSpaceItemList::begin()
+{
+  return m_itemList.begin();
+}
 
-#endif
+AirSpaceItemList::const_iterator AirSpaceItemList::begin() const
+{
+  return m_itemList.begin();
+}
+
+AirSpaceItemList::iterator AirSpaceItemList::end()
+{
+  return m_itemList.end();
+}
+
+AirSpaceItemList::const_iterator AirSpaceItemList::end() const
+{
+  return m_itemList.end();
+}

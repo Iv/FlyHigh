@@ -91,7 +91,7 @@ void AirSpace::setAirspaceClass(const QString &airspaceClass)
 	m_airspaceClass = airspaceClass;
 }
 
-AirSpaceItem::AirSpaceItemListType& AirSpace::airSpaceItemList()
+AirSpaceItemList& AirSpace::airSpaceItemList()
 {
 	return m_airSpaceItemList;
 }
@@ -118,7 +118,7 @@ const QString& AirSpace::remark() const
 
 void AirSpace::createPointList()
 {
-	AirSpaceItem::AirSpaceItemListType::iterator it;
+	AirSpaceItemList::iterator it;
 	AirSpaceItemPoint *pSegCenter = NULL;
 	AirSpaceItemSeg *pSegBegin = NULL;
 	AirSpaceItemSeg *pSegEnd;
