@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,63 +17,65 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AirSpaceWindow_h
-#define AirSpaceWindow_h
 
-#include "AirSpace.h"
-#include "AirSpaceList.h"
-#include "AirSpaceView.h"
-#include "IDataBase.h"
-#include "TableWindow.h"
+#ifndef LatLng_h
+#define LatLng_h
 
-class QWidget;
-class WebMapAirSpaceView;
+#include <QVector>
 
-class AirSpaceWindow: public TableWindow
+class LatLng;
+
+typedef QVector<LatLng> LatLngList;
+
+/**
+  Container for Latitude and Longitude. All units are meters and decimal degrees
+*/
+class LatLng
 {
-	Q_OBJECT
-
 	public:
-		AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		static const double EarthRadius;
 
-		~AirSpaceWindow();
+		LatLng();
 
-	protected:
-    void closeEvent(QCloseEvent *pEvent);
+		LatLng(double lat, double lon);
 
-		void selectionChanged();
+		// latitude and longitude are in WGS84 (degree)
+		void setPos(double lat, double lon);
 
-	private slots:
-		void file_open();
+		void setLat(double lat);
 
-		void file_delete();
+		double lat() const;
 
-		void file_update();
+		void setLon(double lon);
 
-		void file_AddToSqlDB();
+		double lon() const;
 
-		void file_AddToGPS();
+		double distance(const LatLng &latlng) const;
 
-    void file_viewAirSpace();
+		/**
+			Calculates distance and bearing from this waypoint to wp. The
+			calculation is done by the Haversine formula.
+			@param wp distance and bearing are calculated to this waypoint
+			@param dist distance in meters
+			@param bear bearing in degrees
+		*/
+		void distBear(const LatLng &latlng, double &dist, double &bear) const;
 
-		void file_viewWebMap();
+    void setMin(const LatLng &latlng);
 
-    void airSpaceViewFinished(int);
+    void setMax(const LatLng &latlng);
 
-		void webMapFinished(int res);
+		bool operator==(const LatLng &latlng);
 
-    void airSpaceChanged(int line);
+		static uint distance(const LatLng &latlng1, const LatLng &latlng2);
+
+		static double arc(double distance);
+
+		static double meters(double nautmil);
 
 	private:
-		enum Fields{Name, Low, High, Class};
-
-		IDataBase *m_pDb;
-		AirSpaceList m_airSpaceList;
-		AirSpaceView *m_pAirSpaceView;
-    WebMapAirSpaceView *m_pWebMapView;
-    bool m_externSelect;
-
-    void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
+		double m_lat;
+		double m_lon;
 };
 
 #endif

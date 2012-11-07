@@ -70,7 +70,6 @@ class WayPointWindow: public TableWindow
 		WebMapWayPointView *m_pWayPointView;
 		IDataBase *m_pDb;
 		WayPoint::Type m_wpType;
-		int m_lastModified;
 		bool m_externSelect;
 
     void setWpToRow(uint row, const WayPoint &wp);

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,63 +17,98 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AirSpaceWindow_h
-#define AirSpaceWindow_h
+#include "OpenAirItem.h"
 
-#include "AirSpace.h"
-#include "AirSpaceList.h"
-#include "AirSpaceView.h"
-#include "IDataBase.h"
-#include "TableWindow.h"
-
-class QWidget;
-class WebMapAirSpaceView;
-
-class AirSpaceWindow: public TableWindow
+OpenAirItem::OpenAirItem()
 {
-	Q_OBJECT
+}
 
-	public:
-		AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+OpenAirItem::~OpenAirItem()
+{
+}
 
-		~AirSpaceWindow();
+void OpenAirItem::setPos(double lat, double lon)
+{
+  m_pos.setPos(lat, lon);
+}
 
-	protected:
-    void closeEvent(QCloseEvent *pEvent);
+const LatLng& OpenAirItem::pos() const
+{
+  return m_pos;
+}
 
-		void selectionChanged();
+double OpenAirItem::lat()
+{
+	return m_pos.lat();
+}
 
-	private slots:
-		void file_open();
+double OpenAirItem::lon()
+{
+	return m_pos.lon();
+}
 
-		void file_delete();
+OpenAirItem::ItemType OpenAirItem::type()
+{
+	return m_type;
+}
 
-		void file_update();
+void OpenAirItem::setType(ItemType type)
+{
+	m_type = type;
+}
 
-		void file_AddToSqlDB();
+/*****************
+Point
+******************/
+OpenAirItemPoint::OpenAirItemPoint(OpenAirItem::ItemType type)
+{
+	setType(type);
+}
 
-		void file_AddToGPS();
+OpenAirItemPoint::~OpenAirItemPoint()
+{
+}
 
-    void file_viewAirSpace();
+/*****************
+Segment
+******************/
+OpenAirItemSeg::OpenAirItemSeg(OpenAirItem::ItemType type)
+{
+	setType(type);
+}
 
-		void file_viewWebMap();
+OpenAirItemSeg::~OpenAirItemSeg()
+{
+}
 
-    void airSpaceViewFinished(int);
+void OpenAirItemSeg::setDir(bool dir)
+{
+	m_dir = dir;
+}
 
-		void webMapFinished(int res);
+bool OpenAirItemSeg::dir()
+{
+	return m_dir;
+}
 
-    void airSpaceChanged(int line);
+/*****************
+Circle
+******************/
+OpenAirItemCircle::OpenAirItemCircle()
+{
+	setType(OpenAirItem::Circle);
+}
 
-	private:
-		enum Fields{Name, Low, High, Class};
+OpenAirItemCircle::~OpenAirItemCircle()
+{
+}
 
-		IDataBase *m_pDb;
-		AirSpaceList m_airSpaceList;
-		AirSpaceView *m_pAirSpaceView;
-    WebMapAirSpaceView *m_pWebMapView;
-    bool m_externSelect;
+void OpenAirItemCircle::setRadius(uint radius)
+{
+	m_radius = radius;
+}
 
-    void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
-};
-
-#endif
+uint OpenAirItemCircle::radius()
+{
+	return m_radius;
+}

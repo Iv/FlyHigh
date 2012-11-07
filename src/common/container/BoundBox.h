@@ -17,11 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef BoundBox_h
 #define BoundBox_h
 
-#include "WayPoint.h"
+#include "LatLng.h"
 
 class BoundBox
 {
@@ -30,17 +30,17 @@ class BoundBox
 
 		void init();
 
-		void setMinMax(const WayPoint &wp);
+		void setMinMax(const LatLng &wp);
 
 		void setMinMax(const BoundBox &bbox);
 
-		void setNorthEast(const WayPoint &ne);
+		void setNorthEast(const LatLng &ne);
 
 		double north() const;
 
 		double west() const;
 
-		void setSouthWest(const WayPoint &sw);
+		void setSouthWest(const LatLng &sw);
 
 		double south() const;
 
@@ -51,10 +51,10 @@ class BoundBox
 		double height() const;
 
 		bool intersect(const BoundBox &bb) const;
-		
+
 	private:
-		WayPoint m_sw;
-		WayPoint m_ne;
+		LatLng m_sw;
+		LatLng m_ne;
 		bool m_isInit;
 };
 

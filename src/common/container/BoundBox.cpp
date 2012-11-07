@@ -20,7 +20,7 @@
 
 #include <math.h>
 #include "BoundBox.h"
- 
+
 BoundBox::BoundBox()
 {
 	m_isInit = false;
@@ -31,18 +31,18 @@ void BoundBox::init()
 	m_isInit = false;
 }
 
-void BoundBox::setMinMax(const WayPoint &wp)
+void BoundBox::setMinMax(const LatLng &latlng)
 {
 	if(m_isInit)
 	{
-		m_sw.setMin(wp);
-		m_ne.setMax(wp);
+		m_sw.setMin(latlng);
+		m_ne.setMax(latlng);
 	}
 	else
 	{
 		m_isInit = true;
-		m_sw = wp;
-		m_ne = wp;
+		m_sw = latlng;
+		m_ne = latlng;
 	}
 }
 
@@ -61,21 +61,20 @@ void BoundBox::setMinMax(const BoundBox &bbox)
 	}
 }
 
-void BoundBox::setNorthEast(const WayPoint &ne)
+void BoundBox::setNorthEast(const LatLng &ne)
 {
 	m_ne = ne;
 }
 
 double BoundBox::north() const
 {
-	return m_ne.latitude();
+	return m_ne.lat();
 }
 
 double BoundBox::east() const
 {
-	return m_ne.longitude();
+	return m_ne.lon();
 }
-
 
 double BoundBox::width() const
 {
@@ -87,19 +86,19 @@ double BoundBox::height() const
 	return (north() - south());
 }
 
-void BoundBox::setSouthWest(const WayPoint &sw)
+void BoundBox::setSouthWest(const LatLng &sw)
 {
 	m_sw = sw;
 }
 
 double BoundBox::south() const
 {
-	return m_sw.latitude();
+	return m_sw.lat();
 }
 
 double BoundBox::west() const
 {
-	return m_sw.longitude();
+	return m_sw.lon();
 }
 
 bool BoundBox::intersect(const BoundBox &bb) const

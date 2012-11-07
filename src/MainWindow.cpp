@@ -145,6 +145,10 @@ MainWindow::MainWindow()
 	m_pMenuPreparation->addAction(pAction);
 	m_pMenuPreparation->addSeparator();
 
+	pAction = new QAction(tr("&Airspaces (DB)"), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromSQL()));
+	m_pMenuPreparation->addAction(pAction);
+
 	pAction = new QAction(tr("&Airspaces (GPS)"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
 	m_pMenuPreparation->addAction(pAction);
@@ -372,15 +376,14 @@ void MainWindow::routes_fromGPS()
 	showWindow(pWin);
 }
 
-/*
 void MainWindow::airspaces_fromSQL()
 {
-	MDIWindow* pWin = new AirSpaceWindow(m_pWorkSpace, "Airspaces (DB)", WDestructiveClose, IDataBase::SqlDB);
+  MDIWindow* pWin;
 
+	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (DB)", 0, IDataBase::SqlDB);
 	connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(message(const QString&, int)));
 	showWindow(pWin);
 }
-*/
 
 void MainWindow::airspaces_fromGPS()
 {

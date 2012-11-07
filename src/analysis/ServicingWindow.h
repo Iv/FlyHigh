@@ -43,7 +43,6 @@ class ServicingWindow: public TableWindow
 		enum Fields{Glider, Date, Responsibility, Comment};
 
 		Servicing::ServicingListType m_servicingsList;
-		int m_lastModified;
 		ISql *m_pDb;
 };
 

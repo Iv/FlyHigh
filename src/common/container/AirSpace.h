@@ -65,9 +65,9 @@ class AirSpace
 
 		const QString& remark() const;
 
-		void createPointList();
-
 		const WayPoint::WayPointListType& pointList() const;
+
+		void createPointList();
 
 		const BoundBox& boundBox() const;
 

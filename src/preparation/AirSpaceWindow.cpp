@@ -49,10 +49,23 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 	switch(src)
 	{
 		case IDataBase::SqlDB:
+      m_pDb = ISql::pInstance();
+
+      connect(m_pDb, SIGNAL(airSpaceChangedChanged()), this, SLOT(file_update()));
+
+			pAction = new QAction(tr("&Delete"), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+			MDIWindow::addAction(pAction);
+
+			pAction = new QAction(tr("&Add to GPS..."), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+			MDIWindow::addAction(pAction, true);
 		break;
 		case IDataBase::GPSdevice:
 		{
 			m_pDb = IGPSDevice::pInstance();
+
+			connect(m_pDb, SIGNAL(airSpaceChangedChanged()), this, SLOT(file_update()));
 
 			pAction = new QAction(tr("&Delete"), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
@@ -73,6 +86,13 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 		}
 		break;
 	}
+
+  if(src != IDataBase::SqlDB)
+  {
+    pAction = new QAction(tr("Add to DB..."), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
+    MDIWindow::addAction(pAction, true);
+  }
 
 	// import/export
 	pAction = new QAction(this);
@@ -232,6 +252,41 @@ void AirSpaceWindow::file_delete()
 		TableWindow::unsetCursor();
 		m_pDb->close();
 	}
+}
+
+void AirSpaceWindow::file_AddToSqlDB()
+{
+  ProgressDlg progDlg(this);
+  QList<QTableWidgetSelectionRange> selRange;
+  QList<QTableWidgetSelectionRange>::iterator rangeIt;
+  QTableWidget *pTable;
+	int topRow;
+	int bottomRow;
+	int row;
+
+  if(ISql::pInstance()->open())
+  {
+	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress(tr("add airspaces..."), ISql::pInstance());
+    pTable = TableWindow::getTable();
+    selRange = pTable->selectedRanges();
+
+    for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
+    {
+      topRow = (*rangeIt).topRow();
+      bottomRow = (*rangeIt).bottomRow();
+
+      for(row=topRow; row<=bottomRow; row++)
+      {
+m_airSpaceList[row]->createPointList();
+        ISql::pInstance()->add(*m_airSpaceList[row]);
+      }
+    }
+
+    progDlg.endProgress();
+		TableWindow::unsetCursor();
+		ISql::pInstance()->close();
+  }
 }
 
 void AirSpaceWindow::file_AddToGPS()
