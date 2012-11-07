@@ -48,7 +48,7 @@ class AirSpaces: public DataBaseSub
 		void changed();
 
 	private:
-		bool airSpaceItems(int id, AirSpaceItemList &itemList);
+		bool airSpaceItems(int id, LatLngList &itemList);
 };
 
 #endif

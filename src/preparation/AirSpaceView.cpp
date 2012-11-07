@@ -52,7 +52,6 @@ void AirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList, int selected)
 	for(it=pAirSpaceList->begin(); it!=pAirSpaceList->end(); it++)
 	{
 		pAirSpace = (*it);
-		pAirSpace->createPointList();
 		m_bbox.setMinMax(pAirSpace->boundBox());
 	}
 
@@ -136,7 +135,7 @@ void AirSpaceView::drawAirspace()
 	QPolygon pointList;
 	BoundBox bbox;
 	AirSpaceList::iterator itAirSpace;
-	WayPoint::WayPointListType::const_iterator it;
+	LatLngList::const_iterator it;
 	AirSpace *pAirSpace;
 	AirSpace *pSelAirSpace = NULL;
 	QString str;
@@ -199,9 +198,9 @@ void AirSpaceView::drawAirspace()
 
 			for(it=pAirSpace->pointList().begin(); it!=pAirSpace->pointList().end(); it++)
 			{
-				lat = (*it).latitude();
+				lat = (*it).lat();
 				lat = m_bbox.north() + m_bbox.south() - lat - offLat;
-				lon = (*it).longitude();
+				lon = (*it).lon();
 				lon = lon - offLon;
 				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
@@ -234,8 +233,8 @@ void AirSpaceView::drawAirspace()
 
 			for(it=pSelAirSpace->pointList().begin(); it!=pSelAirSpace->pointList().end(); it++)
 			{
-				lat = m_bbox.north() + m_bbox.south() - (*it).latitude() - offLat;
-				lon = (*it).longitude() - offLon;
+				lat = m_bbox.north() + m_bbox.south() - (*it).lat() - offLat;
+				lon = (*it).lon() - offLon;
 				pointList.setPoint(ptNr, ToInt(lon), ToInt(lat));
 				ptNr++;
 			}

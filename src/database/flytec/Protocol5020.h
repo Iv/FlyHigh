@@ -22,11 +22,13 @@
 
 #include "Defs5020.h"
 #include "Device.h"
+#include "OpenAir.h"
 #include "Protocol.h"
 
 class QString;
 class AirSpace;
 class Flight;
+class OpenAir;
 class Route;
 class WayPoint;
 
@@ -103,6 +105,7 @@ class Protocol5020: public Protocol
 	private:
 		Device m_device;
     QByteArray m_memdump;
+    OpenAir m_openAir;
     int m_total;
 
 		QDate parseDate(const QString &token) const;

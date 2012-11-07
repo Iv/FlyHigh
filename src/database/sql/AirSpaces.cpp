@@ -24,11 +24,8 @@
 #include "Error.h"
 #include "AirSpace.h"
 #include "AirSpaceList.h"
-#include "AirSpaceItem.h"
-#include "AirSpaceItemList.h"
 #include "AirSpaces.h"
-
-#include <QDebug>
+#include "LatLng.h"
 
 AirSpaces::AirSpaces(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -39,7 +36,7 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString sqls;
-  AirSpaceItemList::iterator it;
+  LatLngList::iterator it;
   int id;
   bool success;
 
@@ -56,11 +53,11 @@ bool AirSpaces::add(AirSpace &airspace)
   {
     airspace.setId(id);
 
-    for(it=airspace.airSpaceItemList().begin(); it!=airspace.airSpaceItemList().end(); it++)
+    for(it=airspace.pointList().begin(); it!=airspace.pointList().end(); it++)
     {
       sqls = QString("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) "
                       "VALUES(%1, %2, %3);")
-                      .arg(id).arg((*it)->lon()).arg((*it)->lat());
+                      .arg(id).arg((*it).lon()).arg((*it).lat());
       success &= query.exec(sqls);
     }
   }
@@ -108,7 +105,7 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 		  airspace.setLow(query.value(3).toInt());
 		  airspace.setHigh(query.value(4).toInt());
 		  airspace.setRemark(query.value(5).toString());
-		  success = airSpaceItems(airspace.id(), airspace.airSpaceItemList());
+		  success = airSpaceItems(airspace.id(), airspace.pointList());
 		}
 	}
 
@@ -138,7 +135,7 @@ bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 		  pAirSpace->setLow(query.value(3).toInt());
 		  pAirSpace->setHigh(query.value(4).toInt());
 		  pAirSpace->setRemark(query.value(5).toString());
-		  success = airSpaceItems(pAirSpace->id(), pAirSpace->airSpaceItemList());
+		  success = airSpaceItems(pAirSpace->id(), pAirSpace->pointList());
 		  airspaceList.push_back(pAirSpace);
 		}
 	}
@@ -178,11 +175,11 @@ bool AirSpaces::checkModified()
   return DataBaseSub::checkModified("AirSpaces");
 }
 
-bool AirSpaces::airSpaceItems(int id, AirSpaceItemList &itemList)
+bool AirSpaces::airSpaceItems(int id, LatLngList &itemList)
 {
   QSqlQuery query(db());
 	QString sqls;
-	AirSpaceItem *pItem;
+	LatLng latlng;
 	bool success = false;
 
   sqls = QString("SELECT Latitude, Longitude FROM AirSpaceItems WHERE AirSpaceId=%1;")
@@ -192,9 +189,8 @@ bool AirSpaces::airSpaceItems(int id, AirSpaceItemList &itemList)
 
   while(query.next())
   {
-    pItem = new AirSpaceItem();
-    pItem->setPoint(query.value(0).toDouble(), query.value(1).toDouble());
-    itemList.push_back(pItem);
+    latlng.setPos(query.value(0).toDouble(), query.value(1).toDouble());
+    itemList.push_back(latlng);
   }
 
   return success;

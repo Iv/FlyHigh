@@ -21,16 +21,12 @@
 #define AirSpace_h
 
 #include <QString>
-#include "AirSpaceItem.h"
-#include "AirSpaceItemList.h"
 #include "BoundBox.h"
 #include "WayPoint.h"
 
 class AirSpace
 {
 	public:
-		enum {MaxNameSize=17};
-
 		AirSpace();
 
 		virtual ~AirSpace();
@@ -55,8 +51,6 @@ class AirSpace
 
 		void setAirspaceClass(const QString &airspaceClass);
 
-		AirSpaceItemList& airSpaceItemList();
-
 		void setWarnDist(uint meters);
 
 		uint warnDist() const;
@@ -65,13 +59,13 @@ class AirSpace
 
 		const QString& remark() const;
 
-		const WayPoint::WayPointListType& pointList() const;
+		LatLngList& pointList();
 
-		void createPointList();
+		void setBoundBox(const BoundBox &bbox);
 
 		const BoundBox& boundBox() const;
 
-		bool isInside(const WayPoint &wp) const;
+    bool isInside(const WayPoint &wp) const;
 
 	private:
     int m_id;
@@ -79,8 +73,7 @@ class AirSpace
 		QString m_airspaceClass;
 		int m_high;
 		int m_low;
-		AirSpaceItemList m_airSpaceItemList;
-		WayPoint::WayPointListType m_pointList;
+		LatLngList m_pointList;
 		BoundBox m_boundBox;
 		QString m_remark;
     uint m_warnDist;

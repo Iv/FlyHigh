@@ -37,6 +37,7 @@ OpenAir::OpenAir()
 
 OpenAir::~OpenAir()
 {
+  clearItemList();
 }
 
 int OpenAir::id() const
@@ -92,11 +93,6 @@ void OpenAir::setAirspaceClass(const QString &airspaceClass)
 	m_airspaceClass = airspaceClass;
 }
 
-OpenAirItemList& OpenAir::airSpaceItemList()
-{
-	return m_itemList;
-}
-
 void OpenAir::setWarnDist(uint meters)
 {
 	m_warnDist = meters;
@@ -115,6 +111,28 @@ void OpenAir::setRemark(const QString &remark)
 const QString& OpenAir::remark() const
 {
 	return m_remark;
+}
+
+void OpenAir::push_back(OpenAirItem *pItem)
+{
+  m_itemList.push_back(pItem);
+}
+
+void OpenAir::clearItemList()
+{
+  OpenAirItemList::iterator it;
+
+  for(it=m_itemList.begin(); it!=m_itemList.end(); it++)
+  {
+    delete (*it);
+  }
+
+  m_itemList.clear();
+}
+
+const OpenAirItemList& OpenAir::itemList() const
+{
+	return m_itemList;
 }
 
 void OpenAir::createPointList(LatLngList &itemList)

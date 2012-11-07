@@ -486,7 +486,7 @@ bool Flytec::add(AirSpace &airspace)
 	uint curSent;
 	uint totalSent;
 
-	totalSent = 2 + airspace.airSpaceItemList().size();
+	totalSent = 2 + airspace.pointList().size();
 	m_cancel = false;
 
 	// send airspace

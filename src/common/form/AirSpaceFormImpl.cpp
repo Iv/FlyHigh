@@ -73,12 +73,12 @@ void AirSpaceFormImpl::setAirSpace(AirSpace *pAirSpace)
       tableEdgePoints->setItem(ptNr, Use, pItem);
 
       pItem = new QTableWidgetItem();
-      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).longitude());
+      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).lon());
       pItem->setText(str);
       tableEdgePoints->setItem(ptNr, Longitude, pItem);
 
       pItem = new QTableWidgetItem();
-      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).latitude());
+      str.sprintf("%.5f", m_pAirSpace->pointList().at(ptNr).lat());
       pItem->setText(str);
       tableEdgePoints->setItem(ptNr, Latitude, pItem);
 		}
@@ -123,8 +123,8 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 
 		if(maxPts > 0)
 		{
-			minLat = m_pAirSpace->pointList().at(ptNr).latitude() * 1000;
-			minLon = m_pAirSpace->pointList().at(ptNr).longitude() * 1000;
+			minLat = m_pAirSpace->pointList().at(ptNr).lat() * 1000;
+			minLon = m_pAirSpace->pointList().at(ptNr).lon() * 1000;
 			maxLat = minLat;
 			maxLon = minLon;
 
@@ -134,8 +134,8 @@ void AirSpaceFormImpl::paintEvent(QPaintEvent *pEvent)
 
 				if(pTabItem->checkState() == Qt::Checked)
 				{
-					lat = (int)(m_pAirSpace->pointList().at(ptNr).longitude() * 1000);
-					lon = -(int)(m_pAirSpace->pointList().at(ptNr).latitude() * 1000); // y axis is inverse
+					lat = (int)(m_pAirSpace->pointList().at(ptNr).lon() * 1000);
+					lon = -(int)(m_pAirSpace->pointList().at(ptNr).lat() * 1000); // y axis is inverse
 					edgePts[nPts] = QPoint(lat, lon);
 					nPts++;
 

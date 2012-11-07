@@ -23,8 +23,8 @@
 #include <stdint.h>
 #include <unistd.h>
 #include "AirSpace.h"
-#include "AirSpaceItem.h"
 #include "Flight.h"
+#include "OpenAir.h"
 #include "Protocol5020.h"
 #include "Route.h"
 #include "Tokenizer.h"
@@ -508,9 +508,10 @@ bool Protocol5020::ctrListReq()
 	QString tlg;
 	bool success;
 
-	tlg = "$PBRCTR,";
+  tlg = "$PBRCTR,";
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);
+  m_openAir.clearItemList();
 	usleep(1000*1000);
 
 	return success;
@@ -523,9 +524,9 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 	QString degToken;
 	QString dirToken;
 	QString tlg;
-	AirSpaceItem *pItem = NULL;
-	AirSpaceItemCircle *pCircle;
-	AirSpaceItemSeg *pSegment;
+  OpenAirItem *pItem = NULL;
+  OpenAirItemCircle *pCircle;
+  OpenAirItemSeg *pSegment;
 	double lat;
 	double lon;
 	bool valid = false;
@@ -571,7 +572,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 
 				if(token == "C")
 				{
-					pCircle = new AirSpaceItemCircle();
+					pCircle = new OpenAirItemCircle();
 
 					// lat
 					tokenizer.getNextToken(tlg, ',', degToken);
@@ -590,7 +591,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 				}
 				else if(token == "P")
 				{
-					pItem = new AirSpaceItemPoint(AirSpaceItem::Point);
+					pItem = new OpenAirItemPoint(OpenAirItem::Point);
 
 					// lat
 					tokenizer.getNextToken(tlg, ',', degToken);
@@ -604,7 +605,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 				}
 				else if(token == "X")
 				{
-					pItem = new AirSpaceItemPoint(AirSpaceItem::Center);
+					pItem = new OpenAirItemPoint(OpenAirItem::Center);
 
 					// lat
 					tokenizer.getNextToken(tlg, ',', degToken);
@@ -618,7 +619,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 				}
 				else if(token == "T")
 				{
-					pSegment = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
+					pSegment = new OpenAirItemSeg(OpenAirItem::StartSegment);
 
 					// lat
 					tokenizer.getNextToken(tlg, ',', degToken);
@@ -637,7 +638,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 				}
 				else if(token == "Z")
 				{
-					pSegment = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
+					pSegment = new OpenAirItemSeg(OpenAirItem::StopSegment);
 
 					// lat
 					tokenizer.getNextToken(tlg, ',', degToken);
@@ -657,9 +658,15 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 
 				if(pItem != NULL)
 				{
-					pItem->setPoint(lat, lon);
-					pAirSpace->airSpaceItemList().push_back(pItem);
+					pItem->setPos(lat, lon);
+					m_openAir.push_back(pItem);
 				}
+			}
+
+			if((curSent + 1) == totalSent)
+			{
+			  m_openAir.createPointList(pAirSpace->pointList());
+			  m_openAir.clearItemList();
 			}
 		}
 	}
@@ -670,9 +677,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 {
 	QString tlg;
-	AirSpaceItem *pItem;
-	AirSpaceItemSeg *pSegment;
-	AirSpaceItemCircle *pCircle;
+	const LatLng *pLatLng;
 	bool success;
 
 	tlg = "$PBRCTRW,";
@@ -701,6 +706,19 @@ bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 	}
 	else
 	{
+	  // we send only points
+	  pLatLng = &airspace.pointList().at(curSent - 2);
+
+    tlg += "P,";
+
+    // latitude
+    tlg += latToString(pLatLng->lat(), 8);
+    tlg += ",";
+
+    // longitude
+    tlg += lonToString(pLatLng->lon(), 9);
+
+/**
 		pItem = airspace.airSpaceItemList().at(curSent - 2);
 
 		if(pItem != NULL)
@@ -775,6 +793,7 @@ bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 				break;
 			}
 		}
+*/
 	}
 
 	addTail(tlg);
