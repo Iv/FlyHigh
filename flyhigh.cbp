@@ -65,6 +65,8 @@
 		<Unit filename="src/common/container/AirSpace.h" />
 		<Unit filename="src/common/container/AirSpaceItem.cpp" />
 		<Unit filename="src/common/container/AirSpaceItem.h" />
+		<Unit filename="src/common/container/AirSpaceItemList.cpp" />
+		<Unit filename="src/common/container/AirSpaceItemList.h" />
 		<Unit filename="src/common/container/AirSpaceList.cpp" />
 		<Unit filename="src/common/container/AirSpaceList.h" />
 		<Unit filename="src/common/container/BoundBox.cpp" />
@@ -77,6 +79,12 @@
 		<Unit filename="src/common/container/FlightPointList.h" />
 		<Unit filename="src/common/container/Glider.cpp" />
 		<Unit filename="src/common/container/Glider.h" />
+		<Unit filename="src/common/container/LatLng.cpp" />
+		<Unit filename="src/common/container/LatLng.h" />
+		<Unit filename="src/common/container/OpenAir.cpp" />
+		<Unit filename="src/common/container/OpenAir.h" />
+		<Unit filename="src/common/container/OpenAirItem.cpp" />
+		<Unit filename="src/common/container/OpenAirItem.h" />
 		<Unit filename="src/common/container/Pilot.cpp" />
 		<Unit filename="src/common/container/Pilot.h" />
 		<Unit filename="src/common/container/Route.cpp" />
