@@ -29,20 +29,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
-#include "AirSpaceItem.h"
+#include "AirSpace.h"
 #include "AirSpaceList.h"
+#include "OpenAir.h"
 #include "OpenAirFileParser.h"
-#include "WayPoint.h"
+#include "OpenAirItem.h"
 
 OpenAirFileParser::OpenAirFileParser()
 {
+}
+
+OpenAirFileParser::~OpenAirFileParser()
+{
+  clearOpenAirList();
 }
 
 bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceList)
 {
   QFile file(fileName);
   QTextStream inStream(&file);
-	AirSpace *pAirspace = NULL;
+  OpenAir *pOpenAir = NULL;
+  AirSpace *pAirSpace;
+  OpenAirList::iterator it;
 	QString strValue;
   QString line;
   QByteArray byteLine;
@@ -51,7 +59,8 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 	float alt;
   bool success;
 
-	airspaceList.clear();
+  airspaceList.clear();
+  clearOpenAirList();
   success = file.open(QIODevice::ReadOnly | QIODevice::Text);
 
 	if(success)
@@ -65,38 +74,38 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 
 			if(strncmp(pRecord, "AC", 2) == 0)
 			{
-				pAirspace = new AirSpace();
+				pOpenAir = new OpenAir();
         m_arcDir = true; // reset
         id++;
-				pAirspace->setId(id);
-				airspaceList.push_back(pAirspace);
+				pOpenAir->setId(id);
+				m_airspaceList.push_back(pOpenAir);
 				parseString(pRecord, strValue);
-				pAirspace->setAirspaceClass(strValue);
+				pOpenAir->setAirspaceClass(strValue);
 			}
 			else if(strncmp(pRecord, "AN", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
 					parseString(pRecord, strValue);
-					pAirspace->setName(strValue);
+					pOpenAir->setName(strValue);
 				}
 			}
 			else if(strncmp(pRecord, "AH", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
 					parseString(pRecord, strValue);
           parseAlt(strValue, alt);
-					pAirspace->setHigh(alt);
+					pOpenAir->setHigh(alt);
 				}
 			}
 			else if(strncmp(pRecord, "AL", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
 					parseString(pRecord, strValue);
           parseAlt(strValue, alt);
-					pAirspace->setLow(alt);
+					pOpenAir->setLow(alt);
 				}
 			}
 			else if(strncmp(pRecord, "V", 1) == 0)
@@ -105,28 +114,41 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 			}
 			else if(strncmp(pRecord, "DP", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
-					parsePoint(pRecord, pAirspace);
+					parsePoint(pRecord, pOpenAir);
 				}
 			}
 			else if(strncmp(pRecord, "DB", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
-					parseArc(pRecord, pAirspace);
+					parseArc(pRecord, pOpenAir);
 				}
 			}
 			else if(strncmp(pRecord, "DC", 2) == 0)
 			{
-				if(pAirspace != NULL)
+				if(pOpenAir != NULL)
 				{
-					parseCircle(pRecord, pAirspace);
+					parseCircle(pRecord, pOpenAir);
 				}
 			}
 
       line = inStream.readLine();
 		}
+
+    for(it=m_airspaceList.begin(); it!=m_airspaceList.end(); it++)
+    {
+      pAirSpace = new AirSpace();
+      pAirSpace->setId((*it)->id());
+      pAirSpace->setName((*it)->name());
+      pAirSpace->setHigh((*it)->high());
+      pAirSpace->setLow((*it)->low());
+      pAirSpace->setAirspaceClass((*it)->airspaceClass());
+      pAirSpace->setRemark((*it)->remark());
+      pAirSpace->setBoundBox((*it)->boundBox());
+      (*it)->createPointList(pAirSpace->pointList());
+    }
 	}
 
 	return success;
@@ -175,7 +197,7 @@ void OpenAirFileParser::parseHeight(char *pRecord, int &height)
 	}
 }
 
-void OpenAirFileParser::parseAirspaceClass(char *pRecord, AirSpace *pAirspace)
+void OpenAirFileParser::parseAirspaceClass(char *pRecord, OpenAir *pOpenAir)
 {
 	QString str = pRecord;
 	int begin;
@@ -185,7 +207,7 @@ void OpenAirFileParser::parseAirspaceClass(char *pRecord, AirSpace *pAirspace)
         end = str.indexOf('\r');
 	str = str.mid(begin, end-begin);
 
-	pAirspace->setAirspaceClass(str);
+	pOpenAir->setAirspaceClass(str);
 }
 
 void OpenAirFileParser::parseVarAssign(char *pRecord)
@@ -206,24 +228,24 @@ void OpenAirFileParser::parseVarAssign(char *pRecord)
 	}
 }
 
-void OpenAirFileParser::parsePoint(char *pRecord, AirSpace *pAirspace)
+void OpenAirFileParser::parsePoint(char *pRecord, OpenAir *pOpenAir)
 {
 // DP 46:57:47 N 007:16:59 E
-	AirSpaceItemPoint *pPoint;
+	OpenAirItemPoint *pPoint;
 	double lat;
 	double lon;
 
-	pPoint = new AirSpaceItemPoint(AirSpaceItem::Point);
+	pPoint = new OpenAirItemPoint(OpenAirItem::Point);
 	parseCoordinate(pRecord + 3, lat, lon);
-	pPoint->setPoint(lat, lon);
-	pAirspace->airSpaceItemList().push_back(pPoint);
+	pPoint->setPos(lat, lon);
+	pOpenAir->push_back(pPoint);
 }
 
-void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
+void OpenAirFileParser::parseArc(char *pRecord, OpenAir *pOpenAir)
 {
 	QString str = pRecord;
-	AirSpaceItemPoint *pCenter;
-	AirSpaceItemSeg *pSeg;
+	OpenAirItemPoint *pCenter;
+	OpenAirItemSeg *pSeg;
 	double beginLat;
 	double beginLon;
 	double endLat;
@@ -236,36 +258,36 @@ void OpenAirFileParser::parseArc(char *pRecord, AirSpace *pAirspace)
   parseCoordinate(pRecord + str.indexOf(QRegExp("[EW]")) + 2, endLat, endLon);
 
 	// center
-	pCenter = new AirSpaceItemPoint(AirSpaceItem::Center);
-	pCenter->setPoint(m_arcCenterLat, m_arcCenterLon);
-	pAirspace->airSpaceItemList().push_back(pCenter);
+	pCenter = new OpenAirItemPoint(OpenAirItem::Center);
+	pCenter->setPos(m_arcCenterLat, m_arcCenterLon);
+	pOpenAir->push_back(pCenter);
 
 	// start
-	pSeg = new AirSpaceItemSeg(AirSpaceItem::StartSegment);
-	pSeg->setPoint(beginLat, beginLon);
+	pSeg = new OpenAirItemSeg(OpenAirItem::StartSegment);
+	pSeg->setPos(beginLat, beginLon);
 	pSeg->setDir(m_arcDir);
-	pAirspace->airSpaceItemList().push_back(pSeg);
+	pOpenAir->push_back(pSeg);
 
 	//stop
-	pSeg = new AirSpaceItemSeg(AirSpaceItem::StopSegment);
-	pSeg->setPoint(endLat, endLon);
+	pSeg = new OpenAirItemSeg(OpenAirItem::StopSegment);
+	pSeg->setPos(endLat, endLon);
 	pSeg->setDir(m_arcDir);
-	pAirspace->airSpaceItemList().push_back(pSeg);
+	pOpenAir->push_back(pSeg);
 }
 
-void OpenAirFileParser::parseCircle(char *pRecord, AirSpace *pAirspace)
+void OpenAirFileParser::parseCircle(char *pRecord, OpenAir *pOpenAir)
 {
-	AirSpaceItemCircle *pCircle;
+	OpenAirItemCircle *pCircle;
 	uint radius;
 
-	pCircle = new AirSpaceItemCircle();
-	pCircle->setPoint(m_arcCenterLat, m_arcCenterLon);
-	radius = WayPoint::meters(atof(pRecord + 3));
+	pCircle = new OpenAirItemCircle();
+	pCircle->setPos(m_arcCenterLat, m_arcCenterLon);
+	radius = LatLng::meters(atof(pRecord + 3));
 	pCircle->setRadius(radius);
-	pAirspace->airSpaceItemList().push_back(pCircle);
+	pOpenAir->push_back(pCircle);
 }
 
-bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double &longitude)
+bool OpenAirFileParser::parseCoordinate(char *pRecord, double &lat, double &lon)
 {
   // DB 48:47.900N,007:45.200E,48:46.500N,007:49.000E
   // DB 47:28:55 N   007:23:42 E , 47:45:37 N   007:20:26 E
@@ -288,18 +310,18 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double 
 
     if((strList.size() == 3))
     {
-      latitude = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
+      lat = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
       success = true;
     }
     else if(strList.size() == 2)
     {
-      latitude = strList[0].toInt() + strList[1].toFloat() / 60.0;
+      lat = strList[0].toInt() + strList[1].toFloat() / 60.0;
       success = true;
     }
 
     if(str.at(index) == 'S')
     {
-      latitude *= -1;
+      lat *= -1;
     }
   }
 
@@ -316,23 +338,21 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &latitude, double 
 
       if(strList.size() == 3)
       {
-        longitude = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
+        lon = strList[0].toInt() + strList[1].toInt() / 60.0 + strList[2].toInt() / 3600.0;
         success = true;
       }
       else if(strList.size() == 2)
       {
-        longitude = strList[0].toInt() + strList[1].toFloat() / 60.0;
+        lon = strList[0].toInt() + strList[1].toFloat() / 60.0;
         success = true;
       }
 
       if(str.at(index) == 'W')
       {
-        longitude *= -1;
+        lon *= -1;
       }
     }
   }
-
-qDebug() << "parse" << str << latitude << longitude;
 
   return success;
 }
@@ -392,4 +412,16 @@ bool OpenAirFileParser::parseAlt(const QString &str, float &alt)
   alt = floor(alt / 50) * 50;
 
   return success;
+}
+
+void OpenAirFileParser::clearOpenAirList()
+{
+  OpenAirList::iterator it;
+
+  for(it=m_airspaceList.begin(); it!=m_airspaceList.end(); it++)
+  {
+    delete (*it);
+  }
+
+  m_airspaceList.clear();
 }

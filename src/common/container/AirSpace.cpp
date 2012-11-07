@@ -91,11 +91,6 @@ void AirSpace::setAirspaceClass(const QString &airspaceClass)
 	m_airspaceClass = airspaceClass;
 }
 
-AirSpaceItemList& AirSpace::airSpaceItemList()
-{
-	return m_airSpaceItemList;
-}
-
 void AirSpace::setWarnDist(uint meters)
 {
 	m_warnDist = meters;
@@ -116,117 +111,14 @@ const QString& AirSpace::remark() const
 	return m_remark;
 }
 
-const WayPoint::WayPointListType& AirSpace::pointList() const
+LatLngList& AirSpace::pointList()
 {
 	return m_pointList;
 }
 
-void AirSpace::createPointList()
+void AirSpace::setBoundBox(const BoundBox &bbox)
 {
-	AirSpaceItemList::iterator it;
-	AirSpaceItemPoint *pSegCenter = NULL;
-	AirSpaceItemSeg *pSegBegin = NULL;
-	AirSpaceItemSeg *pSegEnd;
-	AirSpaceItemCircle *pCircle = NULL;
-	AirSpaceItemPoint *pPoint;
-	WayPoint center;
-  WayPoint curPt;
-	double centerLat;
-	double centerLon;
-	double curLat;
-	double curLon;
-	double dist1;
-	double dist2;
-	double bear;
-  double prev;
-	double beginArc;
-	double endArc;
-	double angDist;
-	int stepNr;
-  bool over;
-
-	m_pointList.clear();
-
-	for(it=m_airSpaceItemList.begin(); it!=m_airSpaceItemList.end(); it++)
-	{
-		switch((*it)->type())
-		{
-			case AirSpaceItem::Point:
-				pPoint = dynamic_cast<AirSpaceItemPoint*>(*it);
-
-				if(pPoint != NULL)
-				{
-					m_pointList.push_back(pPoint->pos());
-///					m_boundBox.setMinMax(pPoint->pos());
-				}
-			break;
-			case AirSpaceItem::Circle:
-				pCircle = dynamic_cast<AirSpaceItemCircle*>(*it);
-
-				if(pCircle != NULL)
-				{
-					center = pCircle->pos();
-					centerLat = (center.latitude() * M_PI) / 180;
-					centerLon = (center.longitude() * M_PI) / 180;
-					angDist = pCircle->radius() / WayPoint::earthRadius;
-
-					for(stepNr=0; stepNr<=360; stepNr+=10)
-					{
-						bear = stepNr * M_PI / 180;
-						curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear));
-						curLon = ((centerLon + atan2(sin(bear) * sin(angDist) * cos(centerLat), cos(angDist) - sin(centerLat) * sin(centerLat))) *
-									180) / M_PI;
-						curLat = (curLat * 180) / M_PI;
-						curPt.setCoordinates(curLat, curLon);
-						m_pointList.push_back(curPt);
-///						m_boundBox.setMinMax(curPt);
-					}
-				}
-			break;
-			case AirSpaceItem::Center:
-				pSegCenter = dynamic_cast<AirSpaceItemPoint*>(*it);
-			break;
-			case AirSpaceItem::StartSegment:
-				pSegBegin = dynamic_cast<AirSpaceItemSeg*>(*it);
-			break;
-			case AirSpaceItem::StopSegment:
-				pSegEnd = dynamic_cast<AirSpaceItemSeg*>(*it);
-
-				if((pSegCenter != NULL) && (pSegBegin != NULL) && (pSegEnd != NULL))
-				{
-					center = pSegCenter->pos();
-					center.distBear(pSegBegin->pos(), dist1, beginArc);
-					center.distBear(pSegEnd->pos(), dist2, endArc);
-					m_pointList.push_back(pSegBegin->pos());
-///					m_boundBox.setMinMax(pSegBegin->pos());
-					centerLat = (center.latitude() * M_PI) / 180;
-					centerLon = (center.longitude() * M_PI) / 180;
-					angDist = ((dist1 + dist2) / 2) / WayPoint::earthRadius;
-
-					// interpolate arc
-          over = false;
-          prev = beginArc;
-          bear = ((int)(beginArc / 10)) * 10; // quantize to 10
-          over = getNextBear(pSegBegin->dir(), endArc, prev, bear);
-
-          while(!over)
-          {
-            curLat = asin(sin(centerLat) * cos(angDist) + cos(centerLat) * sin(angDist) * cos(bear * M_PI / 180));
-            curLon = ((centerLon + atan2(sin(bear * M_PI / 180) * sin(angDist) * cos(centerLat),
-                       cos(angDist) - sin(centerLat) * sin(centerLat))) * 180) / M_PI;
-            curLat = (curLat * 180) / M_PI;
-            curPt.setCoordinates(curLat, curLon);
-            m_pointList.push_back(curPt);
-            prev = bear;
-            over = getNextBear(pSegBegin->dir(), endArc, prev, bear);
-          }
-
-					m_pointList.push_back(pSegEnd->pos());
-///					m_boundBox.setMinMax(pSegEnd->pos());
-				}
-			break;
-		}
-	}
+  m_boundBox = bbox;
 }
 
 const BoundBox& AirSpace::boundBox() const
@@ -249,10 +141,10 @@ bool AirSpace::isInside(const WayPoint &wp) const
 
   for(i = 0, j = nvert-1; i < nvert; j = i++)
 	{
-    if(((m_pointList[i].latitude() > wp.latitude()) != (m_pointList[j].latitude() > wp.latitude())) &&
-				(wp.longitude() < (m_pointList[j].longitude() - m_pointList[i].longitude()) *
-				(wp.latitude() - m_pointList[i].latitude()) / (m_pointList[j].latitude() - m_pointList[i].latitude()) +
-				m_pointList[i].longitude()))
+    if(((m_pointList[i].lat() > wp.latitude()) != (m_pointList[j].lat() > wp.latitude())) &&
+				(wp.longitude() < (m_pointList[j].lon() - m_pointList[i].lon()) *
+				(wp.latitude() - m_pointList[i].lat()) / (m_pointList[j].lat() - m_pointList[i].lat()) +
+				m_pointList[i].lon()))
 		{
        cross = !cross;
 		}

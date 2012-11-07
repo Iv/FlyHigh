@@ -21,19 +21,24 @@
 #ifndef OpenAirFileParser_h
 #define OpenAirFileParser_h
 
-#include <QByteArray>
-#include "AirSpace.h"
+#include "OpenAir.h"
 
 class AirSpaceList;
+class OpenAir;
 
 class OpenAirFileParser
 {
 	public:
 		OpenAirFileParser();
 
+		~OpenAirFileParser();
+
 		bool parse(const QString &fileName, AirSpaceList &airspaceList);
 
 	private:
+    typedef QList<OpenAir*> OpenAirList;
+
+    OpenAirList m_airspaceList;
 		double m_arcCenterLat;
 		double m_arcCenterLon;
 		bool m_arcDir;
@@ -42,19 +47,21 @@ class OpenAirFileParser
 
 		void parseHeight(char *pRecord, int &height);
 
-		void parseAirspaceClass(char *pRecord, AirSpace *pAirspace);
+		void parseAirspaceClass(char *pRecord, OpenAir *pOpenAir);
 
 		void parseVarAssign(char *pRecord);
 
-		void parsePoint(char *pRecord, AirSpace *pAirspace);
+		void parsePoint(char *pRecord, OpenAir *pOpenAir);
 
-		void parseArc(char *pRecord, AirSpace *pAirspace);
+		void parseArc(char *pRecord, OpenAir *pOpenAir);
 
-		void parseCircle(char *pRecord, AirSpace *pAirspace);
+		void parseCircle(char *pRecord, OpenAir *pOpenAir);
 
-		bool parseCoordinate(char *pRecord, double &latitude, double &longitude);
+		bool parseCoordinate(char *pRecord, double &lat, double &lon);
 
 		bool parseAlt(const QString &str, float &alt);
+
+		void clearOpenAirList();
 };
 
 #endif

@@ -278,7 +278,6 @@ void AirSpaceWindow::file_AddToSqlDB()
 
       for(row=topRow; row<=bottomRow; row++)
       {
-m_airSpaceList[row]->createPointList();
         ISql::pInstance()->add(*m_airSpaceList[row]);
       }
     }

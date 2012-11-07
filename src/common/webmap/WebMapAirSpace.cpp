@@ -64,7 +64,6 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 	bool first = true;
 
   pFrame = m_pWebMap->page()->mainFrame();
-  pAirSpace->createPointList();
   wpListSize = pAirSpace->pointList().size();
 
   if(wpListSize > 0)
@@ -77,15 +76,15 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
       }
 
       first = false;
-      lat = pAirSpace->pointList().at(wpNr).latitude();
-      lon = pAirSpace->pointList().at(wpNr).longitude();
+      lat = pAirSpace->pointList().at(wpNr).lat();
+      lon = pAirSpace->pointList().at(wpNr).lon();
       coords += coord.arg(lat).arg(lon);
     }
 
-    lat = pAirSpace->pointList().at(0).latitude();
-    lon = pAirSpace->pointList().at(0).longitude();
-    endLat = pAirSpace->pointList().at(wpListSize - 1).latitude();
-    endLon = pAirSpace->pointList().at(wpListSize - 1).longitude();
+    lat = pAirSpace->pointList().at(0).lat();
+    lon = pAirSpace->pointList().at(0).lon();
+    endLat = pAirSpace->pointList().at(wpListSize - 1).lat();
+    endLon = pAirSpace->pointList().at(wpListSize - 1).lon();
 
     if((lat != endLat) || (lon !=endLon))
     {

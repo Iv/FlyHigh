@@ -25,8 +25,6 @@
 #include "BoundBox.h"
 #include "LatLng.h"
 
-class AirSpaceItemList;
-
 class OpenAir
 {
 	public:
@@ -56,8 +54,6 @@ class OpenAir
 
 		void setAirspaceClass(const QString &airspaceClass);
 
-		OpenAirItemList& airSpaceItemList();
-
 		void setWarnDist(uint meters);
 
 		uint warnDist() const;
@@ -65,6 +61,12 @@ class OpenAir
 		void setRemark(const QString &remark);
 
 		const QString& remark() const;
+
+		void push_back(OpenAirItem *pItem);
+
+		void clearItemList();
+
+    const OpenAirItemList& itemList() const;
 
 		void createPointList(LatLngList &pointList);
 
