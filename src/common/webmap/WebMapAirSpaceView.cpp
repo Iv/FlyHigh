@@ -70,20 +70,15 @@ void WebMapAirSpaceView::mapReady()
 
 void WebMapAirSpaceView::appReady()
 {
-  AirSpace *pAirSpace;
-	int airSpaceNr;
-	int airSpaceListSize;
+  AirSpaceList::iterator it;
 
   m_pWebMap->setSize(width(), height());
 
   if(m_pAirSpaceList != NULL)
   {
-    airSpaceListSize = m_pAirSpaceList->size();
-
-    for(airSpaceNr=0; airSpaceNr<airSpaceListSize; airSpaceNr++)
+    for(it=m_pAirSpaceList->begin(); it<m_pAirSpaceList->end(); it++)
     {
-      pAirSpace = m_pAirSpaceList->at(airSpaceNr);
-      m_pWebMap->getAirSpace()->pushAirSpace(pAirSpace);
+      m_pWebMap->getAirSpace()->pushAirSpace(*it);
     }
   }
 }
