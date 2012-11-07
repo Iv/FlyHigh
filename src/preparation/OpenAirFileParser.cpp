@@ -24,7 +24,6 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
-#include <QDebug>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -204,8 +203,8 @@ void OpenAirFileParser::parseAirspaceClass(char *pRecord, OpenAir *pOpenAir)
 	int begin;
 	int end;
 
-        begin = str.indexOf(' ') + 1;
-        end = str.indexOf('\r');
+  begin = str.indexOf(' ') + 1;
+  end = str.indexOf('\r');
 	str = str.mid(begin, end-begin);
 
 	pOpenAir->setAirspaceClass(str);
@@ -225,7 +224,7 @@ void OpenAirFileParser::parseVarAssign(char *pRecord)
 	}
 	else if(strncmp(pRecord, "X=", 2) == 0)
 	{
-		parseCoordinate(pRecord+2, m_arcCenterLat, m_arcCenterLon);
+		parseCoordinate(pRecord + 2, m_arcCenterLat, m_arcCenterLon);
 	}
 }
 
@@ -256,7 +255,7 @@ void OpenAirFileParser::parseArc(char *pRecord, OpenAir *pOpenAir)
   // DB 46:10.92N 7:13.98E 46:13.00N 7:13.33E
   // DB 48:50:07 N 002:57:55 E,48:52:28 N 003:02:09 E
 	parseCoordinate(pRecord + 3, beginLat, beginLon);
-  parseCoordinate(pRecord + str.indexOf(QRegExp("[EW]")) + 2, endLat, endLon);
+  parseCoordinate(pRecord + str.indexOf(QRegExp("[EW]")) + 1, endLat, endLon);
 
 	// center
 	pCenter = new OpenAirItemPoint(OpenAirItem::Center);
@@ -296,16 +295,17 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &lat, double &lon)
   QString coord;
   QStringList strList;
   int begin;
-  int index;
+  int end;
   bool success;
 
   str = pRecord;
-  index = str.indexOf(QRegExp("[NS]"));
-  success = ((index > 0) && (index < str.size()));
+  begin = str.indexOf(QRegExp("[0-9]"));
+  end = str.indexOf(QRegExp("[NS]"));
+  success = ((end > 0) && (end < str.size()));
 
   if(success)
   {
-    coord = str.left(index);
+    coord = str.mid(begin, (end - begin));
     strList = coord.split(':');
     success = (strList.size() == 3);
 
@@ -320,7 +320,7 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &lat, double &lon)
       success = true;
     }
 
-    if(str.at(index) == 'S')
+    if(str.at(end) == 'S')
     {
       lat *= -1;
     }
@@ -328,13 +328,13 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &lat, double &lon)
 
   if(success)
   {
-    begin = (index + 2);
-    index = str.indexOf(QRegExp("[EW]"), begin);
-    success = ((index > 0) && (index < str.size()));
+    begin = str.indexOf(QRegExp("[0-9]"), end);
+    end = str.indexOf(QRegExp("[EW]"), begin);
+    success = ((end > 0) && (end < str.size()));
 
     if(success)
     {
-      coord = str.mid(begin, (index - begin));
+      coord = str.mid(begin, (end - begin));
       strList = coord.split(':');
 
       if(strList.size() == 3)
@@ -348,7 +348,7 @@ bool OpenAirFileParser::parseCoordinate(char *pRecord, double &lat, double &lon)
         success = true;
       }
 
-      if(str.at(index) == 'W')
+      if(str.at(end) == 'W')
       {
         lon *= -1;
       }
