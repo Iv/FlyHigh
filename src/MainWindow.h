@@ -64,7 +64,7 @@ class MainWindow: public QMainWindow
 
 		void routes_fromGPS();
 
-//		void airspaces_fromSQL();
+		void airspaces_fromSQL();
 
 		void airspaces_fromGPS();
 

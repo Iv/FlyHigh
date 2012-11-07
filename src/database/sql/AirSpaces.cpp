@@ -28,6 +28,8 @@
 #include "AirSpaceItemList.h"
 #include "AirSpaces.h"
 
+#include <QDebug>
+
 AirSpaces::AirSpaces(QSqlDatabase DB)
 	:DataBaseSub(DB)
 {
@@ -37,16 +39,33 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString sqls;
+  AirSpaceItemList::iterator it;
+  int id;
   bool success;
 
-  sqls = QString("INSERT INTO AirSpaces(Name, Class, Lower, Upper, Comment) "
-                 "VALUES('%1', '%2', %3, %4, '%5');")
-                 .arg(airspace.name()).arg(airspace.airspaceClass()).arg(airspace.low())
-                 .arg(airspace.high()).arg(airspace.remark());
+  id = newId("AirSpaces");
+
+  sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
+                 "VALUES(%1, '%2', '%3', %4, %5, '%6');")
+                 .arg(id).arg(airspace.name()).arg(airspace.airspaceClass())
+                 .arg(airspace.low()).arg(airspace.high()).arg(airspace.remark());
 
   success = query.exec(sqls);
+
+  if(success)
+  {
+    airspace.setId(id);
+
+    for(it=airspace.airSpaceItemList().begin(); it!=airspace.airSpaceItemList().end(); it++)
+    {
+      sqls = QString("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) "
+                      "VALUES(%1, %2, %3);")
+                      .arg(id).arg((*it)->lon()).arg((*it)->lat());
+      success &= query.exec(sqls);
+    }
+  }
+
 	Error::verify(success, Error::SQL_CMD);
-	setAirSpaceId(airspace);
 	DataBaseSub::setLastModified("AirSpaces");
 
 	return success;
@@ -58,10 +77,13 @@ bool AirSpaces::delAirSpace(const AirSpace &airspace)
 	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM AirSpaces WHERE Id='%1';").arg(airspace.id());
+	sqls = QString("DELETE FROM AirSpaceItems WHERE AirSpaceId='%1';").arg(airspace.id());
 	success = query.exec(sqls);
-	DataBaseSub::setLastModified("AirSpaces");
+  sqls = QString("DELETE FROM AirSpaces WHERE Id='%1';").arg(airspace.id());
+  success &= query.exec(sqls);
+
 	Error::verify(success, Error::SQL_CMD);
+	DataBaseSub::setLastModified("AirSpaces");
 
 	return success;
 }
@@ -134,7 +156,7 @@ bool AirSpaces::setAirSpaceId(AirSpace &airspace)
 	bool success;
 	int id = -1;
 
-  sqls = QString("SELECT Id FROM AirSpaces WHERE Name='%1'").arg(airspace.name());
+  sqls = QString("SELECT Id FROM AirSpaces WHERE Name='%1'").arg(airspace.name().left(16));
 	success = (query.exec(sqls) && query.first());
 
 	if(success)

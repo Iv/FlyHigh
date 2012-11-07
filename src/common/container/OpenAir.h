@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,63 +17,71 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef AirSpaceWindow_h
-#define AirSpaceWindow_h
+#ifndef OpenAir_h
+#define OpenAir_h
 
-#include "AirSpace.h"
-#include "AirSpaceList.h"
-#include "AirSpaceView.h"
-#include "IDataBase.h"
-#include "TableWindow.h"
+#include <QString>
+#include "OpenAirItem.h"
+#include "BoundBox.h"
+#include "LatLng.h"
 
-class QWidget;
-class WebMapAirSpaceView;
+class AirSpaceItemList;
 
-class AirSpaceWindow: public TableWindow
+class OpenAir
 {
-	Q_OBJECT
-
 	public:
-		AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+		enum {MaxNameSize=17};
 
-		~AirSpaceWindow();
+		OpenAir();
 
-	protected:
-    void closeEvent(QCloseEvent *pEvent);
+		virtual ~OpenAir();
 
-		void selectionChanged();
+    int id() const;
 
-	private slots:
-		void file_open();
+		void setId(int id);
 
-		void file_delete();
+		const QString& name() const;
 
-		void file_update();
+		void setName(const QString &name);
 
-		void file_AddToSqlDB();
+		int high() const;
 
-		void file_AddToGPS();
+		void setHigh(int high);
 
-    void file_viewAirSpace();
+		int low() const;
 
-		void file_viewWebMap();
+		void setLow(int low);
 
-    void airSpaceViewFinished(int);
+		const QString& airspaceClass() const;
 
-		void webMapFinished(int res);
+		void setAirspaceClass(const QString &airspaceClass);
 
-    void airSpaceChanged(int line);
+		OpenAirItemList& airSpaceItemList();
+
+		void setWarnDist(uint meters);
+
+		uint warnDist() const;
+
+		void setRemark(const QString &remark);
+
+		const QString& remark() const;
+
+		void createPointList(LatLngList &pointList);
+
+		const BoundBox& boundBox() const;
 
 	private:
-		enum Fields{Name, Low, High, Class};
+    int m_id;
+		QString m_name;
+		QString m_airspaceClass;
+		int m_high;
+		int m_low;
+		OpenAirItemList m_itemList;
+		BoundBox m_boundBox;
+		QString m_remark;
+    uint m_warnDist;
 
-		IDataBase *m_pDb;
-		AirSpaceList m_airSpaceList;
-		AirSpaceView *m_pAirSpaceView;
-    WebMapAirSpaceView *m_pWebMapView;
-    bool m_externSelect;
-
-    void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
+		bool getNextBear(bool dir, double endBear, double prevBear, double &bear);
 };
 
 #endif

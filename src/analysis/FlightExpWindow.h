@@ -37,7 +37,6 @@ class FlightExpWindow: public TableWindow
 	private:
 		enum Fields{Year, NrFlights, Airtime};
 
-		int m_lastModified;
 		ISql *m_pDb;
 };
 

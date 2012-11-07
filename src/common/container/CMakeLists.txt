@@ -10,6 +10,9 @@ set(container_SRCS AirSpace.cpp
                    Flight.cpp
                    FlightPointList.cpp
                    Glider.cpp
+                   LatLng.cpp
+                   OpenAir.cpp
+                   OpenAirItem.cpp
                    Pilot.cpp
                    Route.cpp
                    Servicing.cpp

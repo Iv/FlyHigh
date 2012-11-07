@@ -391,12 +391,22 @@ bool ISql::routeList(Route::RouteListType &routeList)
 
 bool ISql::add(AirSpace &airspace)
 {
-	return m_pAirSpaces->add(airspace);
+  bool success;
+
+	success = m_pAirSpaces->add(airspace);
+	emit airSpacesChanged();
+
+	return success;
 }
 
 bool ISql::delAirSpace(AirSpace &airspace)
 {
-	return m_pAirSpaces->delAirSpace(airspace);
+  bool success;
+
+	success = m_pAirSpaces->delAirSpace(airspace);
+	emit airSpacesChanged();
+
+	return success;
 }
 
 bool ISql::airspace(const QString &name, AirSpace &airspace)
