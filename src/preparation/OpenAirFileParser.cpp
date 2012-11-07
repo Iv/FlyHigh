@@ -148,6 +148,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
       pAirSpace->setRemark((*it)->remark());
       pAirSpace->setBoundBox((*it)->boundBox());
       (*it)->createPointList(pAirSpace->pointList());
+      airspaceList.push_back(pAirSpace);
     }
 	}
 
