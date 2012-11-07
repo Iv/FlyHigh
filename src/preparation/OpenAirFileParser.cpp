@@ -20,6 +20,7 @@
 
 #include <QFile>
 #include <QBuffer>
+#include <QDebug>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
