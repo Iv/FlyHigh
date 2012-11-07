@@ -34,7 +34,7 @@
 #include "DatabaseParameters.h"
 
 class QTimer;
-//class AirSpaces;
+class AirSpaces;
 class WayPoints;
 class Gliders;
 class Flights;
@@ -114,12 +114,14 @@ class ISql: public IDataBase
 
 		bool routeList(Route::RouteListType &routeList);
 
-/* not longer supported
 		bool add(AirSpace &airspace);
+
 		bool delAirSpace(AirSpace &airspace);
+
 		bool airspace(const QString &name, AirSpace &airspace);
-		bool airspaceList(AirSpace::AirSpaceListType &airspaceList);
-*/
+
+		bool airspaceList(AirSpaceList &airspaceList);
+
 		bool add(Servicing &serv);
 
 		bool delServicing(Servicing &servicing);
@@ -142,7 +144,7 @@ class ISql: public IDataBase
 		void servicingsChanged();
 
 	protected:
-//		AirSpaces* pAirSpaceTable();
+		AirSpaces* pAirSpaceTable();
 
 		WayPoints* pWayPointTable();
 
@@ -157,7 +159,7 @@ class ISql: public IDataBase
 	private:
 		static ISql* m_pInst;
     QTimer *m_pTimer;
-//		AirSpaces* m_pAirSpaces;
+		AirSpaces* m_pAirSpaces;
 		WayPoints* m_pWayPoints;
 		Gliders* m_pGliders;
 		Flights* m_pFlights;
@@ -180,7 +182,7 @@ class ISql: public IDataBase
   private slots:
     void checkModified();
 
-//		friend class AirSpaces;
+		friend class AirSpaces;
 		friend class WayPoints;
 		friend class Gliders;
 		friend class Flights;

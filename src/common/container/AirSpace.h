@@ -22,6 +22,7 @@
 
 #include <QString>
 #include "AirSpaceItem.h"
+#include "AirSpaceItemList.h"
 #include "BoundBox.h"
 #include "WayPoint.h"
 
@@ -54,7 +55,7 @@ class AirSpace
 
 		void setAirspaceClass(const QString &airspaceClass);
 
-		AirSpaceItem::AirSpaceItemListType& airSpaceItemList();
+		AirSpaceItemList& airSpaceItemList();
 
 		void setWarnDist(uint meters);
 
@@ -78,7 +79,7 @@ class AirSpace
 		QString m_airspaceClass;
 		int m_high;
 		int m_low;
-		AirSpaceItem::AirSpaceItemListType m_airSpaceItemList;
+		AirSpaceItemList m_airSpaceItemList;
 		WayPoint::WayPointListType m_pointList;
 		BoundBox m_boundBox;
 		QString m_remark;

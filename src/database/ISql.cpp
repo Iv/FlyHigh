@@ -47,7 +47,7 @@ ISql::ISql()
   // set default values
 	setDBParameters(DatabaseParameters::defaultParameters());
 
-//	m_pAirSpaces = new AirSpaces(m_DefaultDB);
+	m_pAirSpaces = new AirSpaces(m_DefaultDB);
 	m_pWayPoints = new WayPoints(m_DefaultDB);
 	m_pGliders = new Gliders(m_DefaultDB);
 	m_pFlights = new Flights(m_DefaultDB);
@@ -60,7 +60,7 @@ ISql::~ISql()
 {
 	m_DefaultDB.close();
 
-//	delete m_pAirSpaces;
+	delete m_pAirSpaces;
 	delete m_pWayPoints;
 	delete m_pGliders;
 	delete m_pFlights;
@@ -388,7 +388,7 @@ bool ISql::routeList(Route::RouteListType &routeList)
 {
 	return m_pRoutes->routeList(routeList);
 }
-/*
+
 bool ISql::add(AirSpace &airspace)
 {
 	return m_pAirSpaces->add(airspace);
@@ -404,16 +404,11 @@ bool ISql::airspace(const QString &name, AirSpace &airspace)
 	return m_pAirSpaces->airspace(name, airspace);
 }
 
-int ISql::airspacesLastModified()
-{
-	return m_pAirSpaces->lastModified("AirSpaces");
-}
-
-bool ISql::airspaceList(AirSpace::AirSpaceListType &airspaceList)
+bool ISql::airspaceList(AirSpaceList &airspaceList)
 {
 	return m_pAirSpaces->airspaceList(airspaceList);
 }
-*/
+
 bool ISql::add(Servicing &serv)
 {
   bool success;
@@ -459,11 +454,10 @@ bool ISql::pilot(int id, Pilot &pilot)
 	return m_pPilots->pilot(id, pilot);
 }
 
-/*
 AirSpaces* ISql::pAirSpaceTable()
 {
 	return m_pAirSpaces;
-}*/
+}
 
 WayPoints* ISql::pWayPointTable()
 {
@@ -499,7 +493,10 @@ void ISql::upgradeTables()
 
 void ISql::checkModified()
 {
-  // m_pAirSpaces->checkModified();
+  if(m_pAirSpaces->checkModified())
+  {
+    emit airSpacesChanged();
+  }
 
   if(m_pFlights->checkModified())
   {
