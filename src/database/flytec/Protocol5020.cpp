@@ -567,6 +567,7 @@ bool Protocol5020::ctrListRec(uint &curSent, uint &totalSent, AirSpace *pAirSpac
 			{
 				// type
 				tokenizer.getNextToken(tlg, ',', token);
+				pItem = NULL;
 
 				if(token == "C")
 				{
