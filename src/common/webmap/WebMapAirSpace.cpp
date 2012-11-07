@@ -24,8 +24,6 @@
 #include "WebMap.h"
 #include "WebMapAirSpace.h"
 
-#include <QDebug>
-
 WebMapAirSpace::WebMapAirSpace(WebMap *pWebMap)
 {
 	m_pWebMap = pWebMap;
@@ -97,9 +95,11 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 
   id = pAirSpace->id();
   name = pAirSpace->name();
+  name.replace(QString("'"), QString("`"));
   low = pAirSpace->low();
   high = pAirSpace->high();
   airClass = pAirSpace->airspaceClass();
+  airClass.replace(QString("'"), QString("`"));
   pFrame->evaluateJavaScript(code.arg(coords).arg(id).arg(name).arg(low).arg(high).arg(airClass));
 }
 

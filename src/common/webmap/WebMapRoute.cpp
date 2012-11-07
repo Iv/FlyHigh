@@ -52,9 +52,12 @@ void WebMapRoute::populateObject()
 void WebMapRoute::setName(const QString &name)
 {
 	QString code = "rt_setName('%1');";
+	QString locName;
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
+	locName = name;
+	locName.replace(QString("'"), QString("`"));
 	pFrame->evaluateJavaScript(code.arg(name));
 }
 
