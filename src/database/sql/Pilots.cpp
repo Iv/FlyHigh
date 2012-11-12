@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QDateTime>
+#include <QRegExp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
@@ -40,13 +41,25 @@ bool Pilots::add(Pilot &pilot)
 {
   QSqlQuery query(db());
   QString sqls;
+  QString first;
+  QString last;
+  QString callsign;
 	bool success;
+
+	first = pilot.firstName();
+	first.replace(QRegExp("('|\")"), "\\\\1");
+	last = pilot.lastName();
+	last.replace(QRegExp("('|\")"), "\\\\1");
+	callsign = pilot.callSign();
+	callsign.replace(QRegExp("('|\")"), "\\\\1");
 
   sqls = QString("INSERT INTO Pilots (FirstName, LastName, BirthDate, CallSign, GliderId) "
                  "VALUES('%1', '%2', '%3', '%4', %5);")
-                 .arg(pilot.firstName()).arg(pilot.lastName())
+                 .arg(first)
+                 .arg(last)
                  .arg(pilot.birthDate().toString("yyyy-MM-dd"))
-                 .arg(pilot.callSign()).arg(pilot.glider().id());
+                 .arg(callsign)
+                 .arg(pilot.glider().id());
 
   success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
@@ -60,16 +73,26 @@ bool Pilots::update(Pilot &pilot)
 {
   QSqlQuery query(db());
 	QString sqls;
+  QString first;
+  QString last;
+  QString callsign;
 	bool success;
+
+	first = pilot.firstName();
+	first.replace(QRegExp("('|\")"), "\\\\1");
+	last = pilot.lastName();
+	last.replace(QRegExp("('|\")"), "\\\\1");
+	callsign = pilot.callSign();
+	callsign.replace(QRegExp("('|\")"), "\\\\1");
 
 	sqls = QString("UPDATE Pilots SET FirstName='%1', LastName='%2', BirthDate='%3', "
                  "CallSign='%4', GliderId=%5 WHERE Id=%6")
-		.arg(pilot.firstName())
-		.arg(pilot.lastName())
-		.arg(pilot.birthDate().toString("yyyy-MM-dd"))
-		.arg(pilot.callSign())
-		.arg(pilot.glider().id())
-		.arg(pilot.id());
+                .arg(first)
+                .arg(last)
+                .arg(pilot.birthDate().toString("yyyy-MM-dd"))
+                .arg(callsign)
+                .arg(pilot.glider().id())
+                .arg(pilot.id());
 
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
@@ -82,7 +105,6 @@ bool Pilots::pilot(int id, Pilot &pilot)
 {
 	QSqlQuery query(db());
 	QString sqls;
-	QString dbModel;
 	Glider glider;
 	bool success;
 
@@ -112,13 +134,20 @@ bool Pilots::setId(Pilot &pilot)
 {
   QSqlQuery query(db());
 	QString sqls;
-	QString dbModel;
+  QString first;
+  QString last;
 	bool success;
 	int id = -1;
 
+	first = pilot.firstName();
+	first.replace(QRegExp("('|\")"), "\\\\1");
+	last = pilot.lastName();
+	last.replace(QRegExp("('|\")"), "\\\\1");
+
   sqls = QString("SELECT Id FROM Pilots WHERE FirstName='%1' AND LastName='%2' "
                  "AND BirthDate='%3'")
-                  .arg(pilot.firstName()).arg(pilot.lastName())
+                  .arg(first)
+                  .arg(last)
                   .arg(pilot.birthDate().toString("yyyy-MM-dd"));
 
 	success = (query.exec(sqls) && query.first());

@@ -39,8 +39,6 @@ class WebMapRoute: public QObject
 
 		void init();
 
-		void populateObject();
-
     void setName(const QString &name);
 
     QString name() const;

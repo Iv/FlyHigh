@@ -37,7 +37,6 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
   connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
-	connect(pFrame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateObject()));
 }
 
 WebMapRouteView::~WebMapRouteView()
@@ -92,9 +91,4 @@ void WebMapRouteView::finished(int res)
   }
 
 	done(res);
-}
-
-void WebMapRouteView::populateObject()
-{
-  m_pWebMap->getRoute()->populateObject();
 }

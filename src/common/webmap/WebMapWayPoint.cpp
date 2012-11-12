@@ -58,11 +58,11 @@ void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
   pFrame = m_pWebMap->page()->mainFrame();
   id = wp.id();
   name = wp.name();
-  name.replace(QString("'"), QString("`"));
+  name.replace(QRegExp("('|\")"), "\\\\1");
   spot = wp.spot();
-  spot.replace(QString("'"), QString("`"));
+  spot.replace(QRegExp("('|\")"), "\\\\1");
   country = wp.country();
-  country.replace(QString("'"), QString("`"));
+  country.replace(QRegExp("('|\")"), "\\\\1");
   lat = wp.latitude();
   lon = wp.longitude();
   alt = wp.altitude();
@@ -93,19 +93,6 @@ void WebMapWayPoint::setEditable(bool en)
 	pFrame->evaluateJavaScript(code.arg(en));
 }
 
-/**
-bool WebMapWayPoint::getFirstModified(WayPoint &wp)
-{
-  QString code = "wp_initNextModified();";
-	QWebFrame *pFrame;
-
-	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
-
-	return getNextModified(wp);
-}
-*/
-
 bool WebMapWayPoint::getNextModified(WayPoint &wp)
 {
   QString code = "wp_getNextModified();";
@@ -129,31 +116,4 @@ bool WebMapWayPoint::getNextModified(WayPoint &wp)
 	}
 
 	return valid;
-}
-
-void WebMapWayPoint::beginSaveWayPoint()
-{
-  m_wpList.clear();
-}
-
-void WebMapWayPoint::saveWayPoint(int id, const QString &name, const QString &spot,
-                                      const QString &country, double lat, double lon,
-                                      int alt)
-{
-  WayPoint wp;
-
-  wp.setId(id);
-  wp.setName(name);
-  wp.setSpot(spot);
-  wp.setCountry(country);
-  wp.setLatitude(lat);
-  wp.setLongitude(lon);
-  wp.setAltitude(alt);
-
-  m_wpList.push_back(wp);
-}
-
-void WebMapWayPoint::endSaveWayPoint()
-{
-//  emit wayPointsChanged(m_wpList);
 }
