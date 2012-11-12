@@ -71,6 +71,11 @@ void WebMapWayPointView::setEditable(bool en)
   m_editable = en;
 }
 
+bool WebMapWayPointView::editable() const
+{
+  return m_editable;
+}
+
 void WebMapWayPointView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));

@@ -46,6 +46,8 @@ class WebMapWayPointView: public QDialog
 
 		void setEditable(bool en);
 
+		bool editable() const;
+
 	signals:
 		void wayPointChanged(int id);
 
