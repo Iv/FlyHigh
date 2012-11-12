@@ -39,11 +39,6 @@ var map = null;
 var flight = null;
 var plot = null;
 
-// tbrm
-var data = [];
-var sogs = [];
-var varios = [];
-
 function fl_init(width, height)
 {
 	var mapLoaded = false;
@@ -111,14 +106,6 @@ function rt_setName(name)
 	locInput.innerHTML = name;
 }
 
-function fl_setTrack(encTrack)
-{
-	var path;
-
-	path = google.maps.geometry.encoding.decodePath(encTrack);
-	flight.setTrackPts(path);
-}
-
 function fl_setPlotSize(width, height)
 {
 	var left;
@@ -148,6 +135,26 @@ function fl_setFlightAlt(altList, minAlt, maxAlt)
 	flight.setAltList(altList, minAlt, maxAlt);
 }
 
+function fl_setFlightLatLon(latlngs)
+{
+	var latlng;
+	var posNr;
+	var bounds;
+	var path = [];
+
+	bounds = new google.maps.LatLngBounds();
+
+	for(posNr=0; posNr<latlngs.length; posNr++)
+	{
+		latlng = new google.maps.LatLng(latlngs[posNr][0], latlngs[posNr][1]);
+		path.push(latlng);
+		bounds.extend(latlng);
+	}
+
+	flight.setTrackPts(path);
+	map.fitBounds(bounds);
+}
+
 function fl_setSog(sogList)
 {
 	flight.setSogList(sogList);
@@ -162,9 +169,9 @@ function fl_showPlot()
 {
 	var index;
 	var maxIndex;
+	var data = [];
 
 	maxIndex = flight.getTimeList().length;
-	data = [];
 
 	for(index=0; index<maxIndex; index++)
 	{

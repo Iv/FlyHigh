@@ -55,8 +55,10 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 	QString encPoints;
 	QString encLevels;
 	QString value = "%1";
+	QString latLonArg = "[%1,%2]";
 	QString strTime = "";
 	QString strAlt = "";
+	QString strLatLon = "";
 	QTime time;
 	WayPoint wp;
 	uint fpNr;
@@ -92,6 +94,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 			{
 				strTime += ",";
 				strAlt += ",";
+				strLatLon += ",";
 			}
 
 			first = false;
@@ -114,33 +117,22 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 			minAlt = qMin(wp.altitude(), minAlt);
 			maxAlt = qMax(wp.altitude(), maxAlt);
 			strAlt += value.arg(wp.altitude());
+
+			// lat, lon
+			strLatLon += latLonArg.arg(wp.latitude()).arg(wp.longitude());
 		}
 
 		minAlt = floor(minAlt / 100.0) * 100;
 		maxAlt = ceil(maxAlt / 100.0) * 100;
-
-		encoder.dpEncode(wpList, encPoints, encLevels);
-		setWayPointList(encPoints, encLevels, 3, "#FF0000");
 
 		pFrame = m_pWebMap->page()->mainFrame();
 		code = "fl_setFlightTime([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
 		code = "fl_setFlightAlt([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
-/*
-		code = "fl_setFlightLatLon([%1], [%2]);";
-		pFrame->evaluateJavaScript(code.arg(strLat).arg(strLon));
-*/
+		code = "fl_setFlightLatLon([%1]);";
+		pFrame->evaluateJavaScript(code.arg(strLatLon));
 	}
-}
-
-void WebMapFlight::setWayPointList(const QString &encPoints, const QString &encLevels, uint weight, const QString &color)
-{
-	QString code = "fl_setTrack('%1');";
-	QWebFrame *pFrame;
-
-	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(encPoints));
 }
 
 void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList)

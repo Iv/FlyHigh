@@ -50,9 +50,6 @@ class WebMapFlight: public QObject
 	private:
 		WebMap *m_pWebMap;
 		uint m_plotEn;
-
-    void setWayPointList(const QString &encPoints, const QString &encLevels,
-                         uint weight, const QString &color);
 };
 
 #endif
