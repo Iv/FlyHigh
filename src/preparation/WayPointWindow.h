@@ -38,6 +38,8 @@ class WayPointWindow: public TableWindow
 		~WayPointWindow();
 
 	protected:
+    void closeEvent(QCloseEvent *pEvent);
+
 		void selectionChanged();
 
 	private slots:
@@ -61,7 +63,11 @@ class WayPointWindow: public TableWindow
 
 		void file_open();
 
+		void wayPointViewFinished(int res);
+
 		void wayPointChanged(int id);
+
+		void wayPointsChanged(WayPoint::WayPointListType &wpList);
 
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
