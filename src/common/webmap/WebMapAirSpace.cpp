@@ -95,11 +95,11 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
 
   id = pAirSpace->id();
   name = pAirSpace->name();
-  name.replace(QString("'"), QString("`"));
+  name.replace(QRegExp("('|\")"), "\\\\1");
   low = pAirSpace->low();
   high = pAirSpace->high();
   airClass = pAirSpace->airspaceClass();
-  airClass.replace(QString("'"), QString("`"));
+  airClass.replace(QRegExp("('|\")"), "\\\\1");
   pFrame->evaluateJavaScript(code.arg(coords).arg(id).arg(name).arg(low).arg(high).arg(airClass));
 }
 

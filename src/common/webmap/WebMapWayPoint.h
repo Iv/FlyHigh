@@ -47,17 +47,6 @@ class WebMapWayPoint: public QObject
 
     bool getNextModified(WayPoint &wp);
 
-	signals:
-		void wayPointsChanged(WayPoint::WayPointListType &wpList); /// ####### to be removed
-
-	protected slots:
-    void beginSaveWayPoint();
-
-		void saveWayPoint(int id, const QString &name, const QString &spot, const QString &country,
-                      double lat, double lon, int alt);
-
-    void endSaveWayPoint();
-
 	private:
 		WebMap *m_pWebMap;
 		WayPoint::WayPointListType m_wpList;

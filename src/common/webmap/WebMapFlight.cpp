@@ -21,11 +21,8 @@
 #include <QObject>
 #include <QWebFrame>
 #include <math.h>
-#include "PolyLineEncoder.h"
 #include "WebMap.h"
 #include "WebMapFlight.h"
-
-#include <QDebug>
 
 WebMapFlight::WebMapFlight(WebMap *pWebMap)
 {
@@ -51,9 +48,6 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 	QString code;
 	QWebFrame *pFrame;
 	WayPoint::WayPointListType wpList;
-	PolyLineEncoder encoder;
-	QString encPoints;
-	QString encLevels;
 	QString value = "%1";
 	QString latLonArg = "[%1,%2]";
 	QString strTime = "";

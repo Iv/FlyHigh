@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QRegExp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
@@ -36,16 +37,24 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString sqls;
+  QString name;
+  QString airClass;
+  QString comment;
   LatLngList::iterator it;
   int id;
   bool success;
 
   id = newId("AirSpaces");
-
+  name = airspace.name();
+  name.replace(QRegExp("('|\")"), "\\\\1");
+  airClass = airspace.airspaceClass();
+  airClass.replace(QRegExp("('|\")"), "\\\\1");
+  comment = airspace.remark();
+  comment.replace(QRegExp("('|\")"), "\\\\1");
   sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
                  "VALUES(%1, '%2', '%3', %4, %5, '%6');")
-                 .arg(id).arg(airspace.name()).arg(airspace.airspaceClass())
-                 .arg(airspace.low()).arg(airspace.high()).arg(airspace.remark());
+                 .arg(id).arg(name).arg(airClass)
+                 .arg(airspace.low()).arg(airspace.high()).arg(comment);
 
   success = query.exec(sqls);
 
@@ -89,10 +98,13 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 {
   QSqlQuery query(db());
 	QString sqls;
+	QString locName;
 	bool success = false;
 
+  locName = name;
+  locName.replace(QRegExp("('|\")"), "\\\\1");
 	sqls = QString("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces WHERE Name='%1';")
-                  .arg(name);
+                  .arg(locName);
   success = query.exec(sqls);
 
 	if(success)
@@ -141,31 +153,6 @@ bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 	}
 
 	Error::verify(success, Error::SQL_CMD);
-
-	return success;
-}
-
-bool AirSpaces::setAirSpaceId(AirSpace &airspace)
-{
-  QSqlQuery query(db());
-	QString sqls;
-	QString dbModel;
-	bool success;
-	int id = -1;
-
-  sqls = QString("SELECT Id FROM AirSpaces WHERE Name='%1'").arg(airspace.name().left(16));
-	success = (query.exec(sqls) && query.first());
-
-	if(success)
-	{
-		id = query.value(0).toInt();
-	}
-	else
-	{
-		Error::verify(success, Error::SQL_CMD);
-	}
-
-	airspace.setId(id);
 
 	return success;
 }

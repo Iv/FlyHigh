@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QRegExp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
@@ -37,20 +38,25 @@ bool Routes::add(Route &route)
 	QSqlQuery query(db());
 	QString sqls;
 	QString value;
+	QString name;
 	uint nWps;
 	uint wpNr;
 	bool success;
 
+	name = route.name();
+	name.replace(QRegExp("('|\")"), "\\\\1");
+
 	// insert route name
-	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(NULL, '%1', %2);")
-                  .arg(route.name()).arg(route.type());
+	sqls = QString("INSERT INTO Routes(Name, Type) VALUES('%1', %2);")
+                  .arg(name)
+                  .arg(route.type());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
 	if(success)
 	{
 		setId(route);
-		sqls = "INSERT INTO RouteItems(Id, RouteId, WayPointId) VALUES";
+		sqls = "INSERT INTO RouteItems(RouteId, WayPointId) VALUES";
 
 		// insert route items
 		nWps = route.wayPointList().size();
@@ -62,7 +68,7 @@ bool Routes::add(Route &route)
 				sqls += ", ";
 			}
 
-			value = QString("(NULL, %1, %2)").arg(route.id()).arg(route.wayPointList().at(wpNr).id());
+			value = QString("(%1, %2)").arg(route.id()).arg(route.wayPointList().at(wpNr).id());
 			sqls += value;
 		}
 
@@ -102,19 +108,6 @@ bool Routes::delRoute(Route &route)
       sqls = QString("DELETE FROM WayPoints WHERE Id=%1").arg((*it).id());
       success &= query.exec(sqls);
 	  }
-
-/**
-		sqls = "SELECT COUNT(*) FROM Flights WHERE StartPtId = %1 OR LandPtId = %2";
-
-		if(query.exec(sqls.arg((*it).id()).arg((*it).id())) && query.next())
-		{
-			if(query.value(0).toInt() == 0)
-			{
-				sqls = "DELETE FROM WayPoints WHERE Id = %1";
-				success &= query.exec(sqls.arg((*it).id()));
-			}
-		}
-*/
 	}
 
 	Error::verify(success, Error::SQL_DEL);
@@ -174,11 +167,14 @@ bool Routes::setId(Route &route)
 {
 	QSqlQuery query(db());
 	QString sqls;
-	QString dbModel;
+	QString name;
 	bool success;
 	int id = -1;
 
-	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';").arg(route.name());
+	name = route.name();
+	name.replace(QRegExp("('|\")"), "\\\\1");
+
+	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';").arg(name);
 	success = (query.exec(sqls) && query.first());
 
 	if(success)

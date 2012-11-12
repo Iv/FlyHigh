@@ -44,11 +44,6 @@ void WebMapRoute::init()
 	pFrame->evaluateJavaScript(code.arg(m_pWebMap->width()).arg(m_pWebMap->height()));
 }
 
-void WebMapRoute::populateObject()
-{
-	m_pWebMap->page()->mainFrame()->addToJavaScriptWindowObject("WebMapRoute", this);
-}
-
 void WebMapRoute::setName(const QString &name)
 {
 	QString code = "rt_setName('%1');";
@@ -57,7 +52,7 @@ void WebMapRoute::setName(const QString &name)
 
 	pFrame = m_pWebMap->page()->mainFrame();
 	locName = name;
-	locName.replace(QString("'"), QString("`"));
+	locName.replace(QRegExp("('|\")"), "\\\\1");
 	pFrame->evaluateJavaScript(code.arg(name));
 }
 

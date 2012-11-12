@@ -60,8 +60,6 @@ class WebMapRouteView: public QDialog
 		void mapReady();
 
 		void finished(int res);
-
-		void populateObject();
 };
 
 #endif

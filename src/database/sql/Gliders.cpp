@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QRegExp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
@@ -35,11 +36,20 @@ bool Gliders::add(Glider &glider)
 {
   QSqlQuery query(db());
   QString sqls;
+  QString manu;
+  QString model;
+  QString serial;
   bool success;
 
+  manu = glider.manufacturer();
+  manu.replace(QRegExp("('|\")"), "\\\\1");
+  model = glider.model();
+  model.replace(QRegExp("('|\")"), "\\\\1");
+  serial = glider.serial();
+  serial.replace(QRegExp("('|\")"), "\\\\1");
   sqls = QString("INSERT INTO Gliders (Manufacturer, Model, Serial) "
                  "VALUES('%1', '%2', '%3');")
-                 .arg(glider.manufacturer()).arg(glider.model()).arg(glider.serial());
+                 .arg(manu).arg(model).arg(serial);
 
   success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
