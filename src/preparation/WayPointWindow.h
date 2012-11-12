@@ -67,8 +67,6 @@ class WayPointWindow: public TableWindow
 
 		void wayPointChanged(int id);
 
-		void wayPointsChanged(WayPoint::WayPointListType &wpList);
-
 	private:
 		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 
