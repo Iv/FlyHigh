@@ -55,19 +55,6 @@ function wp_init()
 		{
 			mapLoaded = true;
 			cluster = new MarkerClusterer(map);
-/*
-var opts;
-
-opts = {id: 1, name: "wp 1", spot: "spot 1", country: "CH", lat: 47.0, lng: 8.5,
-				alt: 0, editable: true, modified: false, selected: false};
-wp_pushWayPoint(opts);
-
-opts = {id: 2, name: "wp 2", spot: "spot 2", country: "CH", lat: 47.0, lng: 8.6,
-				alt: 0, editable: true, modified: false, selected: false};
-wp_pushWayPoint(opts);
-
-wp_selectWayPoint(1);
-*/
 			wm_emitAppReady();
 		}
 	});
