@@ -133,7 +133,7 @@ bool AirSpaces::airspaceList(AirSpaceList &airspaceList)
 	AirSpace *pAirSpace;
 	bool success = false;
 
-	sqls = QString("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces;");
+	sqls = QString("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces ORDER BY Name;");
   success = query.exec(sqls);
 
 	if(success)

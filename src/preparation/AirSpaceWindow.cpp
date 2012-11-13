@@ -241,17 +241,36 @@ void AirSpaceWindow::file_open()
 
 void AirSpaceWindow::file_delete()
 {
+  ProgressDlg progDlg(this);
+  QList<QTableWidgetSelectionRange> selRange;
+  QList<QTableWidgetSelectionRange>::iterator rangeIt;
+  QTableWidget *pTable;
+	int topRow;
+	int bottomRow;
 	int row;
 
-	row = getTable()->currentRow();
+  if(ISql::pInstance()->open())
+  {
+	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress(tr("delete airspaces..."), ISql::pInstance());
+    pTable = TableWindow::getTable();
+    selRange = pTable->selectedRanges();
 
-	if((row >= 0) && m_pDb->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		m_pDb->delAirSpace(*m_airSpaceList[row]);
+    for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
+    {
+      topRow = (*rangeIt).topRow();
+      bottomRow = (*rangeIt).bottomRow();
+
+      for(row=topRow; row<=bottomRow; row++)
+      {
+        m_pDb->delAirSpace(*m_airSpaceList[row]);
+      }
+    }
+
+    progDlg.endProgress();
 		TableWindow::unsetCursor();
-		m_pDb->close();
-	}
+		ISql::pInstance()->close();
+  }
 }
 
 void AirSpaceWindow::file_AddToSqlDB()

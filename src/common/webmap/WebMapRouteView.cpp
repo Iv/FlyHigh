@@ -19,8 +19,10 @@
  ***************************************************************************/
 
 #include <QWebFrame>
+#include "AirSpaceList.h"
 #include "Route.h"
 #include "WebMap.h"
+#include "WebMapAirSpace.h"
 #include "WebMapRouteView.h"
 #include "WebMapRoute.h"
 
@@ -31,6 +33,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	resize(1000, 850);
 
 	m_pRoute = NULL;
+	m_pAirSpaceList = NULL;
 	m_pWebMap = new WebMap(this, WebMap::MapRoute);
 	m_editable = true;
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -47,6 +50,11 @@ WebMapRouteView::~WebMapRouteView()
 void WebMapRouteView::setRoute(Route *pRoute)
 {
 	m_pRoute = pRoute;
+}
+
+void WebMapRouteView::setAirSpaceList(AirSpaceList *pAirSpaceList)
+{
+	m_pAirSpaceList = pAirSpaceList;
 }
 
 void WebMapRouteView::loadMap()
@@ -71,7 +79,18 @@ void WebMapRouteView::mapReady()
 
 void WebMapRouteView::appReady()
 {
+  AirSpaceList::iterator it;
+
   m_pWebMap->setSize(width(), height());
+
+  if(m_pAirSpaceList != NULL)
+  {
+    for(it=m_pAirSpaceList->begin(); it<m_pAirSpaceList->end(); it++)
+    {
+      m_pWebMap->getAirSpace()->pushAirSpace(*it);
+    }
+  }
+
 	m_pWebMap->getRoute()->setEditable(m_editable);
 
 	if(m_pRoute != NULL)
