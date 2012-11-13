@@ -27,7 +27,9 @@ wm_include('js/optimizer.js');
 wm_include('js/route.js');
 wm_include('js/turnpt.js');
 wm_include('js/infobox.js');
+wm_include('../airspace/js/airspace.js');
 
+var airspaces = [];
 var map;
 var route;
 
@@ -61,6 +63,21 @@ function rt_init(width, height)
 			wm_emitAppReady();
 		}
 	});
+}
+
+function as_pushAirSpace(coords, opts)
+{
+	var latlngs = [];
+	var airspace;
+	var nr;
+
+	for(nr=0; nr<coords.length; nr++)
+	{
+		latlngs.push(new google.maps.LatLng(coords[nr][0], coords[nr][1]));
+	}
+
+	airspace = new AirSpace(map, latlngs, opts);
+	airspaces.push(airspace);
 }
 
 function rt_setName(name)

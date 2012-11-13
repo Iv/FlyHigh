@@ -25,6 +25,7 @@
 #include "FlightPointList.h"
 #include "WayPoint.h"
 
+class AirSpaceList;
 class Route;
 class WebMap;
 
@@ -39,6 +40,8 @@ class WebMapRouteView: public QDialog
 
 		void setRoute(Route *pRoute);
 
+		void setAirSpaceList(AirSpaceList *pAirSpaceList);
+
 		void loadMap();
 
 		void setEditable(bool en);
@@ -52,6 +55,7 @@ class WebMapRouteView: public QDialog
 	private:
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
+		AirSpaceList *m_pAirSpaceList;
 		bool m_editable;
 
 	private slots:

@@ -22,6 +22,7 @@
 #include <QCursor>
 #include <QString>
 #include <QTableWidget>
+#include "AirSpaceList.h"
 #include "IGPSDevice.h"
 #include "ProgressDlg.h"
 #include "IRouteForm.h"
@@ -224,6 +225,7 @@ void RouteWindow::file_viewWebMap()
 	WebMapRouteView *pView;
 	int row;
 	Route route;
+  AirSpaceList airSpaceList;
 
 	row = getTable()->currentRow();
 
@@ -232,6 +234,8 @@ void RouteWindow::file_viewWebMap()
 		route = m_routeList[row];
     pView = new WebMapRouteView(tr("View Route"));
     pView->setRoute(&route);
+    ISql::pInstance()->airspaceList(airSpaceList);
+    pView->setAirSpaceList(&airSpaceList);
     pView->setEditable(false);
     pView->loadMap();
     pView->exec();
@@ -336,9 +340,12 @@ void RouteWindow::setRouteToRow(uint row, Route &route)
 void RouteWindow::newWebMap(Route &route)
 {
 	WebMapRouteView *pView;
+	AirSpaceList airSpaceList;
 
 	pView = new WebMapRouteView(tr("Add Route to DB"));
 	pView->setRoute(&route);
+  ISql::pInstance()->airspaceList(airSpaceList);
+  pView->setAirSpaceList(&airSpaceList);
 	pView->loadMap();
 
 	if((pView->exec() == QDialog::Accepted) && m_pDb->open())
