@@ -47,6 +47,7 @@
      <file>route/js/infobox.js</file>
      <file>route/js/iroute.js</file>
      <file>route/js/leg.js</file>
+     <file>route/js/measure.js</file>
      <file>route/js/optimizer.js</file>
      <file>route/js/route.js</file>
      <file>route/js/turnpt.js</file>
