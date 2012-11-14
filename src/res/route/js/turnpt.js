@@ -160,7 +160,7 @@ TurnPt.prototype.storePos = function()
 
 TurnPt.prototype.restorePos = function()
 {
-	if(this.storePos !== null)
+	if(this.stpos !== null)
 	{
 		this.setPosition(this.stpos);
 	}
