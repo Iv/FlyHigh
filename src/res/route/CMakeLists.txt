@@ -3,6 +3,7 @@ set(route_JS
  js/infobox.js
  js/iroute.js
  js/leg.js
+ js/measure.js
  js/optimizer.js
  js/route.js
  js/turnpt.js

@@ -23,6 +23,7 @@
 
 wm_include('js/fai.js');
 wm_include('js/leg.js');
+wm_include('js/measure.js');
 wm_include('js/optimizer.js');
 wm_include('js/route.js');
 wm_include('js/turnpt.js');
@@ -32,6 +33,7 @@ wm_include('../airspace/js/airspace.js');
 var airspaces = [];
 var map;
 var route;
+var measure;
 
 function rt_init(width, height)
 {
@@ -56,10 +58,12 @@ function rt_init(width, height)
 		{
 			mapLoaded = true;
 			wm_setMapSize(width, height);
-
 			route = new Route(map);
 			route.setSpeed(22.0);
 			route.setChangeCallback(routeChanged);
+			measure = new Measure(map);
+			measure.setChangeCallback(measureChanged);
+/// measure.show(true);
 			wm_emitAppReady();
 		}
 	});
@@ -273,6 +277,14 @@ function routeChanged()
 	locInput.innerHTML = route.getScore().toFixed(2) + " points";
 
 	updateDurationAndSpeed();
+}
+
+function measureChanged()
+{
+	var div;
+
+	div = document.getElementById("smeasure");
+	div.innerHTML = measure.getDist().toFixed(1) + " km";
 }
 
 function updateDurationAndSpeed()
