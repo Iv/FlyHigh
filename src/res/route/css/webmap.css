@@ -102,6 +102,27 @@ div.separator {
 	border-top: 2px solid grey;
 }
 
+/* button */
+a.button_up {
+		background: #eee;
+		cursor: default;
+		border-top: solid 1px #eaeaea;
+		border-left: solid 1px #eaeaea;
+		border-bottom: solid 1px #777;
+		border-right: solid 1px #777;
+		padding: 3px 2px;
+}
+
+a.button_down {
+		background: #bbb;
+		cursor: default;
+		border-top: solid 1px #777;
+		border-left: solid 1px #777;
+		border-bottom:solid 1px  #eaeaea;
+		border-right: solid 1px #eaeaea;
+		padding: 3px 2px;
+}
+
 /* spin box */
 .spin_updown
 {

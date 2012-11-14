@@ -255,6 +255,23 @@ function rt_durationDown()
 	}
 }
 
+function rt_measure(div)
+{
+	var show;
+	
+	show = (div.className == "button_up");
+	measure.show(show);
+
+	if(show)
+	{
+		div.className = "button_down";
+	}
+	else
+	{
+		div.className = "button_up";
+	}
+}
+
 function rt_setOk(ok)
 {
 	wm_emitOk(ok);
