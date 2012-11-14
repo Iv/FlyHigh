@@ -196,12 +196,40 @@ void RouteWindow::file_new()
 void RouteWindow::file_newWebMap()
 {
 	Route route;
+	Route *pLatest = NULL;
+  Route::RouteListType::iterator it;
+	WayPoint wp;
+  int maxId = -1;
 
-	// default route
 	route.setName("New route");
 	route.setType(Route::Straight);
-	route.wayPointList().push_back(WayPoint(47.0, 8.5));
-	route.wayPointList().push_back(WayPoint(47.0, 9.0));
+
+  for(it=m_routeList.begin(); it!=m_routeList.end(); it++)
+  {
+    if(maxId < (*it).id())
+    {
+      maxId = (*it).id();
+      pLatest = &(*it);
+    }
+  }
+
+	if((pLatest != NULL) && (pLatest->wayPointList().size() > 0))
+	{
+	  // take two points around start of first route as initial
+    wp = pLatest->wayPointList().at(0);
+    wp.setLongitude(wp.longitude() - 0.25);
+    route.wayPointList().push_back(wp);
+    wp = pLatest->wayPointList().at(0);
+    wp.setLongitude(wp.longitude() + 0.25);
+    route.wayPointList().push_back(wp);
+	}
+	else
+	{
+	  // default
+    route.wayPointList().push_back(WayPoint(47.0, 8.5));
+    route.wayPointList().push_back(WayPoint(47.0, 9.0));
+	}
+
 	newWebMap(route);
 }
 
