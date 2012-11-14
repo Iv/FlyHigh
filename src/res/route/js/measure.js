@@ -66,8 +66,8 @@ Measure.prototype.show = function(enable)
 		this.getMap().setOptions({draggableCursor: 'default'});
 		google.maps.event.removeListener(this.clickListener);
 		google.maps.event.removeListener(this.moveListener);
+		this.line.getPath().clear();
 		this.line.setMap(null);
-		this.line.setPath(null);
 		this.clearMarkers();
 	}
 };
