@@ -41,6 +41,8 @@ class WebMapAirSpaceView: public QDialog
 
 		void selectAirSpace(int nr);
 
+		void deleteAirSpace(int nr);
+
 	signals:
 		void airSpaceChanged(int line);
 

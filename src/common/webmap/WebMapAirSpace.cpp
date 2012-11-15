@@ -111,3 +111,12 @@ void WebMapAirSpace::selectAirSpace(int nr)
   pFrame = m_pWebMap->page()->mainFrame();
   pFrame->evaluateJavaScript(code.arg(nr));
 }
+
+void WebMapAirSpace::deleteAirSpace(int nr)
+{
+  QString code = "as_deleteAirSpace(%1);";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+  pFrame->evaluateJavaScript(code.arg(nr));
+}
