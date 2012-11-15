@@ -65,6 +65,7 @@ class AirSpaceWindow: public TableWindow
     void airSpaceChanged(int line);
 
 	private:
+    typedef QVector<int> RowList;
 		enum Fields{Name, Low, High, Class};
 
 		IDataBase *m_pDb;
@@ -74,6 +75,8 @@ class AirSpaceWindow: public TableWindow
     bool m_externSelect;
 
     void setAirSpaceToRow(uint row, const AirSpace *pAirSpace);
+
+    void selectionToList(AirSpaceList &airspaceList, RowList *pSelRows = NULL);
 };
 
 #endif
