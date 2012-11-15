@@ -50,6 +50,12 @@ AirSpace.prototype.getMap = function()
 	return this.map;
 };
 
+AirSpace.prototype.setMap = function(map)
+{
+	this.map = map;
+	this.polygon.setMap(map);
+};
+
 AirSpace.prototype.getId = function()
 {
 	return this.id;
