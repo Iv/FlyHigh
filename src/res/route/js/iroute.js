@@ -269,6 +269,8 @@ function rt_measure(div)
 	else
 	{
 		div.className = "button_up";
+		div = document.getElementById("smeasure");
+		div.innerHTML = "";
 	}
 }
 
