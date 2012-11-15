@@ -241,70 +241,47 @@ void AirSpaceWindow::file_open()
 
 void AirSpaceWindow::file_delete()
 {
+  AirSpaceList airspaceList(false);
   ProgressDlg progDlg(this);
-  QList<QTableWidgetSelectionRange> selRange;
-  QList<QTableWidgetSelectionRange>::iterator rangeIt;
-  QTableWidget *pTable;
-	int topRow;
-	int bottomRow;
-	int row;
+  RowList selRows;
+  RowList::iterator it;
+  int rmRows = 0;
 
-  if(ISql::pInstance()->open())
-  {
+	selectionToList(airspaceList, &selRows);
+
+	if((airspaceList.size() > 0) && m_pDb->open())
+	{
 	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
-    progDlg.beginProgress(tr("delete airspaces..."), ISql::pInstance());
-    pTable = TableWindow::getTable();
-    selRange = pTable->selectedRanges();
-
-    for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
-    {
-      topRow = (*rangeIt).topRow();
-      bottomRow = (*rangeIt).bottomRow();
-
-      for(row=topRow; row<=bottomRow; row++)
-      {
-        m_pDb->delAirSpace(*m_airSpaceList[row]);
-      }
-    }
-
+    progDlg.beginProgress(tr("delete airspaces..."), m_pDb);
+    m_pDb->delAirSpaces(airspaceList);
     progDlg.endProgress();
 		TableWindow::unsetCursor();
-		ISql::pInstance()->close();
-  }
+		m_pDb->close();
+
+		for(it=selRows.begin(); it!=selRows.end(); it++)
+		{
+      m_pWebMapView->deleteAirSpace(*it - rmRows);
+      rmRows++;
+		}
+	}
 }
 
 void AirSpaceWindow::file_AddToSqlDB()
 {
+  AirSpaceList airspaceList(false);
   ProgressDlg progDlg(this);
-  QList<QTableWidgetSelectionRange> selRange;
-  QList<QTableWidgetSelectionRange>::iterator rangeIt;
-  QTableWidget *pTable;
-	int topRow;
-	int bottomRow;
-	int row;
 
-  if(ISql::pInstance()->open())
-  {
+	selectionToList(airspaceList);
+
+	if((airspaceList.size() > 0) && ISql::pInstance()->open())
+	{
 	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
     progDlg.beginProgress(tr("add airspaces..."), ISql::pInstance());
-    pTable = TableWindow::getTable();
-    selRange = pTable->selectedRanges();
-
-    for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
-    {
-      topRow = (*rangeIt).topRow();
-      bottomRow = (*rangeIt).bottomRow();
-
-      for(row=topRow; row<=bottomRow; row++)
-      {
-        ISql::pInstance()->add(*m_airSpaceList[row]);
-      }
-    }
-
+    ISql::pInstance()->add(airspaceList);
     progDlg.endProgress();
 		TableWindow::unsetCursor();
 		ISql::pInstance()->close();
-  }
+	}
 }
 
 void AirSpaceWindow::file_AddToGPS()
@@ -367,6 +344,23 @@ void AirSpaceWindow::selectionChanged()
 	}
 }
 
+void AirSpaceWindow::airSpaceViewFinished(int res)
+{
+  m_pAirSpaceView = NULL;
+}
+
+void AirSpaceWindow::webMapFinished(int res)
+{
+  m_pWebMapView = NULL;
+}
+
+void AirSpaceWindow::airSpaceChanged(int line)
+{
+  m_externSelect = true;
+  TableWindow::selectRow(line);
+  m_externSelect = false;
+}
+
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 {
 	QTableWidget *pTable = TableWindow::getTable();
@@ -387,19 +381,31 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
 }
 
-void AirSpaceWindow::airSpaceViewFinished(int res)
+void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList, RowList *pSelRows)
 {
-  m_pAirSpaceView = NULL;
-}
+  QList<QTableWidgetSelectionRange> selRange;
+  QList<QTableWidgetSelectionRange>::iterator rangeIt;
+  QTableWidget *pTable;
+	int topRow;
+	int bottomRow;
+	int row;
 
-void AirSpaceWindow::webMapFinished(int res)
-{
-  m_pWebMapView = NULL;
-}
+  pTable = TableWindow::getTable();
+  selRange = pTable->selectedRanges();
 
-void AirSpaceWindow::airSpaceChanged(int line)
-{
-  m_externSelect = true;
-  TableWindow::selectRow(line);
-  m_externSelect = false;
+  for(rangeIt=selRange.begin(); rangeIt!=selRange.end(); rangeIt++)
+  {
+    topRow = (*rangeIt).topRow();
+    bottomRow = (*rangeIt).bottomRow();
+
+    for(row=topRow; row<=bottomRow; row++)
+    {
+      airspaceList.push_back(m_airSpaceList[row]);
+
+      if(pSelRows != NULL)
+      {
+        pSelRows->push_back(row);
+      }
+    }
+  }
 }
