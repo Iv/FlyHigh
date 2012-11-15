@@ -185,9 +185,19 @@ bool IDataBase::add(AirSpace &airspace)
 	return false;
 }
 
+bool IDataBase::add(AirSpaceList &airspaceList)
+{
+	return false;
+}
+
 bool IDataBase::delAirSpace(AirSpace &airspace)
 {
 	return false;
+}
+
+bool IDataBase::delAirSpaces(AirSpaceList &airspaceList)
+{
+  return false;
 }
 
 bool IDataBase::airspace(const QString &name, AirSpace &airspace)

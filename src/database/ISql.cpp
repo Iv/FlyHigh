@@ -22,6 +22,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+#include "AirSpaceList.h"
 #include "AirSpaces.h"
 #include "Error.h"
 #include "ISql.h"
@@ -399,11 +400,45 @@ bool ISql::add(AirSpace &airspace)
 	return success;
 }
 
+bool ISql::add(AirSpaceList &airspaceList)
+{
+  AirSpaceList::iterator it;
+  AirSpace *pAirSpace;
+  bool success = true;
+
+  for(it=airspaceList.begin(); it!=airspaceList.end(); it++)
+  {
+    pAirSpace = (*it);
+    success &= m_pAirSpaces->add(*pAirSpace);
+  }
+
+	emit airSpacesChanged();
+
+	return success;
+}
+
 bool ISql::delAirSpace(AirSpace &airspace)
 {
   bool success;
 
 	success = m_pAirSpaces->delAirSpace(airspace);
+	emit airSpacesChanged();
+
+	return success;
+}
+
+bool ISql::delAirSpaces(AirSpaceList &airspaceList)
+{
+  AirSpaceList::iterator it;
+  AirSpace *pAirSpace;
+  bool success = true;
+
+  for(it=airspaceList.begin(); it!=airspaceList.end(); it++)
+  {
+    pAirSpace = (*it);
+    success &= m_pAirSpaces->delAirSpace(*pAirSpace);
+  }
+
 	emit airSpacesChanged();
 
 	return success;
