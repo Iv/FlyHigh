@@ -116,7 +116,11 @@ class ISql: public IDataBase
 
 		bool add(AirSpace &airspace);
 
+		bool add(AirSpaceList &airspaceList);
+
 		bool delAirSpace(AirSpace &airspace);
+
+		bool delAirSpaces(AirSpaceList &airspaceList);
 
 		bool airspace(const QString &name, AirSpace &airspace);
 

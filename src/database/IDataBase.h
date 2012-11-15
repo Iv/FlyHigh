@@ -100,7 +100,11 @@ class IDataBase: public QObject
 		// airspaces
 		virtual bool add(AirSpace &airspace);
 
+		virtual bool add(AirSpaceList &airspaceList);
+
 		virtual bool delAirSpace(AirSpace &airspace);
+
+		virtual bool delAirSpaces(AirSpaceList &airspaceList);
 
 		virtual bool airspace(const QString &name, AirSpace &airspace);
 
