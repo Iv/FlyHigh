@@ -22,13 +22,17 @@
 #include "AirSpace.h"
 #include "AirSpaceList.h"
 
-AirSpaceList::AirSpaceList()
+AirSpaceList::AirSpaceList(bool autoclean)
 {
+  m_autoclean = autoclean;
 }
 
 AirSpaceList::~AirSpaceList()
 {
-	clear();
+  if(m_autoclean)
+  {
+    clear();
+  }
 }
 
 void AirSpaceList::push_back(AirSpace *pAirSpace)

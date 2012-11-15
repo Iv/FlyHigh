@@ -32,7 +32,7 @@ class AirSpaceList
 
 		typedef AirSpaceListType::iterator iterator;
 
-		AirSpaceList();
+		AirSpaceList(bool autoclean = true);
 
 		~AirSpaceList();
 
@@ -56,6 +56,7 @@ class AirSpaceList
 
 	private:
 		AirSpaceListType m_airSpaceList;
+		bool m_autoclean;
 
 		static bool nameSort(const AirSpace *pAirSpace1, const AirSpace *pAirSpace2);
 };
