@@ -42,8 +42,6 @@ class WebMapAirSpace: public QObject
 
 		void selectAirSpace(int nr);
 
-		void deleteAirSpace(int nr);
-
 	private:
 		WebMap *m_pWebMap;
 };
