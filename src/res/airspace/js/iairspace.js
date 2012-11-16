@@ -91,19 +91,6 @@ function as_pushAirSpace(coords, opts)
 	airspaces.push(airspace);
 }
 
-function as_deleteAirSpace(num)
-{
-	var airspace;
-
-	if(num < airspaces.length)
-	{
-		airspace = airspaces[num];
-		airspace.setMap(null);
-		airspaces.splice(num, 1);
-		oldSelect = -1;
-	}
-}
-
 function as_selectAirSpace(num)
 {
 	var airspace;
