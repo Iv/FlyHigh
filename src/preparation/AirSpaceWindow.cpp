@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
+#include <QMenu>
 #include <QString>
 #include <QStringList>
 #include <QTableWidget>
@@ -243,11 +244,8 @@ void AirSpaceWindow::file_delete()
 {
   AirSpaceList airspaceList(false);
   ProgressDlg progDlg(this);
-  RowList selRows;
-  RowList::iterator it;
-  int rmRows = 0;
 
-	selectionToList(airspaceList, &selRows);
+	selectionToList(airspaceList);
 
 	if((airspaceList.size() > 0) && m_pDb->open())
 	{
@@ -257,12 +255,6 @@ void AirSpaceWindow::file_delete()
     progDlg.endProgress();
 		TableWindow::unsetCursor();
 		m_pDb->close();
-
-		for(it=selRows.begin(); it!=selRows.end(); it++)
-		{
-      m_pWebMapView->deleteAirSpace(*it - rmRows);
-      rmRows++;
-		}
 	}
 }
 
@@ -320,6 +312,7 @@ void AirSpaceWindow::file_viewWebMap()
 {
 	if((m_airSpaceList.size() > 0) && (m_pWebMapView == NULL))
 	{
+    menu()->setEnabled(false);
 		m_pWebMapView = new WebMapAirSpaceView(tr("View AirSpaces"));
 		m_pWebMapView->setAirSpaceList(&m_airSpaceList);
 		m_pWebMapView->loadMap();
@@ -352,6 +345,7 @@ void AirSpaceWindow::airSpaceViewFinished(int res)
 void AirSpaceWindow::webMapFinished(int res)
 {
   m_pWebMapView = NULL;
+  menu()->setEnabled(true);
 }
 
 void AirSpaceWindow::airSpaceChanged(int line)
@@ -381,7 +375,7 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
 }
 
-void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList, RowList *pSelRows)
+void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList)
 {
   QList<QTableWidgetSelectionRange> selRange;
   QList<QTableWidgetSelectionRange>::iterator rangeIt;
@@ -401,11 +395,6 @@ void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList, RowList *pSelRo
     for(row=topRow; row<=bottomRow; row++)
     {
       airspaceList.push_back(m_airSpaceList[row]);
-
-      if(pSelRows != NULL)
-      {
-        pSelRows->push_back(row);
-      }
     }
   }
 }
