@@ -58,11 +58,6 @@ void WebMapAirSpaceView::selectAirSpace(int nr)
   m_pWebMap->getAirSpace()->selectAirSpace(nr);
 }
 
-void WebMapAirSpaceView::deleteAirSpace(int nr)
-{
-  m_pWebMap->getAirSpace()->deleteAirSpace(nr);
-}
-
 void WebMapAirSpaceView::resizeEvent(QResizeEvent *pEvent)
 {
 	m_pWebMap->setGeometry(QRect(0, 0, width(), height()));
