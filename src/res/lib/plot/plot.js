@@ -230,13 +230,14 @@ Plot.prototype.drawGrid = function(data)
 
 		// label
 		date = new Date(value * 1000);
-		valueStr = date.getHours() + ":" + date.getMinutes();
+		valueStr = date.getHours() + ":";
 
 		if(date.getMinutes() < 10)
 		{
 			valueStr += '0';
 		}
 
+		valueStr += date.getMinutes();
 		labels.push({pos: x, value: valueStr});
 		value += incValue;
 	}
