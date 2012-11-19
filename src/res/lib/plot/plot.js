@@ -185,10 +185,30 @@ Plot.prototype.drawGrid = function(data)
 	value = this.minValueX;
 	date = new Date(value * 1000);
 
-	if(delta <= 3600)
+	if(delta <= 300)
+	{
+		incValue = 60;
+		minutes = date.getUTCMinutes();
+	}
+	else if(delta <= 600)
+	{
+		incValue = 120;
+		minutes = date.getUTCMinutes();
+	}
+	else if(delta <= 3000)
+	{
+		incValue = 300;
+		minutes = Math.floor(date.getUTCMinutes() / 5) * 5;
+	}
+	else if(delta <= 6000)
 	{
 		incValue = 600;
 		minutes = Math.floor(date.getUTCMinutes() / 10) * 10;
+	}
+	else if(delta <= 10800)
+	{
+		incValue = 1800;
+		minutes = Math.floor(date.getUTCMinutes() / 30) * 30;
 	}
 	else
 	{
