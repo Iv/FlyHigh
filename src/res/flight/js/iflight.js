@@ -283,9 +283,14 @@ function updateCursorPos(pos)
 	var alt;
 	var sog;
 	var vario;
+	var timeList;
+	var duration;
 
 	// legend-values
-	index = Math.round(pos * flight.getTimeList().length / plot.getPlotAreaWidth());
+	timeList = flight.getTimeList();
+	duration = (timeList[timeList.length - 1] - timeList[0]);
+	time = timeList[0] + Math.round(pos * duration / plot.getPlotAreaWidth());
+	index = getIndex(timeList, time);
 	date = new Date(flight.getTimeAt(index) * 1000);
 	time = date.getHours() + ":";
 
@@ -312,4 +317,52 @@ function updateCursorClick(pos)
 	index = Math.round(pos * flight.getTrackPts().length / plot.getPlotAreaWidth());
 	map.setCenter(flight.getTrackPtAt(index));
 	map.setZoom(14);
+}
+
+function getIndex(arr, value)
+{
+	var index;
+	var deltaLow = 0;
+	var deltaHigh;
+
+	index = bSearch(arr, 0, (arr.length - 1), value);
+
+	if(index > 0)
+	{
+		deltaLow = (value - arr[index - 1]);
+	}
+
+	deltaHigh = (arr[index] - value);
+
+	if(((deltaLow > 0) && (deltaHigh > 0)) && (deltaLow < deltaHigh))
+	{
+		index--;
+	}
+
+	return index;
+}
+
+function bSearch(arr, low, high, key)
+{
+	var mid;
+
+	if(low == high)
+	{
+		mid = low;
+	}
+	else
+	{
+		mid = Math.floor((low + high) / 2);
+
+		if(key > arr[mid])
+		{
+			mid = bSearch(arr, mid + 1, high, key);
+		}
+		else if(key < arr[mid])
+		{
+			mid = bSearch(arr, low, mid, key);
+		}
+	}
+
+	return mid;
 }
