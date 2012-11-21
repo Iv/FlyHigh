@@ -61,7 +61,7 @@ class FlightPointList
 
 		const FlightPointType& at(int index) const;
 
-		void simplify(FlightPointList &fpList);
+		void simplify(FlightPointList &fpList) const;
 
 	private:
     typedef QVector<FlightPointType> FlighPointListType;

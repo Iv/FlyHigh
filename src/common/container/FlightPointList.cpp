@@ -149,17 +149,17 @@ int FlightPointList::duration(uint index1, uint index2)
 #define dist2(u,v)    norm2(u-v)      // distance squared = norm2 of difference
 //#define dist(u,v)     norm(u-v)       // distance = norm of difference
 
-void FlightPointList::simplify(FlightPointList &simpleList)
+void FlightPointList::simplify(FlightPointList &simpleList) const
 {
   const double epsilon = 0.0001;
+
   FlighPointListType vt; // vertex buffer
-  MarkerBuffer marker;  // marker buffer
+  MarkerBuffer marker;
   double tol2 = (epsilon * epsilon); // tolerance squared
   int size;
   int index;
-  int prev; // misc counters
+  int prev;
   int end;
-
 
   size = m_flightPointList.size();
 
