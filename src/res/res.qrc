@@ -20,7 +20,6 @@
      <file>lib/plot/plot.js</file>
      <file>lib/plot/value.js</file>
      <file>route/route.html</file>
-     <file>route/css/webmap.css</file>
      <file>route/images/quad.png</file>
      <file>route/js/fai.js</file>
      <file>route/js/infobox.js</file>
