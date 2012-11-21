@@ -249,6 +249,7 @@ void FlightWindow::file_AddToSqlDB()
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
+  FlightPointList simpleFpList;
 	QTime time;
 	Glider glider;
 	Pilot pilot;
@@ -280,7 +281,8 @@ void FlightWindow::file_AddToSqlDB()
 		{
 			// parse and optimize
 			igcParser.parse(m_flightList[row].igcData());
-			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+			igcParser.flightPointList().simplify(simpleFpList);
+			olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 			progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 			if(olcOptimizer.optimize())
@@ -381,6 +383,7 @@ void FlightWindow::file_import()
 	IGCFileParser igcParser;
 	OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
+  FlightPointList simpleFpList;
 	QTime time;
 	Flight flight;
 	Glider glider;
@@ -414,7 +417,8 @@ void FlightWindow::file_import()
 
 			// parse and optimize
 			igcParser.parse(flight.igcData());
-			olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+			igcParser.flightPointList().simplify(simpleFpList);
+			olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 			progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 			if(olcOptimizer.optimize())
@@ -517,6 +521,7 @@ void FlightWindow::file_exportIGC()
 	OLCOptimizer::FlightPointIndexListType fpIndexListFree;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
+	FlightPointList simpleFpList;
 	OLCWebForm olcWebForm;
 	ProgressDlg progDlg(this);
 	double distFree;
@@ -578,7 +583,8 @@ void FlightWindow::file_exportIGC()
 				}
 
 				// OLC file
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+				igcParser.flightPointList().simplify(simpleFpList);
+				olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 				progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 				if(olcOptimizer.optimize())
@@ -636,6 +642,7 @@ void FlightWindow::file_exportKML()
 	OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
 	OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
 	KmlWriter kmlWriter;
+	FlightPointList simpleFpList;
 
 	ProgressDlg progDlg(this);
 	double distFree;
@@ -671,7 +678,8 @@ void FlightWindow::file_exportKML()
 				IFlyHighRC::pInstance()->setLastDir(QFileInfo(selected).absoluteDir().absolutePath());
 
 				// OLC file
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+				igcParser.flightPointList().simplify(simpleFpList);
+				olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 				progDlg.beginProgress("optimize flight...", &olcOptimizer);
 
 				if(olcOptimizer.optimize())
@@ -936,6 +944,7 @@ void FlightWindow::plot_OLC()
 	OLCOptimizer olcOptimizer;
 	OLCOptimizer::FlightPointIndexListType fpIndexList;
 	FlightPointList tpList;
+	FlightPointList simpleFpList;
 	ProgressDlg progDlg(this);
 	uint fpNr;
 	uint dist;
@@ -961,8 +970,8 @@ void FlightWindow::plot_OLC()
 				m_plotter.setLabelY("longitude [deg.min]");
 				m_plotter.setLabelZ("altitude [m]");
 				plotFlighPointList(igcParser.flightPointList(), "track");
-
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+        igcParser.flightPointList().simplify(simpleFpList);
+				olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 				progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 				if(olcOptimizer.optimize())
@@ -1039,6 +1048,7 @@ void FlightWindow::showOnWebMap()
 	WayPoint::WayPointListType tpList;
 	FlightPointList::SogListType sogList;
 	FlightPointList::VarioListType varioList;
+	FlightPointList simpleFpList;
 	uint tpListSize;
 	uint fpNr;
 	uint distFai;
@@ -1069,7 +1079,8 @@ void FlightWindow::showOnWebMap()
 				pView->setFlightPointList(m_flightList[row].date(), igcParser.flightPointList());
 
 				// optimize flight
-				olcOptimizer.setFlightPoints(igcParser.flightPointList(), 100, 200);
+        igcParser.flightPointList().simplify(simpleFpList);
+				olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 				progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
 
 				if(olcOptimizer.optimize())
