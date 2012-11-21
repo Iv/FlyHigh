@@ -107,6 +107,12 @@ class WayPoint
 
 		bool operator==(const WayPoint &wp);
 
+    WayPoint operator+(const WayPoint& right) const;
+
+    WayPoint operator-(const WayPoint& right) const;
+
+		WayPoint operator*(double right) const;
+
 	private:
 		int m_id;
 		QString m_name;
