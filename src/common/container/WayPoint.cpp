@@ -209,6 +209,21 @@ bool WayPoint::operator==(const WayPoint &wp)
 	return (m_name == wp.m_name) && (m_spot == wp.m_spot) && (m_country == wp.m_country);
 }
 
+WayPoint WayPoint::operator+(const WayPoint& right) const
+{
+  return WayPoint(m_lat + right.m_lat, m_lon + right.m_lon);
+}
+
+WayPoint WayPoint::operator-(const WayPoint& right) const
+{
+  return WayPoint(m_lat - right.m_lat, m_lon - right.m_lon);
+}
+
+WayPoint WayPoint::operator*(double right) const
+{
+  return WayPoint(m_lat * right, m_lon * right);
+}
+
 uint WayPoint::distance(const WayPoint &wp1, const WayPoint &wp2)
 {
 	double dist;
