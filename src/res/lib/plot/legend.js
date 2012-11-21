@@ -9,6 +9,7 @@ function Legend(parentDiv, id)
 	this.horizontal = true;
 	this.legendDiv = this.createEmptyLegend(id);
 	this.divs = [];
+	this.labelW = 50;
 	this.labelH = 15;
 }
 
@@ -56,7 +57,7 @@ Legend.prototype.setLabels = function(labels)
 	// create labels
 	if(this.horizontal)
 	{
-		labelW = (this.getWidth() / labels.length);
+		labelW = this.labelW;
 		labelH = this.getHeight();
 
 		for(labelNr=0; labelNr<labels.length; labelNr++)
