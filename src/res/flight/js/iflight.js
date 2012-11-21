@@ -110,15 +110,11 @@ function fl_setPlotSize(width, height)
 {
 	var left;
 	var top;
-	var mapDiv;
 
-	if((map !== null) && (plot !== null))
+	if(plot !== null)
 	{
-		mapDiv = document.getElementById('map');
-		
-		left = 280; // mapDiv.style.left;
-		top = 660; // (mapDiv.style.top + mapDiv.style.height);
-// alert("left=" + left + " top=" + top);
+		left = (window.innerWidth - width - 5);
+		top = (window.innerHeight - height);
 		plot.setGeometry(left, top, width, height);
 	}
 }
@@ -299,7 +295,7 @@ function updateCursorPos(pos)
 		time += '0';
 	}
 
-	time += date.getMinutes();
+	time += date.getMinutes() + " UTC";
 	alt = flight.getAltAt(index).toFixed(0) + " m";
 	sog = flight.getSogAt(index).toFixed(1) + " km/h";
 	vario = flight.getVarioAt(index).toFixed(1) + " m/s";
