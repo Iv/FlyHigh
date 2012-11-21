@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef FlightPointList_h
 #define FlightPointList_h
 
@@ -38,31 +38,40 @@ class FlightPointList
 		typedef QVector<float> VarioListType;
 
 		FlightPointList();
-		
+
 		void add(const FlightPointType &flightPoint);
 
 		void clear();
 
 		uint size() const;
-		
+
 		int firstValidFlightData();
 
 		int lastValidFlightData();
-		
+
 		// returns the speed in m/s
 		double speedH(uint index1, uint index2);
 
 		double speedV(uint index1, uint index2);
-		
+
 		// returns duration in s
 		int duration(uint index1, uint index2);
-		
+
 		FlightPointType& operator[] (int index);
 
 		const FlightPointType& at(int index) const;
 
+		void simplify(FlightPointList &fpList);
+
 	private:
-		QVector<FlightPointType> m_flightPointList;
+    typedef QVector<FlightPointType> FlighPointListType;
+
+    typedef QVector<bool> MarkerBuffer;
+
+    FlighPointListType m_flightPointList;
+
+    void douglasPeucker(const FlighPointListType &ptList, int begin, int end,
+                        MarkerBuffer &marker, float epsilon) const;
 };
 
 #endif
