@@ -78,13 +78,11 @@ IFlyHighRC::IFlyHighRC()
 	m_lastDir = QDir::homePath();
 
 	m_pilotId = -1;
-	m_versionInfo = "FlyHigh Version 0.9.4";
+	m_versionInfo = "FlyHigh Version 0.9.5";
 	m_copyInfo =
 			"Copyright (c): 2004-2012 by Alex Graf <grafal@sf.net>, \n"
 			"Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
-			"Thank you Manolis Andreadakis, Victor Berchet, Petr Chromec,\n"
-			"Alex Graf, Marcus Kroiss, Jonty Lawson, Tom Payne and\n"
-			"Marc Poulhies for xcplanner. Thank you Xiaoxi Wu for MarkerClusterer.\n"
+			"Thank you Luke Mahe for MarkerClusterer.\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL Version 2). Visit www.gnu.org for more information.\n";
 
