@@ -1,11 +1,4 @@
 /***************************************************************************
-	Copyright (C) 2002 by Thomas Kuhlmann, Berlin. Contact: coooly @ freenet de
-	Thanks to Dr.Dietrich M�nchmeyer und Andreas Rieck for valuable inputs!
-	adapted, aranged for better understanding and comments in english
-	by Alex Graf 2005
-
-	faster optimization with distance filtering by Alex Graf 2006
- 
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -21,6 +14,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/**
+	Copyright (C) 2002 by Thomas Kuhlmann, Berlin. Contact: coooly @ freenet de
+	Thanks to Dr.Dietrich Münchmeyer und Andreas Rieck for valuable inputs!
+	adapted, aranged for better understanding and comments in english
+	by Alex Graf 2005, 2012
+
+	faster optimization with distance filtering by Alex Graf 2006
+  straight distance by Alex Graf 2012
+*/
 
 #include <math.h>
 #include "OLCOptimizer.h"
@@ -42,28 +45,95 @@ OLCOptimizer::~OLCOptimizer()
 	cleanup();
 }
 
-uint OLCOptimizer::freeDistance(FlightPointIndexListType &turnpointList)
+uint OLCOptimizer::straightDist() const
 {
-	memcpy(turnpointList, m_indexFree, sizeof(m_indexFree));
-	
+  return m_maxdist;
+}
+
+void OLCOptimizer::straightDistIndex(FlightPointIndexListType &indexList) const
+{
+  uint tpNr;
+
+  for(tpNr=0; tpNr<2; tpNr++)
+  {
+    indexList.push_back(m_indexStraight[tpNr]);
+  }
+}
+
+uint OLCOptimizer::straightDistance(FlightPointIndexListType &indexList) const
+{
+  straightDistIndex(indexList);
+
+  return straightDist();
+}
+
+uint OLCOptimizer::freeDist() const
+{
 	return m_bestFree;
 }
 
-uint OLCOptimizer::FAITriangle(FlightPointIndexListType &turnpointList)
+void OLCOptimizer::freeDistIndex(FlightPointIndexListType &indexList) const
 {
-	memcpy(turnpointList, m_indexFAI, sizeof(m_indexFAI));
+  uint tpNr;
 
-	return m_bestFAI;
+  for(tpNr=0; tpNr<5; tpNr++)
+  {
+    indexList.push_back(m_indexFree[tpNr]);
+  }
 }
 
-uint OLCOptimizer::flatTriangle(FlightPointIndexListType &turnpointList)
+uint OLCOptimizer::freeDistance(FlightPointIndexListType &indexList) const
 {
-	memcpy(turnpointList, m_indexFlat, sizeof(m_indexFlat));
+  freeDistIndex(indexList);
 
+	return freeDist();
+}
+
+uint OLCOptimizer::flatDist() const
+{
 	return m_bestFlat;
 }
 
-FlightPointList& OLCOptimizer::flyPointList()
+void OLCOptimizer::flatDistIndex(FlightPointIndexListType &indexList) const
+{
+  uint tpNr;
+
+  for(tpNr=0; tpNr<5; tpNr++)
+  {
+    indexList.push_back(m_indexFlat[tpNr]);
+  }
+}
+
+uint OLCOptimizer::flatTriangle(FlightPointIndexListType &indexList) const
+{
+  flatDistIndex(indexList);
+
+	return flatDist();
+}
+
+uint OLCOptimizer::faiDist() const
+{
+	return m_bestFAI;
+}
+
+void OLCOptimizer::faiDistIndex(FlightPointIndexListType &indexList) const
+{
+  uint tpNr;
+
+  for(tpNr=0; tpNr<5; tpNr++)
+  {
+    indexList.push_back(m_indexFAI[tpNr]);
+  }
+}
+
+uint OLCOptimizer::FAITriangle(FlightPointIndexListType &indexList) const
+{
+  faiDistIndex(indexList);
+
+	return faiDist();
+}
+
+const FlightPointList& OLCOptimizer::flyPointList() const
 {
 	return m_flightPointList;
 }
@@ -75,19 +145,19 @@ void OLCOptimizer::cleanup()
 		delete [] dminindex;
 		dminindex = NULL;
 	}
-	
+
 	if(m_pDistanceMatrix != NULL)
 	{
 		delete [] dminindex;
 		dminindex = NULL;
 	}
-	
+
 	if(maxenddist != NULL)
 	{
 		delete [] maxenddist;
 		maxenddist = NULL;
 	}
-	
+
 	if(maxendpunkt != NULL)
 	{
 		delete [] maxendpunkt;
@@ -115,11 +185,11 @@ void OLCOptimizer::initdmval()
 	uint cmp;
 	uint wpNr;
 	const double CONST_PI_DIV_180 = (M_PI)/((double)180.0);
-	
+
 	m_pDistanceMatrix = new int[nFlightPts*nFlightPts];
 	cmp = nFlightPts + 1;
 
-	for(wpNr=0; wpNr<nFlightPts; wpNr++) 
+	for(wpNr=0; wpNr<nFlightPts; wpNr++)
 	{ // all deltas to radians and save sin/cos
 		lonrad[wpNr] = m_flightPointList[wpNr].wp.longitude() * CONST_PI_DIV_180;
 		latrad = m_flightPointList[wpNr].wp.latitude() * CONST_PI_DIV_180;
@@ -137,15 +207,17 @@ void OLCOptimizer::initdmval()
 		sli = sinlat[i];
 		cli = coslat[i];
 		lri = lonrad[i];
-		
-		for(j=i+1; j<nFlightPts; j++) 
+
+		for(j=i+1; j<nFlightPts; j++)
 		{
-			dist = (int)(6371000.0*acos(sli*sinlat[j] + cli*coslat[j]* cos(lri-lonrad[j]))+((double)0.5));  
+			dist = (int)(6371000.0*acos(sli*sinlat[j] + cli*coslat[j]* cos(lri-lonrad[j]))+((double)0.5));
 			m_pDistanceMatrix[i+nFlightPts*j] = dist;
-			
+
 			if(dist > m_maxdist)
 			{
 				m_maxdist = dist;
+				m_indexStraight[0] = i;
+				m_indexStraight[1] = j;
 			}
 		}
 	}
@@ -169,25 +241,25 @@ void OLCOptimizer::initdmin()
 	uint minj = 0;
 	uint minimum = m_maxdist;
 	uint nFlightPts = m_flightPointList.size();
-	
+
 	dminindex = new int[nFlightPts*nFlightPts];
-	
+
 	// handle 1st row separately
 	for(j=nFlightPts-1; j>0; j--)
 	{
 		d = m_pDistanceMatrix[0+nFlightPts*j];
-		
+
 		// d<minimum if equal point before should be found
 		if(d < minimum)
 		{
-			minimum = d; 
+			minimum = d;
 			minj = j;
 		}
 		dmin(0,j)  = minimum;
 		dmini(0,j) = 0;
 		dminj(0,j) = minj;
 	}
-	
+
 	// inherit following rows from there before
 	for(i=1;i<nFlightPts-1;i++)
 	{
@@ -196,23 +268,23 @@ void OLCOptimizer::initdmin()
 		mini = dmini(i-1,j);
 		minj = dminj(i-1,j);
 		d = m_pDistanceMatrix[i+nFlightPts*j];
-		
+
 		if(d<minimum)
 		{
 			minimum = d;
 			mini = i;
 			minj = j;
 		}
-		
+
 		dmin(i,j)  = minimum;
 		dmini(i,j) = mini;
 		dminj(i,j) = minj;
-		
+
 		// these cols from tail to front
 		for(j=nFlightPts-2; j>i; j--)
-		{ 
+		{
 			d = m_pDistanceMatrix[i+nFlightPts*j];
-			
+
 			// current point better then minimum before?
 			// d<minimum if equal point before should be found
 			if(d<minimum)
@@ -221,9 +293,9 @@ void OLCOptimizer::initdmin()
 				mini = i;
 				minj = j;
 			}
-			
+
 			d=dmin(i-1,j);
-			
+
 			// is minimum before this col is better?
 			if(d < minimum)
 			{
@@ -242,19 +314,19 @@ void OLCOptimizer::initmaxend()
 {
 	uint nFlightPts = m_flightPointList.size();
 	uint w3, i, f, maxf, besti;
-	
+
 	maxenddist = new int[nFlightPts];
 	maxendpunkt = new int[nFlightPts];
 
 	for(w3=nFlightPts-1; w3>1; w3--)
 	{
 		maxf = 0;
-		
-		for(i=besti=nFlightPts-1; i>=w3; i--) 
+
+		for(i=besti=nFlightPts-1; i>=w3; i--)
 		{
 			f = m_pDistanceMatrix[w3+nFlightPts*i];
-			
-			if(f > maxf) 
+
+			if(f > maxf)
 			{
 				maxf = f;
 				besti = i;
@@ -271,14 +343,14 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 	int lastIndex = (flightPoints.size() - 2);
 	uint distance;
 	WayPoint lastValidWp;
-	
+
 	m_flightPointList.clear();
 
 	if(lastIndex > 0)
 	{
 		lastValidWp = flightPoints[0].wp;
 		m_flightPointList.add(flightPoints[0]);
-		
+
 		for(index=0; index<lastIndex; index++)
 		{
 			// skip to big jumps between waypoints
@@ -288,7 +360,7 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 			{
 				// skip waypoints between minor distances
 				distance = lastValidWp.distance(flightPoints[index].wp);
-	
+
 				if(distance > deltaDist)
 				{
 					m_flightPointList.add(flightPoints[index]);
@@ -298,7 +370,7 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 		}
 	}
 }
-    
+
 bool OLCOptimizer::optimize()
 {
 	uint nFlightPts;
@@ -309,28 +381,23 @@ bool OLCOptimizer::optimize()
 	memset(m_indexFree, 0, sizeof(m_indexFree));
 	memset(m_indexFAI, 0, sizeof(m_indexFree));
 	memset(m_indexFlat, 0, sizeof(m_indexFree));
-	
+
 	m_cancel = false;
 	nFlightPts = m_flightPointList.size();
 	i4cmp = nFlightPts - 2;
 	i2cmp = nFlightPts - 2;
-		
+
 	if(nFlightPts < 5)
 	{
 		// not enough points!
 		return false;
 	}
-	
-	emit progress(0);
+
 	cleanup();
-	emit progress(25);
 	initdmval();
-	emit progress(50);
 	initdmin();
-	emit progress(75);
 	initmaxend();
-	emit progress(100);
-		
+
 	m_indexFree[0] = 0;
 	m_indexFree[1] = 0;
 	m_indexFree[2] = 0;
@@ -339,57 +406,57 @@ bool OLCOptimizer::optimize()
 	m_bestFree = 0;
 	m_bestFAI = 0;
 	m_bestFlat = 0;
-		
+
 	for(i2=0; i2<i2cmp; i2++)
 	{
 		if(m_cancel)
 		{
 			return false;
 		}
-		
-		emit progress(i2*100/i2cmp);
-	
+
+		emit progress(i2 * 100 / i2cmp);
+
 		for(i=i1=e=0; i<i2; i++)
 		{ // optimize 1st turnpoint for free distance separately
 			tmp = m_pDistanceMatrix[i+nFlightPts*i2];
-		
+
 			if(tmp > e)
 			{
 				e = tmp;
 				i1 = i;
 			}
 		} // e, i1 contains for this i2 the best value
-		
+
 		i4cmp = i2 + 2;
-		
+
 		for(i4=nFlightPts; --i4>=i4cmp;)
 		{ // optimize 3th turnpoint from tail
-			c = m_pDistanceMatrix[i2+nFlightPts*i4];
+			c = m_pDistanceMatrix[i2 + nFlightPts * i4];
 			c25 = c * 25;
 			d = dmin(i2, i4);
 			d5 = d * 5;
 			aplusb = 0;
-			
+
 			for(i=i3=i2+1; i<i4; i++)
 			{ // optimize 2nd turnpoint for free distance separately
-				a = m_pDistanceMatrix[i2+nFlightPts*i];
-				b = m_pDistanceMatrix[i+nFlightPts*i4];
+				a = m_pDistanceMatrix[i2 + nFlightPts * i];
+				b = m_pDistanceMatrix[i + nFlightPts * i4];
 				tmp = a + b;
-				
+
 				if(tmp > aplusb)
 				{ // finds greatest a + b (and triangle too)
 					aplusb = tmp;
 					i3 = i;
 				}
-				
+
 				u = tmp + c;
-				
-				if(d5 <= u)
-				{ // triangle found 5*d<= a+b+c
-					if((c25>=(tmp=u*7)) && (a*25>=tmp) && (b*25>=tmp))
+
+				if(d5 <= u) // 20/100*u = 1/5*u <= d (20 percent rule)
+				{ // triangle found 5*d <= a+b+c
+          w = (u - d);
+
+					if((c25 >= (tmp = u * 7)) && (a * 25 >= tmp) && (b * 25 >= tmp)) // 28/100*u = 7/25*u <= side (28 percent rule)
 					{ // FAI Triangle
-						w = u - d;
-						
 						if(w > m_bestFAI)
 						{ // this FAI Triangle is greater
 							m_indexFAI[0] = dmini(i2, i4);
@@ -402,8 +469,6 @@ bool OLCOptimizer::optimize()
 					}
 					else
 					{ // Flat Triangle
-						w = u - d;
-						
 						if(w > m_bestFlat)
 						{
 							m_indexFlat[0] = dmini(i2, i4);
@@ -416,9 +481,9 @@ bool OLCOptimizer::optimize()
 					}
 				}
 			} // aplusb, i3 contains for this i2 and i4 the best value
-			
+
 			tmp = maxenddist[i4] + aplusb + e;
-			
+
 			if(tmp > m_bestFree)
 			{
 				m_indexFree[0] = i1;
@@ -430,7 +495,7 @@ bool OLCOptimizer::optimize()
 			}
 		}
 	}
-	
+
 	return true;
 }
 
