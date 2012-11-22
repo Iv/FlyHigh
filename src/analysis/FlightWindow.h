@@ -26,6 +26,7 @@
 #include <TableWindow.h>
 
 class QWidget;
+class OLCOptimizer;
 
 class FlightWindow: public TableWindow
 {
@@ -73,6 +74,10 @@ class FlightWindow: public TableWindow
     void setFlightToRow(uint row, Flight &flight);
 
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
+
+    void getBestOlcTurnPts(const OLCOptimizer &optimizer,
+                           WayPoint::WayPointListType &tpList,
+                           uint &dist, float &score);
 };
 
 #endif

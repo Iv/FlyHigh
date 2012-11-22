@@ -946,7 +946,7 @@ void FlightWindow::plot_OLC()
 	FlightPointList tpList;
 	FlightPointList simpleFpList;
 	ProgressDlg progDlg(this);
-	uint fpNr;
+	int fpNr;
 	uint dist;
 	int row;
 	bool success;
@@ -966,10 +966,10 @@ void FlightWindow::plot_OLC()
 			if(igcParser.flightPointList().size() > 0)
 			{
 				m_plotter.clear();
-				m_plotter.setLabelX("latitude [deg.min]");
-				m_plotter.setLabelY("longitude [deg.min]");
-				m_plotter.setLabelZ("altitude [m]");
-				plotFlighPointList(igcParser.flightPointList(), "track");
+				m_plotter.setLabelX(tr("latitude [deg.min]"));
+				m_plotter.setLabelY(tr("longitude [deg.min]"));
+				m_plotter.setLabelZ(tr("altitude [m]"));
+				plotFlighPointList(igcParser.flightPointList(), tr("track"));
         igcParser.flightPointList().simplify(simpleFpList);
 				olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
 				progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
@@ -1000,7 +1000,7 @@ void FlightWindow::plot_OLC()
 					dist = olcOptimizer.freeDistance(fpIndexList);
 					tpList.clear();
 
-					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
+					for(fpNr=0; fpNr<fpIndexList.size(); fpNr++)
 					{
 						tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
 					}
@@ -1049,11 +1049,10 @@ void FlightWindow::showOnWebMap()
 	FlightPointList::SogListType sogList;
 	FlightPointList::VarioListType varioList;
 	FlightPointList simpleFpList;
-	uint tpListSize;
-	uint fpNr;
-	uint distFai;
-	uint distFlat;
-	uint distFree;
+	float score;
+  uint dist;
+	int tpListSize;
+	int fpNr;
 	int row;
 	bool success;
 
@@ -1085,41 +1084,7 @@ void FlightWindow::showOnWebMap()
 
 				if(olcOptimizer.optimize())
 				{
-					// fai triangle
-					distFai = olcOptimizer.FAITriangle(fpIndexList);
-					tpList.clear();
-
-					for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
-					{
-						tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
-					}
-
-					// flat triangle
-					distFlat = olcOptimizer.flatTriangle(fpIndexList);
-
-					if((distFai * 1.4) < (distFlat * 1.2))
-					{
-						tpList.clear();
-
-						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
-						{
-							tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
-						}
-					}
-
-					// free distance
-					distFree = olcOptimizer.freeDistance(fpIndexList);
-
-					if(((distFlat * 1.2) < distFree) && ((distFai * 1.4) < distFree))
-					{
-						tpList.clear();
-
-						for(fpNr=0; fpNr<FLIGHT_POINT_INDEX_LIST_SIZE; fpNr++)
-						{
-							tpList.push_back(olcOptimizer.flyPointList().at(fpIndexList[fpNr]).wp);
-						}
-					}
-
+          getBestOlcTurnPts(olcOptimizer, tpList, dist, score);
 					pView->setTurnPointList(tpList);
 					pView->loadMap();
 				}
@@ -1188,4 +1153,66 @@ void FlightWindow::showOnMap()
 
 		m_pDb->close();
 	}
+}
+
+void FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
+                                     WayPoint::WayPointListType &tpList,
+                                     uint &bestDist, float &bestScore)
+{
+  Route::Type scoreType;
+  OLCOptimizer::FlightPointIndexListType tpIndexList;
+  uint dist;
+  float score;
+  int tpNr;
+
+  // free
+	scoreType = Route::Free;
+	dist = optimizer.freeDist();
+	bestDist = dist;
+	bestScore = (dist / 1000.0) * 1.0;
+  optimizer.freeDistIndex(tpIndexList);
+
+  // straight
+	dist = optimizer.straightDist();
+	score = (dist / 1000.0) * 1.2;
+
+	if(score > bestScore)
+	{
+		scoreType = Route::Straight;
+		bestDist = dist;
+		bestScore = score;
+		tpIndexList.clear();
+		optimizer.straightDistIndex(tpIndexList);
+	}
+
+  // flat
+	dist = optimizer.flatDist();
+	score = (dist / 1000.0) * 1.2;
+
+	if(score > bestScore)
+	{
+		scoreType = Route::FlatTri;
+		bestDist = dist;
+		bestScore = score;
+		tpIndexList.clear();
+		optimizer.flatDistIndex(tpIndexList);
+	}
+
+  // fai
+	dist = optimizer.faiDist();
+	score = (dist / 1000.0) * 1.3;
+
+	if(score > bestScore)
+	{
+		scoreType = Route::FaiTri;
+		bestDist = dist;
+		bestScore = score;
+		tpIndexList.clear();
+		optimizer.faiDistIndex(tpIndexList);
+	}
+
+  for(tpNr=0; tpNr<tpIndexList.size(); tpNr++)
+  {
+    tpList.push_back(optimizer.flyPointList().at(tpIndexList[tpNr]).wp);
+  }
 }
