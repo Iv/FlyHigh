@@ -75,7 +75,7 @@ class FlightWindow: public TableWindow
 
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 
-    void getBestOlcTurnPts(const OLCOptimizer &optimizer,
+    Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
                            WayPoint::WayPointListType &tpList,
                            uint &dist, float &score);
 };
