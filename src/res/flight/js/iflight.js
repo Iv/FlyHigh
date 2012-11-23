@@ -39,7 +39,7 @@ var map = null;
 var flight = null;
 var plot = null;
 
-function fl_init(width, height)
+function fl_init()
 {
 	var mapLoaded = false;
 	var mapOptions =
@@ -61,8 +61,6 @@ function fl_init(width, height)
 		if(!mapLoaded)
 		{
 			mapLoaded = true;
-			wm_setMapSize(width, height);
-
 			flight = new Flight(map);
 
 			route = new Route(map);
