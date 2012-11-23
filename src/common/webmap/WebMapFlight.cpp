@@ -36,7 +36,7 @@ WebMapFlight::~WebMapFlight()
 
 void WebMapFlight::init()
 {
-	QString code = "fl_init(720, 860);";
+	QString code = "fl_init();";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
@@ -47,7 +47,6 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 {
 	QString code;
 	QWebFrame *pFrame;
-	WayPoint::WayPointListType wpList;
 	QString value = "%1";
 	QString latLonArg = "[%1,%2]";
 	QString strTime = "";
@@ -82,8 +81,6 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 
 		for(fpNr=0; fpNr<fpListSize; fpNr++)
 		{
-			wpList.push_back(fpList.at(fpNr).wp);
-
 			if(!first)
 			{
 				strTime += ",";
