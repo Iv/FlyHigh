@@ -49,6 +49,18 @@ ELSEIF(UNIX)
     set(qextserialport_SRCS
         ${qextserialport_SRCS}
         qextserialenumerator_linux.cpp)
+
+    # looking for libudev
+    # there's no official cmake udev module yet, we're providing our own
+    # ask cmake to look for FindUDev.cmake in the current directory:
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+    find_package(UDev MODULE REQUIRED)
+
+    # UDEV_LIBS is now defined - add to list
+    set(LIBS_FOR_QESP
+        ${LIBS_FOR_QESP}
+        ${UDEV_LIBS})
+
   ELSEIF(APPLE)
     # osx
     set(qextserialport_SRCS
@@ -77,4 +89,8 @@ SET_SOURCE_FILES_PROPERTIES(${qextserialport_MOC_SRCS}
                             PROPERTIES
                             HEADER_FILE_ONLY true)
 
+
 add_library(qextserialport ${qextserialport_SRCS} ${qextserialport_HDRS} ${qextserialport_MOC_SRCS})
+
+# add dependent libraries
+target_link_libraries(qextserialport ${LIBS_FOR_QESP})
