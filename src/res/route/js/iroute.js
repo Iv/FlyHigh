@@ -35,7 +35,7 @@ var map;
 var route;
 var measure;
 
-function rt_init(width, height)
+function rt_init()
 {
 	var mapLoaded = false;
 	var mapOptions =
@@ -57,7 +57,6 @@ function rt_init(width, height)
 		if(!mapLoaded)
 		{
 			mapLoaded = true;
-			wm_setMapSize(width, height);
 			route = new Route(map);
 			route.setSpeed(22.0);
 			route.setChangeCallback(routeChanged);
