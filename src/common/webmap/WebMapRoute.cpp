@@ -37,11 +37,11 @@ WebMapRoute::~WebMapRoute()
 
 void WebMapRoute::init()
 {
-	QString code = "rt_init(720, 860);";
+	QString code = "rt_init();";
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code.arg(m_pWebMap->width()).arg(m_pWebMap->height()));
+	pFrame->evaluateJavaScript(code);
 }
 
 void WebMapRoute::setName(const QString &name)
