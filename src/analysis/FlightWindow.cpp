@@ -1155,7 +1155,7 @@ void FlightWindow::showOnMap()
 	}
 }
 
-void FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
+Route::Type FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
                                      WayPoint::WayPointListType &tpList,
                                      uint &bestDist, float &bestScore)
 {
@@ -1215,4 +1215,6 @@ void FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
   {
     tpList.push_back(optimizer.flyPointList().at(tpIndexList[tpNr]).wp);
   }
+
+  return scoreType;
 }
