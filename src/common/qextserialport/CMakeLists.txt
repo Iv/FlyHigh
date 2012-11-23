@@ -38,6 +38,19 @@ IF(WIN32)
      ENDIF()
   ENDIF()
 
+  # add windoze libraries
+  find_library(SETUPAPI_LIB setupapi)
+  find_library(ADVAPI32_LIB advapi32)
+  find_library(USER32_LIB user32)
+  # somehow, cmake refuses to add "-lsetupapi" to the link
+  # command, so we'll do a workaround here
+  set(LIBS_FOR_QESP
+      ${LIBS_FOR_QESP}
+      ${SETUPAPI_LIB}
+      ${ADVAPI32_LIB}
+      ${USER32_LIB}
+      setupapi)
+
 ELSEIF(UNIX)
   # unix-like systems
   set(qextserialport_SRCS
@@ -66,6 +79,8 @@ ELSEIF(UNIX)
     set(qextserialport_SRCS
         ${qextserialport_SRCS}
         qextserialenumerator_osx.cpp)
+
+    # todo: adding apple libraries
   ELSE()
     # other unixes
     set(qextserialport_SRCS
