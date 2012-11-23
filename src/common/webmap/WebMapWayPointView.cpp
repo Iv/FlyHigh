@@ -26,7 +26,6 @@
 
 WebMapWayPointView::WebMapWayPointView(const QString &name, WayPoint::Type type)
 {
-  QWebFrame *pFrame;
 	QWidget::setWindowTitle(name);
 	resize(1000, 850);
 
@@ -34,7 +33,6 @@ WebMapWayPointView::WebMapWayPointView(const QString &name, WayPoint::Type type)
 	m_pWpList = NULL;
 	m_editable = true;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
-  pFrame = m_pWebMap->page()->mainFrame();
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
