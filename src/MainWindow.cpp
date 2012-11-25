@@ -46,7 +46,7 @@
 #include "ISql.h"
 #include "MDIWindow.h"
 #include "MigrationDlg.h"
-#include "DbSettingsDlg.h"
+#include "FlyHighSettingsDlg.h"
 #include "DeviceConnectionParameters.h"
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
@@ -390,7 +390,7 @@ void MainWindow::settings_configure_device()
 
 void MainWindow::settings_configure_flyhigh()
 {
-	DbSettingsDlg dlg(this);
+  FlyHighSettingsDlg dlg(this);
 
 	if(dlg.exec() == QDialog::Accepted)
 	{

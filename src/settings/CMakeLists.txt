@@ -9,7 +9,7 @@ add_subdirectory(flytec)
 add_subdirectory(flytec6015)
 add_subdirectory(device)
 
-set(settings_SRCS DbSettingsDlg.cpp)
+set(settings_SRCS FlyHighSettingsDlg.cpp)
 
 add_library(settings ${settings_SRCS})
 

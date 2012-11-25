@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DbSettingsDlg_H
-#define DbSettingsDlg_H
+#ifndef FlyHighSettingsDlg_H
+#define FlyHighSettingsDlg_H
 
 #include <QDialog>
 
@@ -31,16 +31,16 @@ class DatabaseParameters;
 class DeviceConnectionWidget;
 class DeviceConnectionParameters;
 
-class DbSettingsDlg: public QDialog
+class FlyHighSettingsDlg: public QDialog
 {
   public:
 
     /**
      * Creates a modal preferences dialog
      */
-    DbSettingsDlg(QWidget* parent = 0);
+    FlyHighSettingsDlg(QWidget* parent = 0);
 
-    ~DbSettingsDlg();
+    ~FlyHighSettingsDlg();
 
     /**
      * Access to the db config

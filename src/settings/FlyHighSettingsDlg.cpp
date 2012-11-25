@@ -25,9 +25,9 @@
 #include "DatabaseParameters.h"
 #include "DeviceConnectionWidget.h"
 #include "DeviceConnectionParameters.h"
-#include "DbSettingsDlg.h"
+#include "FlyHighSettingsDlg.h"
 
-DbSettingsDlg::DbSettingsDlg(QWidget* parent)
+FlyHighSettingsDlg::FlyHighSettingsDlg(QWidget* parent)
 	:QDialog(parent)
 {
 	setWindowTitle(tr("Configure - FlyHigh"));
@@ -60,7 +60,7 @@ DbSettingsDlg::DbSettingsDlg(QWidget* parent)
 	show();
 }
 
-DbSettingsDlg::~DbSettingsDlg()
+FlyHighSettingsDlg::~FlyHighSettingsDlg()
 {
 	delete m_pDBConfig;
 	delete m_pTabWidget;
@@ -68,12 +68,12 @@ DbSettingsDlg::~DbSettingsDlg()
 	delete m_pLayout;
 }
 
-const DatabaseParameters DbSettingsDlg::getDBParameters() const
+const DatabaseParameters FlyHighSettingsDlg::getDBParameters() const
 {
 	return m_pDBConfig->getDatabaseParameters();
 }
 
-const DeviceConnectionParameters DbSettingsDlg::getDeviceConnectionParameters() const
+const DeviceConnectionParameters FlyHighSettingsDlg::getDeviceConnectionParameters() const
 {
   return m_pDeviceConfig->getParameters();
 }
