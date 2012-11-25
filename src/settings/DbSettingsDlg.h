@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2011 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,37 +17,67 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#include <qcombobox.h>
-#include <qlineedit.h>
- 
-#include "IFlyHighRC.h"
-#include "IPortFrame.h"
-#include "PortFrameImpl.h"
 
-IPortFrame::IPortFrame(QWidget* parent)
-{
-	m_pFrame = new PortFrameImpl(parent);
-	m_pFrame->lineEdit_Port->setText(IFlyHighRC::pInstance()->deviceLine());
-	m_pFrame->comboBox_Baud->addItems(IFlyHighRC::pInstance()->deviceSpeedList());
-}
+#ifndef DbSettingsDlg_H
+#define DbSettingsDlg_H
 
-IPortFrame::~IPortFrame()
-{
-	delete m_pFrame;
-}
+#include <QDialog>
 
-bool IPortFrame::show()
+class QTabWidget;
+class QDialogButtonBox;
+class QVBoxLayout;
+class DatabaseWidget;
+class DatabaseParameters;
+class DeviceConnectionWidget;
+class DeviceConnectionParameters;
+
+class DbSettingsDlg: public QDialog
 {
-	bool ok;
-	
-	ok = (m_pFrame->exec() == QDialog::Accepted);
-	
-	if(ok)
-	{
-		IFlyHighRC::pInstance()->setDeviceLine(m_pFrame->lineEdit_Port->text());
-		IFlyHighRC::pInstance()->setDeviceSpeed(m_pFrame->comboBox_Baud->currentIndex());
-	}
-	
-	return ok;
-}
+  public:
+
+    /**
+     * Creates a modal preferences dialog
+     */
+    DbSettingsDlg(QWidget* parent = 0);
+
+    ~DbSettingsDlg();
+
+    /**
+     * Access to the db config
+     */
+    const DatabaseParameters getDBParameters() const;
+
+    /**
+     * Access to the device config
+     */
+    const DeviceConnectionParameters getDeviceConnectionParameters() const;
+
+private:
+
+    /**
+     * Tab container
+     */
+    QTabWidget* m_pTabWidget;
+
+    /**
+     * Ok/Cancel button
+     */
+    QDialogButtonBox* m_pButtonBox;
+
+    /**
+     * Layout manager
+     */
+    QVBoxLayout* m_pLayout;
+
+    /**
+     * Database configuration dialog
+     */
+    DatabaseWidget* m_pDBConfig;
+
+    /**
+     * Device connection dialog
+     */
+    DeviceConnectionWidget* m_pDeviceConfig;
+};
+
+#endif

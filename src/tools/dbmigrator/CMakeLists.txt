@@ -1,5 +1,6 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/database/sql
+                    ${CMAKE_SOURCE_DIR}/src/settings/database
                     ${QT_INCLUDES})
 
 set(dbmigrator_SRCS MigrationDlg.cpp

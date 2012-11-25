@@ -70,10 +70,6 @@ class MainWindow: public QMainWindow
 
 		void airspaces_fromFile();
 
-		void settings_port();
-
-		void settings_device();
-
 		void settings_configure_device();
 
     void settings_configure_flyhigh();

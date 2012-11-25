@@ -23,6 +23,8 @@
 #include <QVBoxLayout>
 #include "DatabaseWidget.h"
 #include "DatabaseParameters.h"
+#include "DeviceConnectionWidget.h"
+#include "DeviceConnectionParameters.h"
 #include "DbSettingsDlg.h"
 
 DbSettingsDlg::DbSettingsDlg(QWidget* parent)
@@ -34,11 +36,15 @@ DbSettingsDlg::DbSettingsDlg(QWidget* parent)
 	// organized in tabs
 	m_pTabWidget = new QTabWidget();
 
-	// a tab for database preferences
+  // a tab for device preferences
+  m_pDeviceConfig = new DeviceConnectionWidget(this, tr("Device Connection"));
+  m_pTabWidget->addTab(m_pDeviceConfig, tr("Device"));
+
+  // a tab for database preferences
 	m_pDBConfig = new DatabaseWidget(this, tr("Database Settings"));
 	m_pTabWidget->addTab(m_pDBConfig, tr("Database"));
 
-	// ok/cancel button
+  // ok/cancel button
 	m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
 	// wire buttons to dialog slots
@@ -65,4 +71,9 @@ DbSettingsDlg::~DbSettingsDlg()
 const DatabaseParameters DbSettingsDlg::getDBParameters() const
 {
 	return m_pDBConfig->getDatabaseParameters();
+}
+
+const DeviceConnectionParameters DbSettingsDlg::getDeviceConnectionParameters() const
+{
+  return m_pDeviceConfig->getParameters();
 }

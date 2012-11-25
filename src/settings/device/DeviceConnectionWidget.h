@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2011 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,18 +18,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifndef DEVICECONNECTIONWIDGET_H
+#define DEVICECONNECTIONWIDGET_H
 
-#include "PortFrameImpl.h"
+#include <QWidget>
 
-PortFrameImpl::PortFrameImpl(QWidget* parent)
-	:QDialog(parent)
+class QComboBox;
+class QLabel;
+class DeviceConnectionParameters;
+
+/**
+ * Device connection configuration widget
+ */
+class DeviceConnectionWidget : public QWidget
 {
-  setupUi(this);
-}
+	Q_OBJECT
 
-PortFrameImpl::~PortFrameImpl()
-{
-}
+public:
 
-#include "moc_PortFrameImpl.cxx"
+  DeviceConnectionWidget(QWidget* parent=0, const QString& title="");
+  ~DeviceConnectionWidget();
 
+  DeviceConnectionParameters getParameters() const;
+
+private:
+  void populateValues();
+
+private:
+
+  QComboBox* m_pDeviceType;
+  QComboBox* m_pDevicePort;
+  QComboBox* m_pDeviceLineSpeed;
+  QLabel* m_pDeviceTypeLabel;
+  QLabel* m_pDevicePortLabel;
+  QLabel* m_pDeviceLineSpeedLabel;
+
+};
+
+#endif
