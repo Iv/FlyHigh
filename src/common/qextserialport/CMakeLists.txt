@@ -67,7 +67,7 @@ ELSEIF(UNIX)
     # there's no official cmake udev module yet, we're providing our own
     # ask cmake to look for FindUDev.cmake in the current directory:
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-    find_package(UDev MODULE REQUIRED)
+    find_package(UDev REQUIRED)
 
     # UDEV_LIBS is now defined - add to list
     set(LIBS_FOR_QESP
