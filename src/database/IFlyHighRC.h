@@ -61,11 +61,17 @@ class IFlyHighRC
 
 		void setDeviceSpeed(uint index);
 
+    void setDeviceSpeed(const QString& speed);
+
 		const QString deviceSpeedString() const;
 
 		uint deviceName() const;
 
 		void setDeviceName(uint index);
+
+    void setDeviceName(const QString& name);
+
+    const QString deviceNameString() const;
 
 		char utcOffset() const;
 
@@ -82,6 +88,8 @@ class IFlyHighRC
 		const QStringList& deviceNameList() const;
 
 		const QStringList& deviceSpeedList() const;
+
+    const QStringList& deviceLineList() const;
 
 		// pilot info
 		void setPilotId(int id);
@@ -139,6 +147,7 @@ class IFlyHighRC
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
 		QStringList m_dbTypeList;
+    mutable QStringList m_deviceLineList;
 
 		IFlyHighRC();
 };

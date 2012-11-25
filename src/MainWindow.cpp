@@ -42,29 +42,23 @@
 #include "IFlytec6015Config.h"
 #include "IFlyHighRC.h"
 #include "IFlyHighRCFrame.h"
-#include "IPortFrame.h"
 #include "IRouteForm.h"
 #include "ISql.h"
-#include "MainWindow.h"
 #include "MDIWindow.h"
 #include "MigrationDlg.h"
 #include "DbSettingsDlg.h"
+#include "DeviceConnectionParameters.h"
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
+#include "MainWindow.h"
 
 MainWindow::MainWindow()
 //	:QMainWindow(0, Qt::WDestructiveClose)
 	:QMainWindow(0)
 {
   QPalette palette;
-	QString devName;
-	QMenu *pMenu;
 	QAction *pAction;
-	QActionGroup *pActGrp;
-	uint devNr;
-	uint curDev;
-	uint maxDevNr;
 
   createAndConnectDb();
 
@@ -159,39 +153,6 @@ MainWindow::MainWindow()
 
 	// Menu Configuration
 	m_pMenuSettings = menuBar()->addMenu(tr("&Settings"));
-
-	// Submenu Port
-	pAction = new QAction(tr("&Port..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(settings_port()));
-	m_pMenuSettings->addAction(pAction);
-
-	// Submenu Settings>Device
-	pMenu = m_pMenuSettings->addMenu(tr("&Device"));
-	// create a radiobutton group
-	pActGrp = new QActionGroup(this);
-	maxDevNr = IFlyHighRC::pInstance()->deviceNameList().size();
-	curDev = IFlyHighRC::pInstance()->deviceName();
-
-	// add all currently supported devices
-	for(devNr=0; devNr<maxDevNr; devNr++)
-	{
-		devName = IFlyHighRC::pInstance()->deviceNameList().at(devNr);
-		pAction = new QAction(devName, this);
-		pAction->setData(devNr);
-		pAction->setCheckable(true);
-		connect(pAction, SIGNAL(triggered()), this, SLOT(settings_device()));
-
-		// enable current device
-		if(devNr == curDev)
-		{
-			pAction->setChecked(true);
-		}
-
-		pActGrp->addAction(pAction);
-	}
-
-	// add buttons to menu
-	pMenu->addActions(pActGrp->actions());
 
 	pAction = new QAction(tr("&Configure Device..."), this);
 	connect(pAction, SIGNAL(triggered()), SLOT(settings_configure_device()));
@@ -403,22 +364,6 @@ void MainWindow::airspaces_fromFile()
 	showWindow(pWin);
 }
 
-
-void MainWindow::settings_device()
-{
-	QAction* pAct;
-
-  pAct = qobject_cast<QAction*>(sender());
-	IFlyHighRC::pInstance()->setDeviceName(pAct->data().toUInt());
-}
-
-void MainWindow::settings_port()
-{
-	IPortFrame portFrame;
-
-	portFrame.show();
-}
-
 void MainWindow::settings_configure_device()
 {
 	IFlytecConfig *pFrame;
@@ -452,6 +397,8 @@ void MainWindow::settings_configure_flyhigh()
 		// save values
 		const DatabaseParameters dbparams(dlg.getDBParameters());
 		dbparams.writeToConfig();
+    const DeviceConnectionParameters devparams(dlg.getDeviceConnectionParameters());
+    devparams.writeToConfig();
 
 		// notify database mngr
 		ISql::pInstance()->setDBParameters(dbparams);

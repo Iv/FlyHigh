@@ -10,10 +10,11 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/common/window
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/preparation
+                    ${CMAKE_SOURCE_DIR}/src/settings
                     ${CMAKE_SOURCE_DIR}/src/settings/database
+                    ${CMAKE_SOURCE_DIR}/src/settings/device
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
-                    ${CMAKE_SOURCE_DIR}/src/settings/port
                     ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
                     ${QT_INCLUDES} )
 
@@ -44,7 +45,6 @@ target_link_libraries(flyhigh
   preparation
 	cfgflytec
 	cfgflytec6015
-	cfgport
 	dbmigrator
 	cfgdatabase
 	window
@@ -59,6 +59,8 @@ target_link_libraries(flyhigh
 	utils
 	res
 	qextserialport
+  settings
+  device
 	${QT_LIBRARIES})
 
 # install executable

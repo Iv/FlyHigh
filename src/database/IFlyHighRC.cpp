@@ -21,6 +21,8 @@
 #include <QDir>
 #include <QStringList>
 #include <QSettings>
+#include <QRegExp>
+#include "qextserialenumerator.h"
 #include "IFlyHighRC.h"
 
 // definition of ini entries in the form <section>/<key>
@@ -61,6 +63,7 @@ IFlyHighRC::IFlyHighRC()
 															"flyhigh",
 															"flyhigh");
 
+  // must match the order in IFlyHighRC::DeviceId:
 	m_deviceNameList += "5020 / Competino";
 	m_deviceNameList += "6015 / IQ Basic";
 	m_deviceNameList += "6020 / Competino+";
@@ -115,6 +118,27 @@ void IFlyHighRC::setDeviceName(uint index)
 	m_deviceName = index;
 }
 
+void IFlyHighRC::setDeviceName(const QString& name)
+{
+  int idx = m_deviceNameList.indexOf(name);
+  if(idx >= 0)
+  {
+    m_deviceName = idx;
+  }
+}
+
+const QString IFlyHighRC::deviceNameString() const
+{
+  QString name;
+
+  if(m_deviceName < (uint)m_deviceNameList.size())
+  {
+    name = m_deviceNameList[m_deviceName];
+  }
+
+  return name;
+}
+
 const QString& IFlyHighRC::deviceLine() const
 {
 	return m_deviceLine;
@@ -133,6 +157,15 @@ uint IFlyHighRC::deviceSpeed() const
 void IFlyHighRC::setDeviceSpeed(uint index)
 {
 	m_deviceSpeed = index;
+}
+
+void IFlyHighRC::setDeviceSpeed(const QString& speed)
+{
+  int idx = m_deviceSpeedList.indexOf(speed);
+  if (idx >= 0)
+  {
+    m_deviceSpeed = idx;
+  }
 }
 
 const QString IFlyHighRC::deviceSpeedString() const
@@ -194,6 +227,29 @@ const QStringList& IFlyHighRC::deviceNameList() const
 const QStringList& IFlyHighRC::deviceSpeedList() const
 {
 	return m_deviceSpeedList;
+}
+
+const QStringList& IFlyHighRC::deviceLineList() const
+{
+  // rebuild list each call. Maybe the user connects his device
+  // at runtime, so he'll get up-to-date list each time he opens
+  // the settings menu.
+  // connect/disconnect notification does not yet work in qextserialport
+  m_deviceLineList.clear();
+  foreach( QextPortInfo port, QextSerialEnumerator::getPorts() )
+  {
+    // filter for /dev/ttyS* or /dev/ttyUSB* on unix-like platforms
+    // else we get all the tty's and console devices, too
+#ifdef Q_OS_UNIX
+    QRegExp rx = QRegExp(".*tty(S|USB).*");
+    if(rx.indexIn(port.portName) != -1)
+#endif
+    {
+      m_deviceLineList += port.portName;
+    }
+  }
+
+  return m_deviceLineList;
 }
 
 void IFlyHighRC::setPilotId(int id)

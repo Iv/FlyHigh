@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2011 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,23 +18,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef IPortFrame_h
-#define IPortFrame_h
- 
-#include <qwidget.h>
+#ifndef DEVICECONNECTIONPARAMETERS_H
+#define DEVICECONNECTIONPARAMETERS_H
 
-class PortFrameImpl;
+#include <QString>
 
-class IPortFrame
+/**
+ * Encapsulates device connection parameters.
+ */
+class DeviceConnectionParameters
 {
-	public:
-		IPortFrame(QWidget* parent = 0);
-		virtual ~IPortFrame();
-		
-		bool show();
-		
-	private:
-		PortFrameImpl *m_pFrame;
+
+public:
+
+  DeviceConnectionParameters(const QString& type,
+                             const QString& port,
+                             const QString& speed);
+
+  DeviceConnectionParameters();
+
+  bool operator==(const DeviceConnectionParameters& other) const;
+  bool operator!=(const DeviceConnectionParameters& other) const;
+
+  void readFromConfig();
+  void writeToConfig() const;
+
+  QString deviceType() const;
+  const QString& port() const;
+  const QString& lineSpeed() const;
+
+  static DeviceConnectionParameters defaultParameters();
+  static DeviceConnectionParameters parametersFromConfig();
+
+private:
+
+  QString m_deviceType;
+  QString m_port;
+  QString m_lineSpeed;
+
 };
 
-#endif
+#endif // DEVICECONNECTIONPARAMETERS_H
