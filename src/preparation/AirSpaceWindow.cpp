@@ -54,6 +54,10 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 
       connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
+			pAction = new QAction(tr("&Edit"), this);
+			connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
+			MDIWindow::addAction(pAction, true);
+
 			pAction = new QAction(tr("&Delete"), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
 			MDIWindow::addAction(pAction);
@@ -93,6 +97,10 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
     pAction = new QAction(tr("Add to DB..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToSqlDB()));
     MDIWindow::addAction(pAction, true);
+
+    pAction = new QAction(tr("&Update"), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+    MDIWindow::addAction(pAction);
   }
 
 	// import/export
@@ -135,12 +143,14 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 	nameList += tr("Low [m]");
 	nameList += tr("High [m]");
 	nameList += tr("Class");
+	nameList += tr("Comment");
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Name, 200);
 	pTable->setColumnWidth(High, 100);
 	pTable->setColumnWidth(Low, 100);
 	pTable->setColumnWidth(Class, 80);
+	pTable->setColumnWidth(Comment, 750);
 
   connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
@@ -212,9 +222,10 @@ void AirSpaceWindow::file_open()
 	uint maxAirspaceNr;
 
 	fileName = QFileDialog::getOpenFileName(this,
-																					"Open OpenAir File",
+																					tr("Open OpenAir File"),
 																					IFlyHighRC::pInstance()->lastDir(),
-																					"OpenAir Files (*.txt *.fas)");
+																					"OpenAir Files (*.txt);;"
+																					"Flytec Files (*.faf *.fas)");
 
 	if(fileName != "")
 	{
@@ -237,6 +248,25 @@ void AirSpaceWindow::file_open()
 		}
 
 		TableWindow::unsetCursor();
+	}
+}
+
+void AirSpaceWindow::file_edit()
+{
+  IAirSpaceForm airspaceForm(this, tr("Edit AirSpace"));
+  int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    airspaceForm.setAirSpace(m_airSpaceList[row]);
+
+    if(airspaceForm.exec() && m_pDb->open())
+    {
+      ISql::pInstance()->update(*m_airSpaceList[row]);
+      m_pDb->close();
+    }
 	}
 }
 
@@ -373,6 +403,7 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
   }
 
 	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
+	pTable->item(row, Comment)->setText(pAirSpace->remark());
 }
 
 void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList)
