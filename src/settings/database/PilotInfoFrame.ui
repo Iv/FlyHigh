@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FlyHighRCFrame</class>
- <widget class="QDialog" name="FlyHighRCFrame">
+ <class>PilotInfoFrame</class>
+ <widget class="QDialog" name="PilotInfoFrame">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FlyHighRC</string>
+   <string>PilotInfo</string>
   </property>
   <widget class="QPushButton" name="pushButtonGlider">
    <property name="geometry">
@@ -236,7 +236,7 @@
   <connection>
    <sender>buttonOk</sender>
    <signal>clicked()</signal>
-   <receiver>FlyHighRCFrame</receiver>
+   <receiver>PilotInfoFrame</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -252,7 +252,7 @@
   <connection>
    <sender>buttonCancel</sender>
    <signal>clicked()</signal>
-   <receiver>FlyHighRCFrame</receiver>
+   <receiver>PilotInfoFrame</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -268,7 +268,7 @@
   <connection>
    <sender>pushButtonGlider</sender>
    <signal>clicked()</signal>
-   <receiver>FlyHighRCFrame</receiver>
+   <receiver>PilotInfoFrame</receiver>
    <slot>newGlider()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -9,11 +9,11 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
 
 set(cfgdatabase_SRCS CredentialsDlg.cpp
                      DatabaseWidget.cpp
-                     FlyHighRCFrameImpl.cpp
-                     IFlyHighRCFrame.cpp)
+                     PilotInfoFrameImpl.cpp
+                     IPilotInfoFrame.cpp)
 
 set(cfgdatabase_HDRS DatabaseWidget.h
-                     FlyHighRCFrameImpl.h)
+                     PilotInfoFrameImpl.h)
 
 file (GLOB cfgdatabase_UI *.ui)
 
