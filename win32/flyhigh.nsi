@@ -4,7 +4,7 @@
 
 ; Helper defines
 !define PRODUCT_NAME "flyhigh"
-!define PRODUCT_VERSION "0.9.1-RC1"
+!define PRODUCT_VERSION "0.9.5"
 !define PRODUCT_PUBLISHER "flyhigh project"
 !define PRODUCT_WEB_SITE "http://flyhigh.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}"
