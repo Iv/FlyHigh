@@ -116,28 +116,6 @@
     <cstring>File_Write</cstring>
    </property>
   </action>
-  <action name="File_Open">
-   <property name="text">
-    <string>Open...</string>
-   </property>
-   <property name="iconText">
-    <string>Open...</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>File_Open</cstring>
-   </property>
-  </action>
-  <action name="File_Save">
-   <property name="text">
-    <string>Save...</string>
-   </property>
-   <property name="iconText">
-    <string>Save...</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>File_Save</cstring>
-   </property>
-  </action>
   <action name="fileCloseAction">
    <property name="text">
     <string>Close</string>
