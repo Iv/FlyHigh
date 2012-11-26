@@ -41,7 +41,7 @@
 #include "IFlytecConfig.h"
 #include "IFlytec6015Config.h"
 #include "IFlyHighRC.h"
-#include "IFlyHighRCFrame.h"
+#include "IPilotInfoFrame.h"
 #include "IRouteForm.h"
 #include "ISql.h"
 #include "MDIWindow.h"
@@ -410,7 +410,7 @@ void MainWindow::settings_configure_flyhigh()
 
 void MainWindow::settings_pilotInfo()
 {
-	IFlyHighRCFrame rcFrame;
+	IPilotInfoFrame rcFrame;
 
 	rcFrame.show();
 }

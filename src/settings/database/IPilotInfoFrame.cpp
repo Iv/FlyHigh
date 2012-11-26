@@ -17,31 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef FlyHighRCFrameImpl_h
-#define FlyHighRCFrameImpl_h
 
-#include "ui_FlyHighRCFrame.h"
-#include "Glider.h"
-#include "Pilot.h"
+#include "IPilotInfoFrame.h"
+#include "PilotInfoFrameImpl.h"
 
-class FlyHighRCFrameImpl: public QDialog, public Ui::FlyHighRCFrame
+IPilotInfoFrame::IPilotInfoFrame(QWidget* parent)
 {
-	Q_OBJECT
+	m_pFrame = new PilotInfoFrameImpl(parent);
+}
+
+IPilotInfoFrame::~IPilotInfoFrame()
+{
+	delete m_pFrame;
+}
+
+bool IPilotInfoFrame::show()
+{
+	bool ok;
 	
-	public:
-		FlyHighRCFrameImpl(QWidget* parent = 0);
-		
-		void updateGlider();
-		void selectGlider(Glider &glider);
-		Glider& currentGlider();
-		void ok();
-
-	protected slots:
-		void newGlider();
-
-	private:
-		Pilot m_curPilot;
-		Glider::GliderListType m_gliderList;
-};
-
-#endif
+	ok = (m_pFrame->exec() == QDialog::Accepted);
+	
+	if(ok)
+	{
+		m_pFrame->ok();
+	}
+	
+	return ok;
+}

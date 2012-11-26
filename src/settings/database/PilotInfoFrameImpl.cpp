@@ -20,12 +20,12 @@
 
 #include <qcombobox.h>
 #include <qlineedit.h>
-#include "FlyHighRCFrameImpl.h"
+#include "PilotInfoFrameImpl.h"
 #include "IFlyHighRC.h"
 #include "IGliderForm.h"
 #include "ISql.h"
 
-FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent)
+PilotInfoFrameImpl::PilotInfoFrameImpl(QWidget* parent)
 	:QDialog(parent)
 {
 	setupUi(this);
@@ -39,7 +39,7 @@ FlyHighRCFrameImpl::FlyHighRCFrameImpl(QWidget* parent)
 	selectGlider(m_curPilot.glider());
 }
 
-void FlyHighRCFrameImpl::newGlider()
+void PilotInfoFrameImpl::newGlider()
 {
   Glider::GliderListType gliders;
 	Glider glider;
@@ -54,7 +54,7 @@ void FlyHighRCFrameImpl::newGlider()
 	}
 }
 
-void FlyHighRCFrameImpl::selectGlider(Glider &glider)
+void PilotInfoFrameImpl::selectGlider(Glider &glider)
 {
 	QString str;
 	int index;
@@ -75,7 +75,7 @@ void FlyHighRCFrameImpl::selectGlider(Glider &glider)
 	}
 }
 
-void FlyHighRCFrameImpl::updateGlider()
+void PilotInfoFrameImpl::updateGlider()
 {
 	QStringList list;
 	QString gliderModel;
@@ -92,7 +92,7 @@ void FlyHighRCFrameImpl::updateGlider()
 	}
 }
 
-void FlyHighRCFrameImpl::ok()
+void PilotInfoFrameImpl::ok()
 {
 	m_curPilot.setFirstName(lineEdit_FirstName->text());
 	m_curPilot.setLastName(lineEdit_LastName->text());
@@ -123,4 +123,4 @@ void FlyHighRCFrameImpl::ok()
 	}
 }
 
-#include "moc_FlyHighRCFrameImpl.cxx"
+#include "moc_PilotInfoFrameImpl.cxx"

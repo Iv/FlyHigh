@@ -18,23 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#ifndef IFlyHighRCFrame_h
-#define IFlyHighRCFrame_h
+#ifndef IPilotInfoFrame_h
+#define IPilotInfoFrame_h
 
-#include <qwidget.h>
+#include <QWidget>
 
-class FlyHighRCFrameImpl;
+class PilotInfoFrameImpl;
 
-class IFlyHighRCFrame
+class IPilotInfoFrame
 {
 	public:
-		IFlyHighRCFrame(QWidget* parent = 0);
-		virtual ~IFlyHighRCFrame();
+    IPilotInfoFrame(QWidget* parent = 0);
+    virtual ~IPilotInfoFrame();
 		
 		bool show();
 		
 	private:
-		FlyHighRCFrameImpl *m_pFrame;
+    PilotInfoFrameImpl *m_pFrame;
 };
 
 #endif
