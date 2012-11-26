@@ -34,10 +34,6 @@ OLCOptimizer::OLCOptimizer()
 	m_pDistanceMatrix = NULL;
 	maxenddist = NULL;
 	maxendpunkt = NULL;
-
-	memset(m_indexFree, 0, sizeof(m_indexFree));
-	memset(m_indexFAI, 0, sizeof(m_indexFree));
-	memset(m_indexFlat, 0, sizeof(m_indexFree));
 }
 
 OLCOptimizer::~OLCOptimizer()
@@ -378,9 +374,10 @@ bool OLCOptimizer::optimize()
 	uint i1, i2, i3, i4;
 	uint i, a, b, c, d, e, u, w, tmp, aplusb, c25, d5;
 
+  memset(m_indexStraight, 0, sizeof(m_indexStraight));
 	memset(m_indexFree, 0, sizeof(m_indexFree));
-	memset(m_indexFAI, 0, sizeof(m_indexFree));
-	memset(m_indexFlat, 0, sizeof(m_indexFree));
+	memset(m_indexFAI, 0, sizeof(m_indexFAI));
+	memset(m_indexFlat, 0, sizeof(m_indexFlat));
 
 	m_cancel = false;
 	nFlightPts = m_flightPointList.size();
