@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>649</width>
-    <height>378</height>
+    <width>486</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,46 +19,253 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QTableWidget" name="tableEdgePoints">
+  <widget class="QPushButton" name="buttonOk">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>241</width>
-     <height>351</height>
+     <x>260</x>
+     <y>290</y>
+     <width>52</width>
+     <height>31</height>
     </rect>
    </property>
-   <property name="editTriggers">
-    <set>QAbstractItemView::NoEditTriggers</set>
+   <property name="text">
+    <string>&amp;OK</string>
    </property>
-   <property name="cornerButtonEnabled">
+   <property name="shortcut">
+    <string/>
+   </property>
+   <property name="autoDefault">
     <bool>true</bool>
    </property>
-   <attribute name="verticalHeaderVisible">
+   <property name="default">
     <bool>true</bool>
-   </attribute>
-   <attribute name="verticalHeaderVisible">
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelDistance">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>90</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Name</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditName">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>10</y>
+     <width>251</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="maxLength">
+    <number>16</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabeLowUnit">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>60</y>
+     <width>37</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[m]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonCancel">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>290</y>
+     <width>79</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&amp;Cancel</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+   <property name="autoDefault">
     <bool>true</bool>
-   </attribute>
-   <column>
-    <property name="text">
-     <string>Use</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Longitude</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Latitude</string>
-    </property>
-   </column>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBoxLow">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>50</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000</number>
+   </property>
+   <property name="maximum">
+    <number>20000</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelLow">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>90</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Low</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelHigh">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>90</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>High</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBoxHigh">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>90</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000</number>
+   </property>
+   <property name="maximum">
+    <number>20000</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelHighUnit">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>100</y>
+     <width>37</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>[m]</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="textLabelClass">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>90</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Class</string>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditClass">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>130</y>
+     <width>251</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="maxLength">
+    <number>16</number>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEditComment">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>411</width>
+     <height>71</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>AirSpaceForm</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>250</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>AirSpaceForm</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>408</x>
+     <y>220</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>448</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

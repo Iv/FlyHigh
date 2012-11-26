@@ -3,7 +3,7 @@ include(${QT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/database
-										${CMAKE_SOURCE_DIR}/src/database/sql
+                    ${CMAKE_SOURCE_DIR}/src/database/sql
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR})
@@ -11,16 +11,18 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
 set(form_SRCS AirSpaceFormImpl.cpp
               FlightFormImpl.cpp
               GliderFormImpl.cpp
-              IWayPointForm.cpp
+              IAirSpaceForm.cpp
               IGliderForm.cpp
               IFlightForm.cpp
               IRouteForm.cpp
               IServicingForm.cpp
+              IWayPointForm.cpp
               RouteFormImpl.cpp
               ServicingFormImpl.cpp
               WayPointFormImpl.cpp)
 
-set(form_HDRS FlightFormImpl.h
+set(form_HDRS AirSpaceFormImpl.h
+              FlightFormImpl.h
               GliderFormImpl.h
               RouteFormImpl.h
               ServicingFormImpl.h

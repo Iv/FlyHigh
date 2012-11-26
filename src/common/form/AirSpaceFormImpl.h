@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,12 +22,8 @@
 #define AirSpaceFormImpl_h
 
 #include <QDialog>
-#include <QPoint>
-#include <QVector>
 #include "ui_AirSpaceForm.h"
 
-class QCloseEvent;
-class QPaintEvent;
 class AirSpace;
 
 class AirSpaceFormImpl: public QDialog, public Ui::AirSpaceForm
@@ -40,24 +36,10 @@ class AirSpaceFormImpl: public QDialog, public Ui::AirSpaceForm
 		void setAirSpace(AirSpace *pAirSpace);
 
 	protected slots:
-		void tableChanged(int col, int row);
-
-	protected:
-		void closeEvent(QCloseEvent * e);
-
-		void paintEvent(QPaintEvent *pEvent);
+		void accept();
 
 	private:
-		typedef QVector<QPoint> PointArray;
-
-		enum Fields{Use, Longitude, Latitude};
-
-		QRect m_drawRect;
 		AirSpace *m_pAirSpace;
-
-		void translateEdgePts(PointArray &edgePts, int dx, int dy);
-
-		void scaleEdgePts(PointArray &edgePts, double sx, double sy);
 };
 
 #endif
