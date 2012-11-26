@@ -190,6 +190,11 @@ bool IDataBase::add(AirSpaceList &airspaceList)
 	return false;
 }
 
+bool IDataBase::update(AirSpace &airspace)
+{
+  return false;
+}
+
 bool IDataBase::delAirSpace(AirSpace &airspace)
 {
 	return false;

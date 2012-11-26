@@ -102,6 +102,8 @@ class IDataBase: public QObject
 
 		virtual bool add(AirSpaceList &airspaceList);
 
+    virtual bool update(AirSpace &airspace);
+
 		virtual bool delAirSpace(AirSpace &airspace);
 
 		virtual bool delAirSpaces(AirSpaceList &airspaceList);
