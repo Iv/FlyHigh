@@ -24,8 +24,8 @@ IF(WIN32)
       qextserialenumerator_win.cpp)
 
   # For Windows user who doesn't have Qt4's Private files
-  IF(${QT_VERSION} MATCHES "^4\\..*\\..*")
-    IF(NOT EXIST "${QT_INSTALL_HEADERS}/QtCore/private/qwineventnotifier_p.h")
+  IF(${QT_VERSION_MAJOR} MATCHES "4")
+    IF(NOT EXISTS "${QT_HEADERS_DIR}/QtCore/private/qwineventnotifier_p.h")
       set(qextserialport_SRCS
           ${qextserialport_SRCS}
           qextwineventnotifier_p.cpp)
