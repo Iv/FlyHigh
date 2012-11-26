@@ -77,6 +77,25 @@ bool AirSpaces::add(AirSpace &airspace)
 	return success;
 }
 
+bool AirSpaces::updateAirSpace(const AirSpace &airspace)
+{
+  QSqlQuery query(db());
+  QString sqls;
+	bool success;
+
+  sqls = QString("UPDATE AirSpaces SET Name='%1', Class='%2', Lower=%3, Upper=%4,"
+                 "Comment='%5' WHERE ID=%6;")
+                  .arg(airspace.name()).arg(airspace.airspaceClass())
+                  .arg(airspace.low()).arg(airspace.high()).arg(airspace.remark())
+                 .arg(airspace.id());
+
+	success = query.exec(sqls);
+	DataBaseSub::setLastModified("AirSpaces");
+	Error::verify(success, Error::SQL_CMD);
+
+	return success;
+}
+
 bool AirSpaces::delAirSpace(const AirSpace &airspace)
 {
   QSqlQuery query(db());

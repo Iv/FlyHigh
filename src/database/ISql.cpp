@@ -417,6 +417,16 @@ bool ISql::add(AirSpaceList &airspaceList)
 	return success;
 }
 
+bool ISql::update(AirSpace &airspace)
+{
+  bool success;
+
+	success = m_pAirSpaces->updateAirSpace(airspace);
+	emit airSpacesChanged();
+
+	return success;
+}
+
 bool ISql::delAirSpace(AirSpace &airspace)
 {
   bool success;

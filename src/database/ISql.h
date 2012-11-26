@@ -118,6 +118,8 @@ class ISql: public IDataBase
 
 		bool add(AirSpaceList &airspaceList);
 
+		bool update(AirSpace &airspace);
+
 		bool delAirSpace(AirSpace &airspace);
 
 		bool delAirSpaces(AirSpaceList &airspaceList);

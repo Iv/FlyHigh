@@ -34,6 +34,8 @@ class AirSpaces: public DataBaseSub
 
 		bool add(AirSpace &airspace);
 
+		bool updateAirSpace(const AirSpace &airspace);
+
 		bool delAirSpace(const AirSpace &airspace);
 
 		bool airspace(const QString &name, AirSpace &airspace);

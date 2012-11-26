@@ -85,7 +85,7 @@ IFlyHighRC::IFlyHighRC()
 	m_copyInfo =
 			"Copyright (c): 2004-2012 by Alex Graf <grafal@sf.net>, \n"
 			"Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
-			"Thank you Thomas Kuhlmann for OLC optimizer and Luke Mahe for\n
+			"Thank you Thomas Kuhlmann for OLC optimizer and Luke Mahe for\n"
 			"MarkerClusterer.\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL Version 2). Visit www.gnu.org for more information.\n";
