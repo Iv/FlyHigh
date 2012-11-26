@@ -34,6 +34,10 @@ IF(WIN32)
           ${qextserialport_HDRS}
           qextwineventnotifier_p.h)
 
+      # this header needs to be moc'ed, compiled AND included in
+      # the library (see below)
+      QT4_WRAP_CPP(qextserialport_WIN_MOC_SRCS qextwineventnotifier_p.h)
+
       add_definitions(-DQESP_NO_QT4_PRIVATE)
      ENDIF()
   ENDIF()
@@ -105,7 +109,7 @@ SET_SOURCE_FILES_PROPERTIES(${qextserialport_MOC_SRCS}
                             HEADER_FILE_ONLY true)
 
 
-add_library(qextserialport ${qextserialport_SRCS} ${qextserialport_HDRS} ${qextserialport_MOC_SRCS})
+add_library(qextserialport ${qextserialport_SRCS} ${qextserialport_HDRS} ${qextserialport_MOC_SRCS} ${qextserialport_WIN_MOC_SRCS})
 
 # add dependent libraries
 target_link_libraries(qextserialport ${LIBS_FOR_QESP})
