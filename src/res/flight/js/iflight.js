@@ -23,11 +23,12 @@
 
 wm_include('js/flight.js');
 wm_include('../route/js/fai.js');
+wm_include('../route/js/infobox.js');
 wm_include('../route/js/leg.js');
+wm_include('../route/js/measure.js');
 wm_include('../route/js/optimizer.js');
 wm_include('../route/js/route.js');
 wm_include('../route/js/turnpt.js');
-wm_include('../route/js/infobox.js');
 wm_include('../lib/plot/context.js');
 wm_include('../lib/plot/cursor.js');
 wm_include('../lib/plot/legend.js');
@@ -38,6 +39,7 @@ var route = null;
 var map = null;
 var flight = null;
 var plot = null;
+var measure;
 
 function fl_init()
 {
@@ -71,6 +73,8 @@ function fl_init()
 			plot.setUpdateCursorPosCb(updateCursorPos);
 			plot.setUpdateCursorClickCb(updateCursorClick);
 
+			measure = new Measure(map);
+			measure.setChangeCallback(measureChanged);
 			wm_emitAppReady();
 		}
 	});
@@ -244,6 +248,25 @@ function fl_durationDown()
 	}
 }
 
+function fl_measure(div)
+{
+	var show;
+	
+	show = (div.className == "button_up");
+	measure.show(show);
+
+	if(show)
+	{
+		div.className = "button_down";
+	}
+	else
+	{
+		div.className = "button_up";
+		div = document.getElementById("smeasure");
+		div.innerHTML = "";
+	}
+}
+
 function routeChanged()
 {
 	var div;
@@ -311,6 +334,14 @@ function updateCursorClick(pos)
 	index = Math.round(pos * flight.getTrackPts().length / plot.getPlotAreaWidth());
 	map.setCenter(flight.getTrackPtAt(index));
 	map.setZoom(14);
+}
+
+function measureChanged()
+{
+	var div;
+
+	div = document.getElementById("smeasure");
+	div.innerHTML = measure.getDist().toFixed(1) + " km";
 }
 
 function getIndex(arr, value)
