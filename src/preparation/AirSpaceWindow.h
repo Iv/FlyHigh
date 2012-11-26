@@ -46,6 +46,8 @@ class AirSpaceWindow: public TableWindow
 	private slots:
 		void file_open();
 
+    void file_edit();
+
 		void file_delete();
 
 		void file_update();
@@ -65,7 +67,7 @@ class AirSpaceWindow: public TableWindow
     void airSpaceChanged(int line);
 
 	private:
-		enum Fields{Name, Low, High, Class};
+		enum Fields{Name, Low, High, Class, Comment};
 
 		IDataBase *m_pDb;
 		AirSpaceList m_airSpaceList;
