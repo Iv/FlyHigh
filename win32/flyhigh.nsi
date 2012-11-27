@@ -85,7 +85,6 @@ Section "files" SEC01
   File "lib\QtSql4.dll"
   File "lib\QtXml4.dll"
   File "lib\QtWebKit4.dll"
-  File "lib\Qt3Support4.dll"
   File "lib\phonon4.dll"
   ; some mingw32 libraries (from Qt SDK)
   File "lib\mingwm10.dll"
@@ -154,7 +153,6 @@ Section Uninstall
   Delete "$INSTDIR\QtSql4.dll"
   Delete "$INSTDIR\QtXml4.dll"
   Delete "$INSTDIR\QtWebKit4.dll"
-  Delete "$INSTDIR\Qt3Support4.dll"
   Delete "$INSTDIR\phonon4.dll"
   Delete "$INSTDIR\sqldrivers\qsqlmysql4.dll"
   Delete "$INSTDIR\sqldrivers\qsqlite4.dll"
