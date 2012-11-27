@@ -45,6 +45,8 @@ class ServicingFormImpl: public QDialog, public Ui::ServicingForm
 		void updateGlider();
 
 		void setServicing(Servicing *pServicing);
+
+    void select(QComboBox *pCombo, const QString &text);
 };
 
 #endif
