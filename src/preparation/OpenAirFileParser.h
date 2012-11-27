@@ -29,9 +29,13 @@ class OpenAir;
 class OpenAirFileParser
 {
 	public:
+    typedef enum Unit{Feet, Meter}Unit;
+
 		OpenAirFileParser();
 
 		~OpenAirFileParser();
+
+		void setDefaultUnit(Unit unit);
 
 		bool parse(const QString &fileName, AirSpaceList &airspaceList);
 
@@ -41,11 +45,10 @@ class OpenAirFileParser
     OpenAirList m_airspaceList;
 		double m_arcCenterLat;
 		double m_arcCenterLon;
+		Unit m_defUnit;
 		bool m_arcDir;
 
 		void parseString(char *pRecord, QString &str);
-
-		void parseHeight(char *pRecord, int &height);
 
 		void parseAirspaceClass(char *pRecord, OpenAir *pOpenAir);
 
