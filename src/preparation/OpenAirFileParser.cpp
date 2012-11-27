@@ -37,11 +37,17 @@
 
 OpenAirFileParser::OpenAirFileParser()
 {
+  m_defUnit = Feet;
 }
 
 OpenAirFileParser::~OpenAirFileParser()
 {
   clearOpenAirList();
+}
+
+void OpenAirFileParser::setDefaultUnit(Unit unit)
+{
+  m_defUnit = unit;
 }
 
 bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceList)
@@ -173,29 +179,6 @@ void OpenAirFileParser::parseString(char *pRecord, QString &str)
 	}
 
 	str = locStr.substr(3, end - 3).c_str();
-}
-
-void OpenAirFileParser::parseHeight(char *pRecord, int &height)
-{
-	int strLen;
-	int chNr;
-
-	height = 0x80000000;
-	pRecord += 3;
-	strLen = strlen(pRecord);
-
-	for(chNr=(strLen-1); chNr>0; chNr--)
-	{
-		if(isdigit(pRecord[chNr]))
-		{
-			height = atoi(pRecord);
-			break;
-		}
-		else
-		{
-			pRecord[chNr] = 0;
-		}
-	}
 }
 
 void OpenAirFileParser::parseAirspaceClass(char *pRecord, OpenAir *pOpenAir)
@@ -408,10 +391,17 @@ bool OpenAirFileParser::parseAlt(const QString &str, float &alt)
   }
   else
   {
-    alt = trimStr.toFloat() * 0.3048;
+    if(m_defUnit == Feet)
+    {
+      alt = trimStr.toFloat() * 0.3048;
+    }
+    else
+    {
+      alt = trimStr.toFloat();
+    }
   }
 
-  alt = floor(alt / 50) * 50;
+  alt = round(alt / 50) * 50;
 
   return success;
 }
