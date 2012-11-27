@@ -33,6 +33,8 @@ class Servicings: public DataBaseSub
 
 		bool add(Servicing &servicing);
 
+		bool update(Servicing &servicing);
+
 		bool delServicing(Servicing &servicing);
 
 		bool servicingList(Servicing::ServicingListType &servicingList);

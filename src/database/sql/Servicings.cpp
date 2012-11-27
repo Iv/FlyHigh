@@ -52,6 +52,25 @@ bool Servicings::add(Servicing &servicing)
 	return success;
 }
 
+bool Servicings::update(Servicing &servicing)
+{
+  QSqlQuery query(db());
+  QString sqls;
+	bool success;
+
+  sqls = QString("UPDATE Servicings SET GliderId=%1, Date='%2', Responsibility='%3', "
+                 "Comment='%4' WHERE Id=%5;")
+                 .arg(servicing.glider().id()).arg(servicing.date().toString("yyyy-MM-dd"))
+                 .arg(servicing.responsibility()).arg(servicing.comment())
+                 .arg(servicing.id());
+
+	success = query.exec(sqls);
+	DataBaseSub::setLastModified("Servicings");
+	Error::verify(success, Error::SQL_CMD);
+
+	return success;
+}
+
 bool Servicings::delServicing(Servicing &servicing)
 {
 	QSqlQuery query(db());

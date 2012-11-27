@@ -83,11 +83,36 @@ void ServicingFormImpl::updateGlider()
 
 void ServicingFormImpl::setServicing(Servicing *pServicing)
 {
+  QString str;
+
 	m_pServicing = pServicing;
 
 	if(pServicing != NULL)
 	{
 		dateEditDate->setDate(m_pServicing->date());
+		m_pServicing->glider().fullName(str);
+    select(comboBoxModel, str);
+    lineEditRespons->setText(m_pServicing->responsibility());
+    textEditComment->setText(m_pServicing->comment());
 	}
 }
 
+void ServicingFormImpl::select(QComboBox *pCombo, const QString &text)
+{
+	int index;
+	int maxIndex;
+	bool found = false;
+
+	maxIndex = pCombo->count();
+
+	for(index=0; index<maxIndex; index++)
+	{
+		found = (pCombo->itemText(index) == text);
+
+		if(found)
+		{
+			pCombo->setCurrentIndex(index);
+			break;
+		}
+	}
+}

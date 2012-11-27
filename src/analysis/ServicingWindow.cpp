@@ -40,6 +40,10 @@ ServicingWindow::ServicingWindow(QWidget* parent, const QString &name, Qt::Windo
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
   MDIWindow::addAction(pAction);
 
+  pAction = new QAction(tr("&Edit..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
+  MDIWindow::addAction(pAction, true);
+
   pAction = new QAction(tr("&Delete"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
   MDIWindow::addAction(pAction);
@@ -107,13 +111,31 @@ void ServicingWindow::file_update()
 void ServicingWindow::file_new()
 {
 	Servicing serv;
-	IServicingForm newServicing(this, "New Servicing", &serv);
+	IServicingForm servicingForm(this, "New Servicing", &serv);
 
-	if(newServicing.exec())
+	if(servicingForm.exec())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		ISql::pInstance()->add(serv);
 		TableWindow::unsetCursor();
+	}
+}
+
+void ServicingWindow::file_edit()
+{
+  int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    IServicingForm servicingForm(this, tr("Edit Servicing"), &m_servicingsList[row]);
+
+    if(servicingForm.exec() && m_pDb->open())
+    {
+      ISql::pInstance()->update(m_servicingsList[row]);
+      m_pDb->close();
+    }
 	}
 }
 

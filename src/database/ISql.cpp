@@ -474,11 +474,21 @@ bool ISql::airspaceList(AirSpaceList &airspaceList)
 	return m_pAirSpaces->airspaceList(airspaceList);
 }
 
-bool ISql::add(Servicing &serv)
+bool ISql::add(Servicing &servicing)
 {
   bool success;
 
-	success = m_pServicings->add(serv);
+	success = m_pServicings->add(servicing);
+	emit servicingsChanged();
+
+	return success;
+}
+
+bool ISql::update(Servicing &servicing)
+{
+  bool success;
+
+	success = m_pServicings->update(servicing);
 	emit servicingsChanged();
 
 	return success;

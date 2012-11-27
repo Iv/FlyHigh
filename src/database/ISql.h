@@ -130,7 +130,9 @@ class ISql: public IDataBase
 
 		bool airspaceList(AirSpaceList &airspaceList);
 
-		bool add(Servicing &serv);
+		bool add(Servicing &servicing);
+
+		bool update(Servicing &servicing);
 
 		bool delServicing(Servicing &servicing);
 

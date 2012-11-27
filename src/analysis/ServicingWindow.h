@@ -37,6 +37,8 @@ class ServicingWindow: public TableWindow
 
 		void file_new();
 
+		void file_edit();
+
 		void file_delete();
 
 	private:
