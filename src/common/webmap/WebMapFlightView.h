@@ -25,6 +25,7 @@
 #include "FlightPointList.h"
 #include "WayPoint.h"
 
+class AirSpaceList;
 class WebMap;
 class WebMapFlight;
 
@@ -49,6 +50,8 @@ class WebMapFlightView: public QDialog
 
 		void setVarioList(const FlightPointList::VarioListType &varioList);
 
+		void setAirSpaceList(AirSpaceList *pAirSpaceList);
+
 		void loadMap();
 
 	protected:
@@ -62,6 +65,7 @@ class WebMapFlightView: public QDialog
 		WayPoint::WayPointListType m_tpList;
 		FlightPointList::SogListType m_sogList;
 		FlightPointList::VarioListType m_varioList;
+		AirSpaceList *m_pAirSpaceList;
 		QString m_location;
 
 	private slots:

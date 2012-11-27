@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 wm_include('js/flight.js');
+wm_include('../airspace/js/airspace.js');
 wm_include('../route/js/fai.js');
 wm_include('../route/js/infobox.js');
 wm_include('../route/js/leg.js');
@@ -35,6 +36,7 @@ wm_include('../lib/plot/legend.js');
 wm_include('../lib/plot/plot.js');
 wm_include('../lib/plot/value.js');
 
+var airspaces = [];
 var route = null;
 var map = null;
 var flight = null;
@@ -78,6 +80,21 @@ function fl_init()
 			wm_emitAppReady();
 		}
 	});
+}
+
+function as_pushAirSpace(coords, opts)
+{
+	var latlngs = [];
+	var airspace;
+	var nr;
+
+	for(nr=0; nr<coords.length; nr++)
+	{
+		latlngs.push(new google.maps.LatLng(coords[nr][0], coords[nr][1]));
+	}
+
+	airspace = new AirSpace(map, latlngs, opts);
+	airspaces.push(airspace);
 }
 
 function rt_setTurnPts(turnPts)
