@@ -33,7 +33,7 @@ WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayP
 	m_pWayPoint = pWayPoint;
 
         setWindowTitle(caption);
-		
+
 	// name
 	lineEditName->setText(pWayPoint->name());
 
@@ -44,15 +44,15 @@ WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayP
 	lineEditCountry->setText(pWayPoint->country());
 
 	// latitude
-	str.sprintf("%f", pWayPoint->latitude());
+	str.sprintf("%f", pWayPoint->lat());
 	lineEditLat->setText(str);
-	
+
 	// longitude
-	str.sprintf("%f", pWayPoint->longitude());
+	str.sprintf("%f", pWayPoint->lon());
 	lineEditLon->setText(str);
-	
+
 	// altitude
-	spinBoxAlt->setValue(pWayPoint->altitude());
+	spinBoxAlt->setValue(pWayPoint->alt());
 }
 
 void WayPointFormImpl::accept()
@@ -60,7 +60,7 @@ void WayPointFormImpl::accept()
 	double lat;
 	double lon;
 	int alt;
-	
+
 	// name
 	m_pWayPoint->setName(lineEditName->text());
 
@@ -69,17 +69,17 @@ void WayPointFormImpl::accept()
 
 	// country
 	m_pWayPoint->setCountry(lineEditCountry->text());
-	
+
 	// latitude
 	lat = lineEditLat->text().toDouble();
-	
+
 	// longitude
 	lon = lineEditLon->text().toDouble();
-	
+
 	// altitude
 	alt = spinBoxAlt->value();
 	m_pWayPoint->setCoordinates(lat, lon, alt);
-	
+
 	QDialog::accept();
 }
 
@@ -89,7 +89,7 @@ void WayPointFormImpl::limitLatitude()
 	double lat;
 
 	lat = lineEditLat->text().toDouble();
-	
+
 	if(lat < -90.0)
 	{
 		lat = -90.0;
@@ -107,9 +107,9 @@ void WayPointFormImpl::limitLongitude()
 {
 	QString text;
 	double lon;
-	
+
 	lon = lineEditLon->text().toDouble();
-	
+
 	if(lon < -180.0)
 	{
 		lon = -180.0;
@@ -118,7 +118,7 @@ void WayPointFormImpl::limitLongitude()
 	{
 		lon = 180.0;
 	}
-	
+
 	text.sprintf("%.5f", lon);
 	lineEditLon->setText(text);
 }

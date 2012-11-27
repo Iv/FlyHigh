@@ -115,7 +115,7 @@ double FlightPointList::speedV(uint index1, uint index2)
 
 	if((index1 < nFlightPoints) && (index2 < nFlightPoints))
 	{
-		deltaAlt = (double)m_flightPointList[index2].wp.altitude() - m_flightPointList[index1].wp.altitude();
+		deltaAlt = (double)m_flightPointList[index2].wp.alt() - m_flightPointList[index1].wp.alt();
 		deltaTime = (double)m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
 
 		if(deltaTime > 0.0)
@@ -143,7 +143,7 @@ int FlightPointList::duration(uint index1, uint index2)
 	return duration;
 }
 
-#define dot(u,v)   ((u).longitude() * (v).longitude() + (u).latitude() * (v).latitude())
+#define dot(u,v)   ((u).lon() * (v).lon() + (u).lat() * (v).lat())
 #define norm2(v)   dot(v,v)        // norm2 = squared length of vector
 //#define norm(v)    sqrt(norm2(v))  // norm = length of vector
 #define dist2(u,v)    norm2(u-v)      // distance squared = norm2 of difference
@@ -170,7 +170,7 @@ void FlightPointList::simplify(FlightPointList &simpleList) const
 
   for(index=1; index<size; index++)
   {
-    if(dist2(m_flightPointList[index].wp, m_flightPointList[prev].wp) < tol2)
+    if(dist2(m_flightPointList[index].wp.pos(), m_flightPointList[prev].wp.pos()) < tol2)
           continue;
 
     vt.push_back(m_flightPointList[index]);
@@ -203,9 +203,9 @@ void FlightPointList::simplify(FlightPointList &simpleList) const
 void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin, int end,
                                    MarkerBuffer &marker, float epsilon) const
 {
-  WayPoint w;
-  WayPoint pb; // base of perpendicular from v[i] to segment
-  WayPoint u = (ptList[end].wp - ptList[begin].wp);   // segment direction vector
+  LatLng w;
+  LatLng pb; // base of perpendicular from v[i] to segment
+  LatLng u = (ptList[end].wp.pos() - ptList[begin].wp.pos());   // segment direction vector
   double maxDist2 = 0;             // distance squared of farthest vertex
   double tol2 = (epsilon * epsilon);    // tolerance squared
   double cu = dot(u, u);         // segment length squared
@@ -223,22 +223,22 @@ void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin
   for(index=(begin + 1); index<end; index++)
   {
     // compute distance squared
-    w = (ptList[index].wp - ptList[begin].wp);
+    w = (ptList[index].wp.pos() - ptList[begin].wp.pos());
     cw = dot(w, u);
 
     if(cw <= 0)
     {
-      distSeg2 = dist2(ptList[index].wp, ptList[begin].wp);
+      distSeg2 = dist2(ptList[index].wp.pos(), ptList[begin].wp.pos());
     }
     else if(cu <= cw)
     {
-      distSeg2 = dist2(ptList[index].wp, ptList[end].wp);
+      distSeg2 = dist2(ptList[index].wp.pos(), ptList[end].wp.pos());
     }
     else
     {
       b = cw / cu;
-      pb = ptList[begin].wp + u * b;
-      distSeg2 = dist2(ptList[index].wp, pb);
+      pb = ptList[begin].wp.pos() + u * b;
+      distSeg2 = dist2(ptList[index].wp.pos(), pb);
     }
 
     // test with current max distance squared

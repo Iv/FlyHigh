@@ -70,7 +70,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 
 	if(fpListSize > 0)
 	{
-		minAlt = fpList.at(0).wp.altitude();
+		minAlt = fpList.at(0).wp.alt();
 		maxAlt = minAlt;
 		time = fpList.at(0).time;
 		start = time.hour() * 3600 + time.minute() * 60 + time.second();
@@ -105,12 +105,12 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 
 			// altitude
       wp = fpList.at(fpNr).wp;
-			minAlt = qMin(wp.altitude(), minAlt);
-			maxAlt = qMax(wp.altitude(), maxAlt);
-			strAlt += value.arg(wp.altitude());
+			minAlt = qMin(wp.alt(), minAlt);
+			maxAlt = qMax(wp.alt(), maxAlt);
+			strAlt += value.arg(wp.alt());
 
 			// lat, lon
-			strLatLon += latLonArg.arg(wp.latitude()).arg(wp.longitude());
+			strLatLon += latLonArg.arg(wp.lat()).arg(wp.lon());
 		}
 
 		minAlt = floor(minAlt / 100.0) * 100;

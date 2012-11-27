@@ -61,25 +61,25 @@ bool OLCWebForm::save(const QString & name)
 	QFile file;
 	QString str;
 	bool success;
-	
+
         file.setFileName(name);
 	success = file.open(QIODevice::WriteOnly);
-	
+
 	if(success)
 	{
 		QTextStream s(&file);
-	
+
 		s << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n";
 		s << "    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
 		s << "<html>\n";
-		
+
 		streamHead(s);
-		
+
 		s << "	<body>\n";
 		s << "		<h1>flight claim for HGPG Online-CONTEST International 2006</h1>\n";
 		s << "		<form action=\"http://www.onlinecontest.org/olc-cgi/2006/holc-i/olc\" method=\"get\">\n";
 		s << "			<table>\n";
-		
+
 		streamName(s);
 		streamBirth(s);
 		streamTakeoffLoc(s);
@@ -97,17 +97,17 @@ bool OLCWebForm::save(const QString & name)
 		streamFinishTime(s);
 		streamComment(s);
 		streamSubmit(s);
-		
+
 		s << "			</table>\n";
 		s << "		</form>\n";
 		s << "	</body>\n";
 		s << "</html>\n";
 
 		s.flush();
-		
+
 		file.close();
 	}
-	
+
 	return success;
 }
 
@@ -179,9 +179,9 @@ void OLCWebForm::streamCallsign(QTextStream& s)
 void OLCWebForm::streamTrack(QTextStream& s)
 {
 	QString str;
-	
+
 	olcFileName(str);
-	
+
 	s << "				<tr>\n";
 	s << "					<td>IGC-filename</td>\n";
 	s << "					<td>\n";
@@ -197,7 +197,7 @@ void OLCWebForm::streamFlightDate(QTextStream& s)
 	const int refDays = 147678;
 	QString str;
 	int daysTo;
-	
+
 	daysTo = refDate.daysTo(m_flight.date());
 	str.sprintf("%i", refDays + daysTo);
 
@@ -258,13 +258,13 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	QString strMin;
 	QString strDmin;
 	QString strWpNr;
-	
+
 	strWpNr.sprintf("%i", wpNr);
-	
+
 	// begin of table row
 	s << "				<tr>\n";
 	s << "					<td>";
-	
+
 	switch(wpNr)
 	{
 		case 0:
@@ -283,15 +283,15 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 			s << "Finish";
 		break;
 	}
-	
+
 	s << "</td>\n";
 	s << "					<td>\n";
-	
+
 	// latitude
 	s << "						<select name=\"w" << strWpNr << "bh\">\n";
-	
-	lat = wp.latitude();
-	
+
+	lat = wp.pos().lat();
+
 	if(lat < 0)
 	{
 		s << "							<option value=\"N\">N</option>\n";
@@ -303,9 +303,9 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 		s << "							<option value=\"N\" selected=\"selected\">N</option>\n";
 		s << "							<option value=\"S\">S</option>\n";
 	}
-	
+
 	s << "						</select>\n";
-	
+
 	// 46.840083
 	deg = trunc(lat); // 46
 	min = (lat - deg) * 60.0 * 1000.0; // min = 50404.98
@@ -313,17 +313,17 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	strDeg.sprintf("%02i", (int)deg); // 46
 	strMin.sprintf("%02i", (int)min / 1000); // 50
 	strDmin.sprintf("%03i", (int)min % 1000); // 405
-	
+
 	s << "						<input type=\"text\" value=\"" << strDeg <<  "\" maxlength=\"2\" size=\"2\" name=\"w";
 	s << strWpNr << "bg\"/>:<input type=\"text\" value=\"" << strMin << "\" maxlength=\"2\" size=\"2\" name=\"w";
 	s << strWpNr << "bm\"/>.<input type=\"text\" value=\"" << strDmin << "\" maxlength=\"3\" size=\"3\" name=\"w";
 	s << strWpNr << "bmd\"/>\n";
-	
+
 	// longitude
 	s << "						<select name=\"w" << strWpNr << "lh\">\n";
-	
-	lon = wp.longitude();
-	
+
+	lon = wp.pos().lon();
+
 	if(lon < 0)
 	{
 		s << "							<option value=\"E\">E</option>\n";
@@ -337,7 +337,7 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	}
 
 	s << "						</select>\n";
-	
+
 	// 8.422713
 	deg = trunc(lon); // 8
 	min = (lon - deg) * 60.0 * 1000.0; // min = 25362.78
@@ -345,12 +345,12 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	strDeg.sprintf("%03i", (int)deg); // 008
 	strMin.sprintf("%02i", (int)min / 1000); // 25
 	strDmin.sprintf("%03i", (int)min % 1000); // 363
-	
+
 	s << "						<input type=\"text\" value=\"" << strDeg <<  "\" maxlength=\"3\" size=\"3\" name=\"w";
 	s << strWpNr << "lg\"/>:<input type=\"text\" value=\"" << strMin << "\" maxlength=\"2\" size=\"2\" name=\"w";
 	s << strWpNr << "lm\"/>.<input type=\"text\" value=\"" << strDmin << "\" maxlength=\"3\" size=\"3\" name=\"w";
 	s << strWpNr << "lmd\"/>\n";
-	
+
 	// end of table row
 	s << "					</td>\n";
 	s << "				</tr>\n";
@@ -392,7 +392,7 @@ void OLCWebForm::streamSubmit(QTextStream& s)
 char OLCWebForm::getOLCchar(int value)
 {
 	char resChar;
-	
+
 	if((value >= 0) && (value <=9))
 	{
 		resChar = '0' + value;
@@ -405,6 +405,6 @@ char OLCWebForm::getOLCchar(int value)
 	{
 		resChar = '0';
 	}
-	
+
 	return resChar;
 }

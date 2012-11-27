@@ -217,10 +217,10 @@ void RouteWindow::file_newWebMap()
 	{
 	  // take two points around start of first route as initial
     wp = pLatest->wayPointList().at(0);
-    wp.setLongitude(wp.longitude() - 0.25);
+    wp.setLon(wp.lon() - 0.25);
     route.wayPointList().push_back(wp);
     wp = pLatest->wayPointList().at(0);
-    wp.setLongitude(wp.longitude() + 0.25);
+    wp.setLon(wp.lon() + 0.25);
     route.wayPointList().push_back(wp);
 	}
 	else

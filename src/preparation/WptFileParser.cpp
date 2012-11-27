@@ -98,7 +98,7 @@ bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
         lat = -lat;
       }
 
-      wpt.setLatitude(lat);
+      wpt.setLat(lat);
       success = tokenizer.getNextToken(line, 0xba, token);
     }
   }
@@ -116,7 +116,7 @@ bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
         lon = -lon;
       }
 
-      wpt.setLongitude(lon);
+      wpt.setLon(lon);
       tokenizer.getNextToken(line, ' ', token); // skip Date
       tokenizer.getNextToken(line, ' ', token); // skip Time
       success = tokenizer.getNextToken(line, ' ', token);
@@ -126,7 +126,7 @@ bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
   // altitude
   if(success)
   {
-    wpt.setAltitude((int)token.toDouble());
+    wpt.setAlt((int)token.toDouble());
   }
 
   // description

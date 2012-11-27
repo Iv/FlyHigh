@@ -127,6 +127,21 @@ bool LatLng::operator==(const LatLng &latlng)
 	return (m_lat == latlng.m_lat) && (m_lon == latlng.m_lon);
 }
 
+LatLng LatLng::operator+(const LatLng& right) const
+{
+  return LatLng(m_lat + right.m_lat, m_lon + right.m_lon);
+}
+
+LatLng LatLng::operator-(const LatLng& right) const
+{
+  return LatLng(m_lat - right.m_lat, m_lon - right.m_lon);
+}
+
+LatLng LatLng::operator*(double right) const
+{
+  return LatLng(m_lat * right, m_lon * right);
+}
+
 uint LatLng::distance(const LatLng &latlng1, const LatLng &latlng2)
 {
 	double dist;

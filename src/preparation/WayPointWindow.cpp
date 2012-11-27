@@ -455,13 +455,13 @@ void WayPointWindow::setWpToRow(uint row, const WayPoint &wp)
 	pTable->item(row, Spot)->setText(wp.spot());
 	pTable->item(row, Name)->setText(wp.name());
 
-	str.sprintf("%.5f", wp.longitude());
+	str.sprintf("%.5f", wp.lon());
 	pTable->item(row, Longitude)->setText(str);
 
-	str.sprintf("%.5f", wp.latitude());
+	str.sprintf("%.5f", wp.lat());
 	pTable->item(row, Latitude)->setText(str);
 
-	str.sprintf("%i", wp.altitude());
+	str.sprintf("%i", wp.alt());
 	pTable->item(row, Altitude)->setText(str);
 
 	pTable->item(row, Description)->setText(wp.description());
