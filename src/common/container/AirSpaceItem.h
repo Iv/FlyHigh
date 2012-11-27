@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -54,20 +54,20 @@ class AirSpaceItemPoint: public AirSpaceItem
 {
 	public:
 		AirSpaceItemPoint(AirSpaceItem::ItemType type);
-		~AirSpaceItemPoint();
 
-//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
+		~AirSpaceItemPoint();
 };
 
 class AirSpaceItemSeg: public AirSpaceItem
 {
 	public:
 		AirSpaceItemSeg(AirSpaceItem::ItemType type);
+
 		~AirSpaceItemSeg();
 
 		void setDir(bool dir);
+
 		bool dir();
-//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
 
 	private:
 		bool m_dir; // + = true = clockwise
@@ -77,11 +77,12 @@ class AirSpaceItemCircle: public AirSpaceItem
 {
 	public:
 		AirSpaceItemCircle();
+
 		~AirSpaceItemCircle();
 
 		void setRadius(uint radius);
+
 		uint radius();
-//		virtual AirSpaceItem& operator=(const AirSpaceItem &airSpaceItem);
 
 	private:
 		uint m_radius;

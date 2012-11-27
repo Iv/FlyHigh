@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "Flight.h"
- 
+
 Flight::Flight()
 {
 	m_id = -1;
@@ -148,7 +148,7 @@ uint Flight::distance()
 {
 	return m_distance;
 }
- 
+
 void Flight::setDistance(uint dist)
 {
 	m_distance = dist;
@@ -168,6 +168,6 @@ Flight& Flight::operator=(const Flight &flight)
 	m_igcData = flight.m_igcData;
 	m_comment = flight.m_comment;
 	m_distance = flight.m_distance;
-	
+
 	return *this;
 }

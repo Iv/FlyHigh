@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,8 +21,8 @@
 #ifndef FlightPointList_h
 #define FlightPointList_h
 
-#include <qdatetime.h>
-#include <qvector.h>
+#include <QDateTime>
+#include <QVector>
 #include "WayPoint.h"
 
 class FlightPointList
@@ -35,6 +35,7 @@ class FlightPointList
 		}FlightPointType;
 
 		typedef QVector<float> SogListType;
+
 		typedef QVector<float> VarioListType;
 
 		FlightPointList();

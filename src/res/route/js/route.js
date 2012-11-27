@@ -48,11 +48,11 @@ function Route(map)
 	this.duration = 0;
 
 	this.line = new google.maps.Polyline({
-		strokeColor: '#FFCC00',
+		strokeColor: '#FFFFFF',
 		strokeOpacity: 1.0,
-		strokeWeight: 3,
+		strokeWeight: 2,
 		map: null,
-		zIndex: 3
+		zIndex: 2
 	});
 }
 

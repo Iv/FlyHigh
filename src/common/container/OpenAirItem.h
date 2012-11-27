@@ -20,7 +20,7 @@
 #ifndef OpenAirItem_h
 #define OpenAirItem_h
 
-#include <qvector.h>
+#include <QVector>
 #include "LatLng.h"
 
 class OpenAirItem;
@@ -60,8 +60,6 @@ class OpenAirItemPoint: public OpenAirItem
 		OpenAirItemPoint(OpenAirItem::ItemType type);
 
 		~OpenAirItemPoint();
-
-//		virtual OpenAirItem& operator=(const OpenAirItem &airSpaceItem);
 };
 
 class OpenAirItemSeg: public OpenAirItem
@@ -72,8 +70,8 @@ class OpenAirItemSeg: public OpenAirItem
 		~OpenAirItemSeg();
 
 		void setDir(bool dir);
+
 		bool dir();
-//		virtual OpenAirItem& operator=(const OpenAirItem &airSpaceItem);
 
 	private:
 		bool m_dir; // + = true = clockwise
@@ -89,7 +87,6 @@ class OpenAirItemCircle: public OpenAirItem
 		void setRadius(uint radius);
 
 		uint radius();
-//		virtual OpenAirItem& operator=(const OpenAirItem &airSpaceItem);
 
 	private:
 		uint m_radius;

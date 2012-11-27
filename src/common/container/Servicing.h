@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,33 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef Servicing_h
 #define Servicing_h
 
-#include <qdatetime.h>
-#include <qstring.h>
-#include <qlist.h>
+#include <QDateTime>
+#include <QString>
+#include <QList>
 #include "Glider.h"
 
 class Servicing
 {
 	public:
 		typedef QList<Servicing> ServicingListType;
-	
+
 		Servicing();
 
 		int id();
+
 		void setId(int id);
+
 		Glider& glider();
+
 		void setGlider(Glider& glider);
+
 		const QDate& date();
+
 		void setDate(const QDate &date);
+
 		const QString& responsibility();
+
 		void setResponsibility(const QString &resp);
+
 		const QString& comment();
+
 		void setComment(const QString &comm);
-	
+
 	private:
 		int m_id;
 		uint m_nr;

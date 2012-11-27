@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "Glider.h"
- 
+
 Glider::Glider()
 {
 	m_id = -1;
@@ -112,7 +112,7 @@ Glider& Glider::operator=(const Glider &glider)
 	m_serial = glider.m_serial;
 	m_airtime = glider.m_airtime;
 	m_flights = glider.m_flights;
-	
+
 	return *this;
 }
 

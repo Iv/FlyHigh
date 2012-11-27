@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,13 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef Flight_h
 #define Flight_h
 
-#include <qdatetime.h>
-#include <qstring.h>
-#include <qlist.h>
+#include <QDateTime>
+#include <QString>
+#include <QList>
 #include "WayPoint.h"
 #include "Glider.h"
 #include "Pilot.h"
@@ -32,37 +32,60 @@ class Flight
 {
 	public:
 		typedef QList<Flight> FlightListType;
-		
+
 		Flight();
-		
+
 		int id();
+
 		void setId(int id);
+
 		Pilot& pilot();
+
 		void setPilot(Pilot &pilot);
+
 		int number();
+
 		void setNumber(int nr);
+
 		const QDate& date();
+
 		void setDate(const QDate &date);
+
 		const QTime& time();
+
 		void setTime(const QTime &time);
+
 		WayPoint& startPt();
+
 		void setStartPt(WayPoint &wp);
+
 		WayPoint& landPt();
+
 		void setLandPt(WayPoint &wp);
+
 		int duration();
+
 		void setDuration(int sec);
+
 		void setDuration(const QTime &time);
+
 		Glider& glider();
+
 		void setGlider(Glider &glider);
+
 		const QByteArray& igcData() const;
+
 		void setIgcData(const QByteArray &data);
+
 		const QString& comment();
+
 		void setComment(const QString &comm);
-		
+
 		// sets and returns the distance in meters
 		uint distance();
+
 		void setDistance(uint dist);
-		
+
 		Flight& operator=(const Flight &flight);
 
 	private:
