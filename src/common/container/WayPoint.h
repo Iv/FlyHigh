@@ -21,8 +21,8 @@
 #ifndef WayPoint_h
 #define WayPoint_h
 
-#include <qstring.h>
-#include <qvector.h>
+#include <QString>
+#include <QVector>
 
 /****************************************
 COMMON
@@ -33,10 +33,15 @@ class WayPoint
 {
 	public:
     typedef enum Type{TypeStartLand = 1, TypeBuoy = 2, TypeTurnPoint = 4}Type;
+
 		typedef QVector<WayPoint> WayPointListType;
+
 		typedef QVector<int> WayPointIdListType;
+
 		typedef QVector<int> AltListType;
+
 		static const uint startLandRadius; // in meters
+
 		static const double earthRadius; // in meters
 
 		WayPoint();

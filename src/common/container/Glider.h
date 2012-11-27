@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,38 +17,52 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef Glider_h
 #define Glider_h
 
-#include <qstring.h>
-#include <qvector.h>
+#include <QString>
+#include <QVector>
 
 class Glider
 {
 	public:
 		typedef QVector<Glider> GliderListType;
-		
+
 		Glider();
-		
+
 		int id();
+
 		void setId(int id);
+
 		const QString& manufacturer();
+
 		void setManufacturer(const QString &manu);
+
 		const QString& model();
+
 		void setModel(const QString &model);
+
 		void fullName(QString &name);
+
 		void olcName(QString &name);
+
 		void setSerial(const QString &serial);
+
 		const QString& serial();
+
 		void setAirtime(uint time); // in seconds
+
 		uint airtime();
+
 		void setFlights(uint n);
+
 		uint fligths();
 
 		Glider& operator=(const Glider &glider);
+
 		bool operator==(const Glider &glider);
-		
+
 	private:
 		int m_id;
 		QString m_manufacturer;
