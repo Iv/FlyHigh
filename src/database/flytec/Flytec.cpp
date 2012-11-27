@@ -559,6 +559,7 @@ bool Flytec::airspaceList(AirSpaceList &airspaceList)
   if(success && ctrAv)
 	{
 		pAirspace = new AirSpace();
+		pAirspace->setId(ctrNr);
 
 		while(m_protocol->ctrListRec(curSent, totalSent, pAirspace))
 		{
@@ -571,6 +572,7 @@ bool Flytec::airspaceList(AirSpaceList &airspaceList)
 			{
 				airspaceList.push_back(pAirspace);
 				pAirspace = new AirSpace();
+				pAirspace->setId(ctrNr);
         emit progress(ctrNr * 100 / nofCtr);
         ctrNr++;
 			}

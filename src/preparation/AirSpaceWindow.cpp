@@ -361,15 +361,22 @@ void AirSpaceWindow::file_viewWebMap()
 
 void AirSpaceWindow::selectionChanged()
 {
-  if(m_pAirSpaceView != NULL)
-  {
-    m_pAirSpaceView->setSelected(getTable()->currentRow());
-  }
+  int row;
 
-	if((m_pWebMapView != NULL) && !m_externSelect)
-	{
-	  m_pWebMapView->selectAirSpace(getTable()->currentRow());
-	}
+  row = getTable()->currentRow();
+
+  if(row >= 0)
+  {
+    if(m_pAirSpaceView != NULL)
+    {
+      m_pAirSpaceView->setSelected(row);
+    }
+
+    if((m_pWebMapView != NULL) && !m_externSelect)
+    {
+      m_pWebMapView->selectAirSpace(m_airSpaceList[row]->id());
+    }
+  }
 }
 
 void AirSpaceWindow::airSpaceViewFinished(int res)
@@ -383,10 +390,21 @@ void AirSpaceWindow::webMapFinished(int res)
   menu()->setEnabled(true);
 }
 
-void AirSpaceWindow::airSpaceChanged(int line)
+void AirSpaceWindow::airSpaceChanged(int id)
 {
+  uint row;
+
   m_externSelect = true;
-  TableWindow::selectRow(line);
+
+  for(row=0; row<m_airSpaceList.size(); row++)
+  {
+    if(m_airSpaceList[row]->id() == id)
+    {
+      TableWindow::selectRow(row);
+      break;
+    }
+  }
+
   m_externSelect = false;
 }
 

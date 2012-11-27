@@ -64,7 +64,7 @@ class AirSpaceWindow: public TableWindow
 
 		void webMapFinished(int res);
 
-    void airSpaceChanged(int line);
+    void airSpaceChanged(int id);
 
 	private:
 		enum Fields{Name, Low, High, Class, Comment};
