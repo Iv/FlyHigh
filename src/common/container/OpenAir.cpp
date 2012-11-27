@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <math.h>
-#include "AirSpaceItemList.h"
 #include "OpenAir.h"
 
 #include <QDebug>
