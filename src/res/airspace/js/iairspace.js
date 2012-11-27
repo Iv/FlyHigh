@@ -67,8 +67,8 @@ function as_init()
 			{
 				if(airspaceNr != oldSelect)
 				{
-					as_selectAirSpace(airspaceNr);
-					wm_emitLineChanged(airspaceNr);
+					as_selectAirSpaceNr(airspaceNr);
+					wm_emitLineChanged(airspaces[airspaceNr].getId());
 					break; // jump out of loop
 				}
 			}
@@ -91,7 +91,24 @@ function as_pushAirSpace(coords, opts)
 	airspaces.push(airspace);
 }
 
-function as_selectAirSpace(num)
+function as_selectAirSpace(id)
+{
+	var airspaceNr;
+	var airspace;
+
+	for(airspaceNr=0; airspaceNr<airspaces.length; airspaceNr++)
+	{
+		airspace = airspaces[airspaceNr];
+
+		if(airspace.getId() == id)
+		{
+			as_selectAirSpaceNr(airspaceNr);
+			break;
+		}
+	}
+}
+
+function as_selectAirSpaceNr(num)
 {
 	var airspace;
 

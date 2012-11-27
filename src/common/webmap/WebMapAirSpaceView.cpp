@@ -53,9 +53,9 @@ void WebMapAirSpaceView::setAirSpaceList(AirSpaceList *pAirSpaceList)
 	m_pAirSpaceList = pAirSpaceList;
 }
 
-void WebMapAirSpaceView::selectAirSpace(int nr)
+void WebMapAirSpaceView::selectAirSpace(int id)
 {
-  m_pWebMap->getAirSpace()->selectAirSpace(nr);
+  m_pWebMap->getAirSpace()->selectAirSpace(id);
 }
 
 void WebMapAirSpaceView::resizeEvent(QResizeEvent *pEvent)

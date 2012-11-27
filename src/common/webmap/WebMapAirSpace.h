@@ -40,7 +40,7 @@ class WebMapAirSpace: public QObject
 
 		void pushAirSpace(AirSpace *pAirSpace);
 
-		void selectAirSpace(int nr);
+		void selectAirSpace(int id);
 
 	private:
 		WebMap *m_pWebMap;
