@@ -63,10 +63,6 @@
 		<Unit filename="src/common/CMakeLists.txt" />
 		<Unit filename="src/common/container/AirSpace.cpp" />
 		<Unit filename="src/common/container/AirSpace.h" />
-		<Unit filename="src/common/container/AirSpaceItem.cpp" />
-		<Unit filename="src/common/container/AirSpaceItem.h" />
-		<Unit filename="src/common/container/AirSpaceItemList.cpp" />
-		<Unit filename="src/common/container/AirSpaceItemList.h" />
 		<Unit filename="src/common/container/AirSpaceList.cpp" />
 		<Unit filename="src/common/container/AirSpaceList.h" />
 		<Unit filename="src/common/container/BoundBox.cpp" />
