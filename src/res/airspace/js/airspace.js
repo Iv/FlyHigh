@@ -39,7 +39,7 @@ function AirSpace(map, path, opts)
 		strokeOpacity: 0.8,
 		strokeWeight: 1,
 		fillColor: "#ff0000",
-		fillOpacity: 0.1,
+		fillOpacity: 0.05,
 		zIndex: 10,
 		clickable: false
 	});
@@ -120,10 +120,10 @@ AirSpace.prototype.setSelect = function(select)
 {
 	if(select)
 	{
-		this.polygon.setOptions({fillColor: "#ffff00", fillOpacity: 0.5});
+		this.polygon.setOptions({fillColor: "#ffff00", fillOpacity: 0.3});
 	}
 	else
 	{
-		this.polygon.setOptions({fillColor: "#ff0000", fillOpacity: 0.1});
+		this.polygon.setOptions({fillColor: "#ff0000", fillOpacity: 0.05});
 	}
 };
