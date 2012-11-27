@@ -44,6 +44,10 @@ GliderWindow::GliderWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_new()));
 	MDIWindow::addAction(pAction);
 
+	pAction = new QAction(tr("&Edit..."), this);
+	connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
+	MDIWindow::addAction(pAction, true);
+
 	pAction = new QAction(tr("&Delete"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
 	MDIWindow::addAction(pAction);
@@ -87,11 +91,31 @@ void GliderWindow::file_new()
 	Glider glider;
 
   ISql::pInstance()->gliderList(gliders);
-	IGliderForm newGlider(this, "New Glider", &glider, gliders);
+	IGliderForm gliderForm(this, tr("New Glider"), &glider, gliders);
 
-	if(newGlider.exec())
+	if(gliderForm.exec())
 	{
 		ISql::pInstance()->add(glider);
+	}
+}
+
+void GliderWindow::file_edit()
+{
+  Glider::GliderListType gliders;
+  int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+	{
+    ISql::pInstance()->gliderList(gliders);
+    IGliderForm gliderForm(this, tr("Edit Glider"), &m_gliderList[row], gliders);
+
+    if(gliderForm.exec() && m_pDb->open())
+    {
+      ISql::pInstance()->update(m_gliderList[row]);
+      m_pDb->close();
+    }
 	}
 }
 

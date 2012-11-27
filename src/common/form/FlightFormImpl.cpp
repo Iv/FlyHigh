@@ -90,8 +90,9 @@ void FlightFormImpl::setFlight(Flight *pFlight)
 {
 	QString str;
 	QTime dur(0, 0, 0);
-	m_pFlight = pFlight;
 	Pilot pilot;
+
+  m_pFlight = pFlight;
 
 	if(pFlight != NULL)
 	{

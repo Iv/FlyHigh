@@ -88,6 +88,8 @@ class ISql: public IDataBase
 
 		bool add(Glider &glider);
 
+		bool update(Glider &glider);
+
 		bool delGlider(Glider &glider);
 
 		bool glider(const QString &model, Glider &glider);

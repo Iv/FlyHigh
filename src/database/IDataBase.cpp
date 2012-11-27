@@ -118,6 +118,11 @@ bool IDataBase::add(Glider &glider)
 	return false;
 }
 
+bool IDataBase::update(Glider &glider)
+{
+	return false;
+}
+
 bool IDataBase::delGlider(Glider &glider)
 {
 	return false;
