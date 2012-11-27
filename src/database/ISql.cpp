@@ -97,8 +97,10 @@ bool ISql::connectDb()
 	// close open db first
 	if(open())
 	{
+    QString connection = m_DefaultDB.connectionName();
 		m_DefaultDB.close();
-		QSqlDatabase::removeDatabase(m_DefaultDB.connectionName());
+    m_DefaultDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connection);
 	}
 
 	// which type of db?
