@@ -18,7 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "AirSpaceList.h"
 #include "WebMap.h"
+#include "WebMapAirSpace.h"
 #include "WebMapFlight.h"
 #include "WebMapFlightView.h"
 #include "WebMapRoute.h"
@@ -30,6 +32,7 @@ WebMapFlightView::WebMapFlightView(const QString &name)
 
 	m_pWebMap = new WebMap(this, WebMap::MapFlight);
 	m_pWebMap->getFlight()->setPlotEnable(true);
+  m_pAirSpaceList = NULL;
 	m_location = "";
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
   connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
@@ -72,6 +75,11 @@ void WebMapFlightView::setVarioList(const FlightPointList::VarioListType &varioL
 	m_varioList = varioList;
 }
 
+void WebMapFlightView::setAirSpaceList(AirSpaceList *pAirSpaceList)
+{
+	m_pAirSpaceList = pAirSpaceList;
+}
+
 void WebMapFlightView::loadMap()
 {
 	m_pWebMap->loadUrl("qrc:/flight/flight.html");
@@ -89,12 +97,22 @@ void WebMapFlightView::mapReady()
 
 void WebMapFlightView::appReady()
 {
-  m_pWebMap->setSize(width(), height());
+  AirSpaceList::iterator it;
 
+  m_pWebMap->setSize(width(), height());
   m_pWebMap->getRoute()->setName(m_location);
 	m_pWebMap->getRoute()->setTurnPointList(m_tpList);
 	m_pWebMap->getFlight()->setFlightPointList(m_date, m_fpList);
 	m_pWebMap->getFlight()->setSogList(m_sogList);
 	m_pWebMap->getFlight()->setVarioList(m_varioList);
+
+  if(m_pAirSpaceList != NULL)
+  {
+    for(it=m_pAirSpaceList->begin(); it<m_pAirSpaceList->end(); it++)
+    {
+      m_pWebMap->getAirSpace()->pushAirSpace(*it);
+    }
+  }
+
 	m_pWebMap->getFlight()->showPlot();
 }

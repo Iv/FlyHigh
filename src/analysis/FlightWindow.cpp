@@ -24,6 +24,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <QTableWidget>
+#include "AirSpaceList.h"
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "FlightWindow.h"
@@ -1049,6 +1050,7 @@ void FlightWindow::showOnWebMap()
 	FlightPointList::SogListType sogList;
 	FlightPointList::VarioListType varioList;
 	FlightPointList simpleFpList;
+	AirSpaceList airSpaceList;
 	float score;
   uint dist;
 	int tpListSize;
@@ -1073,6 +1075,9 @@ void FlightWindow::showOnWebMap()
 			{
 				pView = new WebMapFlightView(tr("View Flight"));
 				pView->setLocation(m_flightList[row].startPt().name());
+
+        ISql::pInstance()->airspaceList(airSpaceList);
+        pView->setAirSpaceList(&airSpaceList);
 
 				// set flight points
 				pView->setFlightPointList(m_flightList[row].date(), igcParser.flightPointList());
