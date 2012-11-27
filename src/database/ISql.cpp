@@ -295,6 +295,16 @@ bool ISql::add(Glider &glider)
   return success;
 }
 
+bool ISql::update(Glider &glider)
+{
+  bool success;
+
+	success = m_pGliders->update(glider);
+	emit glidersChanged();
+
+  return success;
+}
+
 bool ISql::delGlider(Glider &glider)
 {
   bool success;

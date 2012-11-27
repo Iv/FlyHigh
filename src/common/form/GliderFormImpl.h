@@ -32,11 +32,15 @@ class GliderFormImpl: public QDialog, public Ui::GliderForm
 		GliderFormImpl(QWidget* parent, const QString &caption, Glider *pGlider,
                    const Glider::GliderListType& gliderList);
 
+    void setGlider(Glider *pGlider);
+
 	protected slots:
 		void accept();
 
 	private:
 		Glider *m_pGlider;
+
+	  void select(QComboBox *pCombo, const QString &text);
 
 	private slots:
 		void updateGlider(int index);

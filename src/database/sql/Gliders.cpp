@@ -59,6 +59,24 @@ bool Gliders::add(Glider &glider)
 	return true;
 }
 
+bool Gliders::update(Glider &glider)
+{
+  QSqlQuery query(db());
+  QString sqls;
+	bool success;
+
+  sqls = QString("UPDATE Gliders SET Manufacturer='%1', Model='%2', Serial='%3' "
+                 "WHERE Id=%4;")
+                 .arg(glider.manufacturer()).arg(glider.model()).arg(glider.serial())
+                 .arg(glider.id());
+
+	success = query.exec(sqls);
+	DataBaseSub::setLastModified("Gliders");
+	Error::verify(success, Error::SQL_CMD);
+
+	return success;
+}
+
 bool Gliders::delGlider(Glider &glider)
 {
   QSqlQuery query(db());

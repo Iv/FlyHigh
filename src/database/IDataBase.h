@@ -82,6 +82,8 @@ class IDataBase: public QObject
 		// gliders
 		virtual bool add(Glider &glider);
 
+		virtual bool update(Glider &glider);
+
 		virtual bool delGlider(Glider &glider);
 
 		virtual bool gliderList(Glider::GliderListType &gliderList);

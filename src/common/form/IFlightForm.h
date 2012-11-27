@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,6 +22,7 @@
 
 #include "Flight.h"
 
+class QString;
 class QWidget;
 class FlightFormImpl;
 class Flight;
@@ -29,13 +30,16 @@ class Flight;
 class IFlightForm
 {
 	public:
-		IFlightForm(QWidget* parent, const QString &caption, Flight *pFlight=NULL);
+		IFlightForm(QWidget* parent, const QString &caption, Flight *pFlight = NULL);
+
 		~IFlightForm();
-		
+
 		bool exec();
+
 		void enableInput(bool b);
+
 		void setFlight(Flight *pFlight);
-		
+
 	private:
 		FlightFormImpl *m_pFlightForm;
 };

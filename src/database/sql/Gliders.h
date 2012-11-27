@@ -21,7 +21,7 @@
 #ifndef Gliders_h
 #define Gliders_h
 
-#include <qstring.h>
+#include <QString>
 #include "DataBaseSub.h"
 #include "Glider.h"
 
@@ -33,6 +33,8 @@ class Gliders: public DataBaseSub
 		Gliders(QSqlDatabase DB);
 
 		bool add(Glider &glider);
+
+		bool update(Glider &glider);
 
 		bool delGlider(Glider &glider);
 

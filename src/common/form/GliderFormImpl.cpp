@@ -32,8 +32,6 @@ GliderFormImpl::GliderFormImpl(QWidget* parent, const QString &caption, Glider *
 
 	setupUi(this);
 	setWindowTitle(caption);
-	Q_CHECK_PTR(pGlider);
-	m_pGlider = pGlider;
 
 	for(gliderNr=0; gliderNr<gliderList.count(); gliderNr++)
 	{
@@ -53,15 +51,38 @@ GliderFormImpl::GliderFormImpl(QWidget* parent, const QString &caption, Glider *
   models.removeOne("");
   comboBoxModel->addItems(models);
 
+  setGlider(pGlider);
+
+/**
 	connect(comboBoxManu, SIGNAL(activated(int)), this, SLOT(updateGlider(int)));
 	connect(comboBoxModel, SIGNAL(activated(int)), this, SLOT(updateGlider(int)));
+*/
+}
+
+void GliderFormImpl::setGlider(Glider *pGlider)
+{
+  m_pGlider = pGlider;
+
+	if(m_pGlider != NULL)
+	{
+	  select(comboBoxManu, m_pGlider->manufacturer());
+	  select(comboBoxModel, m_pGlider->model());
+	  lineEditSerial->setText(m_pGlider->serial());
+/*
+	  selectModel();
+	  selectSerial();
+*/
+	}
 }
 
 void GliderFormImpl::accept()
 {
-	m_pGlider->setManufacturer(comboBoxManu->currentText());
-	m_pGlider->setModel(comboBoxModel->currentText());
-	m_pGlider->setSerial(lineEditSerial->text());
+  if(m_pGlider != NULL)
+  {
+    m_pGlider->setManufacturer(comboBoxManu->currentText());
+    m_pGlider->setModel(comboBoxModel->currentText());
+    m_pGlider->setSerial(lineEditSerial->text());
+  }
 
   QDialog::accept();
 }
@@ -71,4 +92,24 @@ void GliderFormImpl::updateGlider(int index)
   // adjust all combo boxes to show glider data of the selected index
   comboBoxManu->setCurrentIndex(index);
   comboBoxModel->setCurrentIndex(index);
+}
+
+void GliderFormImpl::select(QComboBox *pCombo, const QString &text)
+{
+	int index;
+	int maxIndex;
+	bool found = false;
+
+	maxIndex = pCombo->count();
+
+	for(index=0; index<maxIndex; index++)
+	{
+		found = (pCombo->itemText(index) == text);
+
+		if(found)
+		{
+			pCombo->setCurrentIndex(index);
+			break;
+		}
+	}
 }

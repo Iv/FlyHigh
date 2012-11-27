@@ -38,6 +38,8 @@ class GliderWindow: public TableWindow
 	private slots:
 		void file_new();
 
+		void file_edit();
+
 		void file_delete();
 
 		void file_update();
