@@ -264,12 +264,14 @@ function rt_measure(div)
 	if(show)
 	{
 		div.className = "button_down";
+		div = document.getElementById("smeasure");
+		div.innerHTML = "0.0 km";
 	}
 	else
 	{
 		div.className = "button_up";
 		div = document.getElementById("smeasure");
-		div.innerHTML = "";
+		div.innerHTML = "Off";
 	}
 }
 
