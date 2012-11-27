@@ -71,8 +71,8 @@ void PolyLineEncoder::dpEncode(const WayPoint::WayPointListType &points, QString
 			current = stack.top();
 			stack.pop();
 			maxDist = 0;
-			segmentLength = pow(points[current.j].latitude() - points[current.i].latitude(), 2) +
-							pow(points[current.j].longitude() - points[current.i].longitude(), 2);
+			segmentLength = pow(points[current.j].pos().lat() - points[current.i].pos().lat(), 2) +
+							pow(points[current.j].pos().lon() - points[current.i].pos().lon(), 2);
 
 			for(i=current.i + 1; i < current.j; i++)
 			{
@@ -132,13 +132,13 @@ QString PolyLineEncoder::createEncodings(const WayPoint::WayPointListType &point
 	int plat = 0;
 	int plng = 0;
 	QString encoded_points = "";
-	
+
 	for(i = 0; i < points.size(); i++)
 	{
 		if(dists[i] != undefined || i == 0 || i == points.size() - 1)
 		{
-			lat = points[i].latitude();
-			lng = points[i].longitude();
+			lat = points[i].pos().lat();
+			lng = points[i].pos().lon();
 			late5 = (int)floor(lat * 1e5);
 			lnge5 = (int)floor(lng * 1e5);
 			dlat = late5 - plat;
@@ -189,7 +189,7 @@ QString PolyLineEncoder::encodeLevels(const WayPoint::WayPointListType &points, 
 uint PolyLineEncoder::computeLevel(double dd)
 {
 	uint lev = 0;
-	
+
 	if(dd > m_verySmall)
 	{
 		while(dd < m_zoomLevelBreaks[lev])
@@ -204,7 +204,7 @@ uint PolyLineEncoder::computeLevel(double dd)
 QString PolyLineEncoder::encodeSignedNumber(int num)
 {
 	uint sgn_num = (num << 1);
-	
+
 	if(num < 0)
 	{
 		sgn_num = ~(sgn_num);
@@ -243,30 +243,30 @@ double PolyLineEncoder::distance(const WayPoint &p0, const WayPoint &p1, const W
   double u;
 	double out;
 
-	if(p1.latitude() == p2.latitude() && p1.longitude() == p2.longitude())
+	if(p1.pos().lat() == p2.pos().lat() && p1.pos().lon() == p2.pos().lon())
 	{
-		out = sqrt(pow(p2.latitude() - p0.latitude(), 2) + pow(p2.longitude() - p0.longitude() , 2));
+		out = sqrt(pow(p2.pos().lat() - p0.pos().lat(), 2) + pow(p2.pos().lon() - p0.pos().lon() , 2));
 	}
 	else
 	{
-		u = ((p0.latitude() - p1.latitude()) * (p2.latitude() - p1.latitude()) +
-				 (p0.longitude() - p1.longitude()) * (p2.longitude() - p1.longitude())) /
+		u = ((p0.pos().lat() - p1.pos().lat()) * (p2.pos().lat() - p1.pos().lat()) +
+				 (p0.pos().lon() - p1.pos().lon()) * (p2.pos().lon() - p1.pos().lon())) /
 					segLength;
-	
+
 		if(u <= 0)
 		{
-			out = sqrt(pow(p0.latitude() - p1.latitude(), 2) + pow(p0.longitude() - p1.longitude(), 2));
+			out = sqrt(pow(p0.pos().lat() - p1.pos().lat(), 2) + pow(p0.pos().lon() - p1.pos().lon(), 2));
 		}
 		else if(u >= 1)
 		{
-			out = sqrt(pow(p0.latitude() - p2.latitude(), 2) + pow(p0.longitude() - p2.longitude(), 2));
+			out = sqrt(pow(p0.pos().lat() - p2.pos().lat(), 2) + pow(p0.pos().lon() - p2.pos().lon(), 2));
 		}
 		else
 		{
-			out = sqrt(pow(p0.latitude() - p1.latitude() - u * (p2.latitude() - p1.latitude()), 2) +
-				pow(p0.longitude() - p1.longitude() -u * (p2.longitude() - p1.longitude()), 2));
+			out = sqrt(pow(p0.pos().lat() - p1.pos().lat() - u * (p2.pos().lat() - p1.pos().lat()), 2) +
+				pow(p0.pos().lon() - p1.pos().lon() -u * (p2.pos().lon() - p1.pos().lon()), 2));
 		}
 	}
-	
+
 	return out;
 }

@@ -87,7 +87,7 @@ void WebMapRoute::setTurnPointList(const WayPoint::WayPointListType &tpList)
 		}
 
 		first = false;
-		arg += argElem.arg(tpList.at(tpNr).latitude()).arg(tpList.at(tpNr).longitude());
+		arg += argElem.arg(tpList.at(tpNr).pos().lat()).arg(tpList.at(tpNr).pos().lon());
 	}
 
 	arg += "]";
@@ -117,9 +117,9 @@ void WebMapRoute::turnPointList(WayPoint::WayPointListType &tpList) const
     if(tpLatLng.size() == 3)
     {
       wp.setName(wpName.arg(wpNr));
-      wp.setLatitude(tpLatLng[0].toFloat());
-      wp.setLongitude(tpLatLng[1].toFloat());
-      wp.setAltitude(tpLatLng[2].toFloat());
+      wp.setLat(tpLatLng[0].toFloat());
+      wp.setLon(tpLatLng[1].toFloat());
+      wp.setAlt(tpLatLng[2].toInt());
       wp.setType(WayPoint::TypeTurnPoint);
       tpList.push_back(wp);
       wpNr++;

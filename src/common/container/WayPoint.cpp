@@ -25,7 +25,6 @@
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 const uint WayPoint::startLandRadius = 400;
-const double WayPoint::earthRadius = 6371000.0;
 
 WayPoint::WayPoint()
 {
@@ -34,8 +33,6 @@ WayPoint::WayPoint()
 	m_desc = "";
 	m_country = "";
 	m_spot = "";
-	m_lat = 0;
-	m_lon = 0;
 	m_alt = 0;
   m_type = TypeStartLand;
 }
@@ -45,8 +42,7 @@ WayPoint::WayPoint(double lat, double lon)
 	m_id = -1;
 	m_name = "";
 	m_desc = "";
-	m_lat = lat;
-	m_lon = lon;
+	m_pos.setPos(lat, lon);
 	m_alt = 0;
 	m_country = "";
 	m_spot = "";
@@ -114,37 +110,46 @@ void WayPoint::setDescription(const QString &desc)
 
 void WayPoint::setCoordinates(double lat, double lon, int alt)
 {
-	m_lat = lat;
-	m_lon = lon;
+  m_pos.setPos(lat, lon);
 	m_alt = alt;
 }
 
-void WayPoint::setLatitude(double lat)
+void WayPoint::setPos(const LatLng &pos)
 {
-	m_lat = lat;
+  m_pos = pos;
 }
 
-double WayPoint::latitude() const
+const LatLng& WayPoint::pos() const
 {
-	return m_lat;
+  return m_pos;
 }
 
-void WayPoint::setLongitude(double lon)
+void WayPoint::setLat(double lat)
 {
-	m_lon = lon;
+  m_pos.setLat(lat);
 }
 
-double WayPoint::longitude() const
+double WayPoint::lat() const
 {
-	return m_lon;
+  return m_pos.lat();
 }
 
-void WayPoint::setAltitude(int alt)
+void WayPoint::setLon(double lon)
+{
+  m_pos.setLon(lon);
+}
+
+double WayPoint::lon() const
+{
+  return m_pos.lon();
+}
+
+void WayPoint::setAlt(int alt)
 {
 	m_alt = alt;
 }
 
-int WayPoint::altitude() const
+int WayPoint::alt() const
 {
 	return m_alt;
 }
@@ -166,42 +171,7 @@ uint WayPoint::distance(const WayPoint &wp) const
 
 void WayPoint::distBear(const WayPoint &wp, double &dist, double &bear) const
 {
-	double deltaLat;
-	double deltaLon;
-	double angle;
-	double lat1;
-	double lon1;
-	double lat2;
-	double lon2;
-
-	lat1 = (m_lat * M_PI / 180);
-	lon1 = (m_lon * M_PI / 180);
-	lat2 = (wp.latitude() * M_PI / 180);
-	lon2 = (wp.longitude() * M_PI / 180);
-
-	deltaLat = lat1 - lat2;
-	deltaLon = lon1 -lon2;
-
-	// distance
-	angle = sin(deltaLat / 2) * sin(deltaLat / 2) +
-			cos(lat1) * cos(lat2) * sin(deltaLon / 2) * sin(deltaLon / 2);
-	dist = 2 * atan2(sqrt(angle), sqrt(1 - angle)) * earthRadius;
-
-	// start angle
-	bear = atan2(sin(deltaLon) * cos(lat2),
-			cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(deltaLon));
-
-	bear = (bear * 180 / M_PI);
-
-	// angle from +/-180� to 0-360�
-	if(bear < 0)
-	{
-		bear = -bear;
-	}
-	else if(bear > 0)
-	{
-		bear = 360 - bear;
-	}
+  m_pos.distBear(wp.pos(), dist, bear);
 }
 
 bool WayPoint::operator==(const WayPoint &wp)
@@ -209,49 +179,16 @@ bool WayPoint::operator==(const WayPoint &wp)
 	return (m_name == wp.m_name) && (m_spot == wp.m_spot) && (m_country == wp.m_country);
 }
 
-WayPoint WayPoint::operator+(const WayPoint& right) const
-{
-  return WayPoint(m_lat + right.m_lat, m_lon + right.m_lon);
-}
-
-WayPoint WayPoint::operator-(const WayPoint& right) const
-{
-  return WayPoint(m_lat - right.m_lat, m_lon - right.m_lon);
-}
-
-WayPoint WayPoint::operator*(double right) const
-{
-  return WayPoint(m_lat * right, m_lon * right);
-}
-
 uint WayPoint::distance(const WayPoint &wp1, const WayPoint &wp2)
 {
-	double dist;
-	double angle; // in radians
-	double lat1; // in radians
-	double lat2; // in radians
-	double deltaLong; // in radians
-
-	// P1, L1 Latitude and Longitude of Point 1
-	// P2, L2 Latitude and Longitude of Point 2
-	lat1 = wp1.latitude() * M_PI / 180;
-	lat2 = wp2.latitude() * M_PI / 180;
-	deltaLong = (wp2.longitude() - wp1.longitude()) * M_PI / 180;
-
-	// cos E = sin P1 * sin P2 + cos P1 * cos P2 * cos (L2 - L1)
-	angle = sinl(lat1) * sinl(lat2) + cosl(lat1) * cosl(lat2) * cosl(deltaLong);
-
-	// FAI Earth Radius is 6371 km
-	dist = earthRadius * acosl(angle);
-
-	return (uint)round(dist);
+  return wp1.pos().distance(wp2.pos());
 }
 
 double WayPoint::arc(uint distance)
 {
 	double a;
 
-	a = distance / earthRadius;
+	a = distance / LatLng::EarthRadius;
 
 	return (a * 180.0 / M_PI);
 }
@@ -263,14 +200,12 @@ uint WayPoint::meters(double nautmil)
 
 void WayPoint::setMin(const WayPoint &wp)
 {
-	m_lat = MIN(wp.m_lat, m_lat);
-	m_lon = MIN(wp.m_lon, m_lon);
+  m_pos.setMin(wp.pos());
 	m_alt = MIN(wp.m_alt, m_alt);
 }
 
 void WayPoint::setMax(const WayPoint &wp)
 {
-	m_lat = MAX(wp.m_lat, m_lat);
-	m_lon = MAX(wp.m_lon, m_lon);
-	m_alt = MAX(wp.m_alt, m_alt);
+  m_pos.setMax(wp.pos());
+	m_alt = qMax(wp.m_alt, m_alt);
 }

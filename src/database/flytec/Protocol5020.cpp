@@ -226,12 +226,12 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 			// latitude
 			tokenizer.getNextToken(tlg, ',', degToken);
 			tokenizer.getNextToken(tlg, ',', dirToken);
-			wp.setLatitude(parseDeg(degToken, dirToken));
+			wp.setLat(parseDeg(degToken, dirToken));
 
 			// longitude
 			tokenizer.getNextToken(tlg, ',', degToken);
 			tokenizer.getNextToken(tlg, ',', dirToken);
-			wp.setLongitude(parseDeg(degToken, dirToken));
+			wp.setLon(parseDeg(degToken, dirToken));
 
 			// short name
 			tokenizer.getNextToken(tlg, ',', token); // skip
@@ -242,7 +242,7 @@ bool Protocol5020::wpListRec(WayPoint &wp)
 
 			// altitude
 			tokenizer.getNextToken(tlg, '*', token);
-			wp.setAltitude(token.toInt());
+			wp.setAlt(token.toInt());
 		}
 	}
 
@@ -257,11 +257,11 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	tlg = "$PBRWPR,";
 
 	// latitude
-	tlg += latToString(wp.latitude(), 8);
+	tlg += latToString(wp.lat(), 8);
 	tlg += ",";
 
 	// longitude
-	tlg += lonToString(wp.longitude(), 9);
+	tlg += lonToString(wp.lon(), 9);
 	tlg += ",";
 
 	// skip short name
@@ -272,7 +272,7 @@ bool Protocol5020::wpSnd(const WayPoint &wp)
 	tlg += ",";
 
 	// altitude
-	tlg += QString::number(wp.altitude()).rightJustified(4, '0');
+	tlg += QString::number(wp.alt()).rightJustified(4, '0');
 
 	addTail(tlg);
 	success = m_device.sendTlg(tlg);

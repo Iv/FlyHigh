@@ -98,9 +98,9 @@ bool GarminDevice::add(WayPoint &wp)
 	wayList[0]->prot = gps_waypt_transfer;
         memcpy(wayList[0]->ident, wp.name().toAscii().constData(), wp.name().length());
         memcpy(wayList[0]->cmnt, wp.description().toAscii().constData(), wp.description().length());
-	wayList[0]->lat = wp.latitude();
-	wayList[0]->lon = wp.longitude();
-	wayList[0]->alt = wp.altitude();
+	wayList[0]->lat = wp.lat();
+	wayList[0]->lon = wp.lon();
+	wayList[0]->alt = wp.alt();
 
 	// send wp
         ret = GPS_Command_Send_Waypoint(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), wayList, nWps);

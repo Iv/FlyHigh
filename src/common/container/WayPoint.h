@@ -23,6 +23,7 @@
 
 #include <QString>
 #include <QVector>
+#include "LatLng.h"
 
 /****************************************
 COMMON
@@ -66,24 +67,28 @@ class WayPoint
 
 		const QString& country() const;
 
-		const QString& description() const;
-
 		void setDescription(const QString &desc);
+
+    const QString& description() const;
 
 		// latitude and longitude are in WGS84 (degree)
 		void setCoordinates(double lat, double lon, int alt = 0);
 
-		void setLatitude(double lat);
+		void setPos(const LatLng &pos);
 
-		double latitude() const;
+		const LatLng& pos() const;
 
-		void setLongitude(double lon);
+		void setLat(double lat);
 
-		double longitude() const;
+		double lat() const;
 
-		void setAltitude(int alt);
+		void setLon(double lon);
 
-		int altitude() const;
+		double lon() const;
+
+		void setAlt(int alt);
+
+		int alt() const;
 
 		void setType(Type type);
 
@@ -112,20 +117,13 @@ class WayPoint
 
 		bool operator==(const WayPoint &wp);
 
-    WayPoint operator+(const WayPoint& right) const;
-
-    WayPoint operator-(const WayPoint& right) const;
-
-		WayPoint operator*(double right) const;
-
 	private:
 		int m_id;
 		QString m_name;
 		QString m_desc;
 		QString m_country;
 		QString m_spot;
-		double m_lat;
-		double m_lon;
+		LatLng m_pos;
 		int m_alt;
     Type m_type;
 };

@@ -141,16 +141,16 @@ bool AirSpace::isInside(const WayPoint &wp) const
 
   for(i = 0, j = nvert-1; i < nvert; j = i++)
 	{
-    if(((m_pointList[i].lat() > wp.latitude()) != (m_pointList[j].lat() > wp.latitude())) &&
-				(wp.longitude() < (m_pointList[j].lon() - m_pointList[i].lon()) *
-				(wp.latitude() - m_pointList[i].lat()) / (m_pointList[j].lat() - m_pointList[i].lat()) +
+    if(((m_pointList[i].lat() > wp.lat()) != (m_pointList[j].lat() > wp.lat())) &&
+				(wp.lon() < (m_pointList[j].lon() - m_pointList[i].lon()) *
+				(wp.lat() - m_pointList[i].lat()) / (m_pointList[j].lat() - m_pointList[i].lat()) +
 				m_pointList[i].lon()))
 		{
        cross = !cross;
 		}
   }
 
-	return (cross) && (wp.altitude() >= m_low) && (wp.altitude() <= m_high);
+	return (cross) && (wp.alt() >= m_low) && (wp.alt() <= m_high);
 }
 
 bool AirSpace::getNextBear(bool dir, double endBear, double prevBear, double &bear)

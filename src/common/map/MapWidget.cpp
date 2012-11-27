@@ -60,43 +60,43 @@ void MapWidget::showWayPointList(WayPoint::WayPointListType &wpList)
 
 	if(listSize > 0)
 	{
-		n = wpList[0].latitude();
-		e = wpList[0].longitude();
-		s = wpList[0].latitude();
-		w = wpList[0].longitude();
-		m_maxAlt = wpList[0].altitude();
-		m_minAlt = wpList[0].altitude();
+		n = wpList[0].lat();
+		e = wpList[0].lon();
+		s = wpList[0].lat();
+		w = wpList[0].lon();
+		m_maxAlt = wpList[0].alt();
+		m_minAlt = wpList[0].alt();
 
 		for(wpNr=0; wpNr<listSize; wpNr++)
 		{
 			// latitude
-			if(wpList[wpNr].latitude() > n)
+			if(wpList[wpNr].lat() > n)
 			{
-				n = wpList[wpNr].latitude();
+				n = wpList[wpNr].lat();
 			}
-			else if(wpList[wpNr].latitude() < s)
+			else if(wpList[wpNr].lat() < s)
 			{
-				s = wpList[wpNr].latitude();
+				s = wpList[wpNr].lat();
 			}
 
 			// longitude
-			if(wpList[wpNr].longitude() > e)
+			if(wpList[wpNr].lon() > e)
 			{
-				e = wpList[wpNr].longitude();
+				e = wpList[wpNr].lon();
 			}
-			else if(wpList[wpNr].longitude() < w)
+			else if(wpList[wpNr].lon() < w)
 			{
-				w = wpList[wpNr].longitude();
+				w = wpList[wpNr].lon();
 			}
 
 			// altitude
-			if(wpList[wpNr].altitude() > m_maxAlt)
+			if(wpList[wpNr].alt() > m_maxAlt)
 			{
-				m_maxAlt = wpList[wpNr].altitude();
+				m_maxAlt = wpList[wpNr].alt();
 			}
-			else if(wpList[wpNr].altitude() < m_minAlt)
+			else if(wpList[wpNr].alt() < m_minAlt)
 			{
-				m_minAlt = wpList[wpNr].altitude();
+				m_minAlt = wpList[wpNr].alt();
 			}
 		}
 
@@ -218,7 +218,7 @@ void MapWidget::paintEvent(QPaintEvent *pEvent)
       // other points
       for(wpNr=1; wpNr<(pts-2); wpNr++)
       {
-        alt = m_wpList[wpNr].altitude();
+        alt = m_wpList[wpNr].alt();
 
         if(alt < 0) color = QColor(0, 0, 0); // black
         else if(alt < 500) color = QColor(125, 0, 0); // brown
@@ -269,8 +269,8 @@ void MapWidget::recalcWayPoints()
 
 	for(wpNr=0; wpNr<listSize; wpNr++)
 	{
-		lat = m_wpList[wpNr].latitude();
-		lon = m_wpList[wpNr].longitude();
+		lat = m_wpList[wpNr].lat();
+		lon = m_wpList[wpNr].lon();
 		m_pMap->LLtoPix(lat, lon, pt);
 		m_wayPoints[wpNr] = pt;
 	}

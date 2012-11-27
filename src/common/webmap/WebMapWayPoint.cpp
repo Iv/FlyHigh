@@ -63,9 +63,9 @@ void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
   spot.replace(QRegExp("('|\")"), "\\\\1");
   country = wp.country();
   country.replace(QRegExp("('|\")"), "\\\\1");
-  lat = wp.latitude();
-  lon = wp.longitude();
-  alt = wp.altitude();
+  lat = wp.lat();
+  lon = wp.lon();
+  alt = wp.alt();
   pFrame->evaluateJavaScript(code.arg(id).arg(name).arg(spot).arg(country)
                              .arg(lat).arg(lon).arg(alt));
 }
@@ -110,9 +110,7 @@ bool WebMapWayPoint::getNextModified(WayPoint &wp)
     wp.setName(wpMap["name"].toString());
     wp.setSpot(wpMap["spot"].toString());
     wp.setCountry(wpMap["country"].toString());
-    wp.setLatitude(wpMap["lat"].toDouble());
-    wp.setLongitude(wpMap["lng"].toDouble());
-    wp.setAltitude(wpMap["alt"].toInt());
+    wp.setCoordinates(wpMap["lat"].toDouble(), wpMap["lng"].toDouble(), wpMap["alt"].toInt());
 	}
 
 	return valid;

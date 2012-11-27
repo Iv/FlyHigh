@@ -67,6 +67,12 @@ class LatLng
 
 		bool operator==(const LatLng &latlng);
 
+    LatLng operator+(const LatLng& right) const;
+
+    LatLng operator-(const LatLng& right) const;
+
+		LatLng operator*(double right) const;
+
 		static uint distance(const LatLng &latlng1, const LatLng &latlng2);
 
 		static double arc(double distance);

@@ -74,14 +74,14 @@ bool KmlWriter::save(const QString & name)
 	QFile file;
 	QString str;
 	bool success;
-	
+
 	file.setFileName(name);
 	success = file.open(QIODevice::WriteOnly);
-	
+
 	if(success)
 	{
 		QTextStream s(&file);
-	
+
 		s << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		s << "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n";
 
@@ -136,9 +136,9 @@ void KmlWriter::streamCoordinates(QTextStream& s)
 
 	for(index=0; index<lastIndex; index++)
 	{
-		s << m_flightPointList[index].wp.longitude() << ","
-			<< m_flightPointList[index].wp.latitude() << ","
-			<< m_flightPointList[index].wp.altitude() << " ";
+		s << m_flightPointList[index].wp.lon() << ","
+			<< m_flightPointList[index].wp.lat() << ","
+			<< m_flightPointList[index].wp.alt() << " ";
 
 		if((index % 5) == 0)
 		{
@@ -170,34 +170,34 @@ void KmlWriter::streamOLC(QTextStream& s)
 
 	if(!m_triangle)
 	{
-		s << m_departure.wp.longitude() << ","
-			<< m_departure.wp.latitude() << ","
-			<< m_departure.wp.altitude() << " ";
+		s << m_departure.wp.lon() << ","
+			<< m_departure.wp.lat() << ","
+			<< m_departure.wp.alt() << " ";
 	}
 
-	s << m_1stWayPoint.longitude() << ","
-		<< m_1stWayPoint.latitude() << ","
-		<< m_1stWayPoint.altitude() << " ";
+	s << m_1stWayPoint.lon() << ","
+		<< m_1stWayPoint.lat() << ","
+		<< m_1stWayPoint.alt() << " ";
 
-	s << m_2ndWayPoint.longitude() << ","
-		<< m_2ndWayPoint.latitude() << ","
-		<< m_2ndWayPoint.altitude() << " ";
+	s << m_2ndWayPoint.lon() << ","
+		<< m_2ndWayPoint.lat() << ","
+		<< m_2ndWayPoint.alt() << " ";
 
-	s << m_3rdWayPoint.longitude() << ","
-		<< m_3rdWayPoint.latitude() << ","
-		<< m_3rdWayPoint.altitude() << " ";
+	s << m_3rdWayPoint.lon() << ","
+		<< m_3rdWayPoint.lat() << ","
+		<< m_3rdWayPoint.alt() << " ";
 
 	if(!m_triangle)
 	{
-		s << m_finish.wp.longitude() << ","
-			<< m_finish.wp.latitude() << ","
-			<< m_finish.wp.altitude() << "\n";
+		s << m_finish.wp.lon() << ","
+			<< m_finish.wp.lat() << ","
+			<< m_finish.wp.alt() << "\n";
 	}
 	else
 	{
-		s << m_1stWayPoint.longitude() << ","
-			<< m_1stWayPoint.latitude() << ","
-			<< m_1stWayPoint.altitude() << " ";
+		s << m_1stWayPoint.lon() << ","
+			<< m_1stWayPoint.lat() << ","
+			<< m_1stWayPoint.alt() << " ";
 	}
 
 	s << "     </coordinates>\n";
@@ -220,9 +220,9 @@ void KmlWriter::streamStart(QTextStream& s)
 	s << "    <Point>\n";
 	s << "      <altitudeMode>absolute</altitudeMode>\n";
 	s << "      <coordinates>"
-		<< m_departure.wp.longitude() << ","
-		<< m_departure.wp.latitude() << ","
-		<< m_departure.wp.altitude() << " "
+		<< m_departure.wp.lon() << ","
+		<< m_departure.wp.lat() << ","
+		<< m_departure.wp.alt() << " "
 		<< "</coordinates>\n";
 	s << "    </Point>\n";
 	s << "  </Placemark>\n";
@@ -243,9 +243,9 @@ void KmlWriter::streamLanding(QTextStream& s)
 	s << "    <Point>\n";
 	s << "      <altitudeMode>absolute</altitudeMode>\n";
 	s << "      <coordinates>"
-		<< m_finish.wp.longitude() << ","
-		<< m_finish.wp.latitude() << ","
-		<< m_finish.wp.altitude() << " "
+		<< m_finish.wp.lon() << ","
+		<< m_finish.wp.lat() << ","
+		<< m_finish.wp.alt() << " "
 		<< "</coordinates>\n";
 	s << "    </Point>\n";
 	s << "  </Placemark>\n";

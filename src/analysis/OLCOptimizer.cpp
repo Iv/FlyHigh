@@ -187,8 +187,8 @@ void OLCOptimizer::initdmval()
 
 	for(wpNr=0; wpNr<nFlightPts; wpNr++)
 	{ // all deltas to radians and save sin/cos
-		lonrad[wpNr] = m_flightPointList[wpNr].wp.longitude() * CONST_PI_DIV_180;
-		latrad = m_flightPointList[wpNr].wp.latitude() * CONST_PI_DIV_180;
+		lonrad[wpNr] = m_flightPointList[wpNr].wp.pos().lon() * CONST_PI_DIV_180;
+		latrad = m_flightPointList[wpNr].wp.pos().lat() * CONST_PI_DIV_180;
 		sinlat[wpNr] = sin(latrad);
 		coslat[wpNr] = cos(latrad);
 		m_pDistanceMatrix[cmp*wpNr] = 0; // fill diagonal of matrix with 0

@@ -876,7 +876,7 @@ void FlightWindow::plot_altVsTime()
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
 					x.push_back(tpList[fpNr].time);
-					y.push_back(tpList[fpNr].wp.altitude()); // in m
+					y.push_back(tpList[fpNr].wp.alt()); // in m
 				}
 
 				m_plotter.clear();
@@ -1031,9 +1031,9 @@ void FlightWindow::plotFlighPointList(FlightPointList &tpList, const QString& ti
 
 	for(fpNr=0; fpNr<tpListSize; fpNr++)
 	{
-		y.push_back(tpList[fpNr].wp.latitude());
-		x.push_back(tpList[fpNr].wp.longitude());
-		z.push_back(tpList[fpNr].wp.altitude());
+		y.push_back(tpList[fpNr].wp.lat());
+		x.push_back(tpList[fpNr].wp.lon());
+		z.push_back(tpList[fpNr].wp.alt());
 	}
 
 	m_plotter.plotXYZ(x, y, z, title);

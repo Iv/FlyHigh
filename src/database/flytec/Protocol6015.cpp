@@ -406,15 +406,15 @@ bool Protocol6015::parseWp(const QString &tlg, WayPoint &wp)
 
 	// latitude
 	tokenizer.getNextToken(tlg, ';', token);
-	wp.setLatitude(ftString2Deg(token));
+	wp.setLat(ftString2Deg(token));
 
 	// longitude
 	tokenizer.getNextToken(tlg, ';', token);
-	wp.setLongitude(ftString2Deg(token));
+	wp.setLon(ftString2Deg(token));
 
 	// altitude
 	tokenizer.getNextToken(tlg, ';', token);
-	wp.setAltitude(token.toInt());
+	wp.setAlt(token.toInt());
 
 	return true;
 }
@@ -464,7 +464,7 @@ void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 	tlg += ';';
 
 	// lat
-	if(wp.latitude() < 0)
+	if(wp.lat() < 0)
 	{
 		dir = 'S';
 	}
@@ -473,11 +473,11 @@ void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 		dir = 'N';
 	}
 
-	tlg += deg2ftString(wp.latitude(), 12, dir);
+	tlg += deg2ftString(wp.lat(), 12, dir);
 	tlg += ';';
 
 	// lon
-	if(wp.longitude() < 0)
+	if(wp.lon() < 0)
 	{
 		dir = 'W';
 	}
@@ -486,11 +486,11 @@ void Protocol6015::getWpSndTlg(const WayPoint &wp, QString &tlg)
 		dir = 'E';
 	}
 
-	tlg += deg2ftString(wp.longitude(), 12, dir);
+	tlg += deg2ftString(wp.lon(), 12, dir);
 	tlg += ';';
 
 	// alt
-	tlg += value2ftString(wp.altitude(), 6);
+	tlg += value2ftString(wp.alt(), 6);
 	tlg += ';';
 
 	// cylinder radius default 400 m
