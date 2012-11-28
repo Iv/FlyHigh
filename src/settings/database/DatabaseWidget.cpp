@@ -67,6 +67,8 @@ DatabaseWidget::DatabaseWidget(QWidget* parent, const QString& title)
 	m_pDBPort->setMaximum(65536);
 	QLabel* userNameLabel = new QLabel(tr("User"));
 	m_pDBUserName = new QLineEdit();
+  // mysql limits usernames to 16 characters
+  m_pDBUserName->setMaxLength(16);
 	QLabel* passwordLabel = new QLabel(tr("Password"));
 	m_pDBPassword = new QLineEdit();
 	m_pDBPassword->setEchoMode(QLineEdit::Password);
