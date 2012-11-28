@@ -387,7 +387,7 @@ void QueryStore::init()
 
 	addQuery("setup-privileges",
 					 "QMYSQL",
-					 "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON %dbname.* TO '%username'@'%'");
+           "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON `%dbname`.* TO '%username'@'%'");
 
 	addQuery("setup-get-user",
 					 "QMYSQL",
