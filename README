@@ -10,7 +10,7 @@ It helps paraglider pilots to
 ==== Features ====
 - SQL database for waypoints, routes, flights, gliders, airspaces
 - Flight preparation: sync waypoints and routes with database and GPS
-- Flight analysis: 2D plots with OLC optimization (gnuplot)
+- Flight analysis: 2D and 3D plots with OLC optimization (gnuplot)
 - Flight export in IGC or KML (GoogleEarth) file format
 - Statistics (servicings, flights per year)
 - Import airspaces from OpenAir
