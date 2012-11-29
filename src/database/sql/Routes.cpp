@@ -50,7 +50,7 @@ bool Routes::add(Route &route)
 
 	if(success)
 	{
-		setId(route);
+///		setId(route);
 		sqls = "INSERT INTO RouteItems(RouteId, WayPointId) VALUES";
 
 		// insert route items

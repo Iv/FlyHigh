@@ -45,7 +45,7 @@ bool Gliders::add(Glider &glider)
 
   success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
-	setGliderId(glider);
+///	setGliderId(glider);
 	DataBaseSub::setLastModified("Gliders");
 
 	return true;
