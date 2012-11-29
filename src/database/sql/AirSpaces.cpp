@@ -37,16 +37,17 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString sqls;
+  QString name;
   LatLngList::iterator it;
   int id;
   bool success;
 
+  name = findUniqueName(airspace.name());
   id = newId("AirSpaces");
   sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
                  "VALUES(%1, '%2', '%3', %4, %5, '%6');")
-                 .arg(id).arg(escape(airspace.name())).arg(escape(airspace.airspaceClass()))
+                 .arg(id).arg(name).arg(escape(airspace.airspaceClass()))
                  .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()));
-
   success = query.exec(sqls);
 
   if(success)
@@ -188,4 +189,32 @@ bool AirSpaces::airSpaceItems(int id, LatLngList &itemList)
   }
 
   return success;
+}
+
+QString AirSpaces::findUniqueName(const QString &name)
+{
+  QSqlQuery query(db());
+	QString sqls;
+	QString locName;
+	QString newName;
+	QString number;
+	int count = 2;
+	bool found;
+
+	sqls = QString("SELECT Id FROM AirSpaces WHERE Name='%1';");
+	locName = escape(name);
+	newName = locName.left(NameSize);
+	query.exec(sqls.arg(newName));
+	found = query.next();
+
+  while(found)
+  {
+    number = QString("~%1").arg(count);
+    newName = (locName.left(NameSize - number.size()) + number);
+    query.exec(sqls.arg(newName));
+    found = query.next();
+    count++;
+  }
+
+  return newName;
 }

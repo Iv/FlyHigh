@@ -48,7 +48,11 @@ class AirSpaces: public DataBaseSub
 		void changed();
 
 	private:
+    enum {NameSize = 16};
+
 		bool airSpaceItems(int id, LatLngList &itemList);
+
+		QString findUniqueName(const QString &name);
 };
 
 #endif
