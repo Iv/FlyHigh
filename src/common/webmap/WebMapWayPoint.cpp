@@ -57,12 +57,9 @@ void WebMapWayPoint::pushWayPoint(const WayPoint &wp)
 
   pFrame = m_pWebMap->page()->mainFrame();
   id = wp.id();
-  name = wp.name();
-  name.replace(QRegExp("('|\")"), "\\\\1");
-  spot = wp.spot();
-  spot.replace(QRegExp("('|\")"), "\\\\1");
-  country = wp.country();
-  country.replace(QRegExp("('|\")"), "\\\\1");
+  name = WebMap::escape(wp.name());
+  spot = WebMap::escape(wp.spot());
+  country = WebMap::escape(wp.country());
   lat = wp.lat();
   lon = wp.lon();
   alt = wp.alt();

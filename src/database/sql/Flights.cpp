@@ -41,18 +41,15 @@ bool Flights::add(Flight &flight)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString comment;
 	bool success;
 
-  comment = flight.comment();
-  comment.replace(QRegExp("('|\")"), "\\\\1");
   sqls = QString("INSERT INTO Flights (Number, PilotId, Date, Time, GliderId, StartPtId, "
                  "LandPtId, Duration, Distance, Comment, IGCFile) "
                  "VALUES(%1, %2, '%3', '%4', %5, %6, %7, %8, %9, '%10', :igcdata);")
                  .arg(flight.number()).arg(flight.pilot().id())
                  .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(comment);
+                 .arg(flight.duration()).arg(flight.distance()).arg(escape(flight.comment()));
 
   query.prepare(sqls);
   query.bindValue(":igcdata", flight.igcData());
@@ -76,7 +73,7 @@ bool Flights::updateFlight(Flight &flight)
                  .arg(flight.number()).arg(flight.pilot().id()).arg(flight.date().toString("yyyy-MM-dd"))
                  .arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(flight.comment())
+                 .arg(flight.duration()).arg(flight.distance()).arg(escape(flight.comment()))
                  .arg(flight.id());
 
 	success = query.exec(sqls);

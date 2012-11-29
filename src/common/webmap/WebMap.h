@@ -58,6 +58,8 @@ class WebMap: public QWebView
 
 		void setSize(uint width, uint height);
 
+		static QString escape(const QString &str);
+
 	signals:
 		void appReady();
 

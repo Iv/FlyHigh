@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QDateTime>
+#include <QRegExp>
 #include <QSqlQuery>
 #include <QVariant>
 #include "DataBaseSub.h"
@@ -116,4 +117,14 @@ int DataBaseSub::lastModified(const QString &field)
 	}
 
 	return time;
+}
+
+QString DataBaseSub::escape(const QString &str)
+{
+  QString locStr;
+
+  locStr = str;
+  locStr.replace(QRegExp("('|\")"), "\\\\1");
+
+  return locStr;
 }

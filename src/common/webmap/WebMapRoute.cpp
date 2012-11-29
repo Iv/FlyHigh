@@ -23,8 +23,6 @@
 #include "WebMap.h"
 #include "WebMapRoute.h"
 
-#include <QDebug>
-
 WebMapRoute::WebMapRoute(WebMap *pWebMap)
 {
 	m_pWebMap = pWebMap;
@@ -51,9 +49,8 @@ void WebMapRoute::setName(const QString &name)
 	QWebFrame *pFrame;
 
 	pFrame = m_pWebMap->page()->mainFrame();
-	locName = name;
-	locName.replace(QRegExp("('|\")"), "\\\\1");
-	pFrame->evaluateJavaScript(code.arg(name));
+	locName = WebMap::escape(name);
+	pFrame->evaluateJavaScript(code.arg(locName));
 }
 
 QString WebMapRoute::name() const

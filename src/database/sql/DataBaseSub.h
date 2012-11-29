@@ -44,6 +44,8 @@ class DataBaseSub: public QObject
 
     void setLastModified(const QString &field);
 
+    QString escape(const QString &str);
+
 	private:
 		QSqlDatabase m_DB;
 		int m_lastModified;

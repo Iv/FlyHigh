@@ -168,6 +168,16 @@ void WebMap::setSize(uint width, uint height)
 	}
 }
 
+QString WebMap::escape(const QString &str)
+{
+  QString locStr;
+
+  locStr = str;
+  locStr.replace(QRegExp("('|\")"), "\\\\1");
+
+  return locStr;
+}
+
 void WebMap::loadFinished(bool ok)
 {
 	m_mapReady = true;

@@ -36,20 +36,12 @@ bool Gliders::add(Glider &glider)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString manu;
-  QString model;
-  QString serial;
   bool success;
 
-  manu = glider.manufacturer();
-  manu.replace(QRegExp("('|\")"), "\\\\1");
-  model = glider.model();
-  model.replace(QRegExp("('|\")"), "\\\\1");
-  serial = glider.serial();
-  serial.replace(QRegExp("('|\")"), "\\\\1");
   sqls = QString("INSERT INTO Gliders (Manufacturer, Model, Serial) "
                  "VALUES('%1', '%2', '%3');")
-                 .arg(manu).arg(model).arg(serial);
+                 .arg(escape(glider.manufacturer())).arg(escape(glider.model()))
+                 .arg(escape(glider.serial()));
 
   success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
@@ -67,7 +59,8 @@ bool Gliders::update(Glider &glider)
 
   sqls = QString("UPDATE Gliders SET Manufacturer='%1', Model='%2', Serial='%3' "
                  "WHERE Id=%4;")
-                 .arg(glider.manufacturer()).arg(glider.model()).arg(glider.serial())
+                 .arg(escape(glider.manufacturer())).arg(escape(glider.model()))
+                 .arg(escape(glider.serial()))
                  .arg(glider.id());
 
 	success = query.exec(sqls);
@@ -187,7 +180,8 @@ bool Gliders::setGliderId(Glider &glider)
 
   sqls = QString("SELECT Id FROM Gliders WHERE "
                   "Manufacturer='%1' AND Model='%2' AND Serial='%3'")
-                  .arg(glider.manufacturer(),glider.model(),glider.serial());
+                  .arg(escape(glider.manufacturer())).arg(escape(glider.model()))
+                  .arg(escape(glider.serial()));
 
 	success = (query.exec(sqls) && query.first());
 

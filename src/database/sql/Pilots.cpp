@@ -41,24 +41,13 @@ bool Pilots::add(Pilot &pilot)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString first;
-  QString last;
-  QString callsign;
 	bool success;
-
-	first = pilot.firstName();
-	first.replace(QRegExp("('|\")"), "\\\\1");
-	last = pilot.lastName();
-	last.replace(QRegExp("('|\")"), "\\\\1");
-	callsign = pilot.callSign();
-	callsign.replace(QRegExp("('|\")"), "\\\\1");
 
   sqls = QString("INSERT INTO Pilots (FirstName, LastName, BirthDate, CallSign, GliderId) "
                  "VALUES('%1', '%2', '%3', '%4', %5);")
-                 .arg(first)
-                 .arg(last)
+                 .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
                  .arg(pilot.birthDate().toString("yyyy-MM-dd"))
-                 .arg(callsign)
+                 .arg(escape(pilot.callSign()))
                  .arg(pilot.glider().id());
 
   success = query.exec(sqls);
@@ -73,24 +62,13 @@ bool Pilots::update(Pilot &pilot)
 {
   QSqlQuery query(db());
 	QString sqls;
-  QString first;
-  QString last;
-  QString callsign;
 	bool success;
 
-	first = pilot.firstName();
-	first.replace(QRegExp("('|\")"), "\\\\1");
-	last = pilot.lastName();
-	last.replace(QRegExp("('|\")"), "\\\\1");
-	callsign = pilot.callSign();
-	callsign.replace(QRegExp("('|\")"), "\\\\1");
-
 	sqls = QString("UPDATE Pilots SET FirstName='%1', LastName='%2', BirthDate='%3', "
-                 "CallSign='%4', GliderId=%5 WHERE Id=%6")
-                .arg(first)
-                .arg(last)
+                 "CallSign='%4', GliderId=%5 WHERE Id=%6;")
+                .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
                 .arg(pilot.birthDate().toString("yyyy-MM-dd"))
-                .arg(callsign)
+                .arg(escape(pilot.callSign()))
                 .arg(pilot.glider().id())
                 .arg(pilot.id());
 
@@ -134,20 +112,12 @@ bool Pilots::setId(Pilot &pilot)
 {
   QSqlQuery query(db());
 	QString sqls;
-  QString first;
-  QString last;
 	bool success;
 	int id = -1;
 
-	first = pilot.firstName();
-	first.replace(QRegExp("('|\")"), "\\\\1");
-	last = pilot.lastName();
-	last.replace(QRegExp("('|\")"), "\\\\1");
-
   sqls = QString("SELECT Id FROM Pilots WHERE FirstName='%1' AND LastName='%2' "
                  "AND BirthDate='%3'")
-                  .arg(first)
-                  .arg(last)
+                  .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
                   .arg(pilot.birthDate().toString("yyyy-MM-dd"));
 
 	success = (query.exec(sqls) && query.first());

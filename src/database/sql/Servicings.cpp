@@ -37,13 +37,15 @@ bool Servicings::add(Servicing &servicing)
 {
 	QSqlQuery query(db());
 	QString sqls;
+	int id;
 	bool success;
 
+  id = newId("Servicings");
   sqls = QString("INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) "
                  "VALUES(%1, %2, '%3', '%4', '%5');")
-                 .arg(newId("Servicings")).arg(servicing.glider().id())
+                 .arg(id).arg(servicing.glider().id())
                  .arg(servicing.date().toString("yyyy-MM-dd"))
-                 .arg(servicing.responsibility()).arg(servicing.comment());
+                 .arg(servicing.responsibility()).arg(escape(servicing.comment()));
 
   success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
@@ -61,7 +63,7 @@ bool Servicings::update(Servicing &servicing)
   sqls = QString("UPDATE Servicings SET GliderId=%1, Date='%2', Responsibility='%3', "
                  "Comment='%4' WHERE Id=%5;")
                  .arg(servicing.glider().id()).arg(servicing.date().toString("yyyy-MM-dd"))
-                 .arg(servicing.responsibility()).arg(servicing.comment())
+                 .arg(servicing.responsibility()).arg(escape(servicing.comment()))
                  .arg(servicing.id());
 
 	success = query.exec(sqls);
