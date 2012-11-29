@@ -56,7 +56,7 @@ bool Flights::add(Flight &flight)
 	success = query.exec();
 	DataBaseSub::setLastModified("Flights");
 	Error::verify(success, Error::SQL_CMD);
-	setId(flight);
+///	setId(flight);
 
 	return success;
 }

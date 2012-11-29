@@ -46,7 +46,7 @@ bool WayPoints::add(WayPoint &wp)
 	success = query.exec(sqls);
   Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
-	setId(wp);
+///	setId(wp);
 
 	return success;
 }

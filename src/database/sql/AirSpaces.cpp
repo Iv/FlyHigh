@@ -52,7 +52,7 @@ bool AirSpaces::add(AirSpace &airspace)
 
   if(success)
   {
-    airspace.setId(id);
+///    airspace.setId(id);
 
     for(it=airspace.pointList().begin(); it!=airspace.pointList().end(); it++)
     {
