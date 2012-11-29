@@ -34,31 +34,13 @@ bool WayPoints::add(WayPoint &wp)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString name;
-  QString spot;
-  QString country;
-  QString desc;
 	bool success;
-
-	name = wp.name();
-	name.replace(QRegExp("('|\")"), "\\\\1");
-	spot = wp.spot();
-	spot.replace(QRegExp("('|\")"), "\\\\1");
-	country = wp.country();
-	country.replace(QRegExp("('|\")"), "\\\\1");
-	desc = wp.description();
-	desc.replace(QRegExp("('|\")"), "\\\\1");
 
   sqls = QString("INSERT INTO WayPoints(Name, Spot, Country, Longitude, "
                  "Latitude, Altitude, Description, Type) "
                  "VALUES ('%1', '%2', '%3', %4, %5, %6, '%7', %8);")
-              .arg(name)
-              .arg(spot)
-              .arg(country)
-              .arg(wp.lon())
-              .arg(wp.lat())
-              .arg(wp.alt())
-              .arg(desc)
+              .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
+              .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
               .arg(wp.type());
 
 	success = query.exec(sqls);
@@ -73,30 +55,12 @@ bool WayPoints::update(WayPoint &wp)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString name;
-  QString spot;
-  QString country;
-  QString desc;
 	bool success;
-
-	name = wp.name();
-	name.replace(QRegExp("('|\")"), "\\\\1");
-	spot = wp.spot();
-	spot.replace(QRegExp("('|\")"), "\\\\1");
-	country = wp.country();
-	country.replace(QRegExp("('|\")"), "\\\\1");
-	desc = wp.description();
-	desc.replace(QRegExp("('|\")"), "\\\\1");
 
   sqls = QString("UPDATE WayPoints SET Name='%1', Country='%2', Spot='%3', Description='%4',"
                   "Longitude=%5, Latitude=%6, Altitude=%7, Type=%8 WHERE Id=%9;")
-                  .arg(name)
-                  .arg(country)
-                  .arg(spot)
-                  .arg(desc)
-                  .arg(wp.lon())
-                  .arg(wp.lat())
-                  .arg(wp.alt())
+                  .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
+                  .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
                   .arg(wp.type())
                   .arg(wp.id());
 	success = query.exec(sqls);
@@ -267,24 +231,12 @@ bool WayPoints::setId(WayPoint &wp)
 {
 	QSqlQuery query(db());
 	QString sqls;
-  QString name;
-  QString spot;
-  QString country;
 	bool success;
 	int id = -1;
 
-	name = wp.name();
-	name.replace(QRegExp("('|\")"), "\\\\1");
-	spot = wp.spot();
-	spot.replace(QRegExp("('|\")"), "\\\\1");
-	country = wp.country();
-	country.replace(QRegExp("('|\")"), "\\\\1");
-
   sqls = QString("SELECT Id FROM WayPoints WHERE "
                 "Name='%1' AND Spot='%2' AND Country='%3';")
-                .arg(name)
-                .arg(spot)
-                .arg(country);
+                .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()));
 
 	success = (query.exec(sqls) && query.first());
 

@@ -38,18 +38,13 @@ bool Routes::add(Route &route)
 	QSqlQuery query(db());
 	QString sqls;
 	QString value;
-	QString name;
 	uint nWps;
 	uint wpNr;
 	bool success;
 
-	name = route.name();
-	name.replace(QRegExp("('|\")"), "\\\\1");
-
 	// insert route name
 	sqls = QString("INSERT INTO Routes(Name, Type) VALUES('%1', %2);")
-                  .arg(name)
-                  .arg(route.type());
+                  .arg(escape(route.name())).arg(route.type());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
@@ -167,14 +162,11 @@ bool Routes::setId(Route &route)
 {
 	QSqlQuery query(db());
 	QString sqls;
-	QString name;
 	bool success;
 	int id = -1;
 
-	name = route.name();
-	name.replace(QRegExp("('|\")"), "\\\\1");
-
-	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';").arg(name);
+	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';")
+                .arg(escape(route.name()));
 	success = (query.exec(sqls) && query.first());
 
 	if(success)

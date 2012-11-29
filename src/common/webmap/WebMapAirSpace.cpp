@@ -94,12 +94,10 @@ void WebMapAirSpace::pushAirSpace(AirSpace *pAirSpace)
   }
 
   id = pAirSpace->id();
-  name = pAirSpace->name();
-  name.replace(QRegExp("('|\")"), "\\\\1");
+  name = WebMap::escape(pAirSpace->name());
   low = pAirSpace->low();
   high = pAirSpace->high();
-  airClass = pAirSpace->airspaceClass();
-  airClass.replace(QRegExp("('|\")"), "\\\\1");
+  airClass = WebMap::escape(pAirSpace->airspaceClass());
   pFrame->evaluateJavaScript(code.arg(coords).arg(id).arg(name).arg(low).arg(high).arg(airClass));
 }
 

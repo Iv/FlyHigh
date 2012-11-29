@@ -37,24 +37,15 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString sqls;
-  QString name;
-  QString airClass;
-  QString comment;
   LatLngList::iterator it;
   int id;
   bool success;
 
   id = newId("AirSpaces");
-  name = airspace.name();
-  name.replace(QRegExp("('|\")"), "\\\\1");
-  airClass = airspace.airspaceClass();
-  airClass.replace(QRegExp("('|\")"), "\\\\1");
-  comment = airspace.remark();
-  comment.replace(QRegExp("('|\")"), "\\\\1");
   sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
                  "VALUES(%1, '%2', '%3', %4, %5, '%6');")
-                 .arg(id).arg(name).arg(airClass)
-                 .arg(airspace.low()).arg(airspace.high()).arg(comment);
+                 .arg(id).arg(escape(airspace.name())).arg(escape(airspace.airspaceClass()))
+                 .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()));
 
   success = query.exec(sqls);
 
@@ -85,8 +76,8 @@ bool AirSpaces::updateAirSpace(const AirSpace &airspace)
 
   sqls = QString("UPDATE AirSpaces SET Name='%1', Class='%2', Lower=%3, Upper=%4,"
                  "Comment='%5' WHERE ID=%6;")
-                  .arg(airspace.name()).arg(airspace.airspaceClass())
-                  .arg(airspace.low()).arg(airspace.high()).arg(airspace.remark())
+                  .arg(escape(airspace.name())).arg(escape(airspace.airspaceClass()))
+                  .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()))
                  .arg(airspace.id());
 
 	success = query.exec(sqls);
@@ -102,9 +93,9 @@ bool AirSpaces::delAirSpace(const AirSpace &airspace)
 	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM AirSpaceItems WHERE AirSpaceId='%1';").arg(airspace.id());
+	sqls = QString("DELETE FROM AirSpaceItems WHERE AirSpaceId=%1;").arg(airspace.id());
 	success = query.exec(sqls);
-  sqls = QString("DELETE FROM AirSpaces WHERE Id='%1';").arg(airspace.id());
+  sqls = QString("DELETE FROM AirSpaces WHERE Id=%1;").arg(airspace.id());
   success &= query.exec(sqls);
 
 	Error::verify(success, Error::SQL_CMD);
@@ -117,13 +108,10 @@ bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 {
   QSqlQuery query(db());
 	QString sqls;
-	QString locName;
 	bool success = false;
 
-  locName = name;
-  locName.replace(QRegExp("('|\")"), "\\\\1");
 	sqls = QString("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces WHERE Name='%1';")
-                  .arg(locName);
+                  .arg(escape(name));
   success = query.exec(sqls);
 
 	if(success)
