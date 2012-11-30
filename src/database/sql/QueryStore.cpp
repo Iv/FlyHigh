@@ -35,9 +35,23 @@ QueryStore* QueryStore::pInstance()
 	return m_pInst;
 }
 
+void QueryStore::deleteInstance()
+{
+  if(m_pInst != NULL)
+  {
+    delete m_pInst;
+    m_pInst = NULL;
+  }
+}
+
 QueryStore::QueryStore()
 {
 	init();
+}
+
+QueryStore::~QueryStore()
+{
+  m_QueryMap.clear();
 }
 
 void QueryStore::init()
