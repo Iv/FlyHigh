@@ -30,6 +30,7 @@ class Upgrade: public DataBaseSub
 {
 	public:
 		Upgrade(QSqlDatabase DB);
+    virtual ~Upgrade();
 
 		/**
 		 * Creates the database schema
