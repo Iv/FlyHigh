@@ -35,8 +35,8 @@ ServicingFormImpl::ServicingFormImpl(QWidget* parent, const QString &caption, Se
   setupUi(this);
   setWindowTitle(caption);
   Q_CHECK_PTR(pServicing);
-	setServicing(pServicing);
 	updateGlider();
+	setServicing(pServicing);
 }
 
 void ServicingFormImpl::accept()
