@@ -48,12 +48,22 @@ public:
 	 */
 	static QueryStore* pInstance();
 
+  /**
+   * Destroys the one and only QueryStore instance.
+   */
+  static void deleteInstance();
+
 private:
 
 	/**
 	 * Construction.
 	 */
 	QueryStore();
+
+  /**
+   * Destruction
+   */
+  virtual ~QueryStore();
 
 	/**
 	 * Populates the query map

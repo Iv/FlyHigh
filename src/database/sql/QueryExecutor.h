@@ -55,6 +55,11 @@ public:
 	 */
 	QueryExecutor();
 
+  /**
+   * Destruction
+   */
+  virtual ~QueryExecutor();
+
 	/**
 	 * Runs a query.
 	 * @param name - the name of the query to run

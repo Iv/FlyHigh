@@ -28,6 +28,12 @@ QueryExecutor::QueryExecutor()
 {
 }
 
+QueryExecutor::~QueryExecutor()
+{
+  QueryStore::deleteInstance();
+  m_pQueryStore = NULL;
+}
+
 QSqlQuery QueryExecutor::executeQuery(const QString& name,
 																			const TBindMap& bindings,
 																			const TReplaceMap& replacements,
