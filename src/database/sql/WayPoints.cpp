@@ -36,7 +36,7 @@ bool WayPoints::add(WayPoint &wp)
   QString sqls;
 	bool success;
 
-  sqls = QString("INSERT INTO WayPoints(Name, Spot, Country, Longitude, "
+  sqls = QString("INSERT INTO WayPoints(Name, Spot, Country, Longitude,"
                  "Latitude, Altitude, Description, Type) "
                  "VALUES ('%1', '%2', '%3', %4, %5, %6, '%7', %8);")
               .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
@@ -57,8 +57,8 @@ bool WayPoints::update(WayPoint &wp)
   QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE WayPoints SET Name='%1', Country='%2', Spot='%3', Description='%4',"
-                  "Longitude=%5, Latitude=%6, Altitude=%7, Type=%8 WHERE Id=%9;")
+  sqls = QString("UPDATE WayPoints SET Name='%1', Spot='%2', Country='%3', Longitude=%4,"
+                  "Latitude=%5, Altitude=%6, Description='%7', Type=%8 WHERE Id=%9;")
                   .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
                   .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
                   .arg(wp.type())
