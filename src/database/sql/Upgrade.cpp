@@ -44,6 +44,11 @@ Upgrade::Upgrade(QSqlDatabase DB)
 {
 }
 
+Upgrade::~Upgrade()
+{
+  delete m_pExecutor;
+}
+
 bool Upgrade::setup(const DatabaseParameters& params)
 {
 	bool res = true;
