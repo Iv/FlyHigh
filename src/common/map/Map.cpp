@@ -32,8 +32,8 @@ void Map::pixRect(QRect &rect)
 {
 	int rows;
 	int cols = 0;
-	int pixX;
-	int pixY;
+  int pixX = 0;
+  int pixY = 0;
 
 	rows = m_tileMatrix.size();
 
