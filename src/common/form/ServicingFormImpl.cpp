@@ -66,7 +66,6 @@ void ServicingFormImpl::newGlider()
 
 void ServicingFormImpl::updateGlider()
 {
-	QStringList list;
 	QString gliderModel;
 	Glider::GliderListType::iterator it;
 
