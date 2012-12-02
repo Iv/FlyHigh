@@ -26,8 +26,6 @@
 #include <QStringList>
 #include <QSqlQuery>
 
-class QueryStore;
-
 /**
  * Represents a list of sql statements.
  */
@@ -48,12 +46,6 @@ public:
 	typedef QMap<QString,QString> TReplaceMap;
 
 public:
-
-	/**
-	 * Default construction.
-	 * Creates an QueryExecutor
-	 */
-	QueryExecutor();
 
   /**
    * Destruction
@@ -121,14 +113,6 @@ private:
 	QSqlQuery executeStatement(const QString& sql,
 														 const TBindMap& bindings,
 														 QSqlDatabase db);
-
-private:
-
-	/**
-	 * The query store
-	 * (singleton, but we keep a pointer here for conveinence
-	 */
-	QueryStore* m_pQueryStore;
 
 };
 

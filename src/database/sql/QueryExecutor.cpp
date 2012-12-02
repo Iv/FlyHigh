@@ -23,15 +23,9 @@
 #include "QueryStore.h"
 #include "QueryExecutor.h"
 
-QueryExecutor::QueryExecutor()
-	: m_pQueryStore(QueryStore::pInstance())
-{
-}
-
 QueryExecutor::~QueryExecutor()
 {
   QueryStore::deleteInstance();
-  m_pQueryStore = NULL;
 }
 
 QSqlQuery QueryExecutor::executeQuery(const QString& name,
@@ -40,7 +34,7 @@ QSqlQuery QueryExecutor::executeQuery(const QString& name,
 																			QSqlDatabase db)
 {
 	// fetch statements
-	Query query = m_pQueryStore->getQuery(name,db);
+  Query query = QueryStore::pInstance()->getQuery(name,db);
 	const QStringList& statements = query.getStatements();
 
 	// only single-statement queries work as expected with bindings/replacements
