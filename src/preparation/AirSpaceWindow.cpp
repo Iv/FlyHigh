@@ -313,16 +313,16 @@ void AirSpaceWindow::file_AddToSqlDB()
 
 void AirSpaceWindow::file_AddToGPS()
 {
+  AirSpaceList airspaceList(false);
 	ProgressDlg progDlg(this);
-	int row;
 
-	row = getTable()->currentRow();
+	selectionToList(airspaceList);
 
-	if((row >= 0) && IGPSDevice::pInstance()->open())
+	if((airspaceList.size() > 0) && IGPSDevice::pInstance()->open())
 	{
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
 		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->add(*m_airSpaceList[row]);
+		IGPSDevice::pInstance()->add(airspaceList);
 		progDlg.endProgress();
 		TableWindow::unsetCursor();
 		IGPSDevice::pInstance()->close();
