@@ -144,8 +144,8 @@ void OLCOptimizer::cleanup()
 
 	if(m_pDistanceMatrix != NULL)
 	{
-		delete [] dminindex;
-		dminindex = NULL;
+    delete [] m_pDistanceMatrix;
+    m_pDistanceMatrix = NULL;
 	}
 
 	if(maxenddist != NULL)
