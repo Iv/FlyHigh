@@ -63,7 +63,7 @@ bool Protocol::updateConfiguration()
 	return false;
 }
 
-bool Protocol::recAck()
+bool Protocol::recAck(int tout)
 {
   return false;
 }

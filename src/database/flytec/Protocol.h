@@ -55,7 +55,7 @@ class Protocol
 
     virtual bool updateConfiguration();
 
-    virtual bool recAck();
+    virtual bool recAck(int tout = 500);
 
     /** Memory */
     virtual bool parWrite(MemType memType, int par, FtDataType dataType, const QVariant &value);
