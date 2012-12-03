@@ -30,7 +30,7 @@
 #include "Tokenizer.h"
 #include "WayPoint.h"
 
-#define _DEBUG
+// #define _DEBUG
 
 #ifdef _DEBUG
   #include <QtDebug>
