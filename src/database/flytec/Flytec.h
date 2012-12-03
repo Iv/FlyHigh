@@ -81,6 +81,8 @@ class Flytec: public IGPSDevice
 				// airspaces
 		bool add(AirSpace &airspace);
 
+		bool add(AirSpaceList &airspaceList);
+
 		bool delAirSpace(AirSpace &airspace);
 
 		bool airspaceList(AirSpaceList &airspaceList);

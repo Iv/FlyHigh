@@ -89,7 +89,7 @@ class Protocol5020: public Protocol
 
 		bool ctrDel(const QString &name);
 
-		bool recAck();
+		bool recAck(int tout);
 
 		/** Memory */
 		bool memoryRead(uint addr);
