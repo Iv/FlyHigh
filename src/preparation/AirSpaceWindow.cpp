@@ -70,7 +70,7 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
 		{
 			m_pDb = IGPSDevice::pInstance();
 
-			connect(m_pDb, SIGNAL(airSpaceChangedChanged()), this, SLOT(file_update()));
+			connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
 			pAction = new QAction(tr("&Delete"), this);
 			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
