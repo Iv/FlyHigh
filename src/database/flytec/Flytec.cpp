@@ -520,6 +520,61 @@ bool Flytec::add(AirSpace &airspace)
 	return success;
 }
 
+bool Flytec::add(AirSpaceList &airspaceList)
+{
+  AirSpaceList::iterator it;
+  AirSpace *pAirSpace;
+  uint nr;
+  int totalSent;
+  int curSent;
+  bool success;
+
+  m_cancel = false;
+
+  for(nr=0; nr<airspaceList.size(); nr++)
+  {
+    pAirSpace = airspaceList[nr];
+    totalSent = 2 + pAirSpace->pointList().size();
+
+    // send airspace
+    for(curSent=0; curSent<totalSent; curSent++)
+    {
+      emit progress(curSent * 100 / totalSent);
+
+      if(m_cancel)
+      {
+        return false;
+      }
+
+      success = m_protocol->ctrSnd(curSent, totalSent, *pAirSpace);
+
+      if(!success)
+      {
+        break;
+      }
+    }
+
+    emit progress(nr * 100 / airspaceList.size());
+
+    // recieve ack
+    if(success)
+    {
+      success &= m_protocol->recAck(5000);
+    }
+
+    if(!success)
+    {
+      break;
+    }
+  }
+
+	Error::verify(success, Error::FLYTEC_CMD);
+	IGPSDevice::setLastModified(IGPSDevice::AirSpaces);
+	emit airSpacesChanged();
+
+	return success;
+}
+
 bool Flytec::delAirSpace(AirSpace &airspace)
 {
 	bool success;

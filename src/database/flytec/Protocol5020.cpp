@@ -30,7 +30,7 @@
 #include "Tokenizer.h"
 #include "WayPoint.h"
 
-// #define _DEBUG
+#define _DEBUG
 
 #ifdef _DEBUG
   #include <QtDebug>
@@ -797,6 +797,11 @@ bool Protocol5020::ctrSnd(uint curSent, uint totalSent, AirSpace &airspace)
 	}
 
 	addTail(tlg);
+
+#ifdef _DEBUG
+  qDebug() << tlg;
+#endif
+
 	success = m_device.sendTlg(tlg);
 	usleep(100*1000);
 
@@ -822,7 +827,7 @@ bool Protocol5020::ctrDel(const QString &name)
 	return success;
 }
 
-bool Protocol5020::recAck()
+bool Protocol5020::recAck(int tout)
 {
 	Tokenizer tokenizer;
 	QString token;
@@ -830,7 +835,7 @@ bool Protocol5020::recAck()
 	int status;
 	bool valid = false;
 
-	if(m_device.recieveTlg(500, true))
+	if(m_device.recieveTlg(tout, true))
 	{
 		tlg = m_device.getTlg();
     tokenizer.getFirstToken(tlg, ',', token);
@@ -840,11 +845,15 @@ bool Protocol5020::recAck()
 		if(valid)
 		{
 			// status
-			tokenizer.getFirstToken(tlg, '*', token);
+			tokenizer.getNextToken(tlg, '*', token);
 			status = token.toUInt();
 			valid = (status == 1);
 		}
 	}
+
+#ifdef _DEBUG
+  qDebug() << "recAck:" << tlg;
+#endif
 
 	return valid;
 }
