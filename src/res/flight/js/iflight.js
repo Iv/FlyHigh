@@ -42,6 +42,8 @@ var map = null;
 var flight = null;
 var plot = null;
 var measure;
+var oldSelect = -1;
+var airspaceNr;
 
 function fl_init()
 {
@@ -80,6 +82,26 @@ function fl_init()
 			wm_emitAppReady();
 		}
 	});
+
+	google.maps.event.addListener(map, 'click', function(event)
+	{
+		// select next airspace
+		airspaceNr = oldSelect;
+
+		for(var i=0; i<airspaces.length; i++)
+		{
+			airspaceNr = (airspaceNr + 1) % airspaces.length;
+
+			if(airspaces[airspaceNr].isInside(event.latLng))
+			{
+				if(airspaceNr != oldSelect)
+				{
+					as_selectAirSpaceNr(airspaceNr);
+					break; // jump out of loop
+				}
+			}
+		}
+	});
 }
 
 function as_pushAirSpace(coords, opts)
@@ -95,6 +117,54 @@ function as_pushAirSpace(coords, opts)
 
 	airspace = new AirSpace(map, latlngs, opts);
 	airspaces.push(airspace);
+}
+
+function as_selectAirSpaceNr(num)
+{
+	var airspace;
+
+	if(num < airspaces.length)
+	{
+		if(oldSelect >= 0)
+		{
+			airspaces[oldSelect].setSelect(false);
+		}
+
+		oldSelect = num;
+		airspace = airspaces[num];
+		airspace.setSelect(true);
+		as_setName(airspace.getName());
+		as_setLow(airspace.getLow());
+		as_setHigh(airspace.getHigh());
+		as_setClass(airspace.getClass());
+	}
+}
+
+function as_setName(name)
+{
+	setDivValue("name", name);
+}
+
+function as_setLow(low)
+{
+	if(low === 0)
+	{
+		setDivValue("low", "GND");
+	}
+	else
+	{
+		setDivValue("low", low + " m");
+	}
+}
+
+function as_setHigh(high)
+{
+	setDivValue("high", high + " m");
+}
+
+function as_setClass(airclass)
+{
+	setDivValue("class", airclass);
 }
 
 function rt_setTurnPts(turnPts)
@@ -121,7 +191,7 @@ function rt_setName(name)
 {
 	var locInput;
 
-	locInput = document.getElementById("sname");
+	locInput = document.getElementById("sstart");
 	locInput.innerHTML = name;
 }
 
@@ -284,6 +354,14 @@ function fl_measure(div)
 		div = document.getElementById("smeasure");
 		div.innerHTML = "Off";
 	}
+}
+
+function setDivValue(divId, value)
+{
+	var div;
+
+	div = document.getElementById('s' + divId);
+	div.innerHTML = value;
 }
 
 function routeChanged()
