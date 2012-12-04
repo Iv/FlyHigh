@@ -85,20 +85,34 @@ function fl_init()
 
 	google.maps.event.addListener(map, 'click', function(event)
 	{
-		// select next airspace
-		airspaceNr = oldSelect;
-
-		for(var i=0; i<airspaces.length; i++)
+		var inside = false;
+		
+		if(!measure.getEnable())
 		{
-			airspaceNr = (airspaceNr + 1) % airspaces.length;
+			// select next airspace
+			airspaceNr = oldSelect;
 
-			if(airspaces[airspaceNr].isInside(event.latLng))
+			for(var i=0; i<airspaces.length; i++)
 			{
-				if(airspaceNr != oldSelect)
+				airspaceNr = (airspaceNr + 1) % airspaces.length;
+				inside = airspaces[airspaceNr].isInside(event.latLng);
+
+				if(inside)
 				{
-					as_selectAirSpaceNr(airspaceNr);
-					break; // jump out of loop
+					if(airspaceNr != oldSelect)
+					{
+						break; // jump out of loop
+					}
 				}
+			}
+			
+			if(inside)
+			{
+				as_selectAirSpaceNr(airspaceNr);
+			}
+			else
+			{
+				as_selectAirSpaceNr(-1);
 			}
 		}
 	});
@@ -131,40 +145,33 @@ function as_selectAirSpaceNr(num)
 		}
 
 		oldSelect = num;
-		airspace = airspaces[num];
-		airspace.setSelect(true);
-		as_setName(airspace.getName());
-		as_setLow(airspace.getLow());
-		as_setHigh(airspace.getHigh());
-		as_setClass(airspace.getClass());
+
+		if(num >= 0)
+		{
+			airspace = airspaces[num];
+			airspace.setSelect(true);
+			setDivValue("airspace", airspace.getName());
+
+			if(airspace.getLow() === 0)
+			{
+				setDivValue("low", "GND");
+			}
+			else
+			{
+				setDivValue("low", airspace.getLow() + " m");
+			}
+			
+			setDivValue("high", airspace.getHigh() + " m");
+			setDivValue("class", airspace.getClass());
+		}
+		else
+		{
+			setDivValue("airspace", "");
+			setDivValue("low", "");
+			setDivValue("high", "");
+			setDivValue("class", "");
+		}
 	}
-}
-
-function as_setName(name)
-{
-	setDivValue("airspace", name);
-}
-
-function as_setLow(low)
-{
-	if(low === 0)
-	{
-		setDivValue("low", "GND");
-	}
-	else
-	{
-		setDivValue("low", low + " m");
-	}
-}
-
-function as_setHigh(high)
-{
-	setDivValue("high", high + " m");
-}
-
-function as_setClass(airclass)
-{
-	setDivValue("class", airclass);
 }
 
 function rt_setTurnPts(turnPts)
