@@ -34,19 +34,25 @@ bool WayPoints::add(WayPoint &wp)
 {
   QSqlQuery query(db());
   QString sqls;
+  int id;
 	bool success;
 
-  sqls = QString("INSERT INTO WayPoints(Name, Spot, Country, Longitude,"
+  id = newId("WayPoints");
+  sqls = QString("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude,"
                  "Latitude, Altitude, Description, Type) "
-                 "VALUES ('%1', '%2', '%3', %4, %5, %6, '%7', %8);")
-              .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
+                 "VALUES (%1, '%2', '%3', '%4', %5, %6, %7, '%8', %9);")
+              .arg(id).arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
               .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
               .arg(wp.type());
 
 	success = query.exec(sqls);
   Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
-///	setId(wp);
+
+	if(wp.id() == -1)
+	{
+	  wp.setId(id);
+	}
 
 	return success;
 }

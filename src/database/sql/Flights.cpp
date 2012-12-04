@@ -41,12 +41,14 @@ bool Flights::add(Flight &flight)
 {
   QSqlQuery query(db());
   QString sqls;
+  int id;
 	bool success;
 
-  sqls = QString("INSERT INTO Flights (Number, PilotId, Date, Time, GliderId, StartPtId, "
+  id = newId("Flights");
+  sqls = QString("INSERT INTO Flights(Id, Number, PilotId, Date, Time, GliderId, StartPtId, "
                  "LandPtId, Duration, Distance, Comment, IGCFile) "
-                 "VALUES(%1, %2, '%3', '%4', %5, %6, %7, %8, %9, '%10', :igcdata);")
-                 .arg(flight.number()).arg(flight.pilot().id())
+                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, %10, '%11', :igcdata);")
+                 .arg(id).arg(flight.number()).arg(flight.pilot().id())
                  .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
                  .arg(flight.duration()).arg(flight.distance()).arg(escape(flight.comment()));
@@ -56,7 +58,11 @@ bool Flights::add(Flight &flight)
 	success = query.exec();
 	DataBaseSub::setLastModified("Flights");
 	Error::verify(success, Error::SQL_CMD);
-///	setId(flight);
+
+  if(flight.id() == -1)
+  {
+    flight.setId(id);
+  }
 
 	return success;
 }

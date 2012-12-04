@@ -42,18 +42,21 @@ bool AirSpaces::add(AirSpace &airspace)
   int id;
   bool success;
 
-  name = findUniqueName(airspace.name());
   id = newId("AirSpaces");
+  name = findUniqueName(airspace.name());
   sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
                  "VALUES(%1, '%2', '%3', %4, %5, '%6');")
                  .arg(id).arg(name).arg(escape(airspace.airspaceClass()))
                  .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()));
   success = query.exec(sqls);
 
+  if(airspace.id() == -1)
+  {
+    airspace.setId(id);
+  }
+
   if(success)
   {
-///    airspace.setId(id);
-
     for(it=airspace.pointList().begin(); it!=airspace.pointList().end(); it++)
     {
       sqls = QString("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) "
