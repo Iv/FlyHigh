@@ -142,7 +142,7 @@ function as_selectAirSpaceNr(num)
 
 function as_setName(name)
 {
-	setDivValue("name", name);
+	setDivValue("airspace", name);
 }
 
 function as_setLow(low)
