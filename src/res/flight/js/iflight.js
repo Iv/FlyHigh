@@ -150,26 +150,26 @@ function as_selectAirSpaceNr(num)
 		{
 			airspace = airspaces[num];
 			airspace.setSelect(true);
-			setDivValue("airspace", airspace.getName());
+			wm_setDivValue("airspace", airspace.getName(), false);
 
 			if(airspace.getLow() === 0)
 			{
-				setDivValue("low", "GND");
+				wm_setDivValue("low", "GND", false);
 			}
 			else
 			{
-				setDivValue("low", airspace.getLow() + " m");
+				wm_setDivValue("low", airspace.getLow() + " m", false);
 			}
-			
-			setDivValue("high", airspace.getHigh() + " m");
-			setDivValue("class", airspace.getClass());
+
+			wm_setDivValue("high", airspace.getHigh() + " m", false);
+			wm_setDivValue("class", airspace.getClass(), false);
 		}
 		else
 		{
-			setDivValue("airspace", "");
-			setDivValue("low", "");
-			setDivValue("high", "");
-			setDivValue("class", "");
+			wm_setDivValue("airspace", "", false);
+			wm_setDivValue("low", "", false);
+			wm_setDivValue("high", "", false);
+			wm_setDivValue("class", "", false);
 		}
 	}
 }
@@ -361,14 +361,6 @@ function fl_measure(div)
 		div = document.getElementById("smeasure");
 		div.innerHTML = "Off";
 	}
-}
-
-function setDivValue(divId, value)
-{
-	var div;
-
-	div = document.getElementById('s' + divId);
-	div.innerHTML = value;
 }
 
 function routeChanged()

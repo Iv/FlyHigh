@@ -122,59 +122,23 @@ function as_selectAirSpaceNr(num)
 		oldSelect = num;
 		airspace = airspaces[num];
 		airspace.setSelect(true);
-		as_setName(airspace.getName());
-		as_setLow(airspace.getLow());
-		as_setHigh(airspace.getHigh());
-		as_setClass(airspace.getClass());
+		wm_setDivValue("name", airspace.getName(), false);
+
+		if(airspace.getLow() === 0)
+		{
+			wm_setDivValue("low", "GND", false);
+		}
+		else
+		{
+			wm_setDivValue("low", airspace.getLow() + " m", false);
+		}
+
+		wm_setDivValue("high", airspace.getHigh() + " m", false);
+		wm_setDivValue("class", airspace.getClass(), false);
 	}
-}
-
-function as_setName(name)
-{
-	setDivValue("name", name);
-}
-
-function as_setLow(low)
-{
-	if(low === 0)
-	{
-		setDivValue("low", "GND");
-	}
-	else
-	{
-		setDivValue("low", low + " m");
-	}
-}
-
-function as_setHigh(high)
-{
-	setDivValue("high", high + " m");
-}
-
-function as_setClass(airclass)
-{
-	setDivValue("class", airclass);
 }
 
 function as_setOk(ok)
 {
 	wm_emitOk(ok);
-}
-
-function setDivValue(divId, value)
-{
-	var div;
-
-/*
-	if(AsEditable)
-	{
-		div = document.getElementById(divId);
-		div.value = value;
-	}
-	else
-*/
-	{
-		div = document.getElementById('s' + divId);
-		div.innerHTML = value;
-	}
 }

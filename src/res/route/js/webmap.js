@@ -51,6 +51,41 @@ function wm_setMapSize(width, height)
 	google.maps.event.trigger(map, 'resize');
 }
 
+function wm_setDivValue(divId, value, editable)
+{
+	var div;
+
+	if(editable)
+	{
+		div = document.getElementById(divId);
+		div.value = value;
+	}
+	else
+	{
+		div = document.getElementById('s' + divId);
+		div.innerHTML = value;
+	}
+}
+
+function wm_getDivValue(divId, editable)
+{
+	var locInput;
+	var value;
+
+	if(editable)
+	{
+		locInput = document.getElementById(divId);
+		value = locInput.value;
+	}
+	else
+	{
+		locInput = document.getElementById('s' + divId);
+		value = locInput.innerHTML;
+	}
+
+	return value;
+}
+
 function wm_emitNetRequest(id, req, callback)
 {
 	WebMap.netRequest(id, req, callback);
