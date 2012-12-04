@@ -41,11 +41,13 @@ bool Pilots::add(Pilot &pilot)
 {
   QSqlQuery query(db());
   QString sqls;
+  int id;
 	bool success;
 
-  sqls = QString("INSERT INTO Pilots (FirstName, LastName, BirthDate, CallSign, GliderId) "
-                 "VALUES('%1', '%2', '%3', '%4', %5);")
-                 .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
+  id = newId("Pilots");
+  sqls = QString("INSERT INTO Pilots(Id, FirstName, LastName, BirthDate, CallSign, GliderId) "
+                 "VALUES(%1, '%2', '%3', '%4', '%5', %6);")
+                 .arg(id).arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
                  .arg(pilot.birthDate().toString("yyyy-MM-dd"))
                  .arg(escape(pilot.callSign()))
                  .arg(pilot.glider().id());
@@ -54,6 +56,11 @@ bool Pilots::add(Pilot &pilot)
 	Error::verify(success, Error::SQL_CMD);
 	setId(pilot);
 	DataBaseSub::setLastModified("Pilots");
+
+	if(pilot.id() == -1)
+	{
+	  pilot.setId(id);
+	}
 
 	return success;
 }

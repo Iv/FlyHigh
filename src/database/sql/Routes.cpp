@@ -40,17 +40,23 @@ bool Routes::add(Route &route)
 	QString value;
 	uint nWps;
 	uint wpNr;
+	int id;
 	bool success;
 
 	// insert route name
-	sqls = QString("INSERT INTO Routes(Name, Type) VALUES('%1', %2);")
-                  .arg(escape(route.name())).arg(route.type());
+	id = newId("Routes");
+	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(%1, '%2', %3);")
+                  .arg(id).arg(escape(route.name())).arg(route.type());
 	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
+  if(route.id() == -1)
+  {
+    route.setId(id);
+  }
+
 	if(success)
 	{
-///		setId(route);
 		sqls = "INSERT INTO RouteItems(RouteId, WayPointId) VALUES";
 
 		// insert route items
@@ -63,7 +69,7 @@ bool Routes::add(Route &route)
 				sqls += ", ";
 			}
 
-			value = QString("(%1, %2)").arg(route.id()).arg(route.wayPointList().at(wpNr).id());
+			value = QString("(%1, %2)").arg(id).arg(route.wayPointList().at(wpNr).id());
 			sqls += value;
 		}
 

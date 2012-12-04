@@ -51,6 +51,11 @@ bool Servicings::add(Servicing &servicing)
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Servicings");
 
+	if(servicing.id() == -1)
+	{
+	  servicing.setId(id);
+	}
+
 	return success;
 }
 
