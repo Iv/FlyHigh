@@ -34,6 +34,8 @@ var airspaces = [];
 var map;
 var route;
 var measure;
+var oldSelect = -1;
+var airspaceNr;
 
 function rt_init()
 {
@@ -62,8 +64,27 @@ function rt_init()
 			route.setChangeCallback(routeChanged);
 			measure = new Measure(map);
 			measure.setChangeCallback(measureChanged);
-/// measure.show(true);
 			wm_emitAppReady();
+		}
+	});
+
+	google.maps.event.addListener(map, 'click', function(event)
+	{
+		// select next airspace
+		airspaceNr = oldSelect;
+
+		for(var i=0; i<airspaces.length; i++)
+		{
+			airspaceNr = (airspaceNr + 1) % airspaces.length;
+
+			if(airspaces[airspaceNr].isInside(event.latLng))
+			{
+				if(airspaceNr != oldSelect)
+				{
+					as_selectAirSpaceNr(airspaceNr);
+					break; // jump out of loop
+				}
+			}
 		}
 	});
 }
@@ -81,6 +102,54 @@ function as_pushAirSpace(coords, opts)
 
 	airspace = new AirSpace(map, latlngs, opts);
 	airspaces.push(airspace);
+}
+
+function as_selectAirSpaceNr(num)
+{
+	var airspace;
+
+	if(num < airspaces.length)
+	{
+		if(oldSelect >= 0)
+		{
+			airspaces[oldSelect].setSelect(false);
+		}
+
+		oldSelect = num;
+		airspace = airspaces[num];
+		airspace.setSelect(true);
+		as_setName(airspace.getName());
+		as_setLow(airspace.getLow());
+		as_setHigh(airspace.getHigh());
+		as_setClass(airspace.getClass());
+	}
+}
+
+function as_setName(name)
+{
+	setDivValue("airspace", name);
+}
+
+function as_setLow(low)
+{
+	if(low === 0)
+	{
+		setDivValue("low", "GND");
+	}
+	else
+	{
+		setDivValue("low", low + " m");
+	}
+}
+
+function as_setHigh(high)
+{
+	setDivValue("high", high + " m");
+}
+
+function as_setClass(airclass)
+{
+	setDivValue("class", airclass);
 }
 
 function rt_setName(name)
@@ -278,6 +347,14 @@ function rt_measure(div)
 function rt_setOk(ok)
 {
 	wm_emitOk(ok);
+}
+
+function setDivValue(divId, value)
+{
+	var div;
+
+	div = document.getElementById('s' + divId);
+	div.innerHTML = value;
 }
 
 function routeChanged()
