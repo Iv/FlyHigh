@@ -352,40 +352,28 @@ function fl_measure(div)
 	if(show)
 	{
 		div.className = "button_down";
-		div = document.getElementById("smeasure");
-		div.innerHTML = "0.0 km";
+		wm_setDivValue("measure", "0.0 km", false);
 	}
 	else
 	{
 		div.className = "button_up";
-		div = document.getElementById("smeasure");
-		div.innerHTML = "Off";
+		wm_setDivValue("measure", "Off", false);
 	}
 }
 
 function routeChanged()
 {
-	var div;
-
-	div = document.getElementById("type");
-	div.innerHTML = Route.ScoreTypeText[route.getType()];
-	div = document.getElementById("distance");
-	div.innerHTML = route.getDist().toFixed(2) + " km";
-	div = document.getElementById("score");
-	div.innerHTML = route.getScore().toFixed(2) + " points";
-	div = document.getElementById("track");
-	div.innerHTML = route.getTrackDist().toFixed(0) + " km";
+	wm_setDivValue("type", Route.ScoreTypeText[route.getType()], false);
+	wm_setDivValue("distance", route.getDist().toFixed(2) + " km", false);
+	wm_setDivValue("score", route.getScore().toFixed(2) + " points", false);
+	wm_setDivValue("track", route.getTrackDist().toFixed(0) + " km", false);
 	updateDurationAndSpeed();
 }
 
 function updateDurationAndSpeed()
 {
-	var div;
-
-	div = document.getElementById("speed");
-	div.value = route.getSpeed().toFixed(1) + " km/h";
-	div = document.getElementById("duration");
-	div.value = route.getDuration().toFixed(1) + " h";
+	wm_setDivValue("speed", route.getSpeed().toFixed(1) + " km/h", true);
+	wm_setDivValue("duration", route.getDuration().toFixed(1) + " h", true);
 }
 
 function updateCursorPos(pos)
@@ -434,10 +422,7 @@ function updateCursorClick(pos)
 
 function measureChanged()
 {
-	var div;
-
-	div = document.getElementById("smeasure");
-	div.innerHTML = measure.getDist().toFixed(1) + " km";
+	wm_setDivValue("measure", measure.getDist().toFixed(1) + " km", false);
 }
 
 function getIndex(arr, value)
