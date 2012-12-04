@@ -28,6 +28,7 @@ function Measure(map)
 	this.clickListener = null;
 	this.moveListener = null;
 	this.markers = [];
+	this.enable = false;
 
 	this.line = new google.maps.Polyline({
 		strokeColor: '#5500ff',
@@ -54,6 +55,8 @@ Measure.prototype.show = function(enable)
 	var nr;
 	var measure = this;
 
+	this.enable = enable;
+
 	if(enable)
 	{
 		this.getMap().setOptions({draggableCursor: 'crosshair'});
@@ -70,6 +73,11 @@ Measure.prototype.show = function(enable)
 		this.line.setMap(null);
 		this.clearMarkers();
 	}
+};
+
+Measure.prototype.getEnable = function()
+{
+	return this.enable;
 };
 
 Measure.prototype.getDist = function()
