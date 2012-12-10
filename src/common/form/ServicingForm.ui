@@ -167,6 +167,15 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>comboBoxModel</tabstop>
+  <tabstop>pushButtonGlider</tabstop>
+  <tabstop>dateEditDate</tabstop>
+  <tabstop>lineEditRespons</tabstop>
+  <tabstop>textEditComment</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

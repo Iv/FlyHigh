@@ -226,6 +226,18 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>comboBoxType</tabstop>
+  <tabstop>listBoxDBWayPoints</tabstop>
+  <tabstop>pushButtonToRight</tabstop>
+  <tabstop>listBoxRouteWayPoints</tabstop>
+  <tabstop>pushButtonUp</tabstop>
+  <tabstop>pushButtonRemove</tabstop>
+  <tabstop>pushButtonDown</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

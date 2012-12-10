@@ -379,6 +379,7 @@
   <tabstop>timeEditStart</tabstop>
   <tabstop>timeEditDuration</tabstop>
   <tabstop>lineEditDistance</tabstop>
+  <tabstop>textEditComment</tabstop>
   <tabstop>buttonOk</tabstop>
   <tabstop>buttonCancel</tabstop>
  </tabstops>
