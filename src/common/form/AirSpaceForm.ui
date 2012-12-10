@@ -233,6 +233,15 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>spinBoxLow</tabstop>
+  <tabstop>spinBoxHigh</tabstop>
+  <tabstop>lineEditClass</tabstop>
+  <tabstop>textEditComment</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
