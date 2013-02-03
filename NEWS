@@ -1,2 +1,5 @@
 Binary packages for various distros are now available from opensuse build service:
 http://software.opensuse.org/search?q=flyhigh&baseproject=ALL
+
+0.9.6
+*filter XON/XOFF from recieved characters (flytec)
