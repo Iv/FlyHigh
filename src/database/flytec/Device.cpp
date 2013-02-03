@@ -97,7 +97,7 @@ bool Device::recieveTlg(int tout, bool head)
 
 	do
 	{
-		if(getChar(ch) && isascii(ch))
+		if(getChar(ch))
 		{
 			if(state == SearchHead)
 			{
@@ -148,9 +148,12 @@ void Device::flush()
 
 bool Device::getChar(char &ch)
 {
+  enum {XON = 0x11, XOFF = 0x13};
+
 	bool success;
 
 	success = m_serialPort->getChar(&ch);
+  success &= (ch != XON) && (ch != XOFF);
 
 	return success;
 }
