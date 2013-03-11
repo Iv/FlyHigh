@@ -64,22 +64,24 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 	int epochTime;
 	int secsOfDay;
 	int prevSecsOfDay;
+	int begin;
 	bool first = true;
 
-	fpListSize = fpList.size();
+  begin = fpList.firstValidFlightData();
+  fpListSize = fpList.lastValidFlightData() - begin;
 
 	if(fpListSize > 0)
 	{
-		minAlt = fpList.at(0).wp.alt();
+		minAlt = fpList.at(begin).wp.alt();
 		maxAlt = minAlt;
-		time = fpList.at(0).time;
+		time = fpList.at(begin).time;
 		start = time.hour() * 3600 + time.minute() * 60 + time.second();
 		time = fpList.at(fpListSize - 1).time;
 		duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
     epochDate = QDateTime(date).toTime_t();
     prevSecsOfDay = start;
 
-		for(fpNr=0; fpNr<fpListSize; fpNr++)
+		for(fpNr=begin; fpNr<fpListSize; fpNr++)
 		{
 			if(!first)
 			{
