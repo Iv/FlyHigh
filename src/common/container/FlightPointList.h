@@ -46,17 +46,17 @@ class FlightPointList
 
 		uint size() const;
 
-		int firstValidFlightData();
+		int firstValidFlightData() const;
 
-		int lastValidFlightData();
+		int lastValidFlightData() const;
 
 		// returns the speed in m/s
-		double speedH(uint index1, uint index2);
+		double speedH(uint index1, uint index2) const;
 
-		double speedV(uint index1, uint index2);
+		double speedV(uint index1, uint index2) const;
 
 		// returns duration in s
-		int duration(uint index1, uint index2);
+		int duration(uint index1, uint index2) const;
 
 		FlightPointType& operator[] (int index);
 

@@ -49,7 +49,7 @@ const FlightPointList::FlightPointType& FlightPointList::at(int index) const
 	return m_flightPointList.at(index);
 }
 
-int FlightPointList::firstValidFlightData()
+int FlightPointList::firstValidFlightData() const
 {
 	int index = -1;
 	int lastIndex = (size() - 2);
@@ -67,7 +67,7 @@ int FlightPointList::firstValidFlightData()
 	return index;
 }
 
-int FlightPointList::lastValidFlightData()
+int FlightPointList::lastValidFlightData() const
 {
 	int index = -1;
 	int lastIndex = (size() - 2);
@@ -85,7 +85,7 @@ int FlightPointList::lastValidFlightData()
 	return index;
 }
 
-double FlightPointList::speedH(uint index1, uint index2)
+double FlightPointList::speedH(uint index1, uint index2) const
 {
 	double deltaTime;
 	uint nFlightPoints = size();
@@ -106,7 +106,7 @@ double FlightPointList::speedH(uint index1, uint index2)
 	return speedH;
 }
 
-double FlightPointList::speedV(uint index1, uint index2)
+double FlightPointList::speedV(uint index1, uint index2) const
 {
 	double deltaTime;
 	uint nFlightPoints = size();
@@ -127,7 +127,7 @@ double FlightPointList::speedV(uint index1, uint index2)
 	return speedV;
 }
 
-int FlightPointList::duration(uint index1, uint index2)
+int FlightPointList::duration(uint index1, uint index2) const
 {
 	int duration = -1;
 	uint nFlightPoints = size();
