@@ -470,12 +470,32 @@ bool Flytec::routeList(Route::RouteListType &routeList)
 
 bool Flytec::delRoute(Route &route)
 {
+	uint wpNr;
+	uint nofWp;
 	bool success;
 
+  // route
 	success = m_protocol->routeDel(route.name());
 	Error::verify(success, Error::FLYTEC_CMD);
 	IGPSDevice::setLastModified(IGPSDevice::Routes);
+
+  // waypoints
+  nofWp = route.wayPointList().size();
+
+  for(wpNr=0; wpNr<nofWp; wpNr++)
+  {
+    emit progress(wpNr *100 / nofWp);
+    m_protocol->wpSnd(route.wayPointList().at(wpNr));
+    m_protocol->wpDel(route.wayPointList().at(wpNr).name());
+
+    if(m_cancel)
+    {
+      return false;
+    }
+  }
+
 	emit routesChanged();
+  emit wayPointsChanged();
 
 	return success;
 }
