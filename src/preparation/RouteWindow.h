@@ -60,7 +60,7 @@ class RouteWindow : public TableWindow
 
     void setRouteToRow(uint row, Route &route);
 
-		void newWebMap(Route &route);
+		void newWebMap(Route &route, bool glue);
 };
 
 #endif

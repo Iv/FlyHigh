@@ -51,6 +51,8 @@ class WebMapRoute: public QObject
 
     void setEditable(bool en);
 
+    void setGlueToCenter(bool en);
+
 	private:
 		WebMap *m_pWebMap;
 		Route *m_pRoute;
