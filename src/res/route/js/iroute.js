@@ -102,6 +102,11 @@ function rt_init()
 			}
 		}
 	});
+
+	google.maps.event.addListener(map, 'center_changed', function(event)
+	{
+		route.centerChanged();
+	});
 }
 
 function as_pushAirSpace(coords, opts)
@@ -267,6 +272,11 @@ function rt_setEditable(en)
 	}
 }
 
+function rt_setGlueToCenter(en)
+{
+	route.setGlueToCenter(en);
+}
+
 function rt_speedUp()
 {
 	var speed;
@@ -363,23 +373,6 @@ function routeChanged()
 	wm_setDivValue("distance", route.getDist().toFixed(2) + " km", false);
 	wm_setDivValue("score", route.getScore().toFixed(2) + " points", false);
 	wm_setDivValue("track", route.getTrackDist().toFixed(0) + " km", false);
-
-
-/*
-	var locInput;
-
-	locInput = document.getElementById("type");
-	locInput.innerHTML = Route.ScoreTypeText[route.getType()];
-
-	locInput = document.getElementById("track");
-	locInput.innerHTML = route.getTrackDist().toFixed(0) + " km";
-
-	locInput = document.getElementById("distance");
-	locInput.innerHTML = route.getDist().toFixed(2) + " km";
-
-	locInput = document.getElementById("score");
-	locInput.innerHTML = route.getScore().toFixed(2) + " points";
-*/
 	updateDurationAndSpeed();
 }
 

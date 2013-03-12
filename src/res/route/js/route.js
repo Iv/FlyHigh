@@ -46,6 +46,7 @@ function Route(map)
 	this.editable = true;
 	this.speed = 0;
 	this.duration = 0;
+	this.glueToCenter = false;
 
 	this.line = new google.maps.Polyline({
 		strokeColor: '#FFFFFF',
@@ -64,6 +65,23 @@ Route.prototype.getMap = function()
 Route.prototype.setChangeCallback = function(callback)
 {
 	this.changeCallback = callback;
+};
+
+Route.prototype.centerChanged = function()
+{
+	var turnPt;
+
+	if(this.glueToCenter)
+	{
+		turnPt = this.firstTurnPt;
+
+		while(turnPt !== null)
+		{
+			turnPt.setPosition(new google.maps.LatLng(this.map.getCenter().lat() + turnPt.getDelta().lat(),
+																								this.map.getCenter().lng() + turnPt.getDelta().lng()));
+			turnPt = turnPt.getNextTurnPt();
+		}
+	}
 };
 
 Route.prototype.getType = function()
@@ -112,7 +130,7 @@ Route.prototype.addTurnPt = function(turnPt)
 {
 	var beginTurnPt;
 	var leg;
-	
+
 	turnPt.setEditable(this.getEditable());
 
 	if(this.firstTurnPt === null)
@@ -373,4 +391,31 @@ Route.prototype.update = function()
 	{
 		this.changeCallback();
 	}
+};
+
+Route.prototype.setGlueToCenter = function(en)
+{
+	var turnPt;
+	var dLat;
+	var dLng;
+
+	if(en)
+	{
+		turnPt = this.firstTurnPt;
+
+		while(turnPt !== null)
+		{
+			dLat = turnPt.getPosition().lat() - this.map.getCenter().lat();
+			dLng = turnPt.getPosition().lng() - this.map.getCenter().lng();
+			turnPt.setDelta(new google.maps.LatLng(dLat, dLng));
+			turnPt = turnPt.getNextTurnPt();
+		}
+	}
+
+	this.glueToCenter = en;
+};
+
+Route.prototype.turnPtDrag = function()
+{
+	this.setGlueToCenter(false);
 };
