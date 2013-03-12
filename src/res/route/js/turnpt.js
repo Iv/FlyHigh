@@ -48,6 +48,7 @@ function TurnPt(route, latlng, type)
 	this.infoBox = null;
 	this.setType(type);
 	this.setPosition(latlng);
+	this.delta = null;
 
 	google.maps.event.addListener(this.marker, 'dragstart', function(event) {tp_dragstart(turnPt);});
 	google.maps.event.addListener(this.marker, 'drag', function(event) {tp_drag(turnPt);});
@@ -74,6 +75,16 @@ TurnPt.prototype.setType = function(type)
 TurnPt.prototype.getType = function()
 {
 	return this.type;
+};
+
+TurnPt.prototype.setDelta = function(latlng)
+{
+	this.delta = latlng;
+};
+
+TurnPt.prototype.getDelta = function()
+{
+	return this.delta;
 };
 
 TurnPt.prototype.remove = function()
@@ -233,6 +244,8 @@ function tp_dragstart(turnPt)
 			turnPt.getInfoBox().hide();
 			turnPt.getRoute().spliceLeg(turnPt);
 		}
+
+		turnPt.getRoute().turnPtDrag();
 	}
 	else
 	{
