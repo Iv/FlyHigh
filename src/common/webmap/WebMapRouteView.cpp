@@ -35,6 +35,7 @@ WebMapRouteView::WebMapRouteView(const QString &name)
 	m_pAirSpaceList = NULL;
 	m_pWebMap = new WebMap(this, WebMap::MapRoute);
 	m_editable = true;
+	m_glueToCenter = false;
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
   connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
 	connect(m_pWebMap, SIGNAL(finished(int)), this, SLOT(finished(int)));
@@ -63,6 +64,11 @@ void WebMapRouteView::loadMap()
 void WebMapRouteView::setEditable(bool en)
 {
 	m_editable = en;
+}
+
+void WebMapRouteView::setGlueToCenter(bool en)
+{
+  m_glueToCenter = en;
 }
 
 void WebMapRouteView::resizeEvent(QResizeEvent *pEvent)
@@ -96,6 +102,8 @@ void WebMapRouteView::appReady()
 		m_pWebMap->getRoute()->setName(m_pRoute->name());
 		m_pWebMap->getRoute()->setTurnPointList(m_pRoute->wayPointList());
 	}
+
+	m_pWebMap->getRoute()->setGlueToCenter(m_glueToCenter);
 }
 
 void WebMapRouteView::finished(int res)

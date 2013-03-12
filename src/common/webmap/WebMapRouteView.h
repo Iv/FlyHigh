@@ -46,6 +46,8 @@ class WebMapRouteView: public QDialog
 
 		void setEditable(bool en);
 
+		void setGlueToCenter(bool en);
+
 	signals:
 		void routeChanged(Route &route);
 
@@ -57,6 +59,7 @@ class WebMapRouteView: public QDialog
 		Route *m_pRoute;
 		AirSpaceList *m_pAirSpaceList;
 		bool m_editable;
+		bool m_glueToCenter;
 
 	private slots:
     void appReady();

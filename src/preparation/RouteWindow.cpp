@@ -230,7 +230,7 @@ void RouteWindow::file_newWebMap()
     route.wayPointList().push_back(WayPoint(47.0, 9.0));
 	}
 
-	newWebMap(route);
+	newWebMap(route, true);
 }
 
 void RouteWindow::file_view()
@@ -278,7 +278,7 @@ void RouteWindow::file_copyFrom()
 
 	if(row >= 0)
 	{
-    newWebMap(m_routeList[row]);
+    newWebMap(m_routeList[row], false);
 	}
 }
 
@@ -365,7 +365,7 @@ void RouteWindow::setRouteToRow(uint row, Route &route)
 	pTable->item(row, Type)->setText(route.typeAsText());
 }
 
-void RouteWindow::newWebMap(Route &route)
+void RouteWindow::newWebMap(Route &route, bool glue)
 {
 	WebMapRouteView *pView;
 	AirSpaceList airSpaceList;
@@ -374,6 +374,7 @@ void RouteWindow::newWebMap(Route &route)
 	pView->setRoute(&route);
   ISql::pInstance()->airspaceList(airSpaceList);
   pView->setAirSpaceList(&airSpaceList);
+  pView->setGlueToCenter(glue);
 	pView->loadMap();
 
 	if((pView->exec() == QDialog::Accepted) && m_pDb->open())

@@ -133,6 +133,15 @@ void WebMapRoute::setEditable(bool en)
 	pFrame->evaluateJavaScript(code.arg(en));
 }
 
+void WebMapRoute::setGlueToCenter(bool en)
+{
+	QString code = "rt_setGlueToCenter(%1);";
+	QWebFrame *pFrame;
+
+	pFrame = m_pWebMap->page()->mainFrame();
+	pFrame->evaluateJavaScript(code.arg(en));
+}
+
 Route::Type WebMapRoute::type() const
 {
 	QString code = "rt_getType();";
