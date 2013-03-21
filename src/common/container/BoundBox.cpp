@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,6 +24,13 @@
 BoundBox::BoundBox()
 {
 	m_isInit = false;
+}
+
+BoundBox::BoundBox(const LatLng &sw, const LatLng &ne)
+{
+	m_isInit = false;
+  m_ne = ne;
+  m_sw = sw;
 }
 
 void BoundBox::init()
@@ -103,6 +110,10 @@ double BoundBox::west() const
 
 bool BoundBox::intersect(const BoundBox &bb) const
 {
-	return !((bb.west() > east()) || (bb.east() < west()) ||
+  bool inter;
+
+  inter = !((bb.west() > east()) || (bb.east() < west()) ||
 			(bb.north() < south()) || (bb.south() > north()));
+
+	return inter;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2012 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,6 +27,8 @@ class BoundBox
 {
 	public:
 		BoundBox();
+
+		BoundBox(const LatLng &sw, const LatLng &ne);
 
 		void init();
 
