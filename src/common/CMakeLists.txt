@@ -5,6 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/configuration/flytec
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${QT_INCLUDES} )
 
+add_subdirectory(elevation)
 add_subdirectory(form)
 add_subdirectory(container)
 add_subdirectory(utils)
