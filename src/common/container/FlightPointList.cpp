@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "BoundBox.h"
 #include "FlightPointList.h"
 
 FlightPointList::FlightPointList()
@@ -198,6 +199,16 @@ void FlightPointList::simplify(FlightPointList &simpleList) const
       simpleList.add(vt[index]);
     }
   }
+}
+
+void FlightPointList::boundBox(BoundBox &bbox)
+{
+	uint index;
+
+	for(index=0; index<size(); index++)
+	{
+    bbox.setMinMax(m_flightPointList[index].wp.pos());
+	}
 }
 
 void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin, int end,
