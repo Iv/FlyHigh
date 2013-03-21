@@ -25,6 +25,8 @@
 #include <QVector>
 #include "WayPoint.h"
 
+class BoundBox;
+
 class FlightPointList
 {
 	public:
@@ -63,6 +65,8 @@ class FlightPointList
 		const FlightPointType& at(int index) const;
 
 		void simplify(FlightPointList &fpList) const;
+
+		void boundBox(BoundBox &bbox);
 
 	private:
     typedef QVector<FlightPointType> FlighPointListType;
