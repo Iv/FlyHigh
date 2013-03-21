@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# wget http://www.viewfinderpanoramas.org/Coverage%20map%20viewfinderpanoramas_or/g3.htm -O viewfinder.html
+
+width=1800
+height=900
+
+echo "// generated with $0"
+echo "void ElevationDef::addWorldSet(ElevationSetList &setList)"
+echo "{"
+
+echo "cat //html/body/map/area" | xmllint --shell --html viewfinder.html |
+while read area title href shape alt coords
+do
+	if [ "$area" = "<area" ]
+	then
+		href=${href#href=\"}
+		href=${href%\"}
+		alt=${alt#alt=\"}
+		alt=${alt%\"}
+		coords=${coords#coords=\"}
+		coords=${coords%\">}
+
+		left=$(echo $coords | awk -F ',' '{print $1}')
+		top=$(echo $coords | awk -F ',' '{print $2}')
+		right=$(echo $coords | awk -F ',' '{print $3}')
+		bottom=$(echo $coords | awk -F ',' '{print $4}')
+
+		north=$(echo "$top $height" | awk '{ printf "%.1f\n", (0.5 - $1 / $2) * 180.0 }')
+		south=$(echo "$bottom $height" | awk '{ printf "%.1f\n", (0.5 - $1 / $2) * 180.0 }')
+		east=$(echo "$right $width" | awk '{ printf "%.1f\n", ($1 / $2 - 0.5) * 360.0 }')
+		west=$(echo "$left $width" | awk '{ printf "%.1f\n", ($1 / $2 - 0.5) * 360.0 }')
+		echo "  setList.push_back(new ElevationSet(\"$alt/\", \"$href\", BoundBox(LatLng($south, $west), LatLng($north, $east))));"
+	fi
+done
+
+echo "}"
