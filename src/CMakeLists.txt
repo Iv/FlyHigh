@@ -4,6 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/analysis
                     ${CMAKE_SOURCE_DIR}/src/common
                     ${CMAKE_SOURCE_DIR}/src/common/container
+${CMAKE_SOURCE_DIR}/src/common/elevation
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/webmap
@@ -53,6 +54,7 @@ target_link_libraries(flyhigh
 	dbgarmin
 	dbsql
 	container
+	elevation
 	form
 	map
 	webmap
