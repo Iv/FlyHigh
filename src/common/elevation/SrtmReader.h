@@ -20,22 +20,44 @@
 #ifndef _SRTMREADER_H
 #define _SRTMREADER_H
 
-class BoundBox;
+#include "BoundBox.h"
+
+class QFile;
 
 class SrtmReader
 {
   public:
     SrtmReader();
 
-    bool open();
+    ~SrtmReader();
+
+    void setCount(int rows, int cols);
+
+    int rows() const;
+
+    int cols() const;
+
+    void setResolution(int res);
+
+    int resolution() const;
+
+    void setPos(const LatLng &pos);
+
+    const LatLng& pos() const;
+
+    bool open(const QString &name);
 
     void close();
 
-    void boundBox(BoundBox &boundBox);
-
-    int elevation();
+    int elevation(const LatLng &pos);
 
   private:
-    int m_fd;
+    LatLng m_pos;
+    QFile *m_pFile;
+    int m_rows;
+    int m_cols;
+    int m_res;
+    int m_nodata;
+    int m_bytesPerSample;
 };
 #endif
