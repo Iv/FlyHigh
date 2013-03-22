@@ -38,11 +38,15 @@ class BoundBox
 
 		void setNorthEast(const LatLng &ne);
 
+		const LatLng& northEast() const;
+
 		double north() const;
 
 		double west() const;
 
 		void setSouthWest(const LatLng &sw);
+
+    const LatLng& southWest() const;
 
 		double south() const;
 
@@ -53,6 +57,8 @@ class BoundBox
 		double height() const;
 
 		bool intersect(const BoundBox &bb) const;
+
+		bool isInside(const LatLng &latlng) const;
 
 	private:
 		LatLng m_sw;

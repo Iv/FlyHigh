@@ -73,6 +73,11 @@ void BoundBox::setNorthEast(const LatLng &ne)
 	m_ne = ne;
 }
 
+const LatLng& BoundBox::northEast() const
+{
+  return m_ne;
+}
+
 double BoundBox::north() const
 {
 	return m_ne.lat();
@@ -98,6 +103,11 @@ void BoundBox::setSouthWest(const LatLng &sw)
 	m_sw = sw;
 }
 
+const LatLng& BoundBox::southWest() const
+{
+  return m_sw;
+}
+
 double BoundBox::south() const
 {
 	return m_sw.lat();
@@ -116,4 +126,14 @@ bool BoundBox::intersect(const BoundBox &bb) const
 			(bb.north() < south()) || (bb.south() > north()));
 
 	return inter;
+}
+
+bool BoundBox::isInside(const LatLng &latlng) const
+{
+  bool inside;
+
+  inside = ((latlng.lon() >= west()) && (latlng.lon() <= east()) &&
+			(latlng.lat() >= south()) && (latlng.lat() <= north()));
+
+  return inside;
 }
