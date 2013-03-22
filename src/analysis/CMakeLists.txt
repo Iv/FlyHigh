@@ -1,6 +1,7 @@
 include(${QT_USE_FILE})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
+                    ${CMAKE_SOURCE_DIR}/src/common/elevation
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/map
