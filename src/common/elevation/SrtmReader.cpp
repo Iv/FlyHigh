@@ -111,9 +111,11 @@ int SrtmReader::elevation(const LatLng &pos)
   if(m_pFile != NULL)
   {
     lat = (pos.lat() - m_pos.lat());
-    i = m_rows - (int)round(lat / m_res);
+//    i = m_rows - (int)round(lat / m_res);
+i = m_rows - (int)round(lat * m_rows);
     lon = (pos.lon() - m_pos.lon());
-    j = (int)(round(lon / m_res));
+//    j = (int)(round(lon / m_res));
+j = (int)round(lon * m_cols);
     offset = ((i - 1) * m_rows + (j - 1)) * m_bytesPerSample;
     m_pFile->seek(offset);
     size = m_pFile->read(buff, BuffSize);
