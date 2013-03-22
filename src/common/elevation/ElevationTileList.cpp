@@ -19,8 +19,9 @@
  ***************************************************************************/
 #include "ElevationTileList.h"
 
-ElevationTileList::ElevationTileList()
+ElevationTileList::ElevationTileList(bool dataOwner)
 {
+  m_dataOwner = dataOwner;
 }
 
 ElevationTileList::~ElevationTileList()
@@ -37,9 +38,12 @@ void ElevationTileList::clear()
 {
   iterator it;
 
-  for(it=begin(); it!=end(); it++)
+  if(m_dataOwner)
   {
-    delete *it;
+    for(it=begin(); it!=end(); it++)
+    {
+      delete *it;
+    }
   }
 
   m_tileList.clear();
