@@ -23,26 +23,63 @@
 ElevationTile::ElevationTile()
 {
   m_type = Undef;
+  m_pSrtmReader = NULL;
 }
 
 ElevationTile::ElevationTile(const QString &path)
 {
   m_path = path;
   m_type = Undef;
+  m_pSrtmReader = NULL;
 }
 
-void ElevationTile::load()
+ElevationTile::~ElevationTile()
 {
+  close();
 }
 
-bool ElevationTile::isLocal()
+void ElevationTile::open()
 {
-  return false;
+  m_pSrtmReader = new SrtmReader();
+
+  m_pSrtmReader->setPos(m_bbox.southWest());
+
+  switch(m_type)
+  {
+    case Srtm1:
+      m_pSrtmReader->setCount(3601, 3601);
+      m_pSrtmReader->setResolution(2);
+    break;
+    case Srtm3:
+      m_pSrtmReader->setCount(1201, 1201);
+      m_pSrtmReader->setResolution(2);
+    break;
+    default:
+    break;
+  }
+
+  m_pSrtmReader->open(m_path);
 }
 
-int ElevationTile::elevation()
+void ElevationTile::close()
 {
-  return 0;
+  if(m_pSrtmReader != NULL)
+  {
+    delete m_pSrtmReader;
+    m_pSrtmReader = NULL;
+  }
+}
+
+double ElevationTile::elevation(const LatLng &pos)
+{
+  double elevation;
+
+  if(m_pSrtmReader != NULL)
+  {
+    elevation = m_pSrtmReader->elevation(pos);
+  }
+
+  return elevation;
 }
 
 void ElevationTile::setBoundBox(const BoundBox &bbox)
@@ -55,9 +92,14 @@ const BoundBox& ElevationTile::boundBox() const
   return m_bbox;
 }
 
-QString ElevationTile::path(const QString &path) const
+void ElevationTile::setPath(const QString &path)
 {
-  return path + m_path;
+  m_path = path;
+}
+
+const QString& ElevationTile::path() const
+{
+  return m_path;
 }
 
 void ElevationTile::setType(Type type)
