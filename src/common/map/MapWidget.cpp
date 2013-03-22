@@ -26,8 +26,6 @@
 #include "ProgressDlg.h"
 #include "SwissMap100.h"
 
-#include <QDebug>
-
 MapWidget::MapWidget(QScrollArea *pScrollArea)
 {
   m_pMap = NULL;
@@ -44,7 +42,7 @@ MapWidget::~MapWidget()
 	}
 }
 
-void MapWidget::showWayPointList(WayPoint::WayPointListType &wpList)
+void MapWidget::showFlightPointList(const FlightPointList &fpList)
 {
 	ProgressDlg progDlg(this);
 	QRect rect;
@@ -55,48 +53,49 @@ void MapWidget::showWayPointList(WayPoint::WayPointListType &wpList)
 	int listSize;
 	int wpNr;
 
-	m_wpList = wpList;
-	listSize = wpList.size();
+	listSize = fpList.size();
 
 	if(listSize > 0)
 	{
-		n = wpList[0].lat();
-		e = wpList[0].lon();
-		s = wpList[0].lat();
-		w = wpList[0].lon();
-		m_maxAlt = wpList[0].alt();
-		m_minAlt = wpList[0].alt();
+		n = fpList[0]->pos().lat();
+		e = fpList[0]->pos().lon();
+		s = fpList[0]->pos().lat();
+		w = fpList[0]->pos().lon();
+		m_maxAlt = fpList[0]->alt();
+		m_minAlt = fpList[0]->alt();
 
 		for(wpNr=0; wpNr<listSize; wpNr++)
 		{
+		  m_fpList.push_back(new FlightPoint(fpList[wpNr]));
+
 			// latitude
-			if(wpList[wpNr].lat() > n)
+			if(fpList[wpNr]->pos().lat() > n)
 			{
-				n = wpList[wpNr].lat();
+				n = fpList[wpNr]->pos().lat();
 			}
-			else if(wpList[wpNr].lat() < s)
+			else if(fpList[wpNr]->pos().lat() < s)
 			{
-				s = wpList[wpNr].lat();
+				s = fpList[wpNr]->pos().lat();
 			}
 
 			// longitude
-			if(wpList[wpNr].lon() > e)
+			if(fpList[wpNr]->pos().lon() > e)
 			{
-				e = wpList[wpNr].lon();
+				e = fpList[wpNr]->pos().lon();
 			}
-			else if(wpList[wpNr].lon() < w)
+			else if(fpList[wpNr]->pos().lon() < w)
 			{
-				w = wpList[wpNr].lon();
+				w = fpList[wpNr]->pos().lon();
 			}
 
 			// altitude
-			if(wpList[wpNr].alt() > m_maxAlt)
+			if(fpList[wpNr]->alt() > m_maxAlt)
 			{
-				m_maxAlt = wpList[wpNr].alt();
+				m_maxAlt = fpList[wpNr]->alt();
 			}
-			else if(wpList[wpNr].alt() < m_minAlt)
+			else if(fpList[wpNr]->alt() < m_minAlt)
 			{
-				m_minAlt = wpList[wpNr].alt();
+				m_minAlt = fpList[wpNr]->alt();
 			}
 		}
 
@@ -218,7 +217,7 @@ void MapWidget::paintEvent(QPaintEvent *pEvent)
       // other points
       for(wpNr=1; wpNr<(pts-2); wpNr++)
       {
-        alt = m_wpList[wpNr].alt();
+        alt = m_fpList[wpNr]->alt();
 
         if(alt < 0) color = QColor(0, 0, 0); // black
         else if(alt < 500) color = QColor(125, 0, 0); // brown
@@ -264,13 +263,13 @@ void MapWidget::recalcWayPoints()
 	double lon;
 	QPoint pt;
 
-	listSize = m_wpList.size();
+	listSize = m_fpList.size();
 	m_wayPoints.resize(listSize);
 
 	for(wpNr=0; wpNr<listSize; wpNr++)
 	{
-		lat = m_wpList[wpNr].lat();
-		lon = m_wpList[wpNr].lon();
+		lat = m_fpList[wpNr]->pos().lat();
+		lon = m_fpList[wpNr]->pos().lon();
 		m_pMap->LLtoPix(lat, lon, pt);
 		m_wayPoints[wpNr] = pt;
 	}

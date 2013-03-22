@@ -26,6 +26,7 @@
 
 class QKeyEvent;
 class QScrollArea;
+class FlightPointList;
 
 class MapView: public QMainWindow
 {
@@ -34,7 +35,7 @@ class MapView: public QMainWindow
 
 		virtual ~MapView();
 
-		void showWayPointList(WayPoint::WayPointListType &wpList);
+		void showFlightPointList(const FlightPointList &fpList);
 
 	protected:
 		void keyPressEvent(QKeyEvent *pEvent);
