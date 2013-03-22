@@ -43,7 +43,7 @@ void WebMapFlight::init()
 	pFrame->evaluateJavaScript(code);
 }
 
-void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &fpList)
+void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *pFpList)
 {
 	QString code;
 	QWebFrame *pFrame;
@@ -53,13 +53,13 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 	QString strAlt = "";
 	QString strLatLon = "";
 	QTime time;
-	WayPoint wp;
 	uint fpNr;
 	uint fpListSize;
 	uint start;
 	uint duration;
-	int minAlt;
-	int maxAlt;
+	double alt;
+	double minAlt;
+	double maxAlt;
 	int epochDate;
 	int epochTime;
 	int secsOfDay;
@@ -67,16 +67,16 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 	int begin;
 	bool first = true;
 
-  begin = fpList.firstValidFlightData();
-  fpListSize = fpList.lastValidFlightData() - begin;
+  begin = pFpList->firstValidFlightData();
+  fpListSize = pFpList->lastValidFlightData() - begin;
 
 	if(fpListSize > 0)
 	{
-		minAlt = fpList.at(begin).wp.alt();
+		minAlt = pFpList->at(begin)->alt();
 		maxAlt = minAlt;
-		time = fpList.at(begin).time;
+		time = pFpList->at(begin)->time();
 		start = time.hour() * 3600 + time.minute() * 60 + time.second();
-		time = fpList.at(fpListSize - 1).time;
+		time = pFpList->at(fpListSize - 1)->time();
 		duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
     epochDate = QDateTime(date).toTime_t();
     prevSecsOfDay = start;
@@ -93,7 +93,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 			first = false;
 
 			// time
-      time = fpList.at(fpNr).time;
+      time = pFpList->at(fpNr)->time();
 			secsOfDay = time.hour() * 3600 + time.minute() * 60 + time.second();
 
 			if(secsOfDay < prevSecsOfDay)
@@ -106,13 +106,13 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList &
 			strTime += value.arg(epochTime);
 
 			// altitude
-      wp = fpList.at(fpNr).wp;
-			minAlt = qMin(wp.alt(), minAlt);
-			maxAlt = qMax(wp.alt(), maxAlt);
-			strAlt += value.arg(wp.alt());
+      alt = pFpList->at(fpNr)->alt();
+			minAlt = qMin(alt, minAlt);
+			maxAlt = qMax(alt, maxAlt);
+			strAlt += value.arg(alt);
 
 			// lat, lon
-			strLatLon += latLonArg.arg(wp.lat()).arg(wp.lon());
+			strLatLon += latLonArg.arg(pFpList->at(fpNr)->pos().lat()).arg(pFpList->at(fpNr)->pos().lon());
 		}
 
 		minAlt = floor(minAlt / 100.0) * 100;
