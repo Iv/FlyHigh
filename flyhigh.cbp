@@ -71,6 +71,8 @@
 		<Unit filename="src/common/container/ContainerDef.h" />
 		<Unit filename="src/common/container/Flight.cpp" />
 		<Unit filename="src/common/container/Flight.h" />
+		<Unit filename="src/common/container/FlightPoint.cpp" />
+		<Unit filename="src/common/container/FlightPoint.h" />
 		<Unit filename="src/common/container/FlightPointList.cpp" />
 		<Unit filename="src/common/container/FlightPointList.h" />
 		<Unit filename="src/common/container/Glider.cpp" />
@@ -128,8 +130,6 @@
 		<Unit filename="src/common/form/IServicingForm.h" />
 		<Unit filename="src/common/form/IWayPointForm.cpp" />
 		<Unit filename="src/common/form/IWayPointForm.h" />
-		<Unit filename="src/common/form/MigratorThread.cpp" />
-		<Unit filename="src/common/form/MigratorThread.h" />
 		<Unit filename="src/common/form/RouteForm.ui" />
 		<Unit filename="src/common/form/RouteFormImpl.cpp" />
 		<Unit filename="src/common/form/RouteFormImpl.h" />
@@ -204,8 +204,6 @@
 		<Unit filename="src/common/window/CMakeLists.txt" />
 		<Unit filename="src/common/window/MDIWindow.cpp" />
 		<Unit filename="src/common/window/MDIWindow.h" />
-		<Unit filename="src/common/window/MigrationDlg.cpp" />
-		<Unit filename="src/common/window/MigrationDlg.h" />
 		<Unit filename="src/common/window/ProgressDlg.cpp" />
 		<Unit filename="src/common/window/ProgressDlg.h" />
 		<Unit filename="src/common/window/TableWindow.cpp" />
