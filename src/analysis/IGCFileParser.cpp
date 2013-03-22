@@ -126,7 +126,7 @@ void IGCFileParser::parseHRecord(const char *record)
 
 void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 {
-	FlightPointList::FlightPointType flightPoint;
+	FlightPoint *pFlightPoint;
 	double lat;
 	double lon;
 	int alt;
@@ -150,8 +150,10 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 			&hh, &mm, &ss, &latdeg, &latminute, &latmindec, &northsouth, &londeg,
 			&lonminute, &lonmindec, &eastwest, &valid, &altPress, &altGPS) == 14)
 	{
+    pFlightPoint = new FlightPoint();
+
 		// time
-		flightPoint.time.setHMS(hh, mm, ss);
+		pFlightPoint->setTime(QTime(hh, mm, ss));
 
 		// latitude
 		lat = ((double) latdeg + ((double) latminute / 60.0) + ((double) latmindec / 60000.0));
@@ -168,6 +170,8 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 		{
 			lon *= -1.0;
 		}
+
+		pFlightPoint->setPos(LatLng(lat, lon));
 
 		// altitude
 		if(gpsAlt)
@@ -187,8 +191,8 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 			alt = altPress;
 		}
 
-		flightPoint.wp.setCoordinates(lat, lon, alt);
-		m_flightPointList.add(flightPoint);
+    pFlightPoint->setAlt(alt);
+		m_flightPointList.push_back(pFlightPoint);
 	}
 }
 
@@ -199,7 +203,7 @@ void IGCFileParser::colonValue(const char *record, QString &str)
 	int start;
 	int end;
 
-        start = rec.indexOf(':') + 1;
+  start = rec.indexOf(':') + 1;
 	length = rec.length() - 2; // without \r\n
 
 	// strip white space @ end

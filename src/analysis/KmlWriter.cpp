@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,11 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <qfile.h>
+#include "Flight.h"
 #include "KmlWriter.h"
 
 KmlWriter::KmlWriter()
 {
 	m_triangle = false;
+  m_departure = 0;
+  m_1stTurnPoint = 0;
+  m_2ndTurnPoint = 0;
+  m_3rdTurnPoint = 0;
+  m_finish = 0;
 }
 
 KmlWriter::~KmlWriter()
@@ -34,29 +40,29 @@ void KmlWriter::setFlight(Flight &flight)
 	m_flight = flight;
 }
 
-void KmlWriter::setDeparture(const FlightPointList::FlightPointType &dep)
+void KmlWriter::setDeparture(int index)
 {
-	m_departure = dep;
+	m_departure = index;
 }
 
-void KmlWriter::set1stWayPoint(const WayPoint &wp)
+void KmlWriter::set1stTurnPoint(int index)
 {
-	m_1stWayPoint = wp;
+	m_1stTurnPoint = index;
 }
 
-void KmlWriter::set2ndWayPoint(const WayPoint &wp)
+void KmlWriter::set2ndTurnPoint(int index)
 {
-	m_2ndWayPoint = wp;
+	m_2ndTurnPoint = index;
 }
 
-void KmlWriter::set3rdWayPoint(const WayPoint &wp)
+void KmlWriter::set3rdTurnPoint(int index)
 {
-	m_3rdWayPoint = wp;
+	m_3rdTurnPoint = index;
 }
 
-void KmlWriter::setFinish(const FlightPointList::FlightPointType &fin)
+void KmlWriter::setFinish(int index)
 {
-	m_finish = fin;
+	m_finish = index;
 }
 
 void KmlWriter::setFlightPoints(FlightPointList &flightPoints)
@@ -136,9 +142,9 @@ void KmlWriter::streamCoordinates(QTextStream& s)
 
 	for(index=0; index<lastIndex; index++)
 	{
-		s << m_flightPointList[index].wp.lon() << ","
-			<< m_flightPointList[index].wp.lat() << ","
-			<< m_flightPointList[index].wp.alt() << " ";
+		s << m_flightPointList[index]->pos().lon() << ","
+			<< m_flightPointList[index]->pos().lat() << ","
+			<< m_flightPointList[index]->alt() << " ";
 
 		if((index % 5) == 0)
 		{
@@ -170,34 +176,34 @@ void KmlWriter::streamOLC(QTextStream& s)
 
 	if(!m_triangle)
 	{
-		s << m_departure.wp.lon() << ","
-			<< m_departure.wp.lat() << ","
-			<< m_departure.wp.alt() << " ";
+		s << m_flightPointList[m_departure]->pos().lon() << ","
+			<< m_flightPointList[m_departure]->pos().lat() << ","
+			<< m_flightPointList[m_departure]->alt() << " ";
 	}
 
-	s << m_1stWayPoint.lon() << ","
-		<< m_1stWayPoint.lat() << ","
-		<< m_1stWayPoint.alt() << " ";
+	s << m_flightPointList[m_1stTurnPoint]->pos().lon() << ","
+		<< m_flightPointList[m_1stTurnPoint]->pos().lat() << ","
+		<< m_flightPointList[m_1stTurnPoint]->alt() << " ";
 
-	s << m_2ndWayPoint.lon() << ","
-		<< m_2ndWayPoint.lat() << ","
-		<< m_2ndWayPoint.alt() << " ";
+	s << m_flightPointList[m_2ndTurnPoint]->pos().lon() << ","
+		<< m_flightPointList[m_2ndTurnPoint]->pos().lat() << ","
+		<< m_flightPointList[m_2ndTurnPoint]->alt() << " ";
 
-	s << m_3rdWayPoint.lon() << ","
-		<< m_3rdWayPoint.lat() << ","
-		<< m_3rdWayPoint.alt() << " ";
+	s << m_flightPointList[m_3rdTurnPoint]->pos().lon() << ","
+		<< m_flightPointList[m_3rdTurnPoint]->pos().lat() << ","
+		<< m_flightPointList[m_3rdTurnPoint]->alt() << " ";
 
 	if(!m_triangle)
 	{
-		s << m_finish.wp.lon() << ","
-			<< m_finish.wp.lat() << ","
-			<< m_finish.wp.alt() << "\n";
+		s << m_flightPointList[m_finish]->pos().lon() << ","
+			<< m_flightPointList[m_finish]->pos().lat() << ","
+			<< m_flightPointList[m_finish]->alt() << "\n";
 	}
 	else
 	{
-		s << m_1stWayPoint.lon() << ","
-			<< m_1stWayPoint.lat() << ","
-			<< m_1stWayPoint.alt() << " ";
+    s << m_flightPointList[m_1stTurnPoint]->pos().lon() << ","
+      << m_flightPointList[m_1stTurnPoint]->pos().lat() << ","
+      << m_flightPointList[m_1stTurnPoint]->alt() << " ";
 	}
 
 	s << "     </coordinates>\n";
@@ -220,9 +226,9 @@ void KmlWriter::streamStart(QTextStream& s)
 	s << "    <Point>\n";
 	s << "      <altitudeMode>absolute</altitudeMode>\n";
 	s << "      <coordinates>"
-		<< m_departure.wp.lon() << ","
-		<< m_departure.wp.lat() << ","
-		<< m_departure.wp.alt() << " "
+		<< m_flightPointList[m_departure]->pos().lon() << ","
+		<< m_flightPointList[m_departure]->pos().lat() << ","
+		<< m_flightPointList[m_departure]->alt() << " "
 		<< "</coordinates>\n";
 	s << "    </Point>\n";
 	s << "  </Placemark>\n";
@@ -243,9 +249,9 @@ void KmlWriter::streamLanding(QTextStream& s)
 	s << "    <Point>\n";
 	s << "      <altitudeMode>absolute</altitudeMode>\n";
 	s << "      <coordinates>"
-		<< m_finish.wp.lon() << ","
-		<< m_finish.wp.lat() << ","
-		<< m_finish.wp.alt() << " "
+		<< m_flightPointList[m_finish]->pos().lon() << ","
+		<< m_flightPointList[m_finish]->pos().lat() << ","
+		<< m_flightPointList[m_finish]->alt() << " "
 		<< "</coordinates>\n";
 	s << "    </Point>\n";
 	s << "  </Placemark>\n";

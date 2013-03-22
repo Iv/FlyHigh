@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,6 +21,7 @@
 #define KMLWRITER_H
 
 #include <QTextStream>
+#include "FlightPoint.h"
 #include "FlightPointList.h"
 #include "Flight.h"
 #include "WayPoint.h"
@@ -32,27 +33,34 @@ class KmlWriter
 {
 	public:
 		KmlWriter();
-	
+
 		~KmlWriter();
 
 		void setFlight(Flight &flight);
-		void setDeparture(const FlightPointList::FlightPointType &dep);
-		void set1stWayPoint(const WayPoint &wp);
-		void set2ndWayPoint(const WayPoint &wp);
-		void set3rdWayPoint(const WayPoint &wp);
-		void setFinish(const FlightPointList::FlightPointType &fin);
+
+		void setDeparture(int index);
+
+		void set1stTurnPoint(int index);
+
+		void set2ndTurnPoint(int index);
+
+		void set3rdTurnPoint(int index);
+
+		void setFinish(int index);
+
 		void setFlightPoints(FlightPointList &flightPoints);
+
 		void setTriangle(bool triangle);
 
-		bool save(const QString & name);
+		bool save(const QString &name);
 
 	private:
 		Flight m_flight;
-		FlightPointList::FlightPointType m_departure;
-		WayPoint m_1stWayPoint;
-		WayPoint m_2ndWayPoint;
-		WayPoint m_3rdWayPoint;
-		FlightPointList::FlightPointType m_finish;
+		int m_departure;
+		int m_1stTurnPoint;
+		int m_2ndTurnPoint;
+		int m_3rdTurnPoint;
+		int m_finish;
 		FlightPointList m_flightPointList;
 		bool m_triangle;
 

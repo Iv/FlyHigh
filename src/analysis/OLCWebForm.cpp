@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -31,27 +31,27 @@ void OLCWebForm::setFlight(Flight &flight)
 	m_flight = flight;
 }
 
-void OLCWebForm::setDeparture(const FlightPointList::FlightPointType &dep)
+void OLCWebForm::setDeparture(const FlightPoint &dep)
 {
 	m_departure = dep;
 }
 
-void OLCWebForm::set1stWayPoint(const WayPoint &wp)
+void OLCWebForm::set1stTurnPoint(const FlightPoint &tp)
 {
-	m_1stWayPoint = wp;
+	m_1stTurnPoint = tp;
 }
 
-void OLCWebForm::set2ndWayPoint(const WayPoint &wp)
+void OLCWebForm::set2ndTurnPoint(const FlightPoint &tp)
 {
-	m_2ndWayPoint = wp;
+	m_2ndTurnPoint = tp;
 }
 
-void OLCWebForm::set3rdWayPoint(const WayPoint &wp)
+void OLCWebForm::set3rdTurnPoint(const FlightPoint &tp)
 {
-	m_3rdWayPoint = wp;
+	m_3rdTurnPoint = tp;
 }
 
-void OLCWebForm::setFinish(const FlightPointList::FlightPointType &fin)
+void OLCWebForm::setFinish(const FlightPoint &fin)
 {
 	m_finish = fin;
 }
@@ -62,7 +62,7 @@ bool OLCWebForm::save(const QString & name)
 	QString str;
 	bool success;
 
-        file.setFileName(name);
+  file.setFileName(name);
 	success = file.open(QIODevice::WriteOnly);
 
 	if(success)
@@ -89,11 +89,11 @@ bool OLCWebForm::save(const QString & name)
 		streamModel(s);
 		streamTakeOffTime(s);
 		streamDepartureTime(s);
-		streamWayPoint(s, 0, m_departure.wp);
-		streamWayPoint(s, 1, m_1stWayPoint);
-		streamWayPoint(s, 2, m_2ndWayPoint);
-		streamWayPoint(s, 3, m_3rdWayPoint);
-		streamWayPoint(s, 4, m_finish.wp);
+		streamFlightPoint(s, 0, m_departure);
+		streamFlightPoint(s, 1, m_1stTurnPoint);
+		streamFlightPoint(s, 2, m_2ndTurnPoint);
+		streamFlightPoint(s, 3, m_3rdTurnPoint);
+		streamFlightPoint(s, 4, m_finish);
 		streamFinishTime(s);
 		streamComment(s);
 		streamSubmit(s);
@@ -232,7 +232,7 @@ void OLCWebForm::streamTakeOffTime(QTextStream& s)
 	s << "					<td>Take-off time</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"8\" size=\"8\" name=\"t0\" value=\"";
-	s << m_departure.time.toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
+	s << m_departure.time().toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
@@ -243,12 +243,12 @@ void OLCWebForm::streamDepartureTime(QTextStream& s)
 	s << "					<td>Departure time</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"8\" size=\"8\" name=\"s0\" value=\"";
-	s << m_departure.time.toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
+	s << m_departure.time().toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }
 
-void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
+void OLCWebForm::streamFlightPoint(QTextStream& s, uint fpNr, FlightPoint &fp)
 {
 	double lat;
 	double lon;
@@ -259,13 +259,13 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	QString strDmin;
 	QString strWpNr;
 
-	strWpNr.sprintf("%i", wpNr);
+	strWpNr.sprintf("%i", fpNr);
 
 	// begin of table row
 	s << "				<tr>\n";
 	s << "					<td>";
 
-	switch(wpNr)
+	switch(fpNr)
 	{
 		case 0:
 			s << "Departure";
@@ -290,7 +290,7 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	// latitude
 	s << "						<select name=\"w" << strWpNr << "bh\">\n";
 
-	lat = wp.pos().lat();
+	lat = fp.pos().lat();
 
 	if(lat < 0)
 	{
@@ -322,7 +322,7 @@ void OLCWebForm::streamWayPoint(QTextStream& s, uint wpNr, WayPoint &wp)
 	// longitude
 	s << "						<select name=\"w" << strWpNr << "lh\">\n";
 
-	lon = wp.pos().lon();
+	lon = fp.pos().lon();
 
 	if(lon < 0)
 	{
@@ -362,7 +362,7 @@ void OLCWebForm::streamFinishTime(QTextStream& s)
 	s << "					<td>Finish time</td>\n";
 	s << "					<td>\n";
 	s << "						<input type=\"text\" maxlength=\"8\" size=\"8\" name=\"s4\" value=\"";
-	s << m_finish.time.toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
+	s << m_finish.time().toString(Qt::ISODate) << "\"/>&nbsp;&nbsp;(hh:mm:ss) (UTC)\n";
 	s << "					</td>\n";
 	s << "				</tr>\n";
 }

@@ -26,6 +26,7 @@
 #include <TableWindow.h>
 
 class QWidget;
+class Elevation;
 class OLCOptimizer;
 
 class FlightWindow: public TableWindow
@@ -62,6 +63,8 @@ class FlightWindow: public TableWindow
 		void showOnMap();
 
 		void showOnWebMap();
+
+		void confirmDownload(Elevation *pElevation, const QString &question);
 
 	private:
 		enum Fields{Nr, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};

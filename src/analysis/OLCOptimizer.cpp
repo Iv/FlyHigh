@@ -187,8 +187,8 @@ void OLCOptimizer::initdmval()
 
 	for(wpNr=0; wpNr<nFlightPts; wpNr++)
 	{ // all deltas to radians and save sin/cos
-		lonrad[wpNr] = m_flightPointList[wpNr].wp.pos().lon() * CONST_PI_DIV_180;
-		latrad = m_flightPointList[wpNr].wp.pos().lat() * CONST_PI_DIV_180;
+		lonrad[wpNr] = m_flightPointList[wpNr]->pos().lon() * CONST_PI_DIV_180;
+		latrad = m_flightPointList[wpNr]->pos().lat() * CONST_PI_DIV_180;
 		sinlat[wpNr] = sin(latrad);
 		coslat[wpNr] = cos(latrad);
 		m_pDistanceMatrix[cmp*wpNr] = 0; // fill diagonal of matrix with 0
@@ -338,29 +338,29 @@ void OLCOptimizer::setFlightPoints(FlightPointList &flightPoints, uint deltaDist
 	int index;
 	int lastIndex = (flightPoints.size() - 2);
 	uint distance;
-	WayPoint lastValidWp;
+	LatLng lastValidPos;
 
 	m_flightPointList.clear();
 
 	if(lastIndex > 0)
 	{
-		lastValidWp = flightPoints[0].wp;
-		m_flightPointList.add(flightPoints[0]);
+		lastValidPos = flightPoints[0]->pos();
+		m_flightPointList.push_back(new FlightPoint(flightPoints[0]));
 
 		for(index=0; index<lastIndex; index++)
 		{
 			// skip to big jumps between waypoints
-			distance = flightPoints[index].wp.distance(flightPoints[index+1].wp);
+			distance = flightPoints[index]->pos().distance(flightPoints[index+1]->pos());
 
 			if(distance < filterDist)
 			{
 				// skip waypoints between minor distances
-				distance = lastValidWp.distance(flightPoints[index].wp);
+				distance = lastValidPos.distance(flightPoints[index]->pos());
 
 				if(distance > deltaDist)
 				{
-					m_flightPointList.add(flightPoints[index]);
-					lastValidWp = flightPoints[index].wp;
+					m_flightPointList.push_back(new FlightPoint(flightPoints[index]));
+					lastValidPos = flightPoints[index]->pos();
 				}
 			}
 		}
