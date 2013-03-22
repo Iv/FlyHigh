@@ -37,7 +37,7 @@ class WebMapFlight: public QObject
 
 		void init();
 
-    void setFlightPointList(const QDate &date, const FlightPointList &fpList);
+    void setFlightPointList(const QDate &date, const FlightPointList *pFpList);
 
 		void setSogList(const FlightPointList::SogListType &sogList);
 

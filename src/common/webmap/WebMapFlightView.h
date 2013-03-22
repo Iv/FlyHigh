@@ -44,7 +44,7 @@ class WebMapFlightView: public QDialog
 
 		void setLocation(const QString &location);
 
-		void setFlightPointList(const QDate &date, const FlightPointList &fpList);
+		void setFlightPointList(const QDate &date, const FlightPointList *pFpList);
 
 		void setSogList(const FlightPointList::SogListType &sogList);
 
@@ -60,7 +60,7 @@ class WebMapFlightView: public QDialog
 	private:
 		WebMap *m_pWebMap;
 		QDate m_date;
-		FlightPointList m_fpList;
+		const FlightPointList *m_pFpList;
 		WayPoint::WayPointListType m_wpList;
 		WayPoint::WayPointListType m_tpList;
 		FlightPointList::SogListType m_sogList;
