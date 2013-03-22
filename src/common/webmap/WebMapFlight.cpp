@@ -51,6 +51,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
 	QString latLonArg = "[%1,%2]";
 	QString strTime = "";
 	QString strAlt = "";
+	QString strElevation = "";
 	QString strLatLon = "";
 	QTime time;
 	uint fpNr;
@@ -87,6 +88,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
 			{
 				strTime += ",";
 				strAlt += ",";
+				strElevation += ",";
 				strLatLon += ",";
 			}
 
@@ -111,6 +113,9 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
 			maxAlt = qMax(alt, maxAlt);
 			strAlt += value.arg(alt);
 
+			// elevation
+			strElevation += value.arg(pFpList->at(fpNr)->elevation());
+
 			// lat, lon
 			strLatLon += latLonArg.arg(pFpList->at(fpNr)->pos().lat()).arg(pFpList->at(fpNr)->pos().lon());
 		}
@@ -123,6 +128,8 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
 		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
 		code = "fl_setFlightAlt([%1], %2, %3);";
 		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
+		code = "fl_setFlightElevation([%1]);";
+		pFrame->evaluateJavaScript(code.arg(strElevation));
 		code = "fl_setFlightLatLon([%1]);";
 		pFrame->evaluateJavaScript(code.arg(strLatLon));
 	}
