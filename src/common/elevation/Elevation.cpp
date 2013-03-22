@@ -130,11 +130,10 @@ qDebug() << "read elevations";
 
   for(tileIt=m_tileList.begin(); tileIt!=m_tileList.end(); tileIt++)
   {
-qDebug() << (*tileIt)->path() << " " << (*tileIt)->type();
-
     if(bbox.intersect((*tileIt)->boundBox()))
     {
       (*tileIt)->open();
+qDebug() << "use" << (*tileIt)->path() << " " << (*tileIt)->type();
       affTileList.push_back(*tileIt);
     }
   }
@@ -149,6 +148,7 @@ qDebug() << (*tileIt)->path() << " " << (*tileIt)->type();
       if((*tileIt)->boundBox().isInside(pFp->pos()))
       {
         elevation = (*tileIt)->elevation(pFp->pos());
+qDebug() << "elevation" << elevation;
         pFp->setElevation(elevation);
         break;
       }
