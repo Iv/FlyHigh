@@ -34,17 +34,21 @@ class ElevationTile
 
     ElevationTile(const QString &path);
 
-    void load();
+    ~ElevationTile();
 
-    bool isLocal();
+    void open();
 
-    int elevation();
+    void close();
+
+    double elevation(const LatLng &pos);
 
     void setBoundBox(const BoundBox &bbox);
 
     const BoundBox& boundBox() const;
 
-    QString path(const QString &path) const;
+    void setPath(const QString &path);
+
+    const QString& path() const;
 
     void setType(Type type);
 
@@ -52,7 +56,7 @@ class ElevationTile
 
   private:
     QString m_path;
-    SrtmReader *m_srtmReader;
+    SrtmReader *m_pSrtmReader;
     BoundBox m_bbox;
     Type m_type;
 };
