@@ -23,6 +23,7 @@
 
 #include <QDateTime>
 #include <QVector>
+#include "FlightPoint.h"
 #include "WayPoint.h"
 
 class BoundBox;
@@ -30,19 +31,21 @@ class BoundBox;
 class FlightPointList
 {
 	public:
-		typedef struct
-		{
-			QTime time;
-			WayPoint wp;
-		}FlightPointType;
+    typedef QVector<FlightPoint*> FlighPointListType;
+
+    typedef FlighPointListType::iterator iterator;
 
 		typedef QVector<float> SogListType;
 
 		typedef QVector<float> VarioListType;
 
-		FlightPointList();
+		FlightPointList(bool dataOwner = true);
 
-		void add(const FlightPointType &flightPoint);
+		~FlightPointList();
+
+		void setDataOwner(bool dataOwner);
+
+		void push_back(FlightPoint *pFlightPoint);
 
 		void clear();
 
@@ -60,20 +63,27 @@ class FlightPointList
 		// returns duration in s
 		int duration(uint index1, uint index2) const;
 
-		FlightPointType& operator[] (int index);
+		FlightPoint* operator[] (int index);
 
-		const FlightPointType& at(int index) const;
+		const FlightPoint* operator[] (int index) const;
+
+    FlightPoint* at(int index);
+
+		const FlightPoint* at(int index) const;
+
+		iterator begin();
+
+		iterator end();
 
 		void simplify(FlightPointList &fpList) const;
 
 		void boundBox(BoundBox &bbox);
 
 	private:
-    typedef QVector<FlightPointType> FlighPointListType;
-
     typedef QVector<bool> MarkerBuffer;
 
     FlighPointListType m_flightPointList;
+    bool m_dataOwner;
 
     void douglasPeucker(const FlighPointListType &ptList, int begin, int end,
                         MarkerBuffer &marker, float epsilon) const;

@@ -21,18 +21,39 @@
 #include "BoundBox.h"
 #include "FlightPointList.h"
 
-FlightPointList::FlightPointList()
+FlightPointList::FlightPointList(bool dataOwner)
 {
+  m_dataOwner = dataOwner;
 }
 
-void FlightPointList::add(const FlightPointType &flightPoint)
+FlightPointList::~FlightPointList()
 {
-	return m_flightPointList.push_back(flightPoint);
+  clear();
+}
+
+void FlightPointList::setDataOwner(bool dataOwner)
+{
+  m_dataOwner = dataOwner;
+}
+
+void FlightPointList::push_back(FlightPoint *pFlightPoint)
+{
+	return m_flightPointList.push_back(pFlightPoint);
 }
 
 void FlightPointList::clear()
 {
-	return m_flightPointList.clear();
+  iterator it;
+
+  if(m_dataOwner)
+  {
+    for(it=begin(); it!=end(); it++)
+    {
+      delete *it;
+    }
+  }
+
+  m_flightPointList.clear();
 }
 
 uint FlightPointList::size() const
@@ -40,14 +61,34 @@ uint FlightPointList::size() const
 	return m_flightPointList.size();
 }
 
-FlightPointList::FlightPointType& FlightPointList::operator[] (int index)
+FlightPoint* FlightPointList::operator[] (int index)
 {
 	return m_flightPointList[index];
 }
 
-const FlightPointList::FlightPointType& FlightPointList::at(int index) const
+const FlightPoint* FlightPointList::operator[] (int index) const
+{
+	return m_flightPointList[index];
+}
+
+FlightPoint* FlightPointList::at(int index)
 {
 	return m_flightPointList.at(index);
+}
+
+const FlightPoint* FlightPointList::at(int index) const
+{
+	return m_flightPointList.at(index);
+}
+
+FlightPointList::iterator FlightPointList::begin()
+{
+  return m_flightPointList.begin();
+}
+
+FlightPointList::iterator FlightPointList::end()
+{
+  return m_flightPointList.end();
 }
 
 int FlightPointList::firstValidFlightData() const
@@ -95,8 +136,8 @@ double FlightPointList::speedH(uint index1, uint index2) const
 
 	if((index1 < nFlightPoints) && (index2 < nFlightPoints))
 	{
-		distance = (double)m_flightPointList[index1].wp.distance(m_flightPointList[index2].wp);
-		deltaTime = (double)m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
+		distance = (double)m_flightPointList[index1]->pos().distance(m_flightPointList[index2]->pos());
+		deltaTime = (double)m_flightPointList[index1]->time().secsTo(m_flightPointList[index2]->time());
 
 		if(deltaTime > 0.0)
 		{
@@ -116,8 +157,8 @@ double FlightPointList::speedV(uint index1, uint index2) const
 
 	if((index1 < nFlightPoints) && (index2 < nFlightPoints))
 	{
-		deltaAlt = (double)m_flightPointList[index2].wp.alt() - m_flightPointList[index1].wp.alt();
-		deltaTime = (double)m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
+		deltaAlt = (double)m_flightPointList[index2]->alt() - m_flightPointList[index1]->alt();
+		deltaTime = (double)m_flightPointList[index1]->time().secsTo(m_flightPointList[index2]->time());
 
 		if(deltaTime > 0.0)
 		{
@@ -138,7 +179,7 @@ int FlightPointList::duration(uint index1, uint index2) const
 
 	if(valid)
 	{
-		duration = m_flightPointList[index1].time.secsTo(m_flightPointList[index2].time);
+		duration = m_flightPointList[index1]->time().secsTo(m_flightPointList[index2]->time());
 	}
 
 	return duration;
@@ -154,7 +195,7 @@ void FlightPointList::simplify(FlightPointList &simpleList) const
 {
   const double epsilon = 0.0001;
 
-  FlighPointListType vt; // vertex buffer
+  FlighPointListType vtxBuff; // vertex buffer
   MarkerBuffer marker;
   double tol2 = (epsilon * epsilon); // tolerance squared
   int size;
@@ -162,41 +203,42 @@ void FlightPointList::simplify(FlightPointList &simpleList) const
   int prev;
   int end;
 
+  simpleList.setDataOwner(false);
   size = m_flightPointList.size();
 
   // STAGE 1. Vertex Reduction within tolerance of prior vertex cluster
-  vt.push_back(m_flightPointList[0]);              // start at the beginning
+  vtxBuff.push_back(m_flightPointList[0]);              // start at the beginning
   end = (size - 1);
   prev = 0;
 
   for(index=1; index<size; index++)
   {
-    if(dist2(m_flightPointList[index].wp.pos(), m_flightPointList[prev].wp.pos()) < tol2)
+    if(dist2(m_flightPointList[index]->pos(), m_flightPointList[prev]->pos()) < tol2)
           continue;
 
-    vt.push_back(m_flightPointList[index]);
+    vtxBuff.push_back(m_flightPointList[index]);
     prev = index;
   }
 
   if(prev < end)
   {
-    vt.push_back(m_flightPointList[end]);
+    vtxBuff.push_back(m_flightPointList[end]);
   }
 
   // STAGE 2. Douglas-Peucker polyline simplification
-  size = vt.size();
+  size = vtxBuff.size();
   end = (size - 1);
   marker.resize(size);
   marker[0] = true;
   marker[end] = true;
-  douglasPeucker(vt, 0, end, marker, epsilon);
+  douglasPeucker(vtxBuff, 0, end, marker, epsilon);
 
   // STAGE 3. copy marked vertices to the output simplified polyline
   for(index=0; index<size; index++)
   {
     if(marker[index])
     {
-      simpleList.add(vt[index]);
+      simpleList.push_back(vtxBuff[index]);
     }
   }
 }
@@ -207,7 +249,7 @@ void FlightPointList::boundBox(BoundBox &bbox)
 
 	for(index=0; index<size(); index++)
 	{
-    bbox.setMinMax(m_flightPointList[index].wp.pos());
+    bbox.setMinMax(m_flightPointList[index]->pos());
 	}
 }
 
@@ -216,7 +258,7 @@ void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin
 {
   LatLng w;
   LatLng pb; // base of perpendicular from v[i] to segment
-  LatLng u = (ptList[end].wp.pos() - ptList[begin].wp.pos());   // segment direction vector
+  LatLng u = (ptList[end]->pos() - ptList[begin]->pos());   // segment direction vector
   double maxDist2 = 0;             // distance squared of farthest vertex
   double tol2 = (epsilon * epsilon);    // tolerance squared
   double cu = dot(u, u);         // segment length squared
@@ -234,22 +276,22 @@ void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin
   for(index=(begin + 1); index<end; index++)
   {
     // compute distance squared
-    w = (ptList[index].wp.pos() - ptList[begin].wp.pos());
+    w = (ptList[index]->pos() - ptList[begin]->pos());
     cw = dot(w, u);
 
     if(cw <= 0)
     {
-      distSeg2 = dist2(ptList[index].wp.pos(), ptList[begin].wp.pos());
+      distSeg2 = dist2(ptList[index]->pos(), ptList[begin]->pos());
     }
     else if(cu <= cw)
     {
-      distSeg2 = dist2(ptList[index].wp.pos(), ptList[end].wp.pos());
+      distSeg2 = dist2(ptList[index]->pos(), ptList[end]->pos());
     }
     else
     {
       b = cw / cu;
-      pb = ptList[begin].wp.pos() + u * b;
-      distSeg2 = dist2(ptList[index].wp.pos(), pb);
+      pb = ptList[begin]->pos() + u * b;
+      distSeg2 = dist2(ptList[index]->pos(), pb);
     }
 
     // test with current max distance squared
