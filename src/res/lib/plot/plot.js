@@ -140,6 +140,7 @@ Plot.prototype.plot = function(data)
 	}
 };
 
+/*
 Plot.prototype.drawData = function(data)
 {
 	var delta;
@@ -164,6 +165,38 @@ Plot.prototype.drawData = function(data)
 	}
 
 	this.base.strokeLine(line, {color: "#ff0000", width: 1});
+};
+*/
+
+Plot.prototype.drawData = function(data)
+{
+	var delta;
+	var nData;
+	var stepX;
+	var stepY;
+	var x;
+	var y;
+	var line = [];
+	var line2 = [];
+
+	nData = data.length;
+	delta = (this.maxValueX - this.minValueX);
+	stepX = this.base.getWidth() / delta;
+	delta = (this.maxValueY - this.minValueY);
+	stepY = this.base.getHeight() / delta;
+
+	for(nr=0; nr<nData; nr++)
+	{
+		x = (data[nr].valueX - this.minValueX) * stepX;
+		y = this.base.getHeight() - (data[nr].valueY - this.minValueY) * stepY;
+		line.push({x: x, y: y});
+		y = this.base.getHeight() - (data[nr].valueY2 - this.minValueY) * stepY;
+		line2.push({x: x, y: y});
+	}
+
+	this.base.strokeLine(line, {color: "#ff0000", width: 1});
+
+	this.base.strokeLine(line2, {color: "#863331", width: 1});
 };
 
 Plot.prototype.drawGrid = function(data)

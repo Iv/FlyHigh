@@ -227,6 +227,11 @@ function fl_setFlightAlt(altList, minAlt, maxAlt)
 	flight.setAltList(altList, minAlt, maxAlt);
 }
 
+function fl_setFlightElevation(elevations)
+{
+	flight.setElevationList(elevations);
+}
+
 function fl_setFlightLatLon(latlngs)
 {
 	var latlng;
@@ -267,7 +272,8 @@ function fl_showPlot()
 
 	for(index=0; index<maxIndex; index++)
 	{
-		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index)});
+//		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index)});
+		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index), valueY2: flight.getElevationAt(index)});
 	}
 
 	plot.adjustMinMaxX(data);
