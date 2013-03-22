@@ -29,7 +29,7 @@ class ElevationTileList
 
     typedef TileList::iterator iterator;
 
-    ElevationTileList();
+    ElevationTileList(bool dataOwner = true);
 
     ~ElevationTileList();
 
@@ -43,5 +43,6 @@ class ElevationTileList
 
   private:
     TileList m_tileList;
+    bool m_dataOwner;
 };
 #endif
