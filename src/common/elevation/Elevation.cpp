@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <QApplication>
 #include <QDir>
 #include <QDirIterator>
 #include <QNetworkReply>
@@ -25,9 +26,9 @@
 #include <QString>
 #include "Elevation.h"
 #include "ElevationDef.h"
+#include "FlightPoint.h"
 #include "FlightPointList.h"
 
-#include <QApplication>
 #include <QDebug>
 
 Elevation::Elevation()
@@ -61,20 +62,25 @@ Elevation::~Elevation()
 void Elevation::elevations(FlightPointList &fpList)
 {
   BoundBox bbox;
-  ElevationSetList::iterator it;
+  ElevationSetList::iterator setIt;
   ElevationSet *pSet;
+  ElevationTileList::iterator tileIt;
+  ElevationTileList affTileList(false);
+  FlightPoint *pFp;
   QDir dir;
   QString question;
+  double elevation;
+  uint item;
   bool download;
 
   fpList.boundBox(bbox);
 
   // update affected sets
-  for(it=m_setList.begin(); it!=m_setList.end(); it++)
+  for(setIt=m_setList.begin(); setIt!=m_setList.end(); setIt++)
   {
-    if(bbox.intersect((*it)->boundBox()) && !dir.exists((*it)->target(m_path)))
+    if(bbox.intersect((*setIt)->boundBox()) && !dir.exists((*setIt)->target(m_path)))
     {
-      m_downloadList.push_back(*it);
+      m_downloadList.push_back(*setIt);
     }
   }
 
@@ -122,13 +128,40 @@ void Elevation::elevations(FlightPointList &fpList)
   // read elevations
 qDebug() << "read elevations";
 
-ElevationTileList::iterator tileIt;
+  for(tileIt=m_tileList.begin(); tileIt!=m_tileList.end(); tileIt++)
+  {
+qDebug() << (*tileIt)->path() << " " << (*tileIt)->type();
 
-for(tileIt=m_tileList.begin(); tileIt!=m_tileList.end(); tileIt++)
-{
-  qDebug() << (*tileIt)->path("") << " " << (*tileIt)->type();
-}
+    if(bbox.intersect((*tileIt)->boundBox()))
+    {
+      (*tileIt)->open();
+      affTileList.push_back(*tileIt);
+    }
+  }
 
+  // lookup elevation for each FlightPoint
+  for(item=0; item<fpList.size(); item++)
+  {
+    pFp = fpList[item];
+
+    for(tileIt=affTileList.begin(); tileIt!=affTileList.end(); tileIt++)
+    {
+      if((*tileIt)->boundBox().isInside(pFp->pos()))
+      {
+        elevation = (*tileIt)->elevation(pFp->pos());
+        pFp->setElevation(elevation);
+        break;
+      }
+    }
+  }
+
+  // cleanup
+  for(tileIt=affTileList.begin(); tileIt!=affTileList.end(); tileIt++)
+  {
+    (*tileIt)->close();
+  }
+
+  affTileList.clear();
 }
 
 void Elevation::nextDownload(bool doit)
