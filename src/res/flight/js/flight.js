@@ -48,6 +48,7 @@ function Flight(map)
 	this.sogList = null;
 	this.varioList = null;
 	this.altList = null;
+	this.elevationList = null;
 	this.minAlt = 0;
 	this.maxAlt = 0;
 	this.timeList = null;
@@ -150,6 +151,28 @@ Flight.prototype.getMinAlt = function()
 Flight.prototype.getMaxAlt = function()
 {
 	return this.maxAlt;
+};
+
+Flight.prototype.setElevationList= function(elevationList)
+{
+	this.elevationList = elevationList;
+};
+
+Flight.prototype.getElevationList = function()
+{
+	return this.elevationList;
+};
+
+Flight.prototype.getElevationAt = function(index)
+{
+	var elevation = null;
+
+	if((this.elevationList !== null) && (index < this.elevationList.length))
+	{
+		elevation = this.elevationList[index];
+	}
+
+	return elevation;
 };
 
 Flight.prototype.setTimeList = function(timeList)
