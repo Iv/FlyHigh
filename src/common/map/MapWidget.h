@@ -24,7 +24,7 @@
 #include <QPoint>
 #include <QVector>
 #include <QWidget>
-#include "WayPoint.h"
+#include "FlightPointList.h"
 
 class QPaintEvent;
 class QScrollArea;
@@ -40,7 +40,7 @@ class MapWidget: public QWidget
     /**
       Shows waypoints on map.
     */
-    void showWayPointList(WayPoint::WayPointListType &wpList);
+    void showFlightPointList(const FlightPointList &fpList);
 
     /**
       Zooms map out. Does not care about same location.
@@ -68,7 +68,7 @@ class MapWidget: public QWidget
     QScrollArea *m_pScrollArea;
     Map *m_pMap;
     QPoint m_prevMousePos;
-		WayPoint::WayPointListType m_wpList;
+		FlightPointList m_fpList;
 		PointArray m_wayPoints;
 		int m_maxAlt;
 		int m_minAlt;

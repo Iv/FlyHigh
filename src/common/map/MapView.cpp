@@ -45,12 +45,12 @@ MapView::~MapView()
 {
 }
 
-void MapView::showWayPointList(WayPoint::WayPointListType &wpList)
+void MapView::showFlightPointList(const FlightPointList &fpList)
 {
   MapWidget *pWidget;
 
   pWidget = static_cast<MapWidget*>(m_pScrollArea->widget());
-  pWidget->showWayPointList(wpList);
+  pWidget->showFlightPointList(fpList);
 }
 
 void MapView::keyPressEvent(QKeyEvent *pEvent)
