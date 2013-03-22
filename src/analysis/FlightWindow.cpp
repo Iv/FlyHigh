@@ -22,10 +22,12 @@
 #include <QDateTime>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QString>
 #include <QTableWidget>
 #include "AirSpaceList.h"
 #include "IFlyHighRC.h"
+#include "Elevation.h"
 #include "Error.h"
 #include "FlightWindow.h"
 #include "Glider.h"
@@ -305,11 +307,11 @@ void FlightWindow::file_AddToSqlDB()
 			if(id >= 0)
 			{
 				// start time
-				time = igcParser.flightPointList().at(id).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+				time = igcParser.flightPointList().at(id)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
 				m_flightList[row].setTime(time);
 
 				// start place
-				wp = igcParser.flightPointList().at(id).wp;
+        wp.setPos(igcParser.flightPointList().at(id)->pos());
         wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
@@ -329,7 +331,7 @@ void FlightWindow::file_AddToSqlDB()
 
 			if(id >= 0)
 			{
-				wp = igcParser.flightPointList().at(id).wp;
+        wp.setPos(igcParser.flightPointList().at(id)->pos());
 				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
@@ -443,11 +445,11 @@ void FlightWindow::file_import()
 			if(startPtId >= 0)
 			{
 				// add UTC offset to start time
-				time = igcParser.flightPointList().at(startPtId).time.addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+				time = igcParser.flightPointList().at(startPtId)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
 				flight.setTime(time);
 
 				// start place
-				wp = igcParser.flightPointList().at(startPtId).wp;
+				wp.setPos(igcParser.flightPointList().at(startPtId)->pos());
 				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
@@ -467,7 +469,7 @@ void FlightWindow::file_import()
 
 			if(landPtId >= 0)
 			{
-				wp = igcParser.flightPointList().at(landPtId).wp;
+				wp.setPos(igcParser.flightPointList().at(landPtId)->pos());
 				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
@@ -483,8 +485,8 @@ void FlightWindow::file_import()
 			}
 
 			// duration
-			time = igcParser.flightPointList().at(startPtId).time;
-			duration = time.secsTo(igcParser.flightPointList().at(landPtId).time);
+			time = igcParser.flightPointList().at(startPtId)->time();
+			duration = time.secsTo(igcParser.flightPointList().at(landPtId)->time());
 			flight.setDuration(duration);
 
 			// glider
@@ -599,27 +601,27 @@ void FlightWindow::file_exportIGC()
 
 					if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
 					{
-						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFree[0]));
-						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[1]).wp);
-						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[2]).wp);
-						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[3]).wp);
-						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFree[4]));
+						olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFree[0]));
+						olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[1]));
+						olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[2]));
+						olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[3]));
+						olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFree[4]));
 					}
 					else if(ptsFlat > ptsFAI)
 					{
-						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
-						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[1]).wp);
-						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[2]).wp);
-						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[3]).wp);
-						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
+						olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
+						olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[1]));
+						olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[2]));
+						olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[3]));
+						olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
 					}
 					else
 					{
-						olcWebForm.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
-						olcWebForm.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[1]).wp);
-						olcWebForm.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[2]).wp);
-						olcWebForm.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[3]).wp);
-						olcWebForm.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
+						olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
+						olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[1]));
+						olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[2]));
+						olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[3]));
+						olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
 					}
 
 					olcWebForm.save(olcFileName);
@@ -694,29 +696,29 @@ void FlightWindow::file_exportKML()
 
 					if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
 					{
-						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFree[0]));
-						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[1]).wp);
-						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[2]).wp);
-						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFree[3]).wp);
-						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFree[4]));
+						kmlWriter.setDeparture(fpIndexListFree[0]);
+						kmlWriter.set1stTurnPoint(fpIndexListFree[1]);
+						kmlWriter.set2ndTurnPoint(fpIndexListFree[2]);
+						kmlWriter.set3rdTurnPoint(fpIndexListFree[3]);
+						kmlWriter.setFinish(fpIndexListFree[4]);
 						kmlWriter.setTriangle(false);
 					}
 					else if(ptsFlat > ptsFAI)
 					{
-						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
-						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[1]).wp);
-						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[2]).wp);
-						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFlat[3]).wp);
-						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
+						kmlWriter.setDeparture(fpIndexListFlat[0]);
+						kmlWriter.set1stTurnPoint(fpIndexListFlat[1]);
+						kmlWriter.set2ndTurnPoint(fpIndexListFlat[2]);
+						kmlWriter.set3rdTurnPoint(fpIndexListFlat[3]);
+						kmlWriter.setFinish(fpIndexListFlat[4]);
 						kmlWriter.setTriangle(true);
 					}
 					else
 					{
-						kmlWriter.setDeparture(olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
-						kmlWriter.set1stWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[1]).wp);
-						kmlWriter.set2ndWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[2]).wp);
-						kmlWriter.set3rdWayPoint(olcOptimizer.flyPointList().at(fpIndexListFAI[3]).wp);
-						kmlWriter.setFinish(olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
+						kmlWriter.setDeparture(fpIndexListFAI[0]);
+						kmlWriter.set1stTurnPoint(fpIndexListFAI[1]);
+						kmlWriter.set2ndTurnPoint(fpIndexListFAI[2]);
+						kmlWriter.set3rdTurnPoint(fpIndexListFAI[3]);
+						kmlWriter.setFinish(fpIndexListFAI[4]);
 						kmlWriter.setTriangle(true);
 					}
 
@@ -828,7 +830,7 @@ void FlightWindow::plot_speedVsTime()
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr].time);
+					x.push_back(tpList[fpNr]->time());
 					y.push_back(tpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
 				}
 
@@ -875,8 +877,8 @@ void FlightWindow::plot_altVsTime()
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr].time);
-					y.push_back(tpList[fpNr].wp.alt()); // in m
+					x.push_back(tpList[fpNr]->time());
+					y.push_back(tpList[fpNr]->alt()); // in m
 				}
 
 				m_plotter.clear();
@@ -922,8 +924,8 @@ void FlightWindow::plot_varioVsTime()
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr].time);
-					y.push_back(tpList.speedV(fpNr, fpNr+1)); // in m/s
+					x.push_back(tpList[fpNr]->time());
+					y.push_back(tpList.speedV(fpNr, fpNr + 1)); // in m/s
 				}
 
 				m_plotter.clear();
@@ -980,20 +982,20 @@ void FlightWindow::plot_OLC()
 					// fai triangle
 					dist = olcOptimizer.FAITriangle(fpIndexList);
 					tpList.clear();
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[1])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[2])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[3])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[1])));
 					title.sprintf("fai triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.4);
 					plotFlighPointList(tpList, title);
 
 					// flat triangle
 					dist = olcOptimizer.flatTriangle(fpIndexList);
 					tpList.clear();
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[2]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[3]));
-					tpList.add(olcOptimizer.flyPointList().at(fpIndexList[1]));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[1])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[2])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[3])));
+					tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[1])));
 					title.sprintf("flat triangle: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.2);
 					plotFlighPointList(tpList, title);
 
@@ -1003,7 +1005,7 @@ void FlightWindow::plot_OLC()
 
 					for(fpNr=0; fpNr<fpIndexList.size(); fpNr++)
 					{
-						tpList.add(olcOptimizer.flyPointList().at(fpIndexList[fpNr]));
+						tpList.push_back(new FlightPoint(olcOptimizer.flyPointList().at(fpIndexList[fpNr])));
 					}
 
 					title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.0);
@@ -1031,9 +1033,9 @@ void FlightWindow::plotFlighPointList(FlightPointList &tpList, const QString& ti
 
 	for(fpNr=0; fpNr<tpListSize; fpNr++)
 	{
-		y.push_back(tpList[fpNr].wp.lat());
-		x.push_back(tpList[fpNr].wp.lon());
-		z.push_back(tpList[fpNr].wp.alt());
+		y.push_back(tpList[fpNr]->pos().lat());
+		x.push_back(tpList[fpNr]->pos().lon());
+		z.push_back(tpList[fpNr]->alt());
 	}
 
 	m_plotter.plotXYZ(x, y, z, title);
@@ -1050,6 +1052,7 @@ void FlightWindow::showOnWebMap()
 	FlightPointList::SogListType sogList;
 	FlightPointList::VarioListType varioList;
 	FlightPointList simpleFpList;
+	Elevation elevation;
 	AirSpaceList airSpaceList;
 	float score;
   uint dist;
@@ -1080,7 +1083,13 @@ void FlightWindow::showOnWebMap()
         pView->setAirSpaceList(&airSpaceList);
 
 				// set flight points
-				pView->setFlightPointList(m_flightList[row].date(), igcParser.flightPointList());
+				connect(&elevation, SIGNAL(confirmDownload(Elevation*, const QString&)),
+                this, SLOT(confirmDownload(Elevation*, const QString&)));
+        progDlg.beginProgress(tr("download set..."), &elevation);
+        elevation.elevations(igcParser.flightPointList());
+        progDlg.endProgress();
+
+				pView->setFlightPointList(m_flightList[row].date(), &igcParser.flightPointList());
 
 				// optimize flight
         igcParser.flightPointList().simplify(simpleFpList);
@@ -1127,8 +1136,6 @@ void FlightWindow::showOnMap()
 	bool success;
 	MapView *pView;
 	WayPoint::WayPointListType wpList;
-	uint tpListSize;
-	uint fpNr;
 
 	row = getTable()->currentRow();
 
@@ -1141,23 +1148,26 @@ void FlightWindow::showOnMap()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			tpListSize = igcParser.flightPointList().size();
-
-			if(tpListSize > 0)
-			{
-				for(fpNr=0; fpNr<tpListSize; fpNr++)
-				{
-					wpList.push_back(igcParser.flightPointList().at(fpNr).wp);
-				}
-
-				pView = new MapView();
-				pView->showWayPointList(wpList);
-				pView->show();
-			}
+      pView = new MapView();
+      pView->showFlightPointList(igcParser.flightPointList());
+      pView->show();
 		}
 
 		m_pDb->close();
 	}
+}
+
+void FlightWindow::confirmDownload(Elevation *pElevation, const QString &question)
+{
+  QMessageBox msgBox;
+  int ret;
+
+  msgBox.setText(question);
+  msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox.setDefaultButton(QMessageBox::Yes);
+  msgBox.setIcon(QMessageBox::Question);
+  ret = msgBox.exec();
+  pElevation->nextDownload(ret == QMessageBox::Yes);
 }
 
 Route::Type FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
@@ -1166,6 +1176,7 @@ Route::Type FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
 {
   Route::Type scoreType;
   OLCOptimizer::FlightPointIndexListType tpIndexList;
+  WayPoint wp;
   uint dist;
   float score;
   int tpNr;
@@ -1218,7 +1229,8 @@ Route::Type FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
 
   for(tpNr=0; tpNr<tpIndexList.size(); tpNr++)
   {
-    tpList.push_back(optimizer.flyPointList().at(tpIndexList[tpNr]).wp);
+    wp.setPos(optimizer.flyPointList().at(tpIndexList[tpNr])->pos());
+    tpList.push_back(wp);
   }
 
   return scoreType;
