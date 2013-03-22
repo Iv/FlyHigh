@@ -48,11 +48,11 @@ void ElevationTile::open()
   {
     case Srtm1:
       m_pSrtmReader->setCount(3601, 3601);
-      m_pSrtmReader->setResolution(2);
+      m_pSrtmReader->setResolution(1);
     break;
     case Srtm3:
       m_pSrtmReader->setCount(1201, 1201);
-      m_pSrtmReader->setResolution(2);
+      m_pSrtmReader->setResolution(3);
     break;
     default:
     break;
