@@ -21,6 +21,8 @@
 #include <math.h>
 #include "SrtmReader.h"
 
+#include <QDebug>
+
 SrtmReader::SrtmReader()
 {
   m_pFile = NULL;
@@ -98,24 +100,50 @@ void SrtmReader::close()
 
 int SrtmReader::elevation(const LatLng &pos)
 {
-  enum {BuffSize = 2};
-  qint64 size;
-  qint64 offset;
   double lat;
   double lon;
-  int i;
-  int j;
+  double x;
+  double y;
   int value = 0;
-  char buff[BuffSize];
 
   if(m_pFile != NULL)
   {
-    lat = (pos.lat() - m_pos.lat());
-//    i = m_rows - (int)round(lat / m_res);
-i = m_rows - (int)round(lat * m_rows);
     lon = (pos.lon() - m_pos.lon());
 //    j = (int)(round(lon / m_res));
-j = (int)round(lon * m_cols);
+x = (int)round(lon * m_cols);
+
+    lat = (pos.lat() - m_pos.lat());
+//    i = m_rows - (int)round(lat / m_res);
+y = m_rows - (int)round(lat * m_rows);
+
+value = read(x, y);
+
+/** bilinearer Filter
+double swValue;
+double nwValue;
+double neValue;
+double seValue;
+double value1;
+double value2;
+
+x = lon * m_cols;
+y = (double)m_rows - (lat * m_rows);
+
+swValue = read(x, y);
+nwValue = read(x, y + 1);
+neValue = read(x + 1, y + 1);
+seValue = read(x + 1, y);
+value1 = ((int)x + 1 - x) * nwValue + (x - (int)x) * neValue;
+value2 = ((int)x + 1 - x) * swValue + (x - (int)x) * seValue;
+value = ((int)y + 1 - y) * value1 + (y - (int)y) * value2;
+
+qDebug() << "(" << x << "," << y << ")<" << swValue << nwValue << neValue << seValue << "> =>" << value;
+*/
+
+//j = l
+//value = read((int)x, (int)y);
+
+/**
     offset = ((i - 1) * m_rows + (j - 1)) * m_bytesPerSample;
     m_pFile->seek(offset);
     size = m_pFile->read(buff, BuffSize);
@@ -131,10 +159,43 @@ j = (int)round(lon * m_cols);
         value = ((buff[0] << 8) + buff[1]);
       }
 
+//qDebug() << "read (" << j << "," << i << ")" << value;
+printf("%i %i\n", j, value);
+//qDebug() << j  << value;
+
       if(value == -32768)
       {
         value = 0;
       }
+    }
+    */
+  }
+
+  return value;
+}
+
+int SrtmReader::read(int x, int y)
+{
+  enum {BuffSize = 2};
+  char buff[BuffSize];
+  qint64 size;
+  qint64 offset;
+  int value = 0;
+
+  offset = (y * m_rows + x) * m_bytesPerSample;
+  m_pFile->seek(offset);
+  size = m_pFile->read(buff, BuffSize);
+
+  if(size == BuffSize)
+  {
+    if(QSysInfo::ByteOrder == QSysInfo::BigEndian)
+    {
+      value = ((buff[1] << 8) + buff[0]);
+    }
+    else
+    {
+      value = (buff[0] << 8);
+      value += (buff[1] & 0xff);
     }
   }
 
