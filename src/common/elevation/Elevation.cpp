@@ -50,7 +50,7 @@ Elevation::Elevation()
   QObject::connect(m_pNetMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
 
   def.addEuropeSet(m_setList);
-///  def.addWorldSet(m_setList);
+  def.addWorldSet(m_setList);
   scanTiles();
 }
 
