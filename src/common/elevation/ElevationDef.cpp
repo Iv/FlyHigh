@@ -61,9 +61,6 @@ void ElevationDef::addEuropeSet(ElevationSetList &setList)
   setList.push_back(new ElevationSet("EU/N43E005.hgt", "http://www.viewfinderpanoramas.org/dem1/N43E005.zip", BoundBox(LatLng(43, 5), LatLng(44, 6))));
   setList.push_back(new ElevationSet("EU/N43E006.hgt", "http://www.viewfinderpanoramas.org/dem1/N43E006.zip", BoundBox(LatLng(43, 6), LatLng(44, 7))));
   setList.push_back(new ElevationSet("EU/N43E007.hgt", "http://www.viewfinderpanoramas.org/dem1/N43E007.zip", BoundBox(LatLng(43, 7), LatLng(44, 8))));
-
-
-setList.push_back(new ElevationSet("GL-E/", "http://www.viewfinderpanoramas.org/dem3/GL-East.zip", BoundBox(LatLng(64.0, -42.0), LatLng(76.0, -17.0))));
 }
 
 // generated with /home/grafal/examples/flyhigh/tools/viewfinder
