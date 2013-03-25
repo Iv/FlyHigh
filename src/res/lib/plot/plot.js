@@ -134,39 +134,11 @@ Plot.prototype.plot = function(data)
 
 	if(data !== null)
 	{
-		this.drawGrid(data);
 		this.drawData(data);
+		this.drawGrid(data);
 		this.cursor.setPos(0);
 	}
 };
-
-/*
-Plot.prototype.drawData = function(data)
-{
-	var delta;
-	var nData;
-	var stepX;
-	var stepY;
-	var x;
-	var y;
-	var line = [];
-
-	nData = data.length;
-	delta = (this.maxValueX - this.minValueX);
-	stepX = this.base.getWidth() / delta;
-	delta = (this.maxValueY - this.minValueY);
-	stepY = this.base.getHeight() / delta;
-
-	for(nr=0; nr<nData; nr++)
-	{
-		x = (data[nr].valueX - this.minValueX) * stepX;
-		y = this.base.getHeight() - (data[nr].valueY - this.minValueY) * stepY;
-		line.push({x: x, y: y});
-	}
-
-	this.base.strokeLine(line, {color: "#ff0000", width: 1});
-};
-*/
 
 Plot.prototype.drawData = function(data)
 {
@@ -194,9 +166,13 @@ Plot.prototype.drawData = function(data)
 		line2.push({x: x, y: y});
 	}
 
-	this.base.strokeLine(line, {color: "#ff0000", width: 1});
+	line2.push({x: x, y: this.base.getHeight()});
+	line2.push({x: 0, y: this.base.getHeight()});
+//	this.base.fillPolygon(line2, {color: "#863331", width: 1});
+	//this.base.fillPolygon(line2, {color: "#000000", width: 1, fillColor: "#863331"});
+	this.base.fillPolygon(line2, {color: "#000000", width: 1, fillColor: "#aaaaaa"});
 
-	this.base.strokeLine(line2, {color: "#863331", width: 1});
+	this.base.strokeLine(line, {color: "#ff0000", width: 1});
 };
 
 Plot.prototype.drawGrid = function(data)

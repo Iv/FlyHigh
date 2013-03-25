@@ -107,6 +107,26 @@ Context.prototype.strokeLine = function(line, style)
 	this.context.stroke();
 };
 
+Context.prototype.fillPolygon = function(line, style)
+{
+	var ptNr;
+
+	this.context.fillStyle = style.fillColor;
+	this.context.lineWidth = style.width;
+	this.context.strokeStyle = style.color;
+	this.context.beginPath();
+	this.context.moveTo(line[0].x, line[0].y);
+
+	for(ptNr=1; ptNr<line.length; ptNr++)
+	{
+		this.context.lineTo(line[ptNr].x, line[ptNr].y);
+	}
+	
+	this.context.closePath();
+	this.context.fill();
+//	this.context.stroke();
+};
+
 Context.prototype.strokeLines = function(lines, style)
 {
 	var line;
