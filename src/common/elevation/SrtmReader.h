@@ -59,5 +59,7 @@ class SrtmReader
     int m_res;
     int m_nodata;
     int m_bytesPerSample;
+
+    int read(int x, int y);
 };
 #endif
