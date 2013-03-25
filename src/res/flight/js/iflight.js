@@ -73,7 +73,7 @@ function fl_init()
 			route.setChangeCallback(routeChanged);
 
 			plot = new Plot(document.getElementById('plot'));
-			plot.setValueLabels(["TIME", "ALT", "SOG", "VARIO"]);
+			plot.setValueLabels(["TIME", "ALT", "GND", "AGL", "SOG", "VARIO"]);
 			plot.setUpdateCursorPosCb(updateCursorPos);
 			plot.setUpdateCursorClickCb(updateCursorClick);
 
@@ -388,6 +388,10 @@ function updateCursorPos(pos)
 	var date;
 	var time;
 	var alt;
+	var altValue;
+	var elevation;
+	var elevationValue;
+	var agl;
 	var sog;
 	var vario;
 	var timeList;
@@ -407,10 +411,14 @@ function updateCursorPos(pos)
 	}
 
 	time += date.getMinutes() + " UTC";
-	alt = flight.getAltAt(index).toFixed(0) + " m";
+	altValue = flight.getAltAt(index);
+	alt = altValue.toFixed(0) + " m";
+	elevationValue = flight.getElevationAt(index);
+	elevation = elevationValue.toFixed(0) + " m";
+	agl = (altValue - elevationValue).toFixed(0) + " m";
 	sog = flight.getSogAt(index).toFixed(1) + " km/h";
 	vario = flight.getVarioAt(index).toFixed(1) + " m/s";
-	plot.setValues([time, alt, sog, vario]);
+	plot.setValues([time, alt, elevation, agl, sog, vario]);
 
 	// glider
 	index = Math.round(pos * flight.getTrackPts().length / plot.getPlotAreaWidth());
