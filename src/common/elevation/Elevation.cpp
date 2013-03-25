@@ -70,8 +70,10 @@ void Elevation::elevations(FlightPointList &fpList)
   QDir dir;
   QString question;
   double elevation;
+  double prevElevation = 0;
   uint item;
   bool download;
+  bool first = true;
 
   fpList.boundBox(bbox);
 
@@ -148,7 +150,26 @@ qDebug() << "use" << (*tileIt)->path() << " " << (*tileIt)->type();
       if((*tileIt)->boundBox().isInside(pFp->pos()))
       {
         elevation = (*tileIt)->elevation(pFp->pos());
-qDebug() << "elevation" << elevation;
+
+        if(first)
+        {
+          prevElevation = elevation;
+          first = false;
+        }
+
+        if(elevation == -32768)
+        {
+          elevation = prevElevation;
+        }
+        else if(abs(prevElevation - elevation) > 1000)
+        {
+          elevation = prevElevation;
+        }
+        else
+        {
+          prevElevation = elevation;
+        }
+
         pFp->setElevation(elevation);
         break;
       }
