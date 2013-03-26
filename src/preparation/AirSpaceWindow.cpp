@@ -26,14 +26,15 @@
 #include <QStringList>
 #include <QTableWidget>
 #include "AirSpace.h"
-#include "WebMapAirSpaceView.h"
 #include "AirSpaceWindow.h"
+#include "Error.h"
 #include "IGPSDevice.h"
 #include "IAirSpaceForm.h"
 #include "IFlyHighRC.h"
 #include "ISql.h"
 #include "OpenAirFileParser.h"
 #include "ProgressDlg.h"
+#include "WebMapAirSpaceView.h"
 
 AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -220,6 +221,7 @@ void AirSpaceWindow::file_open()
 	OpenAirFileParser parser;
 	uint airspaceNr;
 	uint maxAirspaceNr;
+	bool success;
 
 	fileName = QFileDialog::getOpenFileName(this,
 																					tr("Open OpenAir File"),
@@ -237,7 +239,10 @@ void AirSpaceWindow::file_open()
 		  parser.setDefaultUnit(OpenAirFileParser::Meter);
 		}
 
-		if(parser.parse(fileName, m_airSpaceList))
+		success = parser.parse(fileName, m_airSpaceList);
+		Error::verify(success, Error::FILE_PARSE);
+
+		if(success)
 		{
 			m_airSpaceList.sort();
 			maxAirspaceNr = m_airSpaceList.size();
