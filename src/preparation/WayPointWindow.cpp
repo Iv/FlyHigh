@@ -26,6 +26,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTableWidget>
+#include "Error.h"
 #include "IDataBase.h"
 #include "ISql.h"
 #include "IGPSDevice.h"
@@ -332,6 +333,7 @@ void WayPointWindow::file_open()
 	WptFileParser parser;
 	uint wptNr;
 	uint maxWptNr;
+	bool success;
 
 	fileName = QFileDialog::getOpenFileName(this,
 																					tr("WayPoint File"),
@@ -343,8 +345,10 @@ void WayPointWindow::file_open()
 	{
 		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
 		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+		success = parser.parse(fileName, m_wpList);
+		Error::verify(success, Error::FILE_PARSE);
 
-		if(parser.parse(fileName, m_wpList))
+		if(success)
 		{
 			maxWptNr = m_wpList.size();
 			TableWindow::setNumRows(maxWptNr);
