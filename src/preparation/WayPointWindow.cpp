@@ -334,9 +334,10 @@ void WayPointWindow::file_open()
 	uint maxWptNr;
 
 	fileName = QFileDialog::getOpenFileName(this,
-																					"WayPoint File",
+																					tr("WayPoint File"),
 																					IFlyHighRC::pInstance()->lastDir(),
-																					"WayPoint Files (*.wpt)");
+                                          "Cup Files (*.cup);;"
+																					"WayPoint Files(*.wpt)");
 
 	if(fileName != "")
 	{

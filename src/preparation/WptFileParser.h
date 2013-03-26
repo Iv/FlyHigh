@@ -31,8 +31,9 @@ class WptFileParser
 		bool parse(const QString &fileName, WayPoint::WayPointListType &wayPointList);
 
 	private:
+    bool parseLineCup(const QString &line, WayPoint &wpt);
 
-    bool parseLine(const QString &line, WayPoint &wpt);
+    bool parseLineWpt(const QString &line, WayPoint &wpt);
 };
 
 #endif
