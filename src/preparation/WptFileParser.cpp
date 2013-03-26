@@ -30,10 +30,12 @@ WptFileParser::WptFileParser()
 
 bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &wayPointList)
 {
+  typedef enum Parser{ParserUndef, ParserCup, ParserWpt}Parser;
   QFile file(fileName);
   QTextStream inStream(&file);
   QString line;
   WayPoint wpt;
+  Parser parser;
   int id = 0;
   bool success;
 
@@ -42,11 +44,40 @@ bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &w
 
   if(success)
   {
+    if(fileName.endsWith(".cup"))
+    {
+      parser = ParserCup;
+
+      // skip first line
+      line = inStream.readLine();
+    }
+    else if(fileName.endsWith(".wpt"))
+    {
+      parser = ParserWpt;
+
+      // skip first line
+      line = inStream.readLine();
+    }
+
     line = inStream.readLine();
 
     while(!line.isNull())
     {
-      if(parseLine(line, wpt))
+      line += "\n"; // removed by readline, for tokenizer needed
+
+      switch(parser)
+      {
+        case ParserCup:
+          success = parseLineCup(line, wpt);
+        break;
+        case ParserWpt:
+          success = parseLineWpt(line, wpt);
+        break;
+        default:
+        break;
+      }
+
+      if(success)
       {
         id++;
         wpt.setId(id);
@@ -58,10 +89,101 @@ bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &w
     }
   }
 
+  return (wayPointList.size() > 0);
+}
+
+bool WptFileParser::parseLineCup(const QString &line, WayPoint &wpt)
+{
+  Tokenizer tokenizer;
+  QString token;
+  double lat;
+  double lon;
+  double dValue;
+  int iValue;
+  bool success;
+
+  // Title,Code,Country,Latitude,Longitude,Elevation,Style,Direction,Length,Frequency,Description
+  // "B01188 RUERAS-MILEZ",B01188,,4640.029N,00843.138E,1880.0m,1,,,,
+  success = tokenizer.getFirstToken(line, ',', token);
+
+  // Title
+  if(success && token.startsWith("\""))
+  {
+    token.remove('"');
+    wpt.setName(token);
+    success = tokenizer.getNextToken(line, ',', token);
+  }
+
+  // Code
+  if(success)
+  {
+    success = tokenizer.getNextToken(line, ',', token); // skip
+  }
+
+  // Country
+  if(success)
+  {
+    wpt.setCountry(token);
+    success = tokenizer.getNextToken(line, ',', token);
+  }
+
+  // lat
+  if(success)
+  {
+    dValue = token.left(token.size() - 1).toDouble() / 100.0;
+    iValue = (int)dValue;
+    lat = iValue + (dValue - iValue) * 100 / 60;
+
+    if(token.endsWith("S"))
+    {
+      lat = -lat;
+    }
+
+    wpt.setLat(lat);
+    success = tokenizer.getNextToken(line, ',', token);
+  }
+
+  // lon
+  if(success)
+  {
+    dValue = token.left(token.size() - 1).toDouble() / 100.0;
+    iValue = (int)dValue;
+    lon = iValue + (dValue - iValue) * 100 / 60;
+
+    if(token.endsWith("W"))
+    {
+      lon = -lon;
+    }
+
+    wpt.setLon(lon);
+    success = tokenizer.getNextToken(line, ',', token);
+  }
+
+  // Elevation
+  if(success)
+  {
+    if(token.endsWith("m"))
+    {
+      wpt.setAlt((int)token.left(token.size() - 1).toDouble());
+    }
+
+    success &= tokenizer.getNextToken(line, ',', token); // skip Style
+    success &= tokenizer.getNextToken(line, ',', token); // skip Direction
+    success &= tokenizer.getNextToken(line, ',', token); // skip Length
+    success &= tokenizer.getNextToken(line, ',', token); // skip Frequency
+    success &= tokenizer.getNextToken(line, '\n', token); // description
+  }
+
+  // description
+  if(success)
+  {
+    wpt.setDescription(token);
+  }
+
   return success;
 }
 
-bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
+bool WptFileParser::parseLineWpt(const QString &line, WayPoint &wpt)
 {
   Tokenizer tokenizer;
   QString token;
@@ -70,6 +192,7 @@ bool WptFileParser::parseLine(const QString &line, WayPoint &wpt)
   bool success;
 
   // W  AAR041 A 47.2455555556�N 7.7627777778�E 27-MAR-62 00:00:00 414.000000 Aarwangen Bruecke
+  // B01188   32T   0478502   5168215   1880  B01188 RUERAS-MILEZ
   success = tokenizer.getFirstToken(line, "  ", token);
 
   if(success && token == "W")
