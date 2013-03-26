@@ -36,9 +36,10 @@ class Error
 			FLYTEC_OPEN,
 			FLYTEC_CMD,
 			GNUPLOT_OPEN,
+			FILE_PARSE,
 			NOF_ERRORS
 		}ErrorIdType;
-	
+
 		static void show(ErrorIdType error);
 
 		static void verify(bool expression, ErrorIdType error);
@@ -49,7 +50,7 @@ class Error
 			QString errorText;
 			QString solution;
 		}ErrorType;
-		
+
 		static const ErrorType m_errorList[NOF_ERRORS];
 };
 

@@ -60,16 +60,20 @@ const Error::ErrorType Error::m_errorList[NOF_ERRORS] =
 		QObject::tr("Can not open gnuplot."),
     QObject::tr("Check if gnuplot is properly installed\n"
     "and listed in PATH.")
+	},
+	{
+		QObject::tr("Parsing file failed."),
+    QObject::tr("Check that file has correct format.\n")
 	}
 };
 
 void Error::show(ErrorIdType error)
 {
 	QString msg;
-	
+
 	msg = m_errorList[error].errorText + "\n";
 	msg += m_errorList[error].solution;
-	
+
 	QMessageBox::warning(NULL, "Error", msg, QMessageBox::Ok, Qt::NoButton);
 }
 
