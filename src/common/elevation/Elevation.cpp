@@ -24,6 +24,7 @@
 #include <QProcess>
 #include <QUrl>
 #include <QString>
+#include <unistd.h>
 #include "Elevation.h"
 #include "ElevationDef.h"
 #include "FlightPoint.h"
