@@ -28,7 +28,7 @@
 WebMapFlightView::WebMapFlightView(const QString &name)
 {
 	QWidget::setWindowTitle(name);
-	resize(1000, 800);
+	resize(1200, 800);
 
 	m_pWebMap = new WebMap(this, WebMap::MapFlight);
 	m_pWebMap->getFlight()->setPlotEnable(true);
