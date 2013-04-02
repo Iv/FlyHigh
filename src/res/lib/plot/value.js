@@ -79,10 +79,10 @@ Value.prototype.setLabels = function(labels)
 		label = labels[nr];
 		div = document.createElement('div');
 		div.style.position = 'absolute';
-		div.style.top = 0;
-		div.style.left = pos.toFixed(0);
-		div.style.width = labelW.toFixed(0);
-		div.style.height = labelH;
+		div.style.top = 0 + 'px';
+		div.style.left = pos.toFixed(0) + 'px';
+		div.style.width = labelW.toFixed(0) + 'px';
+		div.style.height = labelH + 'px';
 		div.style.textAlign = 'left';
 		this.legendDiv.appendChild(div);
 		this.divs.push(div);
