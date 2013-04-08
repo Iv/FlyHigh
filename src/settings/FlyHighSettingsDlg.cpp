@@ -25,13 +25,17 @@
 #include "DatabaseParameters.h"
 #include "DeviceConnectionWidget.h"
 #include "DeviceConnectionParameters.h"
+#include "FoldersWidgetImpl.h"
 #include "FlyHighSettingsDlg.h"
 
 FlyHighSettingsDlg::FlyHighSettingsDlg(QWidget* parent)
 	:QDialog(parent)
 {
+  QWidget *pWidget;
+
 	setWindowTitle(tr("Configure - FlyHigh"));
 	setWindowModality(Qt::ApplicationModal);
+  resize(450, 300);
 
 	// organized in tabs
 	m_pTabWidget = new QTabWidget();
@@ -43,6 +47,10 @@ FlyHighSettingsDlg::FlyHighSettingsDlg(QWidget* parent)
   // a tab for database preferences
 	m_pDBConfig = new DatabaseWidget(this, tr("Database Settings"));
 	m_pTabWidget->addTab(m_pDBConfig, tr("Database"));
+
+  // a tab for folders
+	pWidget = new FoldersWidgetImpl(this, tr("Folders"));
+	m_pTabWidget->addTab(pWidget, tr("Folders"));
 
   // ok/cancel button
 	m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
