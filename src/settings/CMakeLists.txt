@@ -2,7 +2,8 @@ include(${QT_USE_FILE})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/settings/database
                     ${CMAKE_SOURCE_DIR}/src/settings/device
-                    ${QT_INCLUDES})
+                    ${QT_INCLUDES}
+                    ${CMAKE_CURRENT_BINARY_DIR}/database)
 
 add_subdirectory(database)
 add_subdirectory(flytec)
