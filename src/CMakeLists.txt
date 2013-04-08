@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/analysis
                     ${CMAKE_SOURCE_DIR}/src/common
                     ${CMAKE_SOURCE_DIR}/src/common/container
-${CMAKE_SOURCE_DIR}/src/common/elevation
+                    ${CMAKE_SOURCE_DIR}/src/common/elevation
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/utils
                     ${CMAKE_SOURCE_DIR}/src/common/webmap
@@ -12,8 +12,7 @@ ${CMAKE_SOURCE_DIR}/src/common/elevation
                     ${CMAKE_SOURCE_DIR}/src/database
                     ${CMAKE_SOURCE_DIR}/src/preparation
                     ${CMAKE_SOURCE_DIR}/src/settings
-                    ${CMAKE_SOURCE_DIR}/src/settings/database
-                    ${CMAKE_SOURCE_DIR}/src/settings/device
+                    ${CMAKE_SOURCE_DIR}/src/settings/flyhigh
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
@@ -47,7 +46,6 @@ target_link_libraries(flyhigh
 	cfgflytec
 	cfgflytec6015
 	dbmigrator
-  settings
 	cfgdatabase
 	window
 	database
@@ -62,7 +60,6 @@ target_link_libraries(flyhigh
 	utils
 	res
 	qextserialport
-  device
 	${QT_LIBRARIES})
 
 # install executable
