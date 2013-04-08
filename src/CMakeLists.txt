@@ -47,6 +47,7 @@ target_link_libraries(flyhigh
 	cfgflytec
 	cfgflytec6015
 	dbmigrator
+  settings
 	cfgdatabase
 	window
 	database
@@ -61,7 +62,6 @@ target_link_libraries(flyhigh
 	utils
 	res
 	qextserialport
-  settings
   device
 	${QT_LIBRARIES})
 
