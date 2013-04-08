@@ -7,18 +7,22 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR} )
 
-set(cfgdatabase_SRCS CredentialsDlg.cpp
-                     DatabaseWidget.cpp
-                     PilotInfoFrameImpl.cpp
-                     IPilotInfoFrame.cpp)
+set(cfgdatabase_SRCS DeviceConnectionWidget.cpp
+                     DeviceConnectionParameters.cpp
+                     FlyHighSettingsDlg.cpp
+                     FoldersWidgetImpl.cpp
+                     IPilotInfoFrame.cpp
+                     PilotInfoFrameImpl.cpp)
 
-set(cfgdatabase_HDRS DatabaseWidget.h
+set(cfgdatabase_HDRS DeviceConnectionWidget.h
+                     FoldersWidgetImpl.h
                      PilotInfoFrameImpl.h)
 
-file (GLOB cfgdatabase_UI *.ui)
+set(cfgdatabase_UIS FoldersWidget.ui
+                    PilotInfoFrame.ui)
 
 QT4_WRAP_CPP(cfgdatabase_SRCS ${cfgdatabase_HDRS})
 
-QT4_WRAP_UI( cfgdatabase_UI_HDRS ${cfgdatabase_UI} )
+QT4_WRAP_UI( cfgdatabase_UI_HDRS ${cfgdatabase_UIS} )
 
 add_library(cfgdatabase ${cfgdatabase_SRCS} ${cfgdatabase_HDRS} ${cfgdatabase_UI_HDRS} )
