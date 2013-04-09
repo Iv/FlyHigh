@@ -57,7 +57,7 @@ bool Flytec::open()
 	bool success;
 
 	success = m_protocol->open(IFlyHighRC::pInstance()->deviceLine(),
-	IFlyHighRC::pInstance()->deviceSpeedString().toUInt());
+                             IFlyHighRC::pInstance()->deviceSpeed().toUInt());
 	Error::verify(success, Error::FLYTEC_OPEN);
 
 	return success;

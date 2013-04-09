@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Alex Graf                                     *
- *   grafal@sourceforge.net                                                         *
+ *   Copyright (C) 2005 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,13 +27,14 @@
 class PilotInfoFrameImpl: public QDialog, public Ui::PilotInfoFrame
 {
 	Q_OBJECT
-	
+
 	public:
 		PilotInfoFrameImpl(QWidget* parent = 0);
-		
+
 		void updateGlider();
+
 		void selectGlider(Glider &glider);
-		Glider& currentGlider();
+
 		void ok();
 
 	protected slots:

@@ -18,15 +18,72 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QFileDialog>
+#include <QLineEdit>
 #include "FoldersWidgetImpl.h"
+#include "IFlyHighRC.h"
 
 FoldersWidgetImpl::FoldersWidgetImpl(QWidget* parent, const QString& title)
   :QWidget(parent)
 {
   setupUi(this);
   setWindowTitle(title);
+
+  lineEdit_flyhigh->setText(IFlyHighRC::pInstance()->flyHighDir());
+  lineEdit_elevation->setText(IFlyHighRC::pInstance()->elevationDir());
+  lineEdit_swisstopo->setText(IFlyHighRC::pInstance()->swissTopoDir());
 }
 
 FoldersWidgetImpl::~FoldersWidgetImpl()
 {
+}
+
+void FoldersWidgetImpl::selectDirFlyHigh()
+{
+  QString path;
+
+  if(selectDir(path))
+  {
+    lineEdit_flyhigh->setText(path);
+    IFlyHighRC::pInstance()->setFlyHighDir(path);
+  }
+}
+
+void FoldersWidgetImpl::selectDirElevation()
+{
+  QString path;
+
+  if(selectDir(path))
+  {
+    lineEdit_elevation->setText(path);
+    IFlyHighRC::pInstance()->setElevationDir(path);
+  }
+}
+
+void FoldersWidgetImpl::selectDirSwissTopo()
+{
+  QString path;
+
+  if(selectDir(path))
+  {
+    lineEdit_swisstopo->setText(path);
+    IFlyHighRC::pInstance()->setSwissTopoDir(path);
+  }
+}
+
+bool FoldersWidgetImpl::selectDir(QString &path)
+{
+  QFileDialog dlg;
+  bool accept;
+
+  dlg.setFileMode(QFileDialog::Directory);
+  dlg.setOption(QFileDialog::ShowDirsOnly, true);
+  accept = dlg.exec();
+
+  if(accept)
+  {
+    path = dlg.directory().path();
+  }
+
+  return accept;
 }

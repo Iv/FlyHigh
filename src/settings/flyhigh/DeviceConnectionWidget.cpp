@@ -80,9 +80,9 @@ void DeviceConnectionWidget::populateValues()
 {
   // assuming indexes are matching
   m_pDeviceType->addItems(IFlyHighRC::pInstance()->deviceNameList());
-  m_pDeviceType->setCurrentIndex(IFlyHighRC::pInstance()->deviceName());
+  m_pDeviceType->setCurrentIndex(IFlyHighRC::pInstance()->deviceNameIndex());
   m_pDeviceLineSpeed->addItems(IFlyHighRC::pInstance()->deviceSpeedList());
-  m_pDeviceLineSpeed->setCurrentIndex(IFlyHighRC::pInstance()->deviceSpeed());
+  m_pDeviceLineSpeed->setCurrentIndex(IFlyHighRC::pInstance()->deviceSpeedIndex());
 
   // we're storing the port name in the item data, this way we may
   // use the text for additional information, such as the currently

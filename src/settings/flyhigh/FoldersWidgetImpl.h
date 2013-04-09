@@ -33,7 +33,15 @@ class FoldersWidgetImpl: public QWidget, public Ui::FoldersWidget
 
     virtual ~FoldersWidgetImpl();
 
+	protected slots:
+		void selectDirFlyHigh();
+
+		void selectDirElevation();
+
+		void selectDirSwissTopo();
+
   private:
+    bool selectDir(QString &path);
 };
 
 #endif

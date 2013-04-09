@@ -154,13 +154,13 @@ MainWindow::MainWindow()
 	// Menu Configuration
 	m_pMenuSettings = menuBar()->addMenu(tr("&Settings"));
 
-	pAction = new QAction(tr("&Configure Device..."), this);
-	connect(pAction, SIGNAL(triggered()), SLOT(settings_configure_device()));
-	m_pMenuSettings->addAction(pAction);
-
   pAction = new QAction(tr("&Configure FlyHigh..."), this);
   connect(pAction, SIGNAL(triggered()),this, SLOT(settings_configure_flyhigh()));
   m_pMenuSettings->addAction(pAction);
+
+	pAction = new QAction(tr("&Setup Device..."), this);
+	connect(pAction, SIGNAL(triggered()), SLOT(settings_configure_device()));
+	m_pMenuSettings->addAction(pAction);
 
 	pAction = new QAction(tr("Pilot &Info..."), this);
 	connect(pAction, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
@@ -369,7 +369,7 @@ void MainWindow::settings_configure_device()
 	IFlytecConfig *pFrame;
 	IFlytec6015Config *pConfig6015;
 
-	switch(IFlyHighRC::pInstance()->deviceName())
+	switch(IFlyHighRC::pInstance()->deviceNameIndex())
 	{
 		case IFlyHighRC::DevFlytec5020:
 		case IFlyHighRC::DevFlytec6020:
