@@ -370,13 +370,13 @@
 		<Unit filename="src/res/waypoint/js/iwaypoint.js" />
 		<Unit filename="src/res/waypoint/js/waypoint.js" />
 		<Unit filename="src/settings/CMakeLists.txt" />
-		<Unit filename="src/settings/FlyHighSettingsDlg.cpp" />
-		<Unit filename="src/settings/FlyHighSettingsDlg.h" />
 		<Unit filename="src/settings/flyhigh/CMakeLists.txt" />
 		<Unit filename="src/settings/flyhigh/DeviceConnectionParameters.cpp" />
 		<Unit filename="src/settings/flyhigh/DeviceConnectionParameters.h" />
 		<Unit filename="src/settings/flyhigh/DeviceConnectionWidget.cpp" />
 		<Unit filename="src/settings/flyhigh/DeviceConnectionWidget.h" />
+		<Unit filename="src/settings/flyhigh/FlyHighSettingsDlg.cpp" />
+		<Unit filename="src/settings/flyhigh/FlyHighSettingsDlg.h" />
 		<Unit filename="src/settings/flyhigh/FoldersWidget.ui" />
 		<Unit filename="src/settings/flyhigh/FoldersWidgetImpl.cpp" />
 		<Unit filename="src/settings/flyhigh/FoldersWidgetImpl.h" />
