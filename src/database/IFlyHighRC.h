@@ -51,35 +51,45 @@ class IFlyHighRC
 
 		void loadRC();
 
-		void saveRC();
-
-		const QString& deviceLine() const;
+		QString deviceLine() const;
 
 		void setDeviceLine(const QString &name);
 
-		uint deviceSpeed() const;
+		uint deviceSpeedIndex() const;
 
-		void setDeviceSpeed(uint index);
+		void setDeviceSpeedIndex(uint index);
 
-    void setDeviceSpeed(const QString& speed);
+    void setDeviceSpeed(const QString &speed);
 
-		const QString deviceSpeedString() const;
+		QString deviceSpeed() const;
 
-		uint deviceName() const;
+		uint deviceNameIndex() const;
 
-		void setDeviceName(uint index);
+		void setDeviceNameIndex(uint index);
 
-    void setDeviceName(const QString& name);
+    void setDeviceName(const QString &name);
 
-    const QString deviceNameString() const;
+    QString deviceName() const;
 
-		char utcOffset() const;
+		float utcOffset() const;
 
-		void setUtcOffset(char offset);
+		void setUtcOffset(float offset);
 
-		const QString& lastDir() const;
+		QString lastDir() const;
 
-		void setLastDir(const QString& name);
+		void setLastDir(const QString &path);
+
+		QString flyHighDir() const;
+
+		void setFlyHighDir(const QString &path);
+
+		QString elevationDir() const;
+
+		void setElevationDir(const QString &path);
+
+		QString swissTopoDir() const;
+
+		void setSwissTopoDir(const QString &path);
 
 		const QString& versionInfo() const;
 
@@ -93,57 +103,51 @@ class IFlyHighRC
 
 		// pilot info
 		void setPilotId(int id);
+
 		int pilotId() const;
 
 		// mysql db sever host
 		void setDBHost(const QString& host);
-		const QString& dBHost() const;
+
+		QString dBHost() const;
 
 		// mysql db sever port
 		void setDBPort(int port);
+
 		int dBPort() const;
 
 		// mysql db name (schema)
 		void setDBName(const QString& user);
-		const QString& dBName() const;
+
+		QString dBName() const;
 
 		// mysql db user (non-priviledged)
 		void setDBUser(const QString& user);
-		const QString& dBUser() const;
+
+		QString dBUser() const;
 
 		// mysql db password
 		void setDBPass(const QString& pass);
-		const QString& dBPass() const;
+
+		QString dBPass() const;
 
 		// db backend type
 		void setDBType(const QString& dbtype);
-		const QString& dBType() const;
+
+		QString dBType() const;
 
 		// sqlite db file path and name
 		void setDBFile(const QString& dbfile);
-		const QString& dBFile() const;
+
+		QString dBFile() const;
 
 		DatabaseParameters getDBParameters() const;
 
 	private:
 		static IFlyHighRC *m_pInstance;
 		QSettings* m_pSettings;
-		uint m_deviceName;
-		int m_deviceSpeed;
-		QString m_deviceLine;
-		char m_utcOffset;
-		QString m_lastDir;
 		QString m_versionInfo;
 		QString m_copyInfo;
-		int m_pilotId;
-		QString m_dbHost;
-		int m_dbPort;
-		QString m_dbName;
-		QString m_dbUser;
-		QString m_dbPass;
-		QString m_dbType;
-		QString m_dbFile;
-
 		QStringList m_deviceNameList;
 		QStringList m_deviceSpeedList;
 		QStringList m_dbTypeList;

@@ -61,7 +61,6 @@ class Elevation: public QObject
     DownloadList m_downloadList;
     QNetworkAccessManager* m_pNetMgr;
     QNetworkReply *m_pReply;
-    QString m_path;
     States m_state;
     bool m_download;
 

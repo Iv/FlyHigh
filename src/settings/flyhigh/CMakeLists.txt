@@ -3,26 +3,25 @@ include(${QT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/database
-                    ${CMAKE_SOURCE_DIR}/src/settings/device
                     ${QT_INCLUDES}
                     ${CMAKE_CURRENT_BINARY_DIR} )
 
-set(cfgdatabase_SRCS DeviceConnectionWidget.cpp
+set(cfgflyhigh_SRCS DeviceConnectionWidget.cpp
                      DeviceConnectionParameters.cpp
                      FlyHighSettingsDlg.cpp
                      FoldersWidgetImpl.cpp
                      IPilotInfoFrame.cpp
                      PilotInfoFrameImpl.cpp)
 
-set(cfgdatabase_HDRS DeviceConnectionWidget.h
+set(cfgflyhigh_HDRS DeviceConnectionWidget.h
                      FoldersWidgetImpl.h
                      PilotInfoFrameImpl.h)
 
-set(cfgdatabase_UIS FoldersWidget.ui
+set(cfgflyhigh_UIS FoldersWidget.ui
                     PilotInfoFrame.ui)
 
-QT4_WRAP_CPP(cfgdatabase_SRCS ${cfgdatabase_HDRS})
+QT4_WRAP_CPP(cfgflyhigh_SRCS ${cfgflyhigh_HDRS})
 
-QT4_WRAP_UI( cfgdatabase_UI_HDRS ${cfgdatabase_UIS} )
+QT4_WRAP_UI( cfgflyhigh_UI_HDRS ${cfgflyhigh_UIS} )
 
-add_library(cfgdatabase ${cfgdatabase_SRCS} ${cfgdatabase_HDRS} ${cfgdatabase_UI_HDRS} )
+add_library(cfgflyhigh ${cfgflyhigh_SRCS} ${cfgflyhigh_HDRS} ${cfgflyhigh_UI_HDRS} )

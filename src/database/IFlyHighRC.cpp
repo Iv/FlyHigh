@@ -25,19 +25,25 @@
 #include "qextserialenumerator.h"
 #include "IFlyHighRC.h"
 
+#include <QDebug>
+
 // definition of ini entries in the form <section>/<key>
 const QString DeviceNameKey    = "device/name";
 const QString DeviceLineKey    = "device/line";
 const QString DeviceSpeedKey   = "device/speed";
 const QString DateTimeUtcKey   = "datetime/utc";
 const QString PilotIdKey       = "pilot/pilotId";
-const QString DirectoryLastKey = "directory/last";
+const QString DirLastKey       = "directory/last";
+const QString DirFlyHighKey    = "directory/flyhigh";
+const QString DirElevationKey  = "directory/elevation";
+const QString DirSwissTopoKey  = "directory/swisstopo";
 const QString DatabaseHostKey  = "database/dbserverhost";
 const QString DatabasePortKey  = "database/dbserverport";
 const QString DatabaseNameKey  = "database/dbname";
 const QString DatabaseUserKey  = "database/dbusername";
 const QString DatabasePassKey  = "database/dbpassword";
 const QString DatabaseTypeKey  = "database/dbtype";
+
 const QString DatabaseFileKey  = "database/dbfile";
 
 
@@ -74,13 +80,6 @@ IFlyHighRC::IFlyHighRC()
 	m_deviceSpeedList += "38400";*/
 	m_deviceSpeedList += "57600";
 
-	m_deviceName = 0;
-	m_deviceLine = "/dev/ttyS0";
-	m_deviceSpeed = 0;
-	m_utcOffset = 0;
-	m_lastDir = QDir::homePath();
-
-	m_pilotId = -1;
 	m_versionInfo = "FlyHigh Version 0.9.6";
 	m_copyInfo =
 			"Copyright (c): 2004-2013 by Alex Graf <grafal@sf.net>, \n"
@@ -92,101 +91,122 @@ IFlyHighRC::IFlyHighRC()
 
 	m_dbTypeList += "sqlite";
 	m_dbTypeList += "mysql";
-	m_dbHost = "localhost";
-	m_dbPort = 3306;
-	m_dbName = "flyhigh_v2";
-	m_dbUser = "flyhigh";
-	m_dbPass = "flyhigh";
-	m_dbType = m_dbTypeList[0];
+//	m_dbHost = "localhost";
+//	m_dbPort = 3306;
+//	m_dbName = "flyhigh_v2";
+//	m_dbUser = "flyhigh";
+//	m_dbPass = "flyhigh";
+//	m_dbType = m_dbTypeList[0];
 	// relative to userhome or absolute:
-	m_dbFile = "Flights/flyhigh_v2.sqlite";
+///	m_dbFile = "Flights/flyhigh_v2.sqlite";
 }
 
 IFlyHighRC::~IFlyHighRC()
 {
-	m_pSettings->sync();
 	delete m_pSettings;
 	m_pSettings = NULL;
 }
 
-uint IFlyHighRC::deviceName() const
-{
-	return m_deviceName;
-}
-
-void IFlyHighRC::setDeviceName(uint index)
-{
-	m_deviceName = index;
-}
-
-void IFlyHighRC::setDeviceName(const QString& name)
-{
-  int idx = m_deviceNameList.indexOf(name);
-  if(idx >= 0)
-  {
-    m_deviceName = idx;
-  }
-}
-
-const QString IFlyHighRC::deviceNameString() const
+uint IFlyHighRC::deviceNameIndex() const
 {
   QString name;
+  uint index;
 
-  if(m_deviceName < (uint)m_deviceNameList.size())
+  name = deviceName();
+  index = m_deviceNameList.indexOf(name);
+
+  if(index < 0)
   {
-    name = m_deviceNameList[m_deviceName];
+    index = 0;
   }
 
-  return name;
+	return index;
 }
 
-const QString& IFlyHighRC::deviceLine() const
+void IFlyHighRC::setDeviceNameIndex(uint index)
 {
-	return m_deviceLine;
+  if(index < (uint)m_deviceNameList.size())
+  {
+    m_pSettings->setValue(DeviceNameKey, m_deviceNameList[index]);
+  }
+}
+
+void IFlyHighRC::setDeviceName(const QString &name)
+{
+  int index;
+
+  index = m_deviceNameList.indexOf(name);
+
+  if(index >= 0)
+  {
+    m_pSettings->setValue(DeviceNameKey, name);
+  }
+}
+
+QString IFlyHighRC::deviceName() const
+{
+  return m_pSettings->value(DeviceNameKey, m_deviceNameList[0]).toString();
+}
+
+QString IFlyHighRC::deviceLine() const
+{
+  return m_pSettings->value(DeviceLineKey, "/dev/ttyS0").toString();
 }
 
 void IFlyHighRC::setDeviceLine(const QString &line)
 {
-	m_deviceLine = line;
+  m_pSettings->setValue(DeviceLineKey, line);
 }
 
-uint IFlyHighRC::deviceSpeed() const
+uint IFlyHighRC::deviceSpeedIndex() const
 {
-	return m_deviceSpeed;
-}
+  QString speed;
+  int index;
 
-void IFlyHighRC::setDeviceSpeed(uint index)
-{
-	m_deviceSpeed = index;
-}
+  speed = deviceSpeed();
+  index = m_deviceSpeedList.indexOf(speed);
 
-void IFlyHighRC::setDeviceSpeed(const QString& speed)
-{
-  int idx = m_deviceSpeedList.indexOf(speed);
-  if (idx >= 0)
+  if(index < 0)
   {
-    m_deviceSpeed = idx;
+    index = 0;
+  }
+
+  return index;
+}
+
+void IFlyHighRC::setDeviceSpeedIndex(uint index)
+{
+  if(index < (uint)m_deviceSpeedList.size())
+  {
+    setDeviceSpeed(m_deviceSpeedList[index]);
   }
 }
 
-const QString IFlyHighRC::deviceSpeedString() const
+void IFlyHighRC::setDeviceSpeed(const QString &speed)
 {
-	QString speed = "";
+  int index;
 
-	if(m_deviceSpeed < m_deviceSpeedList.size())
-	{
-		speed = m_deviceSpeedList[m_deviceSpeed];
-	}
+  index = m_deviceSpeedList.indexOf(speed);
 
-	return speed;
+  if(index < 0)
+  {
+    index = 0;
+  }
+
+  m_pSettings->setValue(DeviceSpeedKey, m_deviceSpeedList[index]);
 }
 
-char IFlyHighRC::utcOffset() const
+QString IFlyHighRC::deviceSpeed() const
 {
-	return m_utcOffset;
+  return m_pSettings->value(DateTimeUtcKey, m_deviceSpeedList[0]).toString();
 }
 
-void IFlyHighRC::setUtcOffset(char offset)
+float IFlyHighRC::utcOffset() const
+{
+	return m_pSettings->value(DateTimeUtcKey, 0).toFloat();
+}
+
+void IFlyHighRC::setUtcOffset(float offset)
 {
 	if(offset > 12)
 	{
@@ -197,17 +217,47 @@ void IFlyHighRC::setUtcOffset(char offset)
 		offset = -12;
 	}
 
-	m_utcOffset = offset;
+	m_pSettings->setValue(DateTimeUtcKey, offset);
 }
 
-const QString& IFlyHighRC::lastDir() const
+QString IFlyHighRC::lastDir() const
 {
-	return m_lastDir;
+	return m_pSettings->value(DirLastKey, QDir::homePath()).toString();
 }
 
-void IFlyHighRC::setLastDir(const QString& name)
+void IFlyHighRC::setLastDir(const QString &path)
 {
-	m_lastDir = name;
+	m_pSettings->setValue(DirLastKey, path);
+}
+
+QString IFlyHighRC::flyHighDir() const
+{
+  return m_pSettings->value(DirFlyHighKey, QDir::homePath() + "/flyhigh").toString();
+}
+
+void IFlyHighRC::setFlyHighDir(const QString &path)
+{
+  m_pSettings->setValue(DirFlyHighKey, path);
+}
+
+QString IFlyHighRC::elevationDir() const
+{
+  return m_pSettings->value(DirElevationKey, QDir::homePath() + "/flyhigh/elevation").toString();
+}
+
+void IFlyHighRC::setElevationDir(const QString &path)
+{
+  m_pSettings->setValue(DirElevationKey, path);
+}
+
+QString IFlyHighRC::swissTopoDir() const
+{
+  return m_pSettings->value(DirSwissTopoKey, QDir::homePath() + "/flyhigh/swisstopo").toString();
+}
+
+void IFlyHighRC::setSwissTopoDir(const QString &path)
+{
+  m_pSettings->setValue(DirSwissTopoKey, path);
 }
 
 const QString& IFlyHighRC::versionInfo() const
@@ -237,12 +287,14 @@ const QStringList& IFlyHighRC::deviceLineList() const
   // the settings menu.
   // connect/disconnect notification does not yet work in qextserialport
   m_deviceLineList.clear();
-  foreach( QextPortInfo port, QextSerialEnumerator::getPorts() )
+
+  foreach(QextPortInfo port, QextSerialEnumerator::getPorts())
   {
     // filter for /dev/ttyS* or /dev/ttyUSB* on unix-like platforms
     // else we get all the tty's and console devices, too
 #ifdef Q_OS_UNIX
     QRegExp rx = QRegExp(".*tty(S|USB).*");
+
     if(rx.indexIn(port.portName) != -1)
 #endif
     {
@@ -255,160 +307,132 @@ const QStringList& IFlyHighRC::deviceLineList() const
 
 void IFlyHighRC::setPilotId(int id)
 {
-	m_pilotId = id;
+  m_pSettings->setValue(PilotIdKey, id);
 }
 
 int IFlyHighRC::pilotId() const
 {
-	return m_pilotId;
+	return m_pSettings->value(PilotIdKey, -1).toInt();
 }
 
-void IFlyHighRC::setDBHost(const QString& host)
+void IFlyHighRC::setDBHost(const QString &host)
 {
-	m_dbHost = host;
+  m_pSettings->setValue(DatabaseHostKey, host);
 }
 
-const QString& IFlyHighRC::dBHost() const
+QString IFlyHighRC::dBHost() const
 {
-	return m_dbHost;
+  return m_pSettings->value(DatabaseHostKey, "localhost").toString();
 }
 
-void IFlyHighRC::setDBName(const QString& name)
+void IFlyHighRC::setDBName(const QString &name)
 {
-	m_dbName = name;
+	m_pSettings->setValue(DatabaseNameKey, name);
 }
 
-const QString& IFlyHighRC::dBName() const
+QString IFlyHighRC::dBName() const
 {
-	return m_dbName;
+	return m_pSettings->value(DatabaseNameKey, "flyhigh_v2").toString();
 }
 
 void IFlyHighRC::setDBPort(int port)
 {
-	m_dbPort = port;
+	m_pSettings->setValue(DatabasePortKey, port);
 }
 
 int IFlyHighRC::dBPort() const
 {
-	return m_dbPort;
+	return m_pSettings->value(DatabasePortKey, 3306).toInt();
 }
 
-void IFlyHighRC::setDBUser(const QString& user)
+void IFlyHighRC::setDBUser(const QString &user)
 {
-	m_dbUser = user;
+	m_pSettings->setValue(DatabaseUserKey, user);
 }
 
-const QString& IFlyHighRC::dBUser() const
+QString IFlyHighRC::dBUser() const
 {
-	return m_dbUser;
+	return m_pSettings->value(DatabaseUserKey, "flyhigh").toString();
 }
 
-void IFlyHighRC::setDBPass(const QString& pass)
+void IFlyHighRC::setDBPass(const QString &pass)
 {
-	m_dbPass = pass;
+  m_pSettings->setValue(DatabasePassKey, pass);
 }
 
-const QString& IFlyHighRC::dBPass() const
+QString IFlyHighRC::dBPass() const
 {
-	return m_dbPass;
+	return m_pSettings->value(DatabasePassKey, "flyhigh").toString();
 }
 
-void IFlyHighRC::setDBType(const QString& dbtype)
+void IFlyHighRC::setDBType(const QString &dbtype)
 {
-	m_dbType = dbtype;
+  m_pSettings->setValue(DatabaseTypeKey, dbtype);
 }
 
-const QString& IFlyHighRC::dBType() const
+QString IFlyHighRC::dBType() const
 {
-	return m_dbType;
+  return m_pSettings->value(DatabaseTypeKey, m_dbTypeList[0]).toString();
 }
 
-void IFlyHighRC::setDBFile(const QString& dbfile)
+void IFlyHighRC::setDBFile(const QString &dbfile)
 {
-	m_dbFile = dbfile;
+  m_pSettings->setValue(DatabaseFileKey, dbfile);
 }
 
-const QString& IFlyHighRC::dBFile() const
+QString IFlyHighRC::dBFile() const
 {
-	return m_dbFile;
+  return m_pSettings->value(DatabaseFileKey, "Flights/flyhigh_v2.sqlite").toString();
 }
 
 DatabaseParameters IFlyHighRC::getDBParameters() const
 {
-	return DatabaseParameters(m_dbType,
-														m_dbName,
-														m_dbHost,
-														m_dbPort,
-														m_dbUser,
-														m_dbPass,
-														m_dbFile);
+	return DatabaseParameters(dBType(), // m_dbType,
+														dBName(), // m_dbName,
+														dBHost(), // m_dbHost,
+														dBPort(), // m_dbPort,
+														dBUser(), // m_dbUser,
+														dBPass(), // m_dbPass,
+														dBFile()); //m_dbFile);
 }
 
 void IFlyHighRC::loadRC()
 {
-	QSettings* pSettings=NULL;
+	QSettings *pSettings = NULL;
 	QString legacyfile;
 
 	// check if file exists at default location
-	if (!QFile::exists(m_pSettings->fileName()))
+	if(!QFile::exists(m_pSettings->fileName()))
 	{
-		// no. check the former location ~/.flyhighrc
+		// check the former location ~/.flyhighrc
 		legacyfile = QDir::homePath() + "/.flyhighrc";
-		if (QFile::exists(legacyfile))
+
+		if(QFile::exists(legacyfile))
 		{
 			// yes, exists.
 			// we'll try to read the old settings, but store
 			// them at the new location
 			// create new QSettings object, but keep old pointer
 			pSettings = m_pSettings;
-			m_pSettings = new QSettings(legacyfile,QSettings::IniFormat);
+			m_pSettings = new QSettings(legacyfile, QSettings::IniFormat);
 		}
 	}
 
-	// database settings
-	m_dbType = m_pSettings->value(DatabaseTypeKey,m_dbType).toString();
-	m_dbHost = m_pSettings->value(DatabaseHostKey,m_dbHost).toString();
-	m_dbPort = m_pSettings->value(DatabasePortKey,m_dbPort).toInt();
-	m_dbName = m_pSettings->value(DatabaseNameKey,m_dbName).toString();
-	m_dbUser = m_pSettings->value(DatabaseUserKey,m_dbUser).toString();
-	m_dbPass = m_pSettings->value(DatabasePassKey,m_dbPass).toString();
-	m_dbFile = m_pSettings->value(DatabaseFileKey,m_dbFile).toString();
-
-	// device settings
-	m_deviceLine = m_pSettings->value(DeviceLineKey,m_deviceLine).toString();
-	QString currDevName = m_pSettings->value(DeviceNameKey,m_deviceNameList.at(0)).toString();
-	m_deviceName = m_deviceNameList.indexOf(currDevName);
-	QString currDevSpeed = m_pSettings->value(DeviceSpeedKey,m_deviceSpeedList.at(0)).toString();
-	m_deviceSpeed = m_deviceSpeedList.indexOf(currDevSpeed);
-
-	// directory settings
-	m_lastDir = m_pSettings->value(DirectoryLastKey,QDir::homePath()).toString();
-
-	// date/time settings
-	m_utcOffset = m_pSettings->value(DateTimeUtcKey,m_utcOffset).toChar().toAscii();
-
-	// pilot settings
-	m_pilotId = m_pSettings->value(PilotIdKey,m_pilotId).toInt();
-
-	// a bit of validation
-	if (!m_dbTypeList.contains(m_dbType))
-	{
-		// invalid db type. revert to default
-		m_dbType = m_dbTypeList.at(0);
-	}
-
 	// check if we've been reading from legacy rc file
-	if (pSettings)
+	if(pSettings)
 	{
 		// the QSettings object pointing to legacy file is not needed anymore
 		delete m_pSettings;
+
 		// revert to original QSettings object
 		m_pSettings = pSettings;
 		pSettings = NULL;
+
 		// store settings at new location
-		saveRC();
+		m_pSettings->sync();
+
 		// check for errors
-		if (m_pSettings->status()==QSettings::NoError)
+		if(m_pSettings->status() == QSettings::NoError)
 		{
 			// success. now remove legacy file
 			QFile::remove(legacyfile);
@@ -416,36 +440,84 @@ void IFlyHighRC::loadRC()
 			// remain in place, but is ignored.
 		}
 	}
-}
 
-void IFlyHighRC::saveRC()
-{
-	if (m_pSettings && m_pSettings->isWritable())
+/**
+	QSettings* pSettings=NULL;
+	QString legacyfile;
+
+	// check if file exists at default location
+	if(!QFile::exists(m_pSettings->fileName()))
 	{
-		// database settings
-		m_pSettings->setValue(DatabaseTypeKey,m_dbType);
-		m_pSettings->setValue(DatabaseHostKey,m_dbHost);
-		m_pSettings->setValue(DatabasePortKey,m_dbPort);
-		m_pSettings->setValue(DatabaseNameKey,m_dbName);
-		m_pSettings->setValue(DatabaseUserKey,m_dbUser);
-		m_pSettings->setValue(DatabasePassKey,m_dbPass);
-		m_pSettings->setValue(DatabaseFileKey,m_dbFile);
+		// no. check the former location ~/.flyhighrc
+		legacyfile = QDir::homePath() + "/.flyhighrc";
 
-		// device settings
-		m_pSettings->setValue(DeviceLineKey,m_deviceLine);
-		m_pSettings->setValue(DeviceNameKey,m_deviceNameList.at(m_deviceName));
-		m_pSettings->setValue(DeviceSpeedKey,m_deviceSpeedList.at(m_deviceSpeed));
-
-		// directory settings
-		m_pSettings->setValue(DirectoryLastKey,m_lastDir);
-
-		// date/time settings
-		m_pSettings->setValue(DateTimeUtcKey,m_utcOffset);
-
-		// pilot settings
-		m_pSettings->setValue(PilotIdKey,m_pilotId);
-
-		// flush
-		m_pSettings->sync();
+		if(QFile::exists(legacyfile))
+		{
+			// yes, exists.
+			// we'll try to read the old settings, but store
+			// them at the new location
+			// create new QSettings object, but keep old pointer
+			pSettings = m_pSettings;
+			m_pSettings = new QSettings(legacyfile, QSettings::IniFormat);
+		}
 	}
+
+	// database settings
+	m_dbType = m_pSettings->value(DatabaseTypeKey, m_dbType).toString();
+	m_dbHost = m_pSettings->value(DatabaseHostKey, m_dbHost).toString();
+	m_dbPort = m_pSettings->value(DatabasePortKey, m_dbPort).toInt();
+	m_dbName = m_pSettings->value(DatabaseNameKey, m_dbName).toString();
+	m_dbUser = m_pSettings->value(DatabaseUserKey, m_dbUser).toString();
+	m_dbPass = m_pSettings->value(DatabasePassKey, m_dbPass).toString();
+	m_dbFile = m_pSettings->value(DatabaseFileKey, m_dbFile).toString();
+
+	// device settings
+	m_deviceLine = m_pSettings->value(DeviceLineKey, m_deviceLine).toString();
+	QString currDevName = m_pSettings->value(DeviceNameKey, m_deviceNameList.at(0)).toString();
+	m_deviceName = m_deviceNameList.indexOf(currDevName);
+	QString currDevSpeed = m_pSettings->value(DeviceSpeedKey, m_deviceSpeedList.at(0)).toString();
+	m_deviceSpeed = m_deviceSpeedList.indexOf(currDevSpeed);
+
+	// directory settings
+	m_dirLast = m_pSettings->value(DirLastKey, QDir::homePath()).toString();
+  m_dirFlyHigh = m_pSettings->value(DirFlyHighKey, QDir::homePath() + "/flyhigh").toString();
+	m_dirElevation = m_pSettings->value(DirElevationKey, QDir::homePath() + "/flyhigh/elevation").toString();
+	m_dirSwissTopo = m_pSettings->value(DirSwissTopoKey, QDir::homePath() + "/flyhigh/swisstopo").toString();
+
+	// date/time settings
+	m_utcOffset = m_pSettings->value(DateTimeUtcKey, m_utcOffset).toChar().toAscii();
+
+	// pilot settings
+	m_pilotId = m_pSettings->value(PilotIdKey, m_pilotId).toInt();
+
+	// a bit of validation
+	if(!m_dbTypeList.contains(m_dbType))
+	{
+		// invalid db type. revert to default
+		m_dbType = m_dbTypeList.at(0);
+	}
+
+	// check if we've been reading from legacy rc file
+	if(pSettings)
+	{
+		// the QSettings object pointing to legacy file is not needed anymore
+		delete m_pSettings;
+
+		// revert to original QSettings object
+		m_pSettings = pSettings;
+		pSettings = NULL;
+
+		// store settings at new location
+		saveRC();
+
+		// check for errors
+		if(m_pSettings->status() == QSettings::NoError)
+		{
+			// success. now remove legacy file
+			QFile::remove(legacyfile);
+			// does not matter much if removing fails. the file would just
+			// remain in place, but is ignored.
+		}
+	}
+*/
 }

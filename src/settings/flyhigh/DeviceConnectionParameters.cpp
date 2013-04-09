@@ -46,21 +46,18 @@ bool DeviceConnectionParameters::operator!=(const DeviceConnectionParameters& ot
 	return !operator==(other);
 }
 
-
 void DeviceConnectionParameters::readFromConfig()
 {
-  m_deviceType = IFlyHighRC::pInstance()->deviceNameString();
+  m_deviceType = IFlyHighRC::pInstance()->deviceName();
   m_port = IFlyHighRC::pInstance()->deviceLine();
-  m_lineSpeed = IFlyHighRC::pInstance()->deviceSpeedString();
+  m_lineSpeed = IFlyHighRC::pInstance()->deviceSpeed();
 }
 
 void DeviceConnectionParameters::writeToConfig() const
 {
-	IFlyHighRC::pInstance()->loadRC();
   IFlyHighRC::pInstance()->setDeviceName(m_deviceType);
   IFlyHighRC::pInstance()->setDeviceLine(m_port);
   IFlyHighRC::pInstance()->setDeviceSpeed(m_lineSpeed);
-	IFlyHighRC::pInstance()->saveRC();
 }
 
 DeviceConnectionParameters DeviceConnectionParameters::defaultParameters()

@@ -46,7 +46,7 @@ IGPSDevice* IGPSDevice::pInstance()
 	IFlyHighRC::DeviceId curDevice;
 	bool createDevice;
 
-	curDevice = (IFlyHighRC::DeviceId)IFlyHighRC::pInstance()->deviceName();
+	curDevice = (IFlyHighRC::DeviceId)IFlyHighRC::pInstance()->deviceNameIndex();
 	createDevice = (m_pGPSDevice == NULL) || (curDevice != m_pGPSDevice->deviceId());
 
   if(createDevice)

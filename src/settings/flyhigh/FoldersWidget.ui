@@ -31,7 +31,11 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_elevation"/>
+     <widget class="QLineEdit" name="lineEdit_elevation">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="1" column="2">
      <widget class="QPushButton" name="pushButton_elevation">
@@ -48,20 +52,28 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QLabel" name="label_database">
+     <widget class="QLabel" name="label_flyhigh">
       <property name="text">
-       <string>Database</string>
+       <string>FlyHigh</string>
       </property>
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_database"/>
+     <widget class="QLineEdit" name="lineEdit_flyhigh">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit_swisstopo"/>
+     <widget class="QLineEdit" name="lineEdit_swisstopo">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_database">
+     <widget class="QPushButton" name="pushButton_flyhigh">
       <property name="text">
        <string>Browse...</string>
       </property>
@@ -78,5 +90,54 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_flyhigh</sender>
+   <signal>clicked()</signal>
+   <receiver>FoldersWidget</receiver>
+   <slot>selectDirFlyHigh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_elevation</sender>
+   <signal>clicked()</signal>
+   <receiver>FoldersWidget</receiver>
+   <slot>selectDirElevation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_swisstopo</sender>
+   <signal>clicked()</signal>
+   <receiver>FoldersWidget</receiver>
+   <slot>selectDirSwissTopo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

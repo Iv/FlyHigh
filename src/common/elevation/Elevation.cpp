@@ -29,22 +29,24 @@
 #include "ElevationDef.h"
 #include "FlightPoint.h"
 #include "FlightPointList.h"
+#include "IFlyHighRC.h"
 
 #include <QDebug>
 
 Elevation::Elevation()
 {
   QDir dir;
+  QString path;
   ElevationDef def;
 
-  m_path = "/var/opt/flyhigh/elevation/";
   m_pReply = NULL;
   m_download = false;
-  dir.setPath(m_path);
+  path = IFlyHighRC::pInstance()->elevationDir();
+  dir.setPath(path);
 
   if(!dir.exists())
   {
-    dir.mkdir(m_path);
+    dir.mkdir(path);
   }
 
   m_pNetMgr = new QNetworkAccessManager(this);
@@ -70,18 +72,28 @@ void Elevation::elevations(FlightPointList &fpList)
   FlightPoint *pFp;
   QDir dir;
   QString question;
+  QString path;
   double elevation;
   double prevElevation = 0;
   uint item;
   bool download;
   bool first = true;
 
-  fpList.boundBox(bbox);
+  // setup elevation root
+  path = IFlyHighRC::pInstance()->elevationDir();
+  dir.setPath(path);
+
+  if(!dir.exists())
+  {
+    dir.mkpath(path);
+  }
 
   // update affected sets
+  fpList.boundBox(bbox);
+
   for(setIt=m_setList.begin(); setIt!=m_setList.end(); setIt++)
   {
-    if(bbox.intersect((*setIt)->boundBox()) && !dir.exists((*setIt)->target(m_path)))
+    if(bbox.intersect((*setIt)->boundBox()) && !dir.exists((*setIt)->target(path)))
     {
       m_downloadList.push_back(*setIt);
     }
@@ -229,14 +241,16 @@ void Elevation::scanTiles()
   QStringList::iterator fileIt;
   QFileInfo fileInfo;
   QDir dir;
+  QString rootPath;
   QString path;
   ElevationSetList::iterator setIt;
 
+  rootPath = IFlyHighRC::pInstance()->elevationDir();
   m_tileList.clear();
 
   for(setIt=m_setList.begin(); setIt!=m_setList.end(); setIt++)
   {
-    path = (*setIt)->target(m_path);
+    path = (*setIt)->target(rootPath);
 
     if(dir.exists(path))
     {
@@ -311,11 +325,12 @@ bool Elevation::unzip(const QString &fileName, const ElevationSet *pSet)
   enum RetCode{RetNormal = 0, RetNoMatchFile = 11};
   QProcess proc(this);
   QStringList arguments;
+  QString rootPath;
   QString path;
   QDir dir;
   int ret;
 
-  path = m_path;
+  rootPath = IFlyHighRC::pInstance()->elevationDir();
 
   // if dir does not exist, create it
   arguments << "-qql" << fileName << pSet->path("");
@@ -328,9 +343,9 @@ qDebug() << "exit code: " << ret;
 
   if(ret == RetNoMatchFile)
   {
-    path = pSet->path(m_path);
+    path = pSet->path(rootPath);
 
-    if(!dir.exists(pSet->path(m_path)))
+    if(!dir.exists(path))
     {
       dir.mkdir(path);
 qDebug() << "mkdir " << path;
@@ -353,6 +368,7 @@ qDebug() << "exit code: " << ret;
 
 void Elevation::netReply(QNetworkReply *pReply)
 {
+  QString rootPath;
   QString path;
   QString fileName;
   QFile file;
@@ -373,7 +389,8 @@ qDebug() << "netReply";
 
       if(!fileName.isEmpty())
       {
-        file.setFileName(m_path + fileName);
+        rootPath = IFlyHighRC::pInstance()->elevationDir();
+        file.setFileName(rootPath + fileName);
 
         if(file.open(QIODevice::WriteOnly))
         {
