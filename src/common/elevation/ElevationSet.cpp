@@ -33,7 +33,7 @@ ElevationSet::ElevationSet(const QString &target, const QString &url, const Boun
 
 QString ElevationSet::target(const QString &path) const
 {
-  return path + m_target;
+  return path + "/" + m_target;
 }
 
 QString ElevationSet::path(const QString &path) const
