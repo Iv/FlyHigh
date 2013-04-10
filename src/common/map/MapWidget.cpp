@@ -22,6 +22,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QWheelEvent>
+#include "IFlyHighRC.h"
 #include "MapWidget.h"
 #include "ProgressDlg.h"
 #include "SwissMap100.h"
@@ -46,6 +47,7 @@ void MapWidget::showFlightPointList(const FlightPointList &fpList)
 {
 	ProgressDlg progDlg(this);
 	QRect rect;
+	QString path;
 	double n;
 	double e;
 	double s;
@@ -100,7 +102,9 @@ void MapWidget::showFlightPointList(const FlightPointList &fpList)
 		}
 
 		// map
-		m_pMap = new SwissMap100("/var/opt/flyhigh/swissmap100/");
+		path = IFlyHighRC::pInstance()->swissTopoDir();
+
+		m_pMap = new SwissMap100(path);
 		progDlg.beginProgress("reading map tiles...", m_pMap);
 		m_pMap->loadMap(n, e, s, w);
 		progDlg.endProgress();
