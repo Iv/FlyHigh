@@ -37,8 +37,7 @@ int main( int argc, char ** argv )
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-	// read config file
-	IFlyHighRC::pInstance()->loadRC();
+	// setup db
 	ISql::pInstance()->setDBParameters(IFlyHighRC::pInstance()->getDBParameters());
 
 	pMainWin = new MainWindow();
