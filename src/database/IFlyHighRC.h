@@ -49,8 +49,6 @@ class IFlyHighRC
 
 		~IFlyHighRC();
 
-		void loadRC();
-
 		QString deviceLine() const;
 
 		void setDeviceLine(const QString &name);
@@ -154,6 +152,8 @@ class IFlyHighRC
     mutable QStringList m_deviceLineList;
 
 		IFlyHighRC();
+
+    void importLegacy();
 };
 
 #endif
