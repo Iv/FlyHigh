@@ -46,7 +46,7 @@ Elevation::Elevation()
 
   if(!dir.exists())
   {
-    dir.mkdir(path);
+    dir.mkpath(path);
   }
 
   m_pNetMgr = new QNetworkAccessManager(this);
@@ -79,14 +79,7 @@ void Elevation::elevations(FlightPointList &fpList)
   bool download;
   bool first = true;
 
-  // setup elevation root
   path = IFlyHighRC::pInstance()->elevationDir();
-  dir.setPath(path);
-
-  if(!dir.exists())
-  {
-    dir.mkpath(path);
-  }
 
   // update affected sets
   fpList.boundBox(bbox);
