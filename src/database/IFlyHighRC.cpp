@@ -25,8 +25,6 @@
 #include "qextserialenumerator.h"
 #include "IFlyHighRC.h"
 
-#include <QDebug>
-
 // definition of ini entries in the form <section>/<key>
 const QString DeviceNameKey    = "device/name";
 const QString DeviceLineKey    = "device/line";
@@ -43,7 +41,6 @@ const QString DatabaseNameKey  = "database/dbname";
 const QString DatabaseUserKey  = "database/dbusername";
 const QString DatabasePassKey  = "database/dbpassword";
 const QString DatabaseTypeKey  = "database/dbtype";
-
 const QString DatabaseFileKey  = "database/dbfile";
 
 
@@ -69,6 +66,9 @@ IFlyHighRC::IFlyHighRC()
 															"flyhigh",
 															"flyhigh");
 
+  // check for old ini files
+  importLegacy();
+
   // must match the order in IFlyHighRC::DeviceId:
 	m_deviceNameList += "5020 / Competino";
 	m_deviceNameList += "6015 / IQ Basic";
@@ -80,7 +80,7 @@ IFlyHighRC::IFlyHighRC()
 	m_deviceSpeedList += "38400";*/
 	m_deviceSpeedList += "57600";
 
-	m_versionInfo = "FlyHigh Version 0.9.6";
+	m_versionInfo = "FlyHigh Version 0.9.7";
 	m_copyInfo =
 			"Copyright (c): 2004-2013 by Alex Graf <grafal@sf.net>, \n"
 			"Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
@@ -91,14 +91,6 @@ IFlyHighRC::IFlyHighRC()
 
 	m_dbTypeList += "sqlite";
 	m_dbTypeList += "mysql";
-//	m_dbHost = "localhost";
-//	m_dbPort = 3306;
-//	m_dbName = "flyhigh_v2";
-//	m_dbUser = "flyhigh";
-//	m_dbPass = "flyhigh";
-//	m_dbType = m_dbTypeList[0];
-	// relative to userhome or absolute:
-///	m_dbFile = "Flights/flyhigh_v2.sqlite";
 }
 
 IFlyHighRC::~IFlyHighRC()
@@ -242,7 +234,7 @@ void IFlyHighRC::setFlyHighDir(const QString &path)
 
 QString IFlyHighRC::elevationDir() const
 {
-  return m_pSettings->value(DirElevationKey, QDir::homePath() + "/flyhigh/elevation").toString();
+  return m_pSettings->value(DirElevationKey, "/var/opt/flyhigh/elevation").toString();
 }
 
 void IFlyHighRC::setElevationDir(const QString &path)
@@ -252,7 +244,7 @@ void IFlyHighRC::setElevationDir(const QString &path)
 
 QString IFlyHighRC::swissTopoDir() const
 {
-  return m_pSettings->value(DirSwissTopoKey, QDir::homePath() + "/flyhigh/swisstopo").toString();
+  return m_pSettings->value(DirSwissTopoKey, "/var/opt/flyhigh/swissmap100").toString();
 }
 
 void IFlyHighRC::setSwissTopoDir(const QString &path)
@@ -382,7 +374,7 @@ void IFlyHighRC::setDBFile(const QString &dbfile)
 
 QString IFlyHighRC::dBFile() const
 {
-  return m_pSettings->value(DatabaseFileKey, "Flights/flyhigh_v2.sqlite").toString();
+  return m_pSettings->value(DatabaseFileKey, flyHighDir() + "/flyhigh_v2.sqlite").toString();
 }
 
 DatabaseParameters IFlyHighRC::getDBParameters() const
@@ -396,10 +388,11 @@ DatabaseParameters IFlyHighRC::getDBParameters() const
 														dBFile()); //m_dbFile);
 }
 
-void IFlyHighRC::loadRC()
+void IFlyHighRC::importLegacy()
 {
 	QSettings *pSettings = NULL;
 	QString legacyfile;
+	QDir dir;
 
 	// check if file exists at default location
 	if(!QFile::exists(m_pSettings->fileName()))
@@ -413,13 +406,14 @@ void IFlyHighRC::loadRC()
 			// we'll try to read the old settings, but store
 			// them at the new location
 			// create new QSettings object, but keep old pointer
+			dir.rename(legacyfile, m_pSettings->fileName());
 			pSettings = m_pSettings;
-			m_pSettings = new QSettings(legacyfile, QSettings::IniFormat);
+			m_pSettings = new QSettings(m_pSettings->fileName(), QSettings::IniFormat);
 		}
 	}
 
-	// check if we've been reading from legacy rc file
-	if(pSettings)
+	// check if we've moved legacy rc file
+	if(pSettings != NULL)
 	{
 		// the QSettings object pointing to legacy file is not needed anymore
 		delete m_pSettings;
@@ -430,94 +424,5 @@ void IFlyHighRC::loadRC()
 
 		// store settings at new location
 		m_pSettings->sync();
-
-		// check for errors
-		if(m_pSettings->status() == QSettings::NoError)
-		{
-			// success. now remove legacy file
-			QFile::remove(legacyfile);
-			// does not matter much if removing fails. the file would just
-			// remain in place, but is ignored.
-		}
 	}
-
-/**
-	QSettings* pSettings=NULL;
-	QString legacyfile;
-
-	// check if file exists at default location
-	if(!QFile::exists(m_pSettings->fileName()))
-	{
-		// no. check the former location ~/.flyhighrc
-		legacyfile = QDir::homePath() + "/.flyhighrc";
-
-		if(QFile::exists(legacyfile))
-		{
-			// yes, exists.
-			// we'll try to read the old settings, but store
-			// them at the new location
-			// create new QSettings object, but keep old pointer
-			pSettings = m_pSettings;
-			m_pSettings = new QSettings(legacyfile, QSettings::IniFormat);
-		}
-	}
-
-	// database settings
-	m_dbType = m_pSettings->value(DatabaseTypeKey, m_dbType).toString();
-	m_dbHost = m_pSettings->value(DatabaseHostKey, m_dbHost).toString();
-	m_dbPort = m_pSettings->value(DatabasePortKey, m_dbPort).toInt();
-	m_dbName = m_pSettings->value(DatabaseNameKey, m_dbName).toString();
-	m_dbUser = m_pSettings->value(DatabaseUserKey, m_dbUser).toString();
-	m_dbPass = m_pSettings->value(DatabasePassKey, m_dbPass).toString();
-	m_dbFile = m_pSettings->value(DatabaseFileKey, m_dbFile).toString();
-
-	// device settings
-	m_deviceLine = m_pSettings->value(DeviceLineKey, m_deviceLine).toString();
-	QString currDevName = m_pSettings->value(DeviceNameKey, m_deviceNameList.at(0)).toString();
-	m_deviceName = m_deviceNameList.indexOf(currDevName);
-	QString currDevSpeed = m_pSettings->value(DeviceSpeedKey, m_deviceSpeedList.at(0)).toString();
-	m_deviceSpeed = m_deviceSpeedList.indexOf(currDevSpeed);
-
-	// directory settings
-	m_dirLast = m_pSettings->value(DirLastKey, QDir::homePath()).toString();
-  m_dirFlyHigh = m_pSettings->value(DirFlyHighKey, QDir::homePath() + "/flyhigh").toString();
-	m_dirElevation = m_pSettings->value(DirElevationKey, QDir::homePath() + "/flyhigh/elevation").toString();
-	m_dirSwissTopo = m_pSettings->value(DirSwissTopoKey, QDir::homePath() + "/flyhigh/swisstopo").toString();
-
-	// date/time settings
-	m_utcOffset = m_pSettings->value(DateTimeUtcKey, m_utcOffset).toChar().toAscii();
-
-	// pilot settings
-	m_pilotId = m_pSettings->value(PilotIdKey, m_pilotId).toInt();
-
-	// a bit of validation
-	if(!m_dbTypeList.contains(m_dbType))
-	{
-		// invalid db type. revert to default
-		m_dbType = m_dbTypeList.at(0);
-	}
-
-	// check if we've been reading from legacy rc file
-	if(pSettings)
-	{
-		// the QSettings object pointing to legacy file is not needed anymore
-		delete m_pSettings;
-
-		// revert to original QSettings object
-		m_pSettings = pSettings;
-		pSettings = NULL;
-
-		// store settings at new location
-		saveRC();
-
-		// check for errors
-		if(m_pSettings->status() == QSettings::NoError)
-		{
-			// success. now remove legacy file
-			QFile::remove(legacyfile);
-			// does not matter much if removing fails. the file would just
-			// remain in place, but is ignored.
-		}
-	}
-*/
 }
