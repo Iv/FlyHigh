@@ -145,6 +145,7 @@ void DatabaseParameters::readFromConfig()
 	m_port = IFlyHighRC::pInstance()->dBPort();
 	m_userName = IFlyHighRC::pInstance()->dBUser();
 	m_password = IFlyHighRC::pInstance()->dBPass();
+
 	m_dBFile = IFlyHighRC::pInstance()->dBFile();
 
 	validateDBType();
