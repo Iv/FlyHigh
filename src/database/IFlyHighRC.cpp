@@ -190,7 +190,7 @@ void IFlyHighRC::setDeviceSpeed(const QString &speed)
 
 QString IFlyHighRC::deviceSpeed() const
 {
-  return m_pSettings->value(DateTimeUtcKey, m_deviceSpeedList[0]).toString();
+  return m_pSettings->value(DeviceSpeedKey, m_deviceSpeedList[0]).toString();
 }
 
 float IFlyHighRC::utcOffset() const
