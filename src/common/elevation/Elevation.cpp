@@ -383,7 +383,7 @@ qDebug() << "netReply";
       if(!fileName.isEmpty())
       {
         rootPath = IFlyHighRC::pInstance()->elevationDir();
-        file.setFileName(rootPath + fileName);
+        file.setFileName(rootPath + "/" + fileName);
 
         if(file.open(QIODevice::WriteOnly))
         {
