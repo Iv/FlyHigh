@@ -42,7 +42,7 @@ QString ElevationSet::path(const QString &path) const
 
   index = m_target.lastIndexOf('/');
 
-  return path + m_target.left(index + 1);
+  return path + "/" + m_target.left(index + 1);
 }
 
 const QUrl& ElevationSet::url() const
