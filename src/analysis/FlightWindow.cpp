@@ -312,10 +312,15 @@ void FlightWindow::file_AddToSqlDB()
 
 				// start place
         wp.setPos(igcParser.flightPointList().at(id)->pos());
+        wp.setAlt(igcParser.flightPointList().at(id)->alt());
         wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
+				  wp.setName("");
+				  wp.setDescription("");
+				  wp.setCountry("");
+				  wp.setSpot("");
 					IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
 
 					if(newWayPoint.exec())
@@ -332,10 +337,15 @@ void FlightWindow::file_AddToSqlDB()
 			if(id >= 0)
 			{
         wp.setPos(igcParser.flightPointList().at(id)->pos());
+        wp.setAlt(igcParser.flightPointList().at(id)->alt());
 				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
+				  wp.setName("");
+				  wp.setDescription("");
+				  wp.setCountry("");
+				  wp.setSpot("");
 					IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
 
 					if(newWayPoint.exec())
