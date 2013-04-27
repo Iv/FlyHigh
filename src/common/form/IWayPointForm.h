@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,12 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #ifndef IWayPointForm_h
 #define IWayPointForm_h
 
-#include <qstring.h>
-
+class QString;
 class QWidget;
 class WayPointFormImpl;
 class WayPoint;
@@ -31,10 +30,11 @@ class IWayPointForm
 {
 	public:
 		IWayPointForm(QWidget* parent, const QString &caption, WayPoint *pWayPoint);
+
 	~IWayPointForm();
-	
+
 		bool exec();
-	
+
 	private:
 		WayPointFormImpl *m_pWayPointForm;
 };
