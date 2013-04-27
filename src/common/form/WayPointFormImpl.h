@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,9 +34,11 @@ class WayPointFormImpl: public QDialog, public Ui::WayPointForm
 
 	protected slots:
 		void accept();
+
 		void limitLatitude();
+
 		void limitLongitude();
-		
+
 	private:
 		WayPoint *m_pWayPoint;
 };

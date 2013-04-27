@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,13 +26,14 @@
 WayPointFormImpl::WayPointFormImpl(QWidget* parent, const QString &caption, WayPoint *pWayPoint)
 	:QDialog(parent)
 {
-        setupUi(this);
-	QString str;
+  QString str;
+
+  setupUi(this);
 
 	Q_CHECK_PTR(pWayPoint);
 	m_pWayPoint = pWayPoint;
 
-        setWindowTitle(caption);
+  setWindowTitle(caption);
 
 	// name
 	lineEditName->setText(pWayPoint->name());
