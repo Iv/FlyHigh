@@ -16,11 +16,8 @@ svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
 echo "creating tag..."
 svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
 
-echo "checkout source"
-svn checkout svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
-
-echo "removing .svn folders"
-rm -rf `find $workDir -name "*.svn"`
+echo "export source"
+svn export svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
 
 # create source tar
 echo "tar -czf $project-$revision.tar.gz $project-$revision"
