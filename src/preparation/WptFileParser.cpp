@@ -35,7 +35,7 @@ bool WptFileParser::parse(const QString &fileName, WayPoint::WayPointListType &w
   QTextStream inStream(&file);
   QString line;
   WayPoint wpt;
-  Parser parser;
+  Parser parser = ParserUndef;
   int id = 0;
   bool success;
 
