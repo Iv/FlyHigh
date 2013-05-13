@@ -72,7 +72,7 @@ void ElevationTile::close()
 
 double ElevationTile::elevation(const LatLng &pos)
 {
-  double elevation;
+  double elevation = 0;
 
   if(m_pSrtmReader != NULL)
   {
