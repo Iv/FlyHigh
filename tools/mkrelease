@@ -14,7 +14,7 @@ workDir=$curDir/$project-$revision
 svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
 
 echo "creating tag..."
-# svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
+svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
 
 echo "checkout source"
 svn checkout svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
