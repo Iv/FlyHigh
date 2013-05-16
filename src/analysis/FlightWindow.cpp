@@ -328,6 +328,7 @@ void FlightWindow::file_AddToSqlDB()
 						ISql::pInstance()->add(wp);
 					}
 				}
+
 				m_flightList[row].setStartPt(wp);
 			}
 
@@ -353,6 +354,7 @@ void FlightWindow::file_AddToSqlDB()
 						ISql::pInstance()->add(wp);
 					}
 				}
+
 				m_flightList[row].setLandPt(wp);
 			}
 
@@ -459,11 +461,16 @@ void FlightWindow::file_import()
 				flight.setTime(time);
 
 				// start place
-				wp.setPos(igcParser.flightPointList().at(startPtId)->pos());
-				wp.setType(WayPoint::TypeStartLand);
+        wp.setPos(igcParser.flightPointList().at(startPtId)->pos());
+        wp.setAlt(igcParser.flightPointList().at(startPtId)->alt());
+        wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
+				  wp.setName("");
+				  wp.setDescription("");
+				  wp.setCountry("");
+				  wp.setSpot("");
 					IWayPointForm newWayPoint(this, tr("New WayPoint Starting Place"), &wp);
 
 					if(newWayPoint.exec())
@@ -471,6 +478,7 @@ void FlightWindow::file_import()
 						ISql::pInstance()->add(wp);
 					}
 				}
+
 				flight.setStartPt(wp);
 			}
 
@@ -479,11 +487,16 @@ void FlightWindow::file_import()
 
 			if(landPtId >= 0)
 			{
-				wp.setPos(igcParser.flightPointList().at(landPtId)->pos());
+        wp.setPos(igcParser.flightPointList().at(landPtId)->pos());
+        wp.setAlt(igcParser.flightPointList().at(landPtId)->alt());
 				wp.setType(WayPoint::TypeStartLand);
 
 				if(!ISql::pInstance()->findWayPoint(wp, WayPoint::startLandRadius))
 				{
+				  wp.setName("");
+				  wp.setDescription("");
+				  wp.setCountry("");
+				  wp.setSpot("");
 					IWayPointForm newWayPoint(this, tr("New WayPoint Landing Strip"), &wp);
 
 					if(newWayPoint.exec())
@@ -491,6 +504,7 @@ void FlightWindow::file_import()
 						ISql::pInstance()->add(wp);
 					}
 				}
+
 				flight.setLandPt(wp);
 			}
 
@@ -510,6 +524,7 @@ void FlightWindow::file_import()
 					ISql::pInstance()->add(glider);
 				}
 			}
+
 			flight.setGlider(glider);
 
 			// a new flight
