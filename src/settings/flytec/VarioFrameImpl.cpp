@@ -23,7 +23,7 @@
 #include "VarioFrameImpl.h"
 #include "Flytec.h"
 
-VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+VarioFrameImpl::VarioFrameImpl(QWidget* parent, const char* name, Qt::WindowFlags fl)
   :QWidget(parent)
 {
   setupUi(this);

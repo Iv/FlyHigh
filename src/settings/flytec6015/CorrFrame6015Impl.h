@@ -29,7 +29,7 @@ class CorrFrame6015Impl: public QWidget, public Ui::CorrFrame6015, public Frame6
 	Q_OBJECT
 
 	public:
-		CorrFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		CorrFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~CorrFrame6015Impl();
 

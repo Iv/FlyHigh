@@ -29,7 +29,7 @@ class VarioFrame6015Impl: public QWidget, public Ui::VarioFrame6015, public Fram
 	Q_OBJECT
 	
 	public:
-		VarioFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+    VarioFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~VarioFrame6015Impl();
 

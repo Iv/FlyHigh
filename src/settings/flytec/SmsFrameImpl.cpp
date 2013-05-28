@@ -22,7 +22,7 @@
 #include <qspinbox.h>
 #include "SmsFrameImpl.h"
 
-SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+SmsFrameImpl::SmsFrameImpl(QWidget* parent, const char* name, Qt::WindowFlags fl)
 	:QWidget(parent)
 {
   setupUi(this);

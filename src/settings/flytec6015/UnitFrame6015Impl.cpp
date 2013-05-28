@@ -23,7 +23,7 @@
 #include "Flytec.h"
 #include "UnitFrame6015Impl.h"
 
-UnitFrame6015Impl::UnitFrame6015Impl(QWidget* parent, const char* name, Qt::WFlags fl)
+UnitFrame6015Impl::UnitFrame6015Impl(QWidget* parent, const char* name, Qt::WindowFlags fl)
 : QWidget(parent)
 {
   setupUi(this);

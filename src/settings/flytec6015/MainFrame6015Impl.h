@@ -31,7 +31,7 @@ class MainFrame6015Impl: public QMainWindow, public Ui::MainFrame6015
 	Q_OBJECT
 
 	public:
-		MainFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		MainFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 	public slots:
 		virtual void addPage(QWidget *pFrame6015);

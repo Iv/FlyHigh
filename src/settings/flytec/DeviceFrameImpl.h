@@ -30,7 +30,7 @@ class DeviceFrameImpl: public QWidget, public Ui::DeviceFrame, public Frame
 	Q_OBJECT
 
 	public:
-		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		DeviceFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~DeviceFrameImpl();
 

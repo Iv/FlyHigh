@@ -29,7 +29,7 @@ class VelocityFrameImpl: public QWidget, public Ui::VelocityFrame, public Frame
 	Q_OBJECT
 
 	public:
-		VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~VelocityFrameImpl();
 

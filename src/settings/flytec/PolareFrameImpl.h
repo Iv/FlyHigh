@@ -29,7 +29,7 @@ class PolareFrameImpl: public QWidget, public Ui::PolareFrame, public Frame
 	Q_OBJECT
 
 	public:
-		PolareFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		PolareFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~PolareFrameImpl();
 
