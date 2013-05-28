@@ -24,7 +24,7 @@
 #include "MemoryFrameImpl.h"
 #include "Flytec.h"
 
-MemoryFrameImpl::MemoryFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+MemoryFrameImpl::MemoryFrameImpl(QWidget* parent, const char* name, Qt::WindowFlags fl)
   :QWidget(parent)
 {
   setupUi(this);

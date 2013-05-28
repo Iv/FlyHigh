@@ -24,7 +24,7 @@
 #include "AcousticFrameImpl.h"
 #include "Flytec.h"
 
-AcousticFrameImpl::AcousticFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+AcousticFrameImpl::AcousticFrameImpl(QWidget* parent, const char* name, Qt::WindowFlags fl)
 : QWidget(parent)
 {
   setupUi(this);

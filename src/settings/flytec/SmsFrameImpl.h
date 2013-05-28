@@ -29,7 +29,7 @@ class SmsFrameImpl: public QWidget, public Ui::SmsFrame, public Frame
 	Q_OBJECT
 
 	public:
-		SmsFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
+		SmsFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0 );
 
 		~SmsFrameImpl();
 

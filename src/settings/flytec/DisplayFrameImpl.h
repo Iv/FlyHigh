@@ -29,7 +29,7 @@ class DisplayFrameImpl: public QWidget, public Ui::DisplayFrame, public Frame
 	Q_OBJECT
 
 	public:
-		DisplayFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		DisplayFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~DisplayFrameImpl();
 

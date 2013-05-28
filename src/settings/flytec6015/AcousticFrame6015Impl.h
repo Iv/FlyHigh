@@ -29,7 +29,7 @@ class AcousticFrame6015Impl: public QWidget, public Ui::AcousticFrame6015, publi
 	Q_OBJECT
 
 	public:
-		AcousticFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		AcousticFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~AcousticFrame6015Impl();
 

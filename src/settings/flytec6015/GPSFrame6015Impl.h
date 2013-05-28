@@ -29,7 +29,7 @@ class GPSFrame6015Impl: public QWidget, public Ui::GPSFrame6015, public Frame601
 	Q_OBJECT
 
 	public:
-		GPSFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		GPSFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~GPSFrame6015Impl();
 

@@ -25,7 +25,7 @@
 #include "GPSFrameImpl.h"
 #include "IFlyHighRC.h"
 
-GPSFrameImpl::GPSFrameImpl(QWidget* parent, const char* name, Qt::WFlags fl)
+GPSFrameImpl::GPSFrameImpl(QWidget* parent, const char* name, Qt::WindowFlags fl)
   :QWidget(parent)
 {
   setupUi(this);

@@ -29,7 +29,7 @@ class MemoryFrame6015Impl: public QWidget, public Ui::MemoryFrame6015, public Fr
 	Q_OBJECT
 
 	public:
-		MemoryFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+		MemoryFrame6015Impl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
 		~MemoryFrame6015Impl();
 
