@@ -258,7 +258,7 @@ bool Flytec::loadIGCFile(Flight &flight)
 				return false;
 			}
 
-			buff.write(line.toAscii(), line.length());
+      buff.write(line.toLatin1(), line.length());
 			success = true;
 		}
 

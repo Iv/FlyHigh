@@ -653,7 +653,7 @@ bool Protocol6015::writeParString(MemType memType, int par, const QString &value
 	bool success;
 
 	ftString = qString2ftString(value, StringSize);
-        arrValue = ftString.toAscii();
+        arrValue = ftString.toLatin1();
 	success = writeParArray(memType, par, arrValue);
         arrValue.clear();
 

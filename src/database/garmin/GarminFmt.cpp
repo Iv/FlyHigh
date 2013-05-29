@@ -63,11 +63,11 @@ void GarminFmt::GPS_Fmt_Print_Track(GPS_PTrack *trk, int32 n, Flight::FlightList
 					case pD300:
 						trk[i]->alt = 0;
 						setBrecord(trk[i], bRecord);
-                                                igcDataBuff.write(bRecord.toAscii(), bRecord.length());
+                                                igcDataBuff.write(bRecord.toLatin1(), bRecord.length());
 					break;
 					case pD301:
 						setBrecord(trk[i], bRecord);
-                                                igcDataBuff.write(bRecord.toAscii(), bRecord.length());
+                                                igcDataBuff.write(bRecord.toLatin1(), bRecord.length());
 					break;
 					default:
 					break;
