@@ -119,7 +119,7 @@ void IGCFileParser::parseHRecord(const char *record)
 		if(sscanf(record, "%*5c%2d%2d%2d", &d, &m, &y) == 3)
 		{
 			y += 2000;
-			m_date.setYMD(y, m, d);
+      m_date.setDate(y, m, d);
 		}
 	}
 }
