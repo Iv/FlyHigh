@@ -136,7 +136,7 @@ const QString& Device::getTlg()
 
 bool Device::sendTlg(const QString &tlg)
 {
-	return writeBuffer(tlg.toAscii().constData(), tlg.length());
+	return writeBuffer(tlg.toLatin1().constData(), tlg.length());
 }
 
 void Device::flush()

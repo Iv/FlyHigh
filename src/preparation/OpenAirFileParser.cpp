@@ -75,7 +75,7 @@ bool OpenAirFileParser::parse(const QString &fileName, AirSpaceList &airspaceLis
 
     while(!line.isNull())
     {
-      byteLine = line.toAscii();
+      byteLine = line.toLatin1();
       pRecord = byteLine.data();
 
 			if(strncmp(pRecord, "AC", 2) == 0)

@@ -1199,7 +1199,7 @@ void Protocol5020::qString2ftString(const QString &qString, char *pftstr, int le
 		ftString.truncate(length);
 	}
 
-  memcpy(pftstr, ftString.toAscii().data(), ftString.length());
+  memcpy(pftstr, ftString.toLatin1().data(), ftString.length());
 }
 
 QString Protocol5020::ftString2qString(const char *pftstr, int length)
@@ -1237,7 +1237,7 @@ QString Protocol5020::getCheckSum(const QString &tlg, uint end) const
 
 	for(charNr=1; charNr<end; charNr++)
 	{
-		checkSum ^= tlg.at(charNr).toAscii();
+		checkSum ^= tlg.at(charNr).toLatin1();
 	}
 
 	return QString::number(checkSum, 16).rightJustified(2, '0').toUpper();

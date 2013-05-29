@@ -170,7 +170,7 @@ void GnuPlot::execCmd(const QString &cmd)
 	if(m_pGnuPipe != NULL)
 	{
 		locCmd += "\n";
-		fputs(locCmd.toAscii().constData(), m_pGnuPipe);
+		fputs(locCmd.toLatin1().constData(), m_pGnuPipe);
 		fflush(m_pGnuPipe);
 	}
 }
@@ -249,7 +249,7 @@ void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f\n", x[valueNr]);
-			pFile->write(line.toAscii(), line.length());
+			pFile->write(line.toLatin1(), line.length());
 		}
 
 		pFile->close();
@@ -281,7 +281,7 @@ void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f %f\n", x[valueNr], y[valueNr]);
-			pFile->write(line.toAscii(), line.length());
+			pFile->write(line.toLatin1(), line.length());
 		}
 
 		pFile->close();
@@ -313,7 +313,7 @@ void GnuPlot::plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title)
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line = QString("%1 %2\n").arg(x[valueNr].toString(Qt::ISODate)).arg(y[valueNr]);
-			pFile->write(line.toAscii(), line.length());
+			pFile->write(line.toLatin1(), line.length());
 		}
 		pFile->close();
 
@@ -345,7 +345,7 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 		for(valueNr=0; valueNr<x.size(); valueNr++)
 		{
 			line.sprintf("%f %f %f\n", x[valueNr], y[valueNr], z[valueNr]);
-			pFile->write(line.toAscii(), line.length());
+			pFile->write(line.toLatin1(), line.length());
 		}
 
 		pFile->close();

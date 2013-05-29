@@ -34,12 +34,12 @@ GarminDevice::GarminDevice()
 
 bool GarminDevice::open()
 {
-	return GPS_Init(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
+	return GPS_Init(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData());
 }
 
 void GarminDevice::close()
 {
-	GPS_Command_Off(IFlyHighRC::pInstance()->deviceLine().toAscii().constData());
+	GPS_Command_Off(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData());
 }
 
 // flights
@@ -51,7 +51,7 @@ bool GarminDevice::flightList(Flight::FlightListType &flightList)
 	int trackNr;
 
 	m_flightList.clear();
-        nTracks = GPS_Command_Get_Track(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &trkList);
+        nTracks = GPS_Command_Get_Track(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData(), &trkList);
 
 	// store tracks and release memory
 	if(nTracks > 0)
@@ -96,14 +96,14 @@ bool GarminDevice::add(WayPoint &wp)
 
 	wayList[0] = GPS_Way_New();
 	wayList[0]->prot = gps_waypt_transfer;
-        memcpy(wayList[0]->ident, wp.name().toAscii().constData(), wp.name().length());
-        memcpy(wayList[0]->cmnt, wp.description().toAscii().constData(), wp.description().length());
+        memcpy(wayList[0]->ident, wp.name().toLatin1().constData(), wp.name().length());
+        memcpy(wayList[0]->cmnt, wp.description().toLatin1().constData(), wp.description().length());
 	wayList[0]->lat = wp.lat();
 	wayList[0]->lon = wp.lon();
 	wayList[0]->alt = wp.alt();
 
 	// send wp
-        ret = GPS_Command_Send_Waypoint(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), wayList, nWps);
+        ret = GPS_Command_Send_Waypoint(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData(), wayList, nWps);
 
 	// release allocated memory
 	GPS_Way_Del(&wayList[0]);
@@ -125,7 +125,7 @@ bool GarminDevice::wayPointList(WayPoint::WayPointListType &wpList)
 	int nWps;
 	int wpNr;
 
-        nWps = GPS_Command_Get_Waypoint(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &wayList);
+        nWps = GPS_Command_Get_Waypoint(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData(), &wayList);
 
 	if(nWps > 0)
 	{
@@ -157,7 +157,7 @@ bool GarminDevice::routeList(Route::RouteListType &routeList)
 	int nWps;
 	int wpNr;
 
-        nWps = GPS_Command_Get_Route(IFlyHighRC::pInstance()->deviceLine().toAscii().constData(), &wayList);
+        nWps = GPS_Command_Get_Route(IFlyHighRC::pInstance()->deviceLine().toLatin1().constData(), &wayList);
 
 	if(nWps > 0)
 	{
