@@ -28,6 +28,7 @@ class QMdiArea;
 class QMdiSubWindow;
 class QSignalMapper;
 class MDIWindow;
+class Route;
 
 class MainWindow: public QMainWindow
 {
@@ -42,6 +43,10 @@ class MainWindow: public QMainWindow
 		void closeEvent(QCloseEvent *pEvent);
 
 	private slots:
+    void file_newFlight();
+
+    void file_newRoute();
+
 		void flights_fromSQL();
 
 		void flights_fromGPS();
@@ -113,6 +118,8 @@ class MainWindow: public QMainWindow
 		void resizeSubWindow(MDIWindow *pWin);
 
     bool createAndConnectDb();
+
+    void newRoute(Route &route, bool glue);
 };
 
 #endif
