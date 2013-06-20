@@ -33,11 +33,14 @@
 #include <QStatusBar>
 #include "AirSpaceWindow.h"
 #include "CredentialsDlg.h"
+#include "DeviceConnectionParameters.h"
 #include "GliderWindow.h"
 #include "FlightWindow.h"
 #include "FlightExpWindow.h"
+#include "FlyHighSettingsDlg.h"
 #include "IDataBase.h"
 #include "IGPSDevice.h"
+#include "IFlightForm.h"
 #include "IFlytecConfig.h"
 #include "IFlytec6015Config.h"
 #include "IFlyHighRC.h"
@@ -46,11 +49,11 @@
 #include "ISql.h"
 #include "MDIWindow.h"
 #include "MigrationDlg.h"
-#include "FlyHighSettingsDlg.h"
-#include "DeviceConnectionParameters.h"
+#include "ProgressDlg.h"
 #include "RouteWindow.h"
 #include "ServicingWindow.h"
 #include "WayPointWindow.h"
+#include "WebMapRouteView.h"
 #include "MainWindow.h"
 
 MainWindow::MainWindow()
@@ -78,6 +81,15 @@ MainWindow::MainWindow()
 
 	// Menu File
 	m_pMenuFile = menuBar()->addMenu(tr("&File"));
+
+  pAction = new QAction(tr("New &Flight..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_newFlight()));
+  m_pMenuFile->addAction(pAction);
+
+  pAction = new QAction(tr("New &Route..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_newRoute()));
+  m_pMenuFile->addAction(pAction);
+  m_pMenuFile->addSeparator();
 
 	pAction = new QAction(tr("&Quit"), this);
 	connect(pAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
@@ -237,6 +249,91 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
 	QMainWindow::closeEvent(pEvent);
 }
 
+void MainWindow::file_newFlight()
+{
+	IFlightForm newFlightForm(this, tr("New Flight"));
+	Pilot pilot;
+	Flight flight;
+	IDataBase *pDb;
+	int nr;
+
+	// pilot info
+	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
+
+	// nr
+	nr = ISql::pInstance()->newFlightNr(pilot);
+	flight.setNumber(nr);
+
+	// current date and time
+	flight.setDate(QDate::currentDate());
+	flight.setTime(QTime::currentTime());
+	flight.setDuration(QTime(0, 0, 0));
+
+	// current glider
+	flight.setGlider(pilot.glider());
+
+	// a new flight
+	newFlightForm.setFlight(&flight);
+	pDb = ISql::pInstance();
+
+	if(newFlightForm.exec() && pDb->open())
+	{
+		ISql::pInstance()->add(flight);
+		pDb->close();
+	}
+}
+
+void MainWindow::file_newRoute()
+{
+	Route route;
+	Route *pLatest = NULL;
+	Route::RouteListType routeList;
+  Route::RouteListType::iterator it;
+	WayPoint wp;
+	ProgressDlg progDlg(this);
+	IDataBase *pDb;
+  int maxId = -1;
+
+	route.setName("New route");
+	route.setType(Route::Straight);
+  pDb = ISql::pInstance();
+
+	if(pDb->open())
+	{
+		progDlg.beginProgress("read routes...", pDb);
+		pDb->routeList(routeList);
+		progDlg.endProgress();
+		pDb->close();
+	}
+
+  for(it=routeList.begin(); it!=routeList.end(); it++)
+  {
+    if(maxId < (*it).id())
+    {
+      maxId = (*it).id();
+      pLatest = &(*it);
+    }
+  }
+
+	if((pLatest != NULL) && (pLatest->wayPointList().size() > 0))
+	{
+	  // take two points around start of first route as initial
+    wp = pLatest->wayPointList().at(0);
+    wp.setLon(wp.lon() - 0.25);
+    route.wayPointList().push_back(wp);
+    wp = pLatest->wayPointList().at(0);
+    wp.setLon(wp.lon() + 0.25);
+    route.wayPointList().push_back(wp);
+	}
+	else
+	{
+	  // default
+    route.wayPointList().push_back(WayPoint(47.0, 8.5));
+    route.wayPointList().push_back(WayPoint(47.0, 9.0));
+	}
+
+	newRoute(route, true);
+}
 
 void MainWindow::flights_fromSQL()
 {
@@ -631,4 +728,27 @@ bool MainWindow::createAndConnectDb()
   }
 
   return success;
+}
+
+void MainWindow::newRoute(Route &route, bool glue)
+{
+	WebMapRouteView *pView;
+	AirSpaceList airSpaceList;
+	IDataBase *pDb;
+
+	pView = new WebMapRouteView(tr("Add Route to DB"));
+	pView->setRoute(&route);
+  ISql::pInstance()->airspaceList(airSpaceList);
+  pView->setAirSpaceList(&airSpaceList);
+  pView->setGlueToCenter(glue);
+	pView->loadMap();
+  pDb = ISql::pInstance();
+
+	if((pView->exec() == QDialog::Accepted) && pDb->open())
+	{
+		// save new route
+    pDb->add(route.wayPointList());
+		pDb->add(route);
+		pDb->close();
+	}
 }
