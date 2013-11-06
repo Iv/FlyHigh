@@ -4,7 +4,7 @@ Section: database
 Priority: optional
 Architecture: i386
 Depends: libqtcore4 (>= 4.6.3), libqtgui4 (>= 4.6.3), libqt4-webkit (>= 4.6.3), libqt4-xmlpatterns (>= 4.6.3),
- libqt4-sql-sqlite (>= 4.6.3), libsqlite3-0 (>= 0.8.6), libudev0 (>= 0.9.3), gnuplot (>= 4.2)
+ libqt4-sql-sqlite (>= 4.6.3), libsqlite3-0 (>= 0.8.6), libudev0 (>= 0.9.3), gnuplot-qt (>= 4.6.0)
 Suggests: libqt4-sql-mysql (>= 4.6.3)
 Provides: flyhigh
 Installed-Size:
