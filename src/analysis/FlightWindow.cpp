@@ -828,7 +828,6 @@ void FlightWindow::plot_speedVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList tpList;
 	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
@@ -848,21 +847,20 @@ void FlightWindow::plot_speedVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			tpList = igcParser.flightPointList();
-			tpListSize = tpList.size();
+			tpListSize = igcParser.flightPointList().size();
 
 			if(tpListSize > 0)
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr]->time());
-					y.push_back(tpList.speedH(fpNr, fpNr+1)*3.6); // in km/h
+					x.push_back(igcParser.flightPointList().at(fpNr)->time());
+					y.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1)*3.6); // in km/h
 				}
 
 				m_plotter.clear();
-				m_plotter.setLabelX("time [s]");
-				m_plotter.setLabelY("speed [km/h]");
-				m_plotter.plotXY(x, y, "Speed vs Time");
+				m_plotter.setLabelX(tr("time [s]"));
+				m_plotter.setLabelY(tr("speed [km/h]"));
+				m_plotter.plotXY(x, y, tr("Speed vs Time"));
 			}
 		}
 
@@ -875,7 +873,6 @@ void FlightWindow::plot_altVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList tpList;
 	ProgressDlg progDlg(this);
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
@@ -895,21 +892,20 @@ void FlightWindow::plot_altVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			tpList = igcParser.flightPointList();
-			tpListSize = tpList.size();
+			tpListSize = igcParser.flightPointList().size();
 
 			if(tpListSize > 0)
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr]->time());
-					y.push_back(tpList[fpNr]->alt()); // in m
+					x.push_back(igcParser.flightPointList().at(fpNr)->time());
+					y.push_back(igcParser.flightPointList().at(fpNr)->alt()); // in m
 				}
 
 				m_plotter.clear();
-				m_plotter.setLabelX("time [s]");
-				m_plotter.setLabelY("altitude [m]");
-				m_plotter.plotXY(x, y, "Altitude vs Time");
+				m_plotter.setLabelX(tr("time [s]"));
+				m_plotter.setLabelY(tr("altitude [m]"));
+				m_plotter.plotXY(x, y, tr("Altitude vs Time"));
 			}
 		}
 
@@ -922,7 +918,6 @@ void FlightWindow::plot_varioVsTime()
 {
 	QTime time;
 	IGCFileParser igcParser;
-	FlightPointList tpList;
 	GnuPlot::TimeVectorType x;
 	GnuPlot::PlotVectorType y;
 	ProgressDlg progDlg(this);
@@ -942,21 +937,20 @@ void FlightWindow::plot_varioVsTime()
 		if(success)
 		{
 			igcParser.parse(m_flightList[row].igcData());
-			tpList = igcParser.flightPointList();
-			tpListSize = tpList.size();
+			tpListSize = igcParser.flightPointList().size();
 
 			if(tpListSize > 0)
 			{
 				for(fpNr=0; fpNr<tpListSize; fpNr++)
 				{
-					x.push_back(tpList[fpNr]->time());
-					y.push_back(tpList.speedV(fpNr, fpNr + 1)); // in m/s
+					x.push_back(igcParser.flightPointList().at(fpNr)->time());
+					y.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // in m/s
 				}
 
 				m_plotter.clear();
-				m_plotter.setLabelX("time [s]");
-				m_plotter.setLabelY("vario [m/s]");
-				m_plotter.plotXY(x, y, "Vario vs Time");
+				m_plotter.setLabelX(tr("time [s]"));
+				m_plotter.setLabelY(tr("vario [m/s]"));
+				m_plotter.plotXY(x, y, tr("Vario vs Time"));
 			}
 		}
 
