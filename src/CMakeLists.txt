@@ -60,6 +60,7 @@ target_link_libraries(flyhigh
 	utils
 	res
 	qextserialport
+	qextmedia
 	${QT_LIBRARIES})
 
 # install executable
