@@ -152,6 +152,9 @@
 		<Unit filename="src/common/map/SwissGrid.h" />
 		<Unit filename="src/common/map/SwissMap100.cpp" />
 		<Unit filename="src/common/map/SwissMap100.h" />
+		<Unit filename="src/common/qextmedia/CMakeLists.txt" />
+		<Unit filename="src/common/qextmedia/qexifimageheader.cpp" />
+		<Unit filename="src/common/qextmedia/qexifimageheader.h" />
 		<Unit filename="src/common/qextserialport/CMakeLists.txt" />
 		<Unit filename="src/common/qextserialport/FindUDev.cmake" />
 		<Unit filename="src/common/qextserialport/posix_qextserialport.cpp" />
@@ -204,6 +207,8 @@
 		<Unit filename="src/common/window/CMakeLists.txt" />
 		<Unit filename="src/common/window/MDIWindow.cpp" />
 		<Unit filename="src/common/window/MDIWindow.h" />
+		<Unit filename="src/common/window/PhotoView.cpp" />
+		<Unit filename="src/common/window/PhotoView.h" />
 		<Unit filename="src/common/window/ProgressDlg.cpp" />
 		<Unit filename="src/common/window/ProgressDlg.h" />
 		<Unit filename="src/common/window/TableWindow.cpp" />
