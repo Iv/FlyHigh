@@ -64,10 +64,12 @@ class FlightWindow: public TableWindow
 
 		void showOnWebMap();
 
+		void showPhotos();
+
 		void confirmDownload(Elevation *pElevation, const QString &question);
 
 	private:
-		enum Fields{Nr, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
+		enum Fields{Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
 
 		IDataBase *m_pDb;
 		QString m_fileName;

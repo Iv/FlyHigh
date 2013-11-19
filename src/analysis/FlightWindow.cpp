@@ -43,6 +43,7 @@
 #include "KmlWriter.h"
 #include "OLCOptimizer.h"
 #include "OLCWebForm.h"
+#include "PhotoView.h"
 #include "ProgressDlg.h"
 #include "MapView.h"
 #include "WebMapFlightView.h"
@@ -150,6 +151,13 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	connect(pAction, SIGNAL(triggered()), this, SLOT(showOnWebMap()));
 	MDIWindow::addAction(pAction, true);
 
+ 	if(src == IDataBase::SqlDB)
+ 	{
+    pAction = new QAction(tr("View &Photos"), this);
+    connect(pAction, SIGNAL(triggered()), this, SLOT(showPhotos()));
+    MDIWindow::addAction(pAction, true);
+ 	}
+
 	// configure the table
 	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -157,6 +165,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
 	// header
 	nameList += tr("Nr");
+	nameList += tr("");
 	nameList += tr("Date\n[DD.MM.YYYY]");
 	nameList += tr("Time\n[hh:mm:ss]");
 	nameList += tr("Duration\n[hh:mm:ss]");
@@ -168,6 +177,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	setupHeader(nameList);
 
 	pTable->setColumnWidth(Nr, 50);
+	pTable->setColumnWidth(Icon, 22);
 	pTable->setColumnWidth(Date, 115);
 	pTable->setColumnWidth(Time, 95);
 	pTable->setColumnWidth(Duration, 95);
@@ -222,26 +232,29 @@ void FlightWindow::setFlightToRow(uint row, Flight &flight)
 	QString str;
 	QTime duration;
 	QTableWidget *pTable;
+	QIcon icon(":/camera.png");
 
   pTable = TableWindow::getTable();
-	str.sprintf("%i", flight.number());
+	str = QString("%1").arg(flight.number());
 	pTable->item(row, Nr)->setText(str);
 	pTable->item(row, Date)->setText(flight.date().toString("dd.MM.yyyy"));
 	pTable->item(row, Time)->setText(flight.time().toString(Qt::ISODate));
 
+	if(flight.photoPath() != "")
+	{
+    pTable->item(row, Icon)->setIcon(icon);
+	}
+
 	duration.setHMS(0, 0, 0);
 	pTable->item(row, Duration)->setText(duration.addSecs(flight.duration()).toString(Qt::ISODate));
-
 	flight.glider().fullName(str);
 	pTable->item(row, Model)->setText(str);
 	flight.startPt().fullName(str);
 	pTable->item(row, StartPt)->setText(str);
 	flight.landPt().fullName(str);
 	pTable->item(row, LandPt)->setText(str);
-
-	str.sprintf("%.3f", flight.distance()/1000.0);
+	str = QString("%1").arg(flight.distance() / 1000.0, 0, 'f', 3);
 	pTable->item(row, Distance)->setText(str);
-
 	pTable->item(row, Comment)->setText(flight.comment());
 }
 
@@ -1174,6 +1187,22 @@ void FlightWindow::showOnMap()
 
 		m_pDb->close();
 	}
+}
+
+void FlightWindow::showPhotos()
+{
+  PhotoView view(NULL, tr("Photos"));
+
+  int row;
+
+	row = getTable()->currentRow();
+
+	if(row >= 0)
+  {
+    view.resize(800, 600);
+    view.setFolder(m_flightList[row].photoPath());
+    view.exec();
+  }
 }
 
 void FlightWindow::confirmDownload(Elevation *pElevation, const QString &question)
