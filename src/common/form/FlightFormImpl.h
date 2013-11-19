@@ -47,6 +47,8 @@ class FlightFormImpl : public QDialog, public Ui::FlightForm
 
 		void limitDistance();
 
+		void selectPhotoPath();
+
 	private:
 		Flight *m_pFlight;
 		Glider::GliderListType m_gliderList;
