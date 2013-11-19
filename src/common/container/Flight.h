@@ -77,9 +77,13 @@ class Flight
 
 		void setIgcData(const QByteArray &data);
 
-		const QString& comment();
+		const QString& comment() const;
 
 		void setComment(const QString &comm);
+
+		const QString& photoPath() const;
+
+		void setPhotoPath(const QString &path);
 
 		// sets and returns the distance in meters
 		uint distance();
@@ -100,6 +104,7 @@ class Flight
 		Glider m_glider;
 		QByteArray m_igcData;
 		QString m_comment;
+		QString m_photoPath;
 		uint m_distance;
 };
 

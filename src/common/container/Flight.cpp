@@ -26,6 +26,7 @@ Flight::Flight()
 	m_number = -1;
 	m_duration = -1;
 	m_comment = "";
+	m_photoPath = "/home/grafal/pictures/zugerberg_20130818/";
 	m_distance = 0;
 }
 
@@ -134,7 +135,7 @@ void Flight::setIgcData(const QByteArray &data)
 	m_igcData = data;
 }
 
-const QString& Flight::comment()
+const QString& Flight::comment() const
 {
 	return m_comment;
 }
@@ -142,6 +143,16 @@ const QString& Flight::comment()
 void Flight::setComment(const QString &comm)
 {
 	m_comment = comm;
+}
+
+const QString& Flight::photoPath() const
+{
+  return m_photoPath;
+}
+
+void Flight::setPhotoPath(const QString &path)
+{
+  m_photoPath = path;
 }
 
 uint Flight::distance()
