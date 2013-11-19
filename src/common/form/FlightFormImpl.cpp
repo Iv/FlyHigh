@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <QCursor>
+#include <QFileDialog>
 #include "FlightFormImpl.h"
 #include "ISql.h"
 #include "IGliderForm.h"
@@ -107,8 +108,9 @@ void FlightFormImpl::setFlight(Flight *pFlight)
 		selectStart();
 		selectLand();
 		selectGlider();
-		str.sprintf("%.3f", m_pFlight->distance() / 1000.0);
+		str = QString("%1").arg(m_pFlight->distance() / 1000.0, 0, 'f', 3);
 		lineEditDistance->setText(str);
+		lineEditPhotoPath->setText(m_pFlight->photoPath());
 		textEditComment->setText(m_pFlight->comment());
 	}
 }
@@ -134,6 +136,9 @@ void FlightFormImpl::accept()
 
 	// comment
 	m_pFlight->setComment(textEditComment->toPlainText());
+
+	// photo path
+	m_pFlight->setPhotoPath(lineEditPhotoPath->text());
 
   QDialog::accept();
 }
@@ -242,6 +247,23 @@ void FlightFormImpl::limitDistance()
 		dist = 500.0;
 	}
 
-	text.sprintf("%.5f", dist);
+	text = QString("%1").arg(dist, 0, 'f', 3);
 	lineEditDistance->setText(text);
+}
+
+void FlightFormImpl::selectPhotoPath()
+{
+  QString path;
+  QString lastDir;
+
+  lastDir = IFlyHighRC::pInstance()->lastDir();
+  path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), lastDir,
+                                            QFileDialog::ShowDirsOnly |
+                                            QFileDialog::DontResolveSymlinks);
+
+  if(path != "")
+  {
+    IFlyHighRC::pInstance()->setLastDir(path);
+    lineEditPhotoPath->setText(path);
+  }
 }
