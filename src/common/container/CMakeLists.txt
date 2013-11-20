@@ -13,6 +13,7 @@ set(container_SRCS AirSpace.cpp
                    OpenAir.cpp
                    OpenAirItem.cpp
                    Pilot.cpp
+                   Photo.cpp
                    Route.cpp
                    Servicing.cpp
                    WayPoint.cpp )
