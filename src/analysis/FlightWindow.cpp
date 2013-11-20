@@ -46,7 +46,10 @@
 #include "PhotoView.h"
 #include "ProgressDlg.h"
 #include "MapView.h"
+#include "qexifimageheader.h"
 #include "WebMapFlightView.h"
+
+#include <QDebug>
 
 FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
@@ -1086,6 +1089,7 @@ void FlightWindow::showOnWebMap()
 	FlightPointList simpleFpList;
 	Elevation elevation;
 	AirSpaceList airSpaceList;
+	Photo::PhotoListType photoList;
 	float score;
   uint dist;
 	int tpListSize;
@@ -1150,6 +1154,13 @@ void FlightWindow::showOnWebMap()
 				}
 
 				pView->setVarioList(varioList);
+
+				// photos
+				if(m_flightList[row].photoPath() != "")
+				{
+          resolvePhotos(m_flightList[row].photoPath(), igcParser.flightPointList(), photoList);
+          pView->setPhotoList(photoList);
+				}
 
 				progDlg.endProgress();
 				pView->exec();
@@ -1282,4 +1293,100 @@ Route::Type FlightWindow::getBestOlcTurnPts(const OLCOptimizer &optimizer,
   }
 
   return scoreType;
+}
+
+void FlightWindow::resolvePhotos(const QString &path, const FlightPointList &fpList,
+                                 Photo::PhotoListType &photoList)
+{
+  QDir dir;
+  QStringList filter;
+  QStringList files;
+  QStringList::iterator it;
+  Photo photo;
+  QExifImageHeader exif;
+  QVector<QExifURational> posvec;
+  QString strValue;
+  QString filename;
+  QDateTime imgTime;
+  LatLng pos;
+  double dValue;
+  bool hasPos;
+
+  filter << "*.jpg" << "*.JPG" << "*.jpeg" << "*.JPEG";
+  dir.cd(path);
+  files = dir.entryList(filter, QDir::Files);
+
+  if(files.size() > 0)
+  {
+    for(it=files.begin(); it!=files.end(); it++)
+    {
+      filename = path + *it;
+
+      if(exif.loadFromJpeg(filename))
+      {
+        // lat
+        hasPos = (exif.contains(QExifImageHeader::GpsLatitude) &&
+                  exif.contains(QExifImageHeader::GpsLatitudeRef));
+
+        if(hasPos)
+        {
+          posvec = exif.value(QExifImageHeader::GpsLatitude).toRationalVector();
+          dValue = (double)posvec[0].first / (double)posvec[0].second;
+          dValue += ((double)posvec[1].first / (double)posvec[1].second) / 60;
+          dValue += ((double)posvec[2].first / (double)posvec[2].second) / 3600;
+
+          strValue = exif.value(QExifImageHeader::GpsLatitudeRef).toString();
+
+          if(strValue == "S")
+          {
+            dValue = -dValue;
+          }
+
+          pos.setLat(dValue);
+        }
+
+        // lon
+        hasPos &= (exif.contains(QExifImageHeader::GpsLongitude) &&
+                   exif.contains(QExifImageHeader::GpsLongitudeRef));
+
+        if(hasPos)
+        {
+          posvec = exif.value(QExifImageHeader::GpsLongitude).toRationalVector();
+          dValue = (double)posvec[0].first / (double)posvec[0].second;
+          dValue += ((double)posvec[1].first / (double)posvec[1].second) / 60;
+          dValue += ((double)posvec[2].first / (double)posvec[2].second) / 3600;
+
+          strValue = exif.value(QExifImageHeader::GpsLongitudeRef).toString();
+
+          if(strValue == "W")
+          {
+            dValue = -dValue;
+          }
+
+          pos.setLon(dValue);
+        }
+
+        if(!hasPos)
+        {
+          hasPos = exif.contains(QExifImageHeader::DateTime);
+
+          if(hasPos)
+          {
+            strValue = exif.value(QExifImageHeader::DateTime).toString();
+            imgTime = QDateTime::fromString(strValue, "yyyy:MM:dd hh:mm:ss").toUTC();
+            pos = fpList.at(imgTime.time())->pos();
+          }
+        }
+
+        if(hasPos)
+        {
+          photo.setPath(filename);
+          photo.setPos(pos);
+          photoList.push_back(photo);
+
+qDebug() << filename << pos.lat() << pos.lon() << imgTime;
+        }
+      }
+    }
+  }
 }

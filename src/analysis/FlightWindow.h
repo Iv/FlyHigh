@@ -23,7 +23,8 @@
 #include "FlightPointList.h"
 #include "IDataBase.h"
 #include "GnuPlot.h"
-#include <TableWindow.h>
+#include "Photo.h"
+#include "TableWindow.h"
 
 class QWidget;
 class Elevation;
@@ -83,6 +84,9 @@ class FlightWindow: public TableWindow
     Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
                            WayPoint::WayPointListType &tpList,
                            uint &dist, float &score);
+
+    void resolvePhotos(const QString &path, const FlightPointList &fpList,
+                       Photo::PhotoListType &photoList);
 };
 
 #endif
