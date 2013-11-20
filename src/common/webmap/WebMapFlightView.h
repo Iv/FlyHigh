@@ -23,6 +23,7 @@
 
 #include <QDialog>
 #include "FlightPointList.h"
+#include "Photo.h"
 #include "WayPoint.h"
 
 class AirSpaceList;
@@ -52,6 +53,8 @@ class WebMapFlightView: public QDialog
 
 		void setAirSpaceList(AirSpaceList *pAirSpaceList);
 
+		void setPhotoList(const Photo::PhotoListType &photoList);
+
 		void loadMap();
 
 	protected:
@@ -66,6 +69,7 @@ class WebMapFlightView: public QDialog
 		FlightPointList::SogListType m_sogList;
 		FlightPointList::VarioListType m_varioList;
 		AirSpaceList *m_pAirSpaceList;
+		Photo::PhotoListType m_photoList;
 		QString m_location;
 
 	private slots:

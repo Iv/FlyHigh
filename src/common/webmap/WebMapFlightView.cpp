@@ -81,6 +81,11 @@ void WebMapFlightView::setAirSpaceList(AirSpaceList *pAirSpaceList)
 	m_pAirSpaceList = pAirSpaceList;
 }
 
+void WebMapFlightView::setPhotoList(const Photo::PhotoListType &photoList)
+{
+  m_photoList = photoList;
+}
+
 void WebMapFlightView::loadMap()
 {
 	m_pWebMap->loadUrl("qrc:/flight/flight.html");
@@ -119,6 +124,8 @@ void WebMapFlightView::appReady()
       m_pWebMap->getAirSpace()->pushAirSpace(*it);
     }
   }
+
+  m_pWebMap->getFlight()->setPhotoList(m_photoList);
 
 	m_pWebMap->getFlight()->showPlot();
 }
