@@ -81,6 +81,24 @@ const FlightPoint* FlightPointList::at(int index) const
 	return m_flightPointList.at(index);
 }
 
+const FlightPoint* FlightPointList::at(const QTime &time) const
+{
+  FlighPointListType::const_iterator it;
+  FlightPoint *pPoint = NULL;
+
+  for(it=m_flightPointList.begin(); it!=m_flightPointList.end(); it++)
+  {
+    pPoint = *it;
+
+    if(pPoint->time() >= time)
+    {
+      break;
+    }
+  }
+
+  return pPoint;
+}
+
 FlightPointList::iterator FlightPointList::begin()
 {
   return m_flightPointList.begin();
