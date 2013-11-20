@@ -71,6 +71,8 @@ class FlightPointList
 
 		const FlightPoint* at(int index) const;
 
+		const FlightPoint* at(const QTime &time) const;
+
 		iterator begin();
 
 		iterator end();
