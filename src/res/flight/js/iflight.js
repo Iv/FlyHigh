@@ -30,6 +30,7 @@ wm_include('../route/js/measure.js');
 wm_include('../route/js/optimizer.js');
 wm_include('../route/js/route.js');
 wm_include('../route/js/turnpt.js');
+wm_include('../lib/photo.js');
 wm_include('../lib/plot/context.js');
 wm_include('../lib/plot/cursor.js');
 wm_include('../lib/plot/legend.js');
@@ -40,6 +41,7 @@ var airspaces = [];
 var route = null;
 var map = null;
 var flight = null;
+var photos = [];
 var plot = null;
 var measure;
 var oldSelect = -1;
@@ -86,7 +88,7 @@ function fl_init()
 	google.maps.event.addListener(map, 'click', function(event)
 	{
 		var inside = false;
-		
+
 		if(!measure.getEnable())
 		{
 			// select next airspace
@@ -105,7 +107,7 @@ function fl_init()
 					}
 				}
 			}
-			
+
 			if(inside)
 			{
 				as_selectAirSpaceNr(airspaceNr);
@@ -182,7 +184,7 @@ function rt_setTurnPts(turnPts)
 	var latlng;
 
 	bounds = new google.maps.LatLngBounds();
-	
+
 	for(tpNr=0; tpNr<turnPts.length; tpNr++)
 	{
 		latlng = new google.maps.LatLng(turnPts[tpNr][0], turnPts[tpNr][1]);
@@ -260,6 +262,14 @@ function fl_setSog(sogList)
 function fl_setVario(varioList)
 {
 	flight.setVarioList(varioList);
+}
+
+function fl_pushPhoto(opts)
+{
+	var photo;
+
+	photo = new Photo(map, opts);
+	photos.push(photo);
 }
 
 function fl_showPlot()
@@ -351,7 +361,7 @@ function fl_durationDown()
 function fl_measure(div)
 {
 	var show;
-	
+
 	show = (div.className == "button_up");
 	measure.show(show);
 
