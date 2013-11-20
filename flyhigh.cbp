@@ -83,6 +83,8 @@
 		<Unit filename="src/common/container/OpenAir.h" />
 		<Unit filename="src/common/container/OpenAirItem.cpp" />
 		<Unit filename="src/common/container/OpenAirItem.h" />
+		<Unit filename="src/common/container/Photo.cpp" />
+		<Unit filename="src/common/container/Photo.h" />
 		<Unit filename="src/common/container/Pilot.cpp" />
 		<Unit filename="src/common/container/Pilot.h" />
 		<Unit filename="src/common/container/Route.cpp" />
@@ -345,6 +347,7 @@
 		<Unit filename="src/res/js/chartFX/chart.js" />
 		<Unit filename="src/res/js/chartFX/excanvas.js" />
 		<Unit filename="src/res/lib/markerclusterer.js" />
+		<Unit filename="src/res/lib/photo.js" />
 		<Unit filename="src/res/route/CMakeLists.txt" />
 		<Unit filename="src/res/route/js/fai.js" />
 		<Unit filename="src/res/route/js/infobox.js" />
