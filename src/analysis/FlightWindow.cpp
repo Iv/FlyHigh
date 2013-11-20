@@ -49,8 +49,6 @@
 #include "qexifimageheader.h"
 #include "WebMapFlightView.h"
 
-#include <QDebug>
-
 FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 	:TableWindow(parent, name, wflags)
 {
@@ -1368,11 +1366,11 @@ void FlightWindow::resolvePhotos(const QString &path, const FlightPointList &fpL
 
         if(!hasPos)
         {
-          hasPos = exif.contains(QExifImageHeader::DateTime);
+          hasPos = exif.contains(QExifImageHeader::DateTimeOriginal);
 
           if(hasPos)
           {
-            strValue = exif.value(QExifImageHeader::DateTime).toString();
+            strValue = exif.value(QExifImageHeader::DateTimeOriginal).toString();
             imgTime = QDateTime::fromString(strValue, "yyyy:MM:dd hh:mm:ss").toUTC();
             pos = fpList.at(imgTime.time())->pos();
           }
@@ -1383,8 +1381,6 @@ void FlightWindow::resolvePhotos(const QString &path, const FlightPointList &fpL
           photo.setPath(filename);
           photo.setPos(pos);
           photoList.push_back(photo);
-
-qDebug() << filename << pos.lat() << pos.lon() << imgTime;
         }
       }
     }
