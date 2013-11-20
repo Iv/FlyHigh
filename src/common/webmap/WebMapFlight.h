@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include "FlightPointList.h"
+#include "Photo.h"
 
 class WebMap;
 
@@ -42,6 +43,8 @@ class WebMapFlight: public QObject
 		void setSogList(const FlightPointList::SogListType &sogList);
 
 		void setVarioList(const FlightPointList::VarioListType &varioList);
+
+		void setPhotoList(const Photo::PhotoListType &photoList);
 
 		void showPlot();
 

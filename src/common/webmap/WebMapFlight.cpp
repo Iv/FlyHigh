@@ -199,6 +199,34 @@ void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList)
 	}
 }
 
+// qrc:/home/grafal/pictures/rigi_20131101/IMG_1483.JPG
+
+void WebMapFlight::setPhotoList(const Photo::PhotoListType &photoList)
+{
+	QString code = "fl_pushPhoto({lat: %1, lng: %2, path: '%3'});";
+	QWebFrame *pFrame;
+	uint listSize;
+	uint itemNr;
+	QString path;
+	double lat;
+	double lon;
+
+	listSize = photoList.size();
+
+	if(listSize > 0)
+	{
+    pFrame = m_pWebMap->page()->mainFrame();
+
+		for(itemNr=0; itemNr<listSize; itemNr++)
+		{
+      lat = photoList.at(itemNr).pos().lat();
+      lon = photoList.at(itemNr).pos().lon();
+      path = photoList.at(itemNr).path();
+      pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(path));
+		}
+  }
+}
+
 void WebMapFlight::showPlot()
 {
 	QString code = "fl_showPlot();";
