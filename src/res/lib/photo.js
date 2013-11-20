@@ -69,20 +69,18 @@ Photo.prototype.updateIcon = function()
 	this.marker.setIcon(image);
 }
 
+var ph_infoWin = null;
+
 function ph_display(photo)
 {
-  var contentString =
-		'<div id="content">' +
-		'<div id="siteNotice">' +
-		'</div>' +
-		'<div id="bodyContent">' +
-		'<img src="file://' + photo.getPath() + '" alt="" width="600" height="480" >'
-		'</div>' +
-		'</div>';
+	var content;
 
-  var infowindow = new google.maps.InfoWindow({
-      content: contentString
-  });
+	if(ph_infoWin === null)
+	{
+		ph_infoWin = new google.maps.InfoWindow();
+	}
 
-	infowindow.open(photo.getMap(), photo.getMarker());
+	content = '<img src="file://' + photo.getPath() + '" alt="" style="max-width:600px;height:480px;width:auto;">'
+	ph_infoWin.setContent(content);
+	ph_infoWin.open(photo.getMap(), photo.getMarker());
 }
