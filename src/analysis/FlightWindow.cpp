@@ -1201,7 +1201,6 @@ void FlightWindow::showOnMap()
 void FlightWindow::showPhotos()
 {
   PhotoView view(NULL, tr("Photos"));
-
   int row;
 
 	row = getTable()->currentRow();
@@ -1210,7 +1209,11 @@ void FlightWindow::showPhotos()
   {
     view.resize(800, 600);
     view.setFolder(m_flightList[row].photoPath());
-    view.exec();
+
+    if(view.photoCount() > 0)
+    {
+      view.exec();
+    }
   }
 }
 
@@ -1318,7 +1321,7 @@ void FlightWindow::resolvePhotos(const QString &path, const FlightPointList &fpL
   {
     for(it=files.begin(); it!=files.end(); it++)
     {
-      filename = path + *it;
+      filename = path + "/" + *it;
 
       if(exif.loadFromJpeg(filename))
       {
