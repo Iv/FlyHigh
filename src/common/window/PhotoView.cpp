@@ -69,6 +69,11 @@ void PhotoView::setFolder(const QString &path)
   }
 }
 
+int PhotoView::photoCount() const
+{
+  return m_files.size();
+}
+
 void PhotoView::resizeEvent(QResizeEvent *pEvent)
 {
   updateSize();
