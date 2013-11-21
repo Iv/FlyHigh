@@ -46,12 +46,13 @@ bool Flights::add(Flight &flight)
 
   id = newId("Flights");
   sqls = QString("INSERT INTO Flights(Id, Number, PilotId, Date, Time, GliderId, StartPtId, "
-                 "LandPtId, Duration, Distance, Comment, IGCFile) "
-                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, %10, '%11', :igcdata);")
+                 "LandPtId, Duration, Distance, PhotoPath, Comment, IGCFile) "
+                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, '%10', %11, '%12', :igcdata);")
                  .arg(id).arg(flight.number()).arg(flight.pilot().id())
                  .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(escape(flight.comment()));
+                 .arg(flight.duration()).arg(flight.distance()).arg(flight.photoPath())
+                 .arg(escape(flight.comment()));
 
   query.prepare(sqls);
   query.bindValue(":igcdata", flight.igcData());
@@ -74,13 +75,13 @@ bool Flights::updateFlight(Flight &flight)
 	bool success;
 
   sqls = QString("UPDATE Flights SET Number=%1, PilotId=%2, Date='%3', Time='%4', GliderId=%5, "
-                 "StartPtId=%6, LandPtId=%7, Duration=%8, Distance=%9, Comment='%10' "
-                 "WHERE Id=%11;")
+                 "StartPtId=%6, LandPtId=%7, Duration=%8, Distance=%9, PhotoPath='%10', Comment='%11' "
+                 "WHERE Id=%12;")
                  .arg(flight.number()).arg(flight.pilot().id()).arg(flight.date().toString("yyyy-MM-dd"))
                  .arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(escape(flight.comment()))
-                 .arg(flight.id());
+                 .arg(flight.duration()).arg(flight.distance()).arg(flight.photoPath())
+                 .arg(escape(flight.comment())).arg(flight.id());
 
 	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Flights");
@@ -131,7 +132,7 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	WayPoint wayPoint;
 
 	sqls = QString("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
-                  "Duration, Distance, Comment FROM Flights WHERE PilotId=%1 ORDER BY Number DESC;")
+                  "Duration, Distance, PhotoPath, Comment FROM Flights WHERE PilotId=%1 ORDER BY Number DESC;")
                 .arg(pilot.id());
 
 	success = query.exec(sqls);
@@ -154,8 +155,9 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 			flight.setLandPt(wayPoint);
 			flight.setDuration(query.value(8).toInt());
 			flight.setDistance(query.value(9).toInt());
-			flight.setComment(query.value(10).toString());
-			//flight.setIgcData(query.value(11).toByteArray());
+			flight.setPhotoPath(query.value(10).toString());
+			flight.setComment(query.value(11).toString());
+			//flight.setIgcData(query.value(12).toByteArray());
 
 			flightList.push_back(flight);
 		}
