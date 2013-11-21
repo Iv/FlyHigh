@@ -26,7 +26,7 @@ Flight::Flight()
 	m_number = -1;
 	m_duration = -1;
 	m_comment = "";
-	m_photoPath = "/home/grafal/pictures/zugerberg_20130818/";
+	m_photoPath = "";
 	m_distance = 0;
 }
 
