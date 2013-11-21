@@ -41,6 +41,8 @@ class PhotoView: public QDialog
 
 		void setFolder(const QString &path);
 
+		int photoCount() const;
+
 	protected:
     void 	resizeEvent(QResizeEvent *pEvent);
 
