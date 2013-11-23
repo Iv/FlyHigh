@@ -36,6 +36,7 @@ const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_1 = QDateTime(QDate(
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_8_2 = QDateTime(QDate(2011,  2, 20), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_2 = QDateTime(QDate(2011, 12,  1), QTime( 0, 0));
 const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_5 = QDateTime(QDate(2012, 10, 31), QTime( 0, 0));
+const Upgrade::DataBaseVersion Upgrade::DataBaseVersion_0_9_8 = QDateTime(QDate(2013, 11, 23), QTime( 0, 0));
 // don't forget to replace new version string on setup-set-lastmodified statement!
 
 Upgrade::Upgrade(QSqlDatabase DB)
@@ -120,7 +121,7 @@ bool Upgrade::setup(const DatabaseParameters& params)
 
 	// finalize db setup
 	replacements.clear();
-  replacements["%versiontimestamp"] = DataBaseVersion_0_9_5.toString("yyyy-MM-dd hh:mm:ss");
+  replacements["%versiontimestamp"] = DataBaseVersion_0_9_8.toString("yyyy-MM-dd hh:mm:ss");
 	m_pExecutor->executeQuery("setup-set-lastmodified",
 														QueryExecutor::TBindMap(),
 														replacements,
@@ -171,6 +172,12 @@ bool Upgrade::upgrade()
     m_pExecutor->executeQuery("setup-create-airspaceitems", db());
     DataBaseSub::setLastModified("AirSpaces");
     setDataBaseVersion(DataBaseVersion_0_9_5);
+  }
+
+  if(dataBaseVersion() < DataBaseVersion_0_9_8)
+  {
+    m_pExecutor->executeQuery("upgrade-flights-add-photopath", db());
+    setDataBaseVersion(DataBaseVersion_0_9_8);
   }
 
 	return res;

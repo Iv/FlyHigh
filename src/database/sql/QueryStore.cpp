@@ -100,10 +100,10 @@ void QueryStore::init()
 					 "INSERT INTO Routes (Id, Name, Type) VALUES (:Id, :Name, :Type)");
 	addQuery("migrate-read-flights",
 					 "common",
-					 "SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile FROM Flights");
+           "SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile, PhotoPath FROM Flights");
 	addQuery("migrate-write-flights",
 					 "common",
-					 "INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile) VALUES (:Id, :Number, :PilotId, :Date, :Time, :GliderId, :StartPtId, :LandPtId, :Duration, :Distance, :Comment, :IGCFile)");
+           "INSERT INTO Flights (Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, Duration, Distance, Comment, IGCFile, PhotoPath) VALUES (:Id, :Number, :PilotId, :Date, :Time, :GliderId, :StartPtId, :LandPtId, :Duration, :Distance, :Comment, :IGCFile, :PhotoPath)");
   addQuery("migrate-read-airspaceitems",
            "common",
            "SELECT Id, AirSpaceId, Longitude, Latitude FROM AirSpaceItems");
@@ -227,6 +227,7 @@ void QueryStore::init()
 					 "`Distance` INT NOT NULL,"
 					 "`Comment` VARCHAR(500) NULL DEFAULT '',"
 					 "`IGCFile` MEDIUMBLOB,"
+           "`PhotoPath` VARCHAR(500) DEFAULT '',"
 					 "PRIMARY KEY(`Id`),"
 					 "UNIQUE KEY byFlight(`PilotId`, `Number`),"
 					 "FOREIGN KEY(`PilotId`) REFERENCES Pilots(`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,"
@@ -250,6 +251,7 @@ void QueryStore::init()
 					 "`Distance` INTEGER NOT NULL,"
 					 "`Comment` VARCHAR(500) DEFAULT '',"
 					 "`IGCFile` MEDIUMBLOB,"
+           "`PhotoPath` VARCHAR(500) DEFAULT '',"
 					 "CONSTRAINT Flights_fk1 FOREIGN KEY (`PilotId`)"
 					 " REFERENCES `Pilots` (`Id`) ON DELETE RESTRICT ON UPDATE CASCADE,"
 					 "CONSTRAINT Flights_fk2 FOREIGN KEY (`GliderId`)"
@@ -446,6 +448,10 @@ void QueryStore::init()
 					 "QSQLITE",
 					 "ALTER TABLE `WayPoints` "
               "ADD `Type` INTEGER NOT NULL DEFAULT 1");
+  addQuery("upgrade-flights-add-photopath",
+           "common",
+           "ALTER TABLE `Flights` "
+              "ADD `PhotoPath` VARCHAR(500) DEFAULT ''");
 }
 
 void QueryStore::addQuery(const QString& name, const QString& driver, const Query& query)
