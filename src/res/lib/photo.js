@@ -21,9 +21,39 @@
  *   service in combination with closed source.                            *
  ***************************************************************************/
 
-/* WebMapFlight.cpp
-	QString code = "fl_pushPhoto({lat: %1, lng: %2, path: '%3'});";
-*/
+var ph_oms = null;
+
+function ph_initPhotoList(map)
+{
+	var infowin;
+
+	infowin = new google.maps.InfoWindow();
+	ph_oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true});
+
+	ph_oms.addListener('click', function(marker)
+	{
+		var content;
+
+		content = '<img src="file://' + marker.path +
+							'" alt="" style="max-width:600px;height:480px;width:auto;">';
+		infowin.setContent(content);
+		infowin.open(map, marker);
+	});
+
+	ph_oms.addListener('spiderfy', function(markers)
+	{
+		infowin.close();
+	});
+}
+
+function ph_addToPhotoList(photo)
+{
+	var marker;
+
+	marker = photo.getMarker();
+	marker.path = photo.getPath();
+	ph_oms.addMarker(marker);
+}
 
 function Photo(map, opts)
 {
@@ -40,8 +70,6 @@ function Photo(map, opts)
 	});
 
 	this.updateIcon();
-
-	google.maps.event.addListener(this.marker, 'click', function(event) {ph_display(photo);});
 }
 
 Photo.prototype.getMap = function()
@@ -67,20 +95,4 @@ Photo.prototype.updateIcon = function()
 				new google.maps.Point(12, 12));
 
 	this.marker.setIcon(image);
-}
-
-var ph_infoWin = null;
-
-function ph_display(photo)
-{
-	var content;
-
-	if(ph_infoWin === null)
-	{
-		ph_infoWin = new google.maps.InfoWindow();
-	}
-
-	content = '<img src="file://' + photo.getPath() + '" alt="" style="max-width:600px;height:480px;width:auto;">'
-	ph_infoWin.setContent(content);
-	ph_infoWin.open(photo.getMap(), photo.getMarker());
-}
+};
