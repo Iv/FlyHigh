@@ -30,6 +30,7 @@ wm_include('../route/js/measure.js');
 wm_include('../route/js/optimizer.js');
 wm_include('../route/js/route.js');
 wm_include('../route/js/turnpt.js');
+wm_include('../lib/oms.min.js');
 wm_include('../lib/photo.js');
 wm_include('../lib/plot/context.js');
 wm_include('../lib/plot/cursor.js');
@@ -41,7 +42,6 @@ var airspaces = [];
 var route = null;
 var map = null;
 var flight = null;
-var photos = [];
 var plot = null;
 var measure;
 var oldSelect = -1;
@@ -81,6 +81,9 @@ function fl_init()
 
 			measure = new Measure(map);
 			measure.setChangeCallback(measureChanged);
+
+			ph_initPhotoList(map);
+
 			wm_emitAppReady();
 		}
 	});
@@ -269,7 +272,7 @@ function fl_pushPhoto(opts)
 	var photo;
 
 	photo = new Photo(map, opts);
-	photos.push(photo);
+	ph_addToPhotoList(photo);
 }
 
 function fl_showPlot()
@@ -282,8 +285,8 @@ function fl_showPlot()
 
 	for(index=0; index<maxIndex; index++)
 	{
-//		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index)});
-		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index), valueY2: flight.getElevationAt(index)});
+		data.push({valueX: flight.getTimeAt(index), valueY: flight.getAltAt(index),
+							valueY2: flight.getElevationAt(index)});
 	}
 
 	plot.adjustMinMaxX(data);
