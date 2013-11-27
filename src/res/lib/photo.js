@@ -27,8 +27,15 @@ function ph_initPhotoList(map)
 {
 	var infowin;
 
+	ph_oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true,
+																						markersWontHide: true,
+																						keepSpiderfied: true});
 	infowin = new google.maps.InfoWindow();
-	ph_oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true});
+
+	infowin.addListener('closeclick', function()
+	{
+		ph_oms.unspiderfy();
+	});
 
 	ph_oms.addListener('click', function(marker)
 	{
