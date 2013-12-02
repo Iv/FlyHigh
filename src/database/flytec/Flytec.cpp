@@ -547,7 +547,7 @@ bool Flytec::add(AirSpaceList &airspaceList)
   uint nr;
   int totalSent;
   int curSent;
-  bool success;
+  bool success = false;
 
   m_cancel = false;
 
