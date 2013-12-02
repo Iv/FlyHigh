@@ -47,7 +47,7 @@ bool Flights::add(Flight &flight)
   id = newId("Flights");
   sqls = QString("INSERT INTO Flights(Id, Number, PilotId, Date, Time, GliderId, StartPtId, "
                  "LandPtId, Duration, Distance, PhotoPath, Comment, IGCFile) "
-                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, '%10', %11, '%12', :igcdata);")
+                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, %10, '%11', '%12', :igcdata);")
                  .arg(id).arg(flight.number()).arg(flight.pilot().id())
                  .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
                  .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
