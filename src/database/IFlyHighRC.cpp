@@ -80,12 +80,12 @@ IFlyHighRC::IFlyHighRC()
 	m_deviceSpeedList += "38400";*/
 	m_deviceSpeedList += "57600";
 
-	m_versionInfo = "FlyHigh Version 0.9.7";
+	m_versionInfo = "FlyHigh Version 0.9.8";
 	m_copyInfo =
 			"Copyright (c): 2004-2013 by Alex Graf <grafal@sf.net>, \n"
 			"Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
-			"Thank you Thomas Kuhlmann for OLC optimizer and Luke Mahe\n"
-			"for MarkerClusterer.\n"
+			"Thank you Thomas Kuhlmann for OLC optimizer, Luke Mahe\n"
+			"for MarkerClusterer and George MacKerron for Spiderfy.\n"
 			"FlyHigh is distributed under the terms of the General Public\n"
 			"License (GPL Version 2). Visit www.gnu.org for more information.\n";
 
