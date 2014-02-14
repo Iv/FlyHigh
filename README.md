@@ -1,5 +1,5 @@
 
-==== What is flyhigh ====
+# What is flyhigh 
 flyhigh is a unique software for Linux and Windows
 It helps paraglider pilots to 
 - configure gps-enabled flight instruments
@@ -7,7 +7,7 @@ It helps paraglider pilots to
 - plan and optimize their next awesome FAI triangles!
 
 
-==== Features ====
+## Features 
 - SQL database for waypoints, routes, flights, gliders, airspaces
 - Flight preparation: sync waypoints and routes with database and GPS
 - Flight analysis: 2D and 3D plots with OLC optimization (gnuplot)
@@ -18,7 +18,7 @@ It helps paraglider pilots to
 - Plan flights on Google Maps
 
 
-==== Supported devices ====
+## Supported devices 
 Fully supported are
 - Flytec 5020, 6015
 - Bäuninger Competino, IQ Basic
@@ -27,21 +27,21 @@ Supported, but with limited configuration are
 - Bräuniger Competino+, Compeo, Compeo+
 
 
-==== Supported OS ====
+## Supported OS 
 Any fairly recent Linux distribution should be ok. flyhigh is well tested on
 debian and openSUSE.
 We provide Windows binaries as well, but be aware that your are using those
 at your own risk.
 
 
-==== Binary packages ====
+## Binary packages 
 Binary packages are provided through the Open Build Service (http://openbuildservice.org/).
 You may look for rpm and deb based packages for Your Favorite Linux Distribution (TM) at 
 http://software.opensuse.org/search?q=flyhigh&baseproject=ALL&include_home=true
 A Windows installer is available from http://sourceforge.net/projects/flyhigh/files/
 
 
-==== Installation ====
+## Installation 
 Linux: Look for a fitting package at http://software.opensuse.org/search?q=flyhigh&include_home=true
        You may wish to add the obs repository to your package manager for automatic
        updates. Check http://en.opensuse.org//Portal:Build_Service for guidance.
@@ -52,7 +52,7 @@ Windows: Download and install gnuplot first! You'll find instructions how to do 
          http://sourceforge.net/projects/flyhigh and run it. That's it.
 
 
-==== Database migration ====
+## Database migration 
 Attention users of version 0.5 or below:
 WARNING: Database model was totally redesigned in version 0.5.
 There is a script to migrate to database version 2, without touching the old one.
@@ -62,13 +62,13 @@ For later versions, the database is migrated automagically on the first start
 of flyhigh. Again, doing a backup first keeps you in good humour.
 
 
-==== Requirements ====
+## Requirements 
 Qt 4.3 or newer, including QtWebkit!
 For storing data locally: sqlite3 3.6.19 or newer
 For use with a dedicated SQL server: mysql 5.0 or newer should be fine
 
 
-==== Why using mysql? ====
+## Why using mysql? 
 flyhigh supports 2 kinds of data storage: Either a local, file based storage or
 a SQL database. If you want to share your waypoints and routes among colleagues,
 you need to use a mysql database server. It can be located just anywhere, be it
@@ -79,16 +79,16 @@ the sqlite configuration. But no worries, you can change to or from mysql
 later on without any loss of data.
 
 
-==== Roadmap ====
+## Roadmap 
 We plan to provide Mac packages. But don't ask for dates!
 
 
-==== License ====
+## License 
 flyhigh is distributed under GPLv2.
 See http://www.gnu.org/licenses/gpl-2.0.html for details.
 
 
-==== Who we are ====
+## Who we are 
 We are 
 - Paraglider pilots
 - Linux enthusiasts
@@ -100,7 +100,7 @@ Considering the facts above, please be indulgent if we don't reply to
 your request within 5 minutes.
 
 
-==== Donations? ====
+## Donations? 
 Would be welcome, of course! Most appreciated are
 - patches
 - testing and filing bug reports
@@ -110,7 +110,7 @@ Would be welcome, of course! Most appreciated are
 - every kind of (constructive) feedback
 
 
-==== Contact ====
+## Contact 
 Post to http://sourceforge.net/projects/flyhigh/forums
 If your wish to PM us directly, write to
 grafal<<at-nospam>>sourceforge<<dot-nospam>>net or
@@ -118,7 +118,7 @@ ja_kern<<at-nospam>>sourceforge<<dot-nospam>>net
 For news, just visit our web page at http://flyhigh.sourceforge.net/
 
 
-==== Thanks ====
+## Thanks 
 To our social environment for patiently accepting our passion.
 http://www.flytec.ch/
 http://qt.nokia.com/
