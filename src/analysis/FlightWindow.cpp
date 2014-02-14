@@ -188,11 +188,13 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	pTable->setColumnWidth(Distance, 70);
 	pTable->setColumnWidth(Comment, 1000);
 
-  connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
-  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
+    pTable->setSortingEnabled(true);
+  
+    connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
+    connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
-	m_fileName = "";
-  file_update();
+    m_fileName = "";
+    file_update();
 }
 
 void FlightWindow::file_update()
