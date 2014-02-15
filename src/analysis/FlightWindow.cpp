@@ -92,7 +92,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 		break;
 	}
 
-  pAction = new QAction(tr("&Update"), this);
+    pAction = new QAction(tr("&Update"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
 	MDIWindow::addAction(pAction);
 
@@ -120,10 +120,10 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
 	MDIWindow::addAction(pAction);
 
-/*	- ground speed / time
-- vario / time
-- altitude / time
-- 3D plot of flight*/
+    /*	- ground speed / time
+    - vario / time
+    - altitude / time
+    - 3D plot of flight*/
 	pAction = new QAction(this);
 	pAction->setSeparator(true);
 	MDIWindow::addAction(pAction, true);
@@ -165,6 +165,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 	pTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	// header
+    nameList += tr("id");
 	nameList += tr("Nr");
 	nameList += tr("");
 	nameList += tr("Date\n[DD.MM.YYYY]");
@@ -190,6 +191,8 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
     pTable->setSortingEnabled(true);
   
+    pTable->setColumnHidden(0, true);
+
     connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
     connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
@@ -237,9 +240,9 @@ void FlightWindow::setFlightToRow(uint row, Flight &flight)
 	QTableWidget *pTable;
 	QIcon icon(":/camera.png");
 
-  pTable = TableWindow::getTable();
-	str = QString("%1").arg(flight.number());
-	pTable->item(row, Nr)->setText(str);
+    pTable = TableWindow::getTable();
+    pTable->item(row, id)->setText(QString("%1").arg(flight.id()));
+    pTable->item(row, Nr)->setText(QString("%1").arg(flight.number()));
 	pTable->item(row, Date)->setText(flight.date().toString("dd.MM.yyyy"));
 	pTable->item(row, Time)->setText(flight.time().toString(Qt::ISODate));
 
@@ -280,7 +283,7 @@ void FlightWindow::file_AddToSqlDB()
 	int id;
 	bool success = false;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
   if(row >= 0)
 	{
@@ -577,7 +580,7 @@ void FlightWindow::file_exportIGC()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -697,7 +700,7 @@ void FlightWindow::file_exportKML()
 	double ptsFlat;
 	int row;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -808,22 +811,42 @@ void FlightWindow::file_new()
 	}
 }
 
+int FlightWindow::getCurrentFlightIndex(){
+    int index = -1;
+    QTableWidget *table = getTable();
+    int row = table->currentRow();
+
+    if(row >=0){
+        int id = table->item(row, 0)->text().toInt();
+        QList<Flight>::iterator i;
+        for(i = m_flightList.begin(); i <= m_flightList.end(); ++i){
+            if(i->id() == id) {
+                index = m_flightList.indexOf(*i);
+                break;
+            }
+        }
+    }
+    return index;
+}
+
 void FlightWindow::file_edit()
 {
-  IFlightForm flightForm(this, tr("Edit Flight"));
-  int row;
+    IFlightForm flightForm(this, tr("Edit Flight"));
+    int row;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if(row >= 0)
 	{
-    flightForm.setFlight(&m_flightList[row]);
 
-    if(flightForm.exec() && m_pDb->open())
-    {
-      ISql::pInstance()->updateFlight(m_flightList[row]);
-      m_pDb->close();
-    }
+        flightForm.setFlight(&m_flightList[row]);
+
+        if(flightForm.exec() && m_pDb->open())
+        {
+          ISql::pInstance()->updateFlight(m_flightList[row]);
+          m_pDb->close();
+        }
+
 	}
 }
 
@@ -831,7 +854,7 @@ void FlightWindow::file_delete()
 {
 	int row;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -852,7 +875,7 @@ void FlightWindow::plot_speedVsTime()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -897,7 +920,7 @@ void FlightWindow::plot_altVsTime()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -942,7 +965,7 @@ void FlightWindow::plot_varioVsTime()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -989,7 +1012,7 @@ void FlightWindow::plot_OLC()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -1097,7 +1120,7 @@ void FlightWindow::showOnWebMap()
 	int row;
 	bool success;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -1180,7 +1203,7 @@ void FlightWindow::showOnMap()
 	MapView *pView;
 	WayPoint::WayPointListType wpList;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if((row >= 0) && m_pDb->open())
 	{
@@ -1205,7 +1228,7 @@ void FlightWindow::showPhotos()
   PhotoView view(NULL, tr("Photos"));
   int row;
 
-	row = getTable()->currentRow();
+    row = getCurrentFlightIndex();
 
 	if(row >= 0)
   {

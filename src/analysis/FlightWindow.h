@@ -70,22 +70,23 @@ class FlightWindow: public TableWindow
 		void confirmDownload(Elevation *pElevation, const QString &question);
 
 	private:
-		enum Fields{Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
+        enum Fields{id, Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
 
 		IDataBase *m_pDb;
 		QString m_fileName;
 		GnuPlot m_plotter;
 		Flight::FlightListType m_flightList;
 
-    void setFlightToRow(uint row, Flight &flight);
+        int getCurrentFlightIndex();
 
+        void setFlightToRow(uint row, Flight &flight);
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 
-    Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
+        Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
                            WayPoint::WayPointListType &tpList,
                            uint &dist, float &score);
 
-    void resolvePhotos(const QString &path, const FlightPointList &fpList,
+        void resolvePhotos(const QString &path, const FlightPointList &fpList,
                        Photo::PhotoListType &photoList);
 };
 
