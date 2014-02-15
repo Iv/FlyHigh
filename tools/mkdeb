@@ -8,7 +8,8 @@ fi
 project=flyhigh
 revision=$1
 curDir=`pwd`
-workDir=../$project-$revision
+workDir=$curDir/../$project-$revision
+architecture=`dpkg --print-architecture`
 
 # tag and get source on SVN
 #svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
@@ -16,14 +17,13 @@ workDir=../$project-$revision
 #echo "creating tag..."
 #svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
 
-#echo "export source"
+echo "export source"
 #svn export svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
-
 git checkout-index --prefix=${workDir}/ -a
 
 # create source tar
-echo "tar -czf $project-$revision.tar.gz $project-$revision"
-tar -czf $project-$revision.tar.gz $project-$revision
+echo "tar -czf $project-$revision.tar.gz ../$project-$revision"
+tar -czf $project-$revision.tar.gz ../$project-$revision
 
 # build
 mkdir $workDir/build
@@ -51,8 +51,8 @@ mkdir -p $workDir/debian/usr/share/applications/
 cp $workDir/src/flyhigh.desktop $workDir/debian/usr/share/applications/
 
 # fill control file
-projectsize="`du -sk $workDir/debian/usr/ | awk '{print $1}'`"
-cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > $workDir/debian/DEBIAN/control
+size="`du -sk $workDir/debian/usr/ | awk '{print $1}'`"
+cat $workDir/debian/DEBIAN/control.template | sed s/Version:/"Version: $revision"/ | sed s/Architecture:/"Architecture: $architecture"/ | sed s/Installed-Size:/"Installed-Size: $projectsize"/ > ${workDir}/debian/DEBIAN/control
 
 # create debian archive
 dpkg --build $workDir/debian/ $workDir/$project-$revision.deb
