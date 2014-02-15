@@ -2,22 +2,24 @@
 
 if [ -z $1 ]
 then
-    echo "usage: mkrelease revision\nFor example ./mkrelease 0.8.1"; exit
+    echo "usage: mkdeb revision\nFor example ./mkdeb 0.8.1"; exit
 fi
 
 project=flyhigh
 revision=$1
 curDir=`pwd`
-workDir=$curDir/$project-$revision
+workDir=../$project-$revision
 
 # tag and get source on SVN
-svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
+#svntag="version_`echo $revision | sed 's/[\.-]/_/g'`"
 
-echo "creating tag..."
-svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
+#echo "creating tag..."
+#svn copy --username=grafal svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/trunk svn+ssh://grafal@svn.code.sf.net/p/flyhigh/code/tags/$svntag -m $svntag
 
-echo "export source"
-svn export svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
+#echo "export source"
+#svn export svn://svn.code.sf.net/p/flyhigh/code/tags/$svntag $workDir
+
+git checkout-index --prefix=${workDir}/ -a
 
 # create source tar
 echo "tar -czf $project-$revision.tar.gz $project-$revision"
