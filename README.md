@@ -119,11 +119,12 @@ For news, just visit our web page at http://flyhigh.sourceforge.net/
 
 
 ## Thanks 
-To our social environment for patiently accepting our passion.
-http://www.flytec.ch/
-http://qt.nokia.com/
-http://www.mysql.com/
-http://www.sqlite.org/
-http://www.gnuplot.info/
-http://code.google.com/p/qextserialport/
-http://www.digikam.org/ Amazing work, guys!
+To our social environment for patiently accepting our passion.  
+http://www.flytec.ch/  
+http://qt.nokia.com/  
+http://www.mysql.com/  
+http://www.sqlite.org/  
+http://www.gnuplot.info/  
+http://code.google.com/p/qextserialport/  
+http://www.digikam.org/  
+Amazing work, guys!  
