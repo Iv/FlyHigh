@@ -213,17 +213,17 @@ bool WayPoints::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wp
 	{
 		while(query.next())
 		{
-      wp.setId(query.value(0).toInt());
-      wp.setName(query.value(1).toString());
-      wp.setSpot(query.value(2).toString());
-      wp.setCountry(query.value(3).toString());
-      lon = query.value(4).toDouble();
-      lat = query.value(5).toDouble();
-      alt = query.value(6).toInt();
-      wp.setCoordinates(lat, lon, alt);
-      wp.setDescription(query.value(7).toString());
-      wp.setType((WayPoint::Type)query.value(8).toInt());
-			wpList.push_back(wp);
+            wp.setId(query.value(0).toInt());
+            wp.setName(query.value(1).toString());
+            wp.setSpot(query.value(2).toString());
+            wp.setCountry(query.value(3).toString());
+            lon = query.value(4).toDouble();
+            lat = query.value(5).toDouble();
+            alt = query.value(6).toInt();
+            wp.setCoordinates(lat, lon, alt);
+            wp.setDescription(query.value(7).toString());
+            wp.setType((WayPoint::Type)query.value(8).toInt());
+            wpList.push_back(wp);
 		}
 	}
 
@@ -244,7 +244,7 @@ bool WayPoints::setId(WayPoint &wp)
 	bool success;
 	int id = -1;
 
-  sqls = QString("SELECT Id FROM WayPoints WHERE "
+    sqls = QString("SELECT Id FROM WayPoints WHERE "
                 "Name='%1' AND Spot='%2' AND Country='%3';")
                 .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()));
 
