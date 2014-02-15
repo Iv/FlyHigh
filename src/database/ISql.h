@@ -74,9 +74,9 @@ class ISql: public IDataBase
 
 		bool add(WayPoint::WayPointListType &wpList);
 
-    bool update(WayPoint &wp);
+        bool update(WayPoint &wp);
 
-    bool update(WayPoint::WayPointListType &wpList);
+        bool update(WayPoint::WayPointListType &wpList);
 
 		bool delWayPoint(WayPoint &wp);
 

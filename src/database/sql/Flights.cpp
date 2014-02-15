@@ -126,16 +126,16 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Pilot flightPilot;
 	Flight flight;
   QSqlQuery query(db());
-	QString sqls;
+    QString sql;
 	bool success;
 	Glider glider;
 	WayPoint wayPoint;
 
-	sqls = QString("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
+    sql = QString("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
                   "Duration, Distance, PhotoPath, Comment FROM Flights WHERE PilotId=%1 ORDER BY Number DESC;")
                 .arg(pilot.id());
 
-	success = query.exec(sqls);
+    success = query.exec(sql);
 
 	if(success)
 	{
