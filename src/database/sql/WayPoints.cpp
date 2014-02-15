@@ -24,6 +24,7 @@
 #include <QVariant>
 #include "Error.h"
 #include "WayPoints.h"
+#include <QDebug>
 
 WayPoints::WayPoints(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -102,6 +103,7 @@ bool WayPoints::delAllWayPoints()
 	return success;
 }
 
+
 bool WayPoints::wayPoint(int id, WayPoint &wp)
 {
 	QSqlQuery query(db());
@@ -113,7 +115,9 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 
 	sqls = QString("SELECT Name, Spot, Country, Longitude, Latitude, Altitude,"
                  "Description, Type FROM WayPoints WHERE Id = %1;").arg(id);
-	success = (query.exec(sqls) && query.first());
+
+
+    success = (query.exec(sqls) && query.first());
 
 	if(success)
 	{
@@ -125,12 +129,12 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 		lat = query.value(4).toDouble();
 		alt = query.value(5).toInt();
 		wp.setCoordinates(lat, lon, alt);
-    wp.setDescription(query.value(6).toString());
+        wp.setDescription(query.value(6).toString());
 		wp.setType((WayPoint::Type)query.value(7).toInt());
 	}
 	else
 	{
-		Error::verify(success, Error::SQL_CMD);
+//		Error::verify(success, Error::SQL_CMD);
 	}
 
 	return success;
@@ -157,7 +161,7 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 		while(query.next())
 		{
 			lon = query.value(1).toDouble();
-      lat = query.value(2).toDouble();
+            lat = query.value(2).toDouble();
 			locWp.setCoordinates(lat, lon, 0);
 			dist = wp.distance(locWp);
 			found = (dist <= radius);
