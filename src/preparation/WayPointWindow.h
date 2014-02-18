@@ -68,7 +68,7 @@ class WayPointWindow: public TableWindow
 		void wayPointChanged(int id);
 
 	private:
-		enum Fields{Name, Country, Spot, Longitude, Latitude, Altitude, Description};
+		enum Fields{Id, Name, Country, Spot, Longitude, Latitude, Altitude, Description};
 
 		WayPoint::WayPointListType m_wpList;
 		WebMapWayPointView *m_pWayPointView;
@@ -77,6 +77,10 @@ class WayPointWindow: public TableWindow
 		bool m_externSelect;
 
     void setWpToRow(uint row, const WayPoint &wp);
+
+    int getWpIndex(uint row);
+
+    int getCurrentWpIndex();
 
     void selectionToList(WayPoint::WayPointListType &wpList);
 };
