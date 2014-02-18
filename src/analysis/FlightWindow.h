@@ -70,7 +70,7 @@ class FlightWindow: public TableWindow
 		void confirmDownload(Elevation *pElevation, const QString &question);
 
 	private:
-		enum Fields{Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
+		enum Fields{Id, Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
 
 		IDataBase *m_pDb;
 		QString m_fileName;
@@ -78,6 +78,8 @@ class FlightWindow: public TableWindow
 		Flight::FlightListType m_flightList;
 
     void setFlightToRow(uint row, Flight &flight);
+
+    int getCurrentFlightIndex();
 
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 
