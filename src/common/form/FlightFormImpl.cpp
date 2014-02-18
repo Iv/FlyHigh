@@ -219,16 +219,20 @@ void FlightFormImpl::newGlider()
 	}
 }
 
-void FlightFormImpl::newWayPoint()
+void FlightFormImpl::newStartPt()
 {
 	WayPoint wp;
-	IWayPointForm newWayPoint(this, "New WayPoint", &wp);
 
-	if(newWayPoint.exec())
-	{
-		ISql::pInstance()->add(wp);
-		updateWayPoints();
-	}
+	wp = m_pFlight->startPt();
+  newWayPoint(wp);
+}
+
+void FlightFormImpl::newLandPt()
+{
+	WayPoint wp;
+
+	wp = m_pFlight->landPt();
+  newWayPoint(wp);
 }
 
 void FlightFormImpl::limitDistance()
@@ -266,4 +270,15 @@ void FlightFormImpl::selectPhotoPath()
     IFlyHighRC::pInstance()->setLastDir(path);
     lineEditPhotoPath->setText(path);
   }
+}
+
+void FlightFormImpl::newWayPoint(WayPoint &wp)
+{
+	IWayPointForm newWayPoint(this, "New WayPoint", &wp);
+
+	if(newWayPoint.exec())
+	{
+		ISql::pInstance()->add(wp);
+		updateWayPoints();
+	}
 }
