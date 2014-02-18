@@ -115,22 +115,25 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 
 	sqls = QString("SELECT Name, Spot, Country, Longitude, Latitude, Altitude,"
                  "Description, Type FROM WayPoints WHERE Id = %1;").arg(id);
-
-
-    success = (query.exec(sqls) && query.first());
+    success = query.exec(sqls);
 
 	if(success)
 	{
-		wp.setId(id);
-		wp.setName(query.value(0).toString());
-		wp.setSpot(query.value(1).toString());
-		wp.setCountry(query.value(2).toString());
-		lon = query.value(3).toDouble();
-		lat = query.value(4).toDouble();
-		alt = query.value(5).toInt();
-		wp.setCoordinates(lat, lon, alt);
-        wp.setDescription(query.value(6).toString());
-		wp.setType((WayPoint::Type)query.value(7).toInt());
+	  success = query.first();
+
+	  if(success)
+	  {
+      wp.setId(id);
+      wp.setName(query.value(0).toString());
+      wp.setSpot(query.value(1).toString());
+      wp.setCountry(query.value(2).toString());
+      lon = query.value(3).toDouble();
+      lat = query.value(4).toDouble();
+      alt = query.value(5).toInt();
+      wp.setCoordinates(lat, lon, alt);
+      wp.setDescription(query.value(6).toString());
+      wp.setType((WayPoint::Type)query.value(7).toInt());
+	  }
 	}
 	else
 	{

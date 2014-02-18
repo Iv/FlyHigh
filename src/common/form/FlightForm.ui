@@ -466,7 +466,7 @@
    <sender>pushButtonStart</sender>
    <signal>clicked()</signal>
    <receiver>FlightForm</receiver>
-   <slot>newWayPoint()</slot>
+   <slot>newStartPt()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -482,7 +482,7 @@
    <sender>pushButtonLand</sender>
    <signal>clicked()</signal>
    <receiver>FlightForm</receiver>
-   <slot>newWayPoint()</slot>
+   <slot>newLandPt()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

@@ -41,7 +41,9 @@ class FlightFormImpl : public QDialog, public Ui::FlightForm
 	protected slots:
 		void accept();
 
-		void newWayPoint();
+		void newStartPt();
+
+    void newLandPt();
 
 		void newGlider();
 
@@ -63,6 +65,8 @@ class FlightFormImpl : public QDialog, public Ui::FlightForm
 		void selectLand();
 
 		void selectGlider();
+
+		void newWayPoint(WayPoint &wp);
 };
 
 #endif

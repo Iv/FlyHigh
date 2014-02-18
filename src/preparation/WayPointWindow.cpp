@@ -165,6 +165,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	pTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	// header
+	nameList += tr("Id");
 	nameList += tr("Name");
 	nameList += tr("Country");
 	nameList += tr("Spot");
@@ -174,6 +175,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	nameList += tr("Description");
 	setupHeader(nameList);
 
+  pTable->setColumnHidden(Id, true);
 	pTable->setColumnWidth(Name, 150);
 	pTable->setColumnWidth(Country, 70);
 	pTable->setColumnWidth(Spot, 120);
@@ -181,6 +183,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	pTable->setColumnWidth(Latitude, 90);
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
+	pTable->setSortingEnabled(true);
 
   if(src == IDataBase::File)
   {
@@ -211,7 +214,7 @@ void WayPointWindow::selectionChanged()
 
 	if((m_pWayPointView != NULL) && !m_externSelect)
 	{
-	  row = getTable()->currentRow();
+	  row = getCurrentWpIndex();
 
 	  if((row >= 0) && (row < m_wpList.size()))
 	  {
@@ -222,12 +225,15 @@ void WayPointWindow::selectionChanged()
 
 void WayPointWindow::file_update()
 {
+  QTableWidget *pTable;
 	ProgressDlg progDlg(this);
 	uint wpNr;
 	uint maxWpNr;
 
 	if(m_pDb != NULL)
 	{
+    pTable = TableWindow::getTable();
+    pTable->setSortingEnabled(false); // prevent sorting on modification
     m_wpList.clear();
     TableWindow::setNumRows(0); // clear table, because of different nr of waypoints
 
@@ -246,6 +252,8 @@ void WayPointWindow::file_update()
     {
       setWpToRow(wpNr, m_wpList[wpNr]);
     }
+
+    pTable->setSortingEnabled(true);
 	}
 }
 
@@ -370,7 +378,7 @@ void WayPointWindow::file_Edit()
 {
 	int row;
 
-	row = getTable()->currentRow();
+	row = getCurrentWpIndex();
 
 	if(row >= 0)
 	{
@@ -453,23 +461,51 @@ void WayPointWindow::wayPointChanged(int id)
 
 void WayPointWindow::setWpToRow(uint row, const WayPoint &wp)
 {
-	QString str;
 	QTableWidget *pTable = TableWindow::getTable();
 
+  pTable->item(row, Id)->setData(Qt::DisplayRole, wp.id());
 	pTable->item(row, Country)->setText(wp.country());
 	pTable->item(row, Spot)->setText(wp.spot());
 	pTable->item(row, Name)->setText(wp.name());
-
-	str.sprintf("%.5f", wp.lon());
-	pTable->item(row, Longitude)->setText(str);
-
-	str.sprintf("%.5f", wp.lat());
-	pTable->item(row, Latitude)->setText(str);
-
-	str.sprintf("%i", wp.alt());
-	pTable->item(row, Altitude)->setText(str);
-
+	pTable->item(row, Longitude)->setText(QString("%1").arg(wp.lon(), 0, 'f', 5));
+	pTable->item(row, Latitude)->setText(QString("%1").arg(wp.lat(), 0, 'f', 5));
+	pTable->item(row, Altitude)->setText(QString("%1").arg(wp.alt()));
 	pTable->item(row, Description)->setText(wp.description());
+}
+
+int WayPointWindow::getWpIndex(uint row)
+{
+  QTableWidget *pTable = getTable();
+  WayPoint::WayPointListType::iterator it;
+  int ret = -1;
+  int id;
+  int index;
+
+  if(row >=0)
+  {
+    id = pTable->item(row, Id)->data(Qt::DisplayRole).toInt();
+    index = 0;
+
+    for(it=m_wpList.begin(); it<=m_wpList.end(); ++it)
+    {
+      if(it->id() == id)
+      {
+        ret = index;
+        break;
+      }
+
+      index++;
+    }
+  }
+
+  return ret;
+}
+
+int WayPointWindow::getCurrentWpIndex()
+{
+  QTableWidget *pTable = getTable();
+
+  return getWpIndex(pTable->currentRow());
 }
 
 void WayPointWindow::selectionToList(WayPoint::WayPointListType &wpList)
@@ -480,6 +516,7 @@ void WayPointWindow::selectionToList(WayPoint::WayPointListType &wpList)
 	int topRow;
 	int bottomRow;
 	int row;
+	int index;
 
   pTable = TableWindow::getTable();
   selRange = pTable->selectedRanges();
@@ -491,7 +528,8 @@ void WayPointWindow::selectionToList(WayPoint::WayPointListType &wpList)
 
     for(row=topRow; row<=bottomRow; row++)
     {
-      wpList.push_back(m_wpList[row]);
+      index = getWpIndex(row);
+      wpList.push_back(m_wpList[index]);
     }
   }
 }
