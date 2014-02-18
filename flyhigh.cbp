@@ -159,7 +159,6 @@
 		<Unit filename="src/common/qextmedia/qexifimageheader.h" />
 		<Unit filename="src/common/qextserialport/CMakeLists.txt" />
 		<Unit filename="src/common/qextserialport/FindUDev.cmake" />
-		<Unit filename="src/common/qextserialport/posix_qextserialport.cpp" />
 		<Unit filename="src/common/qextserialport/qextserialenumerator.cpp" />
 		<Unit filename="src/common/qextserialport/qextserialenumerator.h" />
 		<Unit filename="src/common/qextserialport/qextserialenumerator_linux.cpp" />
@@ -175,7 +174,6 @@
 		<Unit filename="src/common/qextserialport/qextserialport_win.cpp" />
 		<Unit filename="src/common/qextserialport/qextwineventnotifier_p.cpp" />
 		<Unit filename="src/common/qextserialport/qextwineventnotifier_p.h" />
-		<Unit filename="src/common/qextserialport/win_qextserialport.cpp" />
 		<Unit filename="src/common/utils/CMakeLists.txt" />
 		<Unit filename="src/common/utils/Error.cpp" />
 		<Unit filename="src/common/utils/Error.h" />
