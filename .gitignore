@@ -1,6 +1,7 @@
 *~
-*-swp
+*.swp
 build/*
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles/*
+*Lists.txt.user.*
