@@ -32,6 +32,7 @@ WebMapWayPointView::WebMapWayPointView(const QString &name, WayPoint::Type type)
   m_wpType = type;
 	m_pWpList = NULL;
 	m_editable = true;
+	m_selItem = -1;
 	m_pWebMap = new WebMap(this, WebMap::MapWayPoint);
 	connect(m_pWebMap, SIGNAL(mapReady()), this, SLOT(mapReady()));
 	connect(m_pWebMap, SIGNAL(appReady()), this, SLOT(appReady()));
@@ -44,9 +45,10 @@ WebMapWayPointView::~WebMapWayPointView()
 	delete m_pWebMap;
 }
 
-void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList)
+void WebMapWayPointView::setWayPointList(WayPoint::WayPointListType *pWpList, int selItem)
 {
 	m_pWpList = pWpList;
+	m_selItem = selItem;
 }
 
 WayPoint::WayPointListType& WebMapWayPointView::getModifiedWayPointList()
@@ -100,6 +102,8 @@ void WebMapWayPointView::appReady()
     {
       m_pWebMap->getWayPoint()->pushWayPoint(m_pWpList->at(itemNr));
     }
+
+    m_pWebMap->getWayPoint()->selectWayPoint(m_pWpList->at(m_selItem).id());
   }
 }
 
