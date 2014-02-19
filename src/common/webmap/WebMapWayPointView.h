@@ -36,7 +36,7 @@ class WebMapWayPointView: public QDialog
 
 		~WebMapWayPointView();
 
-		void setWayPointList(WayPoint::WayPointListType *pWpList);
+		void setWayPointList(WayPoint::WayPointListType *pWpList, int selItem);
 
     WayPoint::WayPointListType& getModifiedWayPointList();
 
@@ -59,6 +59,7 @@ class WebMapWayPointView: public QDialog
 		WayPoint::Type m_wpType;
 		WayPoint::WayPointListType *m_pWpList;
 		WayPoint::WayPointListType m_modWayPointList;
+		int m_selItem;
 		bool m_editable;
 
 	private slots:
