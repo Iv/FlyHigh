@@ -394,14 +394,17 @@ void WayPointWindow::file_Edit()
 
 void WayPointWindow::file_editWebMap()
 {
+  int index;
+
 	if((m_pWayPointView == NULL) && (m_wpList.size() >= 0))
   {
+    index = getCurrentWpIndex();
     m_pWayPointView = new WebMapWayPointView(tr("Edit WayPoints"), m_wpType);
     menu()->setEnabled(false);
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
     m_pWayPointView->setEditable(true);
-		m_pWayPointView->setWayPointList(&m_wpList);
+		m_pWayPointView->setWayPointList(&m_wpList, index);
 		m_pWayPointView->loadMap();
     m_pWayPointView->setWindowModality(Qt::NonModal);
 		m_pWayPointView->show();
@@ -410,14 +413,17 @@ void WayPointWindow::file_editWebMap()
 
 void WayPointWindow::file_viewWebMap()
 {
+  int index;
+
 	if((m_pWayPointView == NULL) && (m_wpList.size() > 0))
   {
+    index = getCurrentWpIndex();
     m_pWayPointView = new WebMapWayPointView(tr("View WayPoints"), m_wpType);
     menu()->setEnabled(false);
     connect(m_pWayPointView, SIGNAL(finished(int)), this, SLOT(wayPointViewFinished(int)));
     connect(m_pWayPointView, SIGNAL(wayPointChanged(int)), this, SLOT(wayPointChanged(int)));
     m_pWayPointView->setEditable(false);
-		m_pWayPointView->setWayPointList(&m_wpList);
+		m_pWayPointView->setWayPointList(&m_wpList, index);
 		m_pWayPointView->loadMap();
     m_pWayPointView->setWindowModality(Qt::NonModal);
 		m_pWayPointView->show();
