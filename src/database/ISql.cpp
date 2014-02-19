@@ -17,27 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QStringList>
-#include <QHostInfo>
 #include <QFileInfo>
 #include <QDir>
+#include <QHostInfo>
+#include <QSqlQuery>
+#include <QStringList>
 #include <QTimer>
 #include "AirSpaceList.h"
 #include "AirSpaces.h"
+#include "CredentialsDlg.h"
+#include "DatabaseUtilities.h"
 #include "Error.h"
 #include "ISql.h"
-#include "WayPoints.h"
 #include "Gliders.h"
 #include "Flights.h"
 #include "Pilots.h"
 #include "Routes.h"
 #include "Servicings.h"
 #include "Upgrade.h"
-#include "DatabaseUtilities.h"
-#include "CredentialsDlg.h"
-#include "ISql.h"
-
-#include <QDebug>
+#include "WayPoints.h"
 
 ISql* ISql::m_pInst = NULL;
 
@@ -172,6 +170,13 @@ bool ISql::connectDbPriv()
 
   if(success)
 	{
+    // enable foreign keys in sqlite
+    if(m_dbParameters.isSQLite())
+    {
+      QSqlQuery query(m_DefaultDB);
+      query.exec("PRAGMA foreign_keys = true;");
+    }
+
     // check if there is something in the db
     // if not, the db needs to be created before upgrading
     if (m_DefaultDB.tables().count() > 0)
