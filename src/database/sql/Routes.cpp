@@ -36,8 +36,6 @@ Routes::Routes(QSqlDatabase DB)
 bool Routes::add(Route &route)
 {
 	QSqlQuery query(db());
-	QString sqls;
-	QString value;
 	uint nWps;
 	uint wpNr;
 	int id;
@@ -45,9 +43,11 @@ bool Routes::add(Route &route)
 
 	// insert route name
 	id = newId("Routes");
-	sqls = QString("INSERT INTO Routes(Id, Name, Type) VALUES(%1, '%2', %3);")
-                  .arg(id).arg(escape(route.name())).arg(route.type());
-	success = query.exec(sqls);
+  success = query.prepare("INSERT INTO Routes(Id, Name, Type) VALUES(:id, :name, :type)");
+  query.bindValue(":id", id);
+  query.bindValue(":name", route.name());
+  query.bindValue(":type", route.type());
+  success &= query.exec();
 	Error::verify(success, Error::SQL_ADD_ROUTE_NAME);
 
   if(route.id() == -1)
@@ -57,24 +57,18 @@ bool Routes::add(Route &route)
 
 	if(success)
 	{
-		sqls = "INSERT INTO RouteItems(RouteId, WayPointId) VALUES";
+    success = query.prepare("INSERT INTO RouteItems(RouteId, WayPointId) VALUES (:route, :waypoint)");
 
 		// insert route items
 		nWps = route.wayPointList().size();
 
 		for(wpNr=0; wpNr<nWps; wpNr++)
 		{
-			if(wpNr != 0)
-			{
-				sqls += ", ";
-			}
-
-			value = QString("(%1, %2)").arg(id).arg(route.wayPointList().at(wpNr).id());
-			sqls += value;
+      query.bindValue(":route", id);
+      query.bindValue(":waypoint", route.wayPointList().at(wpNr).id());
+      success &= query.exec();
 		}
 
-		sqls += ";";
-		success = query.exec(sqls);
 		Error::verify(success, Error::SQL_CMD);
 		DataBaseSub::setLastModified("Routes");
 	}
@@ -86,28 +80,29 @@ bool Routes::delRoute(Route &route)
 {
 	WayPoint::WayPointListType::iterator it;
 	QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
 	// first delete route items
-	sqls = QString("DELETE FROM RouteItems WHERE RouteId=%1;").arg(route.id());
-	success = query.exec(sqls);
+  success = query.prepare("DELETE FROM RouteItems WHERE RouteId=:id");
+  query.bindValue(":id", route.id());
+  success &= query.exec();
 	Error::verify(success, Error::SQL_CMD);
 
 	// route
-	sqls = QString("DELETE FROM Routes WHERE Id=%1;").arg(route.id());
-	success = query.exec(sqls);
+  success = query.prepare("DELETE FROM Routes WHERE Id=:id");
+  query.bindValue(":id", route.id());
+  success &= query.exec();
 	Error::verify(success, Error::SQL_CMD);
 
 	// waypoints (delete only types not used anymore)
-	success = true;
+  success = query.prepare("DELETE FROM WayPoints WHERE Id=:id");
 
 	for(it=route.wayPointList().begin(); it!=route.wayPointList().end(); it++)
 	{
-	  if((*it).type() == WayPoint::TypeTurnPoint)
+    if(it->type() == WayPoint::TypeTurnPoint)
 	  {
-      sqls = QString("DELETE FROM WayPoints WHERE Id=%1").arg((*it).id());
-      success &= query.exec(sqls);
+      query.bindValue(":id", it->id());
+      success &= query.exec();
 	  }
 	}
 
@@ -122,10 +117,9 @@ bool Routes::routeList(Route::RouteListType &routeList)
 {
 	Route route;
 	WayPoint wp;
-	QSqlQuery routeQuery(db());
+  QSqlQuery routeQuery(db());
 	QSqlQuery routeItemsQuery(db());
 	QString sqls = "SELECT Id, Name, Type FROM Routes ORDER BY Name ASC;";
-	QString wpName;
 	int wpId;
 	bool success;
 
@@ -133,6 +127,7 @@ bool Routes::routeList(Route::RouteListType &routeList)
 
 	if(success)
 	{
+    success = routeItemsQuery.prepare("SELECT WayPointId FROM RouteItems WHERE RouteId=:route");
 		while(routeQuery.next())
 		{
 			// route name
@@ -142,8 +137,8 @@ bool Routes::routeList(Route::RouteListType &routeList)
 			route.wayPointList().clear();
 
 			// route items
-			sqls = QString("SELECT WayPointId FROM RouteItems WHERE RouteId=%1;").arg(route.id());
-			success = routeItemsQuery.exec(sqls);
+      routeItemsQuery.bindValue(":route", route.id());
+      success &= routeItemsQuery.exec();
 
 			if(success)
 			{
@@ -167,13 +162,12 @@ bool Routes::routeList(Route::RouteListType &routeList)
 bool Routes::setId(Route &route)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	bool success;
 	int id = -1;
 
-	sqls = QString("SELECT Id FROM Routes WHERE Name='%1';")
-                .arg(escape(route.name()));
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT Id FROM Routes WHERE Name=:name");
+  query.bindValue(":name", route.name());
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{

@@ -36,18 +36,19 @@ Servicings::Servicings(QSqlDatabase DB)
 bool Servicings::add(Servicing &servicing)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	int id;
 	bool success;
 
   id = newId("Servicings");
-  sqls = QString("INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) "
-                 "VALUES(%1, %2, '%3', '%4', '%5');")
-                 .arg(id).arg(servicing.glider().id())
-                 .arg(servicing.date().toString("yyyy-MM-dd"))
-                 .arg(servicing.responsibility()).arg(escape(servicing.comment()));
+  success = query.prepare("INSERT INTO Servicings (Id, GliderId, Date, Responsibility, Comment) "
+                          "VALUES(:id, :glider, :date, :responsibility, :comment)");
+  query.bindValue(":id", id);
+  query.bindValue(":glider", servicing.glider().id());
+  query.bindValue(":date", servicing.date().toString("yyyy-MM-dd"));
+  query.bindValue(":responsibility", servicing.responsibility());
+  query.bindValue(":comment", servicing.comment());
+  success &= query.exec();
 
-  success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Servicings");
 
@@ -62,17 +63,18 @@ bool Servicings::add(Servicing &servicing)
 bool Servicings::update(Servicing &servicing)
 {
   QSqlQuery query(db());
-  QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE Servicings SET GliderId=%1, Date='%2', Responsibility='%3', "
-                 "Comment='%4' WHERE Id=%5;")
-                 .arg(servicing.glider().id()).arg(servicing.date().toString("yyyy-MM-dd"))
-                 .arg(servicing.responsibility()).arg(escape(servicing.comment()))
-                 .arg(servicing.id());
+  success = query.prepare("UPDATE Servicings SET GliderId=:glider, Date=:date, Responsibility=:responsibility, "
+                          "Comment=:comment WHERE Id=:id");
+  query.bindValue(":glider", servicing.glider().id());
+  query.bindValue(":date", servicing.date().toString("yyyy-MM-dd"));
+  query.bindValue(":responsibility", servicing.responsibility());
+  query.bindValue(":comment", servicing.comment());
+  query.bindValue(":id", servicing.id());
+  success &= query.exec();
 
-	success = query.exec(sqls);
-	DataBaseSub::setLastModified("Servicings");
+  DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
 
 	return success;
@@ -81,12 +83,13 @@ bool Servicings::update(Servicing &servicing)
 bool Servicings::delServicing(Servicing &servicing)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM Servicings WHERE Id=%1").arg(servicing.id());
-	success = query.exec(sqls);
-	DataBaseSub::setLastModified("Servicings");
+  success = query.prepare("DELETE FROM Servicings WHERE Id=:id");
+  query.bindValue(":id", servicing.id());
+  success &= query.exec();
+
+  DataBaseSub::setLastModified("Servicings");
 	Error::verify(success, Error::SQL_CMD);
 
 	return success;

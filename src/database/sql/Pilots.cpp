@@ -40,19 +40,20 @@ Pilots::~Pilots()
 bool Pilots::add(Pilot &pilot)
 {
   QSqlQuery query(db());
-  QString sqls;
   int id;
 	bool success;
 
   id = newId("Pilots");
-  sqls = QString("INSERT INTO Pilots(Id, FirstName, LastName, BirthDate, CallSign, GliderId) "
-                 "VALUES(%1, '%2', '%3', '%4', '%5', %6);")
-                 .arg(id).arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
-                 .arg(pilot.birthDate().toString("yyyy-MM-dd"))
-                 .arg(escape(pilot.callSign()))
-                 .arg(pilot.glider().id());
+  success = query.prepare("INSERT INTO Pilots(Id, FirstName, LastName, BirthDate, CallSign, GliderId) "
+                          "VALUES(:id, :firstname, :lastname, :birthdate, :callsign, :glider)");
+  query.bindValue(":id", id);
+  query.bindValue(":firstname", pilot.firstName());
+  query.bindValue(":lastname", pilot.lastName());
+  query.bindValue(":birthdate", pilot.birthDate().toString("yyyy-MM-dd"));
+  query.bindValue(":callsign", pilot.callSign());
+  query.bindValue(":glider", pilot.glider().id());
+  success &= query.exec();
 
-  success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	setId(pilot);
 	DataBaseSub::setLastModified("Pilots");
@@ -68,18 +69,18 @@ bool Pilots::add(Pilot &pilot)
 bool Pilots::update(Pilot &pilot)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("UPDATE Pilots SET FirstName='%1', LastName='%2', BirthDate='%3', "
-                 "CallSign='%4', GliderId=%5 WHERE Id=%6;")
-                .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
-                .arg(pilot.birthDate().toString("yyyy-MM-dd"))
-                .arg(escape(pilot.callSign()))
-                .arg(pilot.glider().id())
-                .arg(pilot.id());
+  success = query.prepare("UPDATE Pilots SET FirstName=:firstname, LastName=:lastname, BirthDate=:birthdate "
+                          "CallSign=:callsign, GliderId=:glider WHERE Id=:id");
+  query.bindValue(":firstname", pilot.firstName());
+  query.bindValue(":lastname", pilot.lastName());
+  query.bindValue(":birthdate", pilot.birthDate().toString("yyyy-MM-dd"));
+  query.bindValue(":callsign", pilot.callSign());
+  query.bindValue(":glider", pilot.glider().id());
+  query.bindValue(":id", pilot.id());
+  success &= query.exec();
 
-	success = query.exec(sqls);
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Pilots");
 
@@ -89,13 +90,13 @@ bool Pilots::update(Pilot &pilot)
 bool Pilots::pilot(int id, Pilot &pilot)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	Glider glider;
 	bool success;
 
-	sqls = QString("SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId "
-                  "FROM Pilots WHERE Id=%1;").arg(id);
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT Id, FirstName, LastName, BirthDate, CallSign, GliderId "
+                          "FROM Pilots WHERE Id=:id");
+  query.bindValue(":id", id);
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{
@@ -118,16 +119,15 @@ bool Pilots::pilot(int id, Pilot &pilot)
 bool Pilots::setId(Pilot &pilot)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success;
 	int id = -1;
 
-  sqls = QString("SELECT Id FROM Pilots WHERE FirstName='%1' AND LastName='%2' "
-                 "AND BirthDate='%3'")
-                  .arg(escape(pilot.firstName())).arg(escape(pilot.lastName()))
-                  .arg(pilot.birthDate().toString("yyyy-MM-dd"));
-
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT Id FROM Pilots WHERE FirstName=:firstname AND LastName=:lastname "
+                          "AND BirthDate=:birthdate");
+  query.bindValue(":firstname", pilot.firstName());
+  query.bindValue(":lastname", pilot.lastName());
+  query.bindValue(":birthdate", pilot.birthDate().toString("yyyy-MM-dd"));
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{
