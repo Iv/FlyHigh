@@ -71,7 +71,7 @@ bool Pilots::update(Pilot &pilot)
   QSqlQuery query(db());
 	bool success;
 
-  success = query.prepare("UPDATE Pilots SET FirstName=:firstname, LastName=:lastname, BirthDate=:birthdate "
+  success = query.prepare("UPDATE Pilots SET FirstName=:firstname, LastName=:lastname, BirthDate=:birthdate, "
                           "CallSign=:callsign, GliderId=:glider WHERE Id=:id");
   query.bindValue(":firstname", pilot.firstName());
   query.bindValue(":lastname", pilot.lastName());
