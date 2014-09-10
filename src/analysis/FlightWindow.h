@@ -53,11 +53,7 @@ class FlightWindow: public TableWindow
 
 		void file_exportKML();
 
-		void plot_speedVsTime();
-
-		void plot_altVsTime();
-
-		void plot_varioVsTime();
+		void plot_airData();
 
 		void plot_OLC();
 

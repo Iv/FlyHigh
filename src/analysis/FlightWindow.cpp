@@ -128,16 +128,8 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pAction->setSeparator(true);
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Speed vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
-  MDIWindow::addAction(pAction);
-
-  pAction = new QAction(tr("&Alt vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
-  MDIWindow::addAction(pAction);
-
-  pAction = new QAction(tr("&Vario vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
+  pAction = new QAction(tr("&Plot Air Data"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_airData()));
   MDIWindow::addAction(pAction);
 
   pAction = new QAction(tr("&OLC"), this);
@@ -189,6 +181,7 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pTable->setColumnWidth(LandPt, 150);
   pTable->setColumnWidth(Distance, 70);
   pTable->setColumnWidth(Comment, 1000);
+  pTable->sortByColumn(Nr, Qt::DescendingOrder);
   pTable->setSortingEnabled(true);
 
   connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
@@ -878,13 +871,17 @@ void FlightWindow::file_delete()
   }
 }
 
-void FlightWindow::plot_speedVsTime()
+void FlightWindow::plot_airData()
 {
   QTime time;
   IGCFileParser igcParser;
   ProgressDlg progDlg(this);
   GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
+  GnuPlot::PlotVectorType y1;
+///  GnuPlot::PlotVectorType y2;
+  GnuPlot::PlotVectorType y3;
+  GnuPlot::PlotVectorType y4;
+///  GnuPlot::PlotVectorType y5;
   uint fpNr;
   uint tpListSize;
   int row;
@@ -908,103 +905,45 @@ void FlightWindow::plot_speedVsTime()
         for(fpNr=0; fpNr<tpListSize; fpNr++)
         {
           x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1)*3.6); // in km/h
+          y1.push_back(igcParser.flightPointList().at(fpNr)->alt()); // alt in m
+///          y2.push_back(igcParser.flightPointList().at(fpNr)->baroAlt()); // alt in m
+          y3.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // vario in m/s
+          y4.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1) * 3.6); // SOG in km/h
+///          y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirspeed() * 3.6); // TAS in km/h
         }
 
         m_plotter.clear();
+        m_plotter.execCmd("set terminal qt size 800,600");
+        m_plotter.execCmd("set lmargin 10");
+        m_plotter.execCmd("set rmargin 5");
+        m_plotter.setMultiplot(3, 1, tr("Airdata"));
+
+        // alt
+        m_plotter.setLabelX("");
+        m_plotter.setLabelY(tr("alt [m]"));
+        m_plotter.multiplotXY(x, y1);
+
+/** with two plots in one subfigure
+m_plotter.setLabelX(tr("time [s]"));
+m_plotter.setLabelY(tr("speed [km/h]"));
+m_plotter.multiplotXY(x, y1, tr("SOG"), y2, tr("TAS"));
+*/
+
+        // vario
+        m_plotter.setLabelX("");
+        m_plotter.setLabelY(tr("vario [m/s]"));
+        m_plotter.multiplotXY(x, y3);
+
+        // speed
         m_plotter.setLabelX(tr("time [s]"));
         m_plotter.setLabelY(tr("speed [km/h]"));
-        m_plotter.plotXY(x, y, tr("Speed vs Time"));
-      }
-    }
+        m_plotter.multiplotXY(x, y4);
 
-    m_pDb->close();
-    TableWindow::unsetCursor();
-  }
-}
-
-void FlightWindow::plot_altVsTime()
-{
-  QTime time;
-  IGCFileParser igcParser;
-  ProgressDlg progDlg(this);
-  GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
-  uint fpNr;
-  uint tpListSize;
-  int row;
-  bool success;
-
-  row = getCurrentFlightIndex();
-
-  if((row >= 0) && m_pDb->open())
-  {
-    progDlg.beginProgress(tr("read igc file..."), m_pDb);
-    success = m_pDb->loadIGCFile(m_flightList[row]);
-    progDlg.endProgress();
-
-    if(success)
-    {
-      igcParser.parse(m_flightList[row].igcData());
-      tpListSize = igcParser.flightPointList().size();
-
-      if(tpListSize > 0)
-      {
-        for(fpNr=0; fpNr<tpListSize; fpNr++)
-        {
-          x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().at(fpNr)->alt()); // in m
-        }
-
-        m_plotter.clear();
-        m_plotter.setLabelX(tr("time [s]"));
-        m_plotter.setLabelY(tr("altitude [m]"));
-        m_plotter.plotXY(x, y, tr("Altitude vs Time"));
-      }
-    }
-
-    m_pDb->close();
-    TableWindow::unsetCursor();
-  }
-}
-
-void FlightWindow::plot_varioVsTime()
-{
-  QTime time;
-  IGCFileParser igcParser;
-  GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
-  ProgressDlg progDlg(this);
-  uint fpNr;
-  uint tpListSize;
-  int row;
-  bool success;
-
-  row = getCurrentFlightIndex();
-
-  if((row >= 0) && m_pDb->open())
-  {
-    progDlg.beginProgress(tr("read igc file..."), m_pDb);
-    success = m_pDb->loadIGCFile(m_flightList[row]);
-    progDlg.endProgress();
-
-    if(success)
-    {
-      igcParser.parse(m_flightList[row].igcData());
-      tpListSize = igcParser.flightPointList().size();
-
-      if(tpListSize > 0)
-      {
-        for(fpNr=0; fpNr<tpListSize; fpNr++)
-        {
-          x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // in m/s
-        }
-
-        m_plotter.clear();
-        m_plotter.setLabelX(tr("time [s]"));
-        m_plotter.setLabelY(tr("vario [m/s]"));
-        m_plotter.plotXY(x, y, tr("Vario vs Time"));
+/** with two plots in one subfigure
+m_plotter.setLabelX(tr("time [s]"));
+m_plotter.setLabelY(tr("speed [km/h]"));
+m_plotter.multiplotXY(x, y4, tr("SOG"), y5, tr("TAS"));
+*/
       }
     }
 
