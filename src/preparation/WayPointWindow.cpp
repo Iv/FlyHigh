@@ -183,6 +183,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	pTable->setColumnWidth(Latitude, 90);
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
+	pTable->sortByColumn(Country, Qt::AscendingOrder);
 	pTable->setSortingEnabled(true);
 
   if(src == IDataBase::File)
