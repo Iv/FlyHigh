@@ -57,9 +57,8 @@
 GnuPlot::GnuPlot(void)
 {
   m_nplots = 0;
-  bool exist=findGnuplot();
 
-	if(exist)
+	if(findGnuplot())
 	{
     m_pGnuPipe = popen(m_GnuplotBinary.toStdString().c_str(), "w");
 	}
@@ -83,50 +82,10 @@ GnuPlot::~GnuPlot()
 	}
 }
 
-bool GnuPlot::findGnuplot()
-{
-  m_GnuplotBinary.clear();
-
-  // fetch environment variables
-  QStringList env = QProcess::systemEnvironment();
-
-  // Starting from Qt 4.6, reading the PATH environment variable
-  // may be shortened to
-  // QString path = QProcessEnvironment::systemEnvironment().value("PATH");
-  // Since a lot of distros still provide older Qt versions
-  // we stick to this rather clumsy way
-
-  // find PATH members
-  QRegExp rx("PATH=*",Qt::CaseInsensitive,QRegExp::Wildcard);
-  int idx = env.indexOf(rx);
-  if(idx!=-1)
-  {
-    // got PATH
-    QString path(env.at(idx));
-    // strip the prefix "PATH="
-    path.remove("PATH=");
-    // tokenize
-    QStringList parts = path.split(PATH_SEP_CHAR);
-    // iterate through PATH elements
-    QStringListIterator iter(parts);
-    while(iter.hasNext())
-    {
-      QDir dir(iter.next());
-      if(dir.exists(GNUPLOT_BIN_NAME))
-      {
-        m_GnuplotBinary = dir.filePath(GNUPLOT_BIN_NAME);
-        // there may be spaces in the path: surround with "
-        m_GnuplotBinary.prepend('"').append('"');
-        break;
-      }
-    }
-  }
-
-  return !m_GnuplotBinary.isEmpty();
-}
-
 void GnuPlot::clear()
 {
+  execCmd("unset multiplot");
+
 	if(m_filesToDel.size() > 0)
 	{
 		// delete temporary files
@@ -141,6 +100,13 @@ void GnuPlot::clear()
 	}
 
 	m_nplots = 0;
+}
+
+void GnuPlot::setMultiplot(int rows, int cols, const QString &title)
+{
+	QString cmdstr = QString("set multiplot layout %1, %2 title \"%3\"")
+                          .arg(rows).arg(cols).arg(title);
+	execCmd(cmdstr);
 }
 
 void GnuPlot::setStyle(const QString &style)
@@ -203,11 +169,13 @@ void GnuPlot::plotSlope(double a, double b, const QString &title)
 
 	if(m_nplots > 0)
 	{
-		cmdstr = QString("replot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
+		cmdstr = QString("replot %1 * x + %2 title \"%3\" with %4")
+                      .arg(a).arg(b).arg(title).arg(m_style);
 	}
 	else
 	{
-		cmdstr = QString("plot %1 * x + %2 title \"%3\" with %4").arg(a).arg(b).arg(title).arg(m_style);
+		cmdstr = QString("plot %1 * x + %2 title \"%3\" with %4")
+                      .arg(a).arg(b).arg(title).arg(m_style);
 	}
 
 	setAxisData('x', Float);
@@ -365,6 +333,56 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 	}
 }
 
+void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y)
+{
+	QString cmdstr;
+	QString line;
+	int valueNr;
+	QFile* pFile = getOpenTmpFile();
+
+	if(pFile)
+	{
+		for(valueNr=0; valueNr<x.size(); valueNr++)
+		{
+			line = QString("%1 %2\n").arg(x[valueNr].toString(Qt::ISODate)).arg(y[valueNr]);
+			pFile->write(line.toLatin1(), line.length());
+		}
+
+		pFile->close();
+		setAxisData('x', Time);
+    cmdstr = QString("plot \"%1\" using 1:2 title \"\" with %2")
+                    .arg(pFile->fileName()).arg(m_style);
+		execCmd(cmdstr);
+	}
+}
+
+void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y1, const QString &title1,
+                          PlotVectorType &y2, const QString &title2)
+{
+	QString cmdstr;
+	QString line;
+	int valueNr;
+	QFile* pFile = getOpenTmpFile();
+
+	if(pFile)
+	{
+		for(valueNr=0; valueNr<x.size(); valueNr++)
+		{
+			line = QString("%1 %2 %3\n").arg(x[valueNr].toString(Qt::ISODate))
+                                  .arg(y1[valueNr]).arg(y2[valueNr]);
+			pFile->write(line.toLatin1(), line.length());
+		}
+
+		pFile->close();
+		setAxisData('x', Time);
+    cmdstr = QString("plot \"%1\" using 1:2 title \"%2\" with %3,"
+                     "\"%4\" using 1:3 title \"%5\" with %6")
+                    .arg(pFile->fileName()).arg(title1).arg(m_style)
+                    .arg(pFile->fileName()).arg(title2).arg(m_style);
+		execCmd(cmdstr);
+	}
+}
+
 void GnuPlot::setMinMaxXYZ(double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
 {
 	QString cmdstr;
@@ -403,7 +421,7 @@ void GnuPlot::setOutput(const QString &name)
 	}
 	else
 	{
-		execCmd("set terminal x11");
+		execCmd("set terminal \"x11\"");
 	}
 }
 
@@ -449,4 +467,47 @@ void GnuPlot::setAxisData(const char axis, AxisDataType axisData)
 			execCmd(cmd);
 		break;
 	}
+}
+
+bool GnuPlot::findGnuplot()
+{
+  m_GnuplotBinary.clear();
+
+  // fetch environment variables
+  QStringList env = QProcess::systemEnvironment();
+
+  // Starting from Qt 4.6, reading the PATH environment variable
+  // may be shortened to
+  // QString path = QProcessEnvironment::systemEnvironment().value("PATH");
+  // Since a lot of distros still provide older Qt versions
+  // we stick to this rather clumsy way
+
+  // find PATH members
+  QRegExp rx("PATH=*", Qt::CaseInsensitive, QRegExp::Wildcard);
+  int idx = env.indexOf(rx);
+
+  if(idx!=-1)
+  {
+    // got PATH
+    QString path(env.at(idx));
+    // strip the prefix "PATH="
+    path.remove("PATH=");
+    // tokenize
+    QStringList parts = path.split(PATH_SEP_CHAR);
+    // iterate through PATH elements
+    QStringListIterator iter(parts);
+    while(iter.hasNext())
+    {
+      QDir dir(iter.next());
+      if(dir.exists(GNUPLOT_BIN_NAME))
+      {
+        m_GnuplotBinary = dir.filePath(GNUPLOT_BIN_NAME);
+        // there may be spaces in the path: surround with "
+        m_GnuplotBinary.prepend('"').append('"');
+        break;
+      }
+    }
+  }
+
+  return !m_GnuplotBinary.isEmpty();
 }
