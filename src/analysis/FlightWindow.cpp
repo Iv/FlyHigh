@@ -189,6 +189,8 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
   m_fileName = "";
   file_update();
+
+  m_plotter.execCmd("set terminal qt size 800,600");
 }
 
 void FlightWindow::file_update()
@@ -913,7 +915,6 @@ void FlightWindow::plot_airData()
         }
 
         m_plotter.clear();
-        m_plotter.execCmd("set terminal qt size 800,600");
         m_plotter.execCmd("set lmargin 10");
         m_plotter.execCmd("set rmargin 5");
         m_plotter.setMultiplot(3, 1, tr("Airdata"));
@@ -924,7 +925,7 @@ void FlightWindow::plot_airData()
         m_plotter.multiplotXY(x, y1);
 
 /** with two plots in one subfigure
-m_plotter.setLabelX(tr("time [s]"));
+m_plotter.setLabelX(tr("time"));
 m_plotter.setLabelY(tr("speed [km/h]"));
 m_plotter.multiplotXY(x, y1, tr("SOG"), y2, tr("TAS"));
 */
@@ -935,7 +936,7 @@ m_plotter.multiplotXY(x, y1, tr("SOG"), y2, tr("TAS"));
         m_plotter.multiplotXY(x, y3);
 
         // speed
-        m_plotter.setLabelX(tr("time [s]"));
+        m_plotter.setLabelX(tr("time"));
         m_plotter.setLabelY(tr("speed [km/h]"));
         m_plotter.multiplotXY(x, y4);
 
