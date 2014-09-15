@@ -44,6 +44,10 @@ class FlightPoint
 
     double alt() const;
 
+    void setAltBaro(double alt);
+
+    double altBaro() const;
+
     void setElevation(double &elevation);
 
     double elevation() const;
@@ -52,6 +56,7 @@ class FlightPoint
     QTime m_time;
 		LatLng m_pos;
 		double m_alt;
+		double m_altBaro;
     double m_elevation;
 };
 

@@ -22,6 +22,7 @@
 FlightPoint::FlightPoint()
 {
   m_alt = 0;
+  m_altBaro = 0;
   m_elevation = 0;
 }
 
@@ -65,6 +66,16 @@ void FlightPoint::setAlt(double alt)
 double FlightPoint::alt() const
 {
   return m_alt;
+}
+
+void FlightPoint::setAltBaro(double alt)
+{
+  m_altBaro = alt;
+}
+
+double FlightPoint::altBaro() const
+{
+  return m_altBaro;
 }
 
 void FlightPoint::setElevation(double &elevation)
