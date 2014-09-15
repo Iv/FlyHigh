@@ -181,7 +181,16 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pTable->setColumnWidth(LandPt, 150);
   pTable->setColumnWidth(Distance, 70);
   pTable->setColumnWidth(Comment, 1000);
-  pTable->sortByColumn(Nr, Qt::DescendingOrder);
+
+  if(src == IDataBase::SqlDB)
+  {
+    pTable->sortByColumn(Nr, Qt::DescendingOrder);
+  }
+  else
+  {
+    pTable->sortByColumn(Nr, Qt::AscendingOrder);
+  }
+
   pTable->setSortingEnabled(true);
 
   connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
