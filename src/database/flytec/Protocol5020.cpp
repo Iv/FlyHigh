@@ -151,6 +151,7 @@ bool Protocol5020::trackListRec(int &total, Flight &flight)
 			// nr
 			tokenizer.getNextToken(tlg, ',', token);
 			flight.setNumber(token.toUInt());
+      flight.setId(flight.number()); // id == number
 
 			// date
 			tokenizer.getNextToken(tlg, ',', token);
