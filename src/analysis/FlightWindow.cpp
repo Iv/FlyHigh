@@ -889,7 +889,7 @@ void FlightWindow::plot_airData()
   ProgressDlg progDlg(this);
   GnuPlot::TimeVectorType x;
   GnuPlot::PlotVectorType y1;
-///  GnuPlot::PlotVectorType y2;
+  GnuPlot::PlotVectorType y2;
   GnuPlot::PlotVectorType y3;
   GnuPlot::PlotVectorType y4;
 ///  GnuPlot::PlotVectorType y5;
@@ -917,7 +917,7 @@ void FlightWindow::plot_airData()
         {
           x.push_back(igcParser.flightPointList().at(fpNr)->time());
           y1.push_back(igcParser.flightPointList().at(fpNr)->alt()); // alt in m
-///          y2.push_back(igcParser.flightPointList().at(fpNr)->baroAlt()); // alt in m
+          y2.push_back(igcParser.flightPointList().at(fpNr)->altBaro()); // alt in m
           y3.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // vario in m/s
           y4.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1) * 3.6); // SOG in km/h
 ///          y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirspeed() * 3.6); // TAS in km/h
@@ -929,15 +929,9 @@ void FlightWindow::plot_airData()
         m_plotter.setMultiplot(3, 1, tr("Airdata"));
 
         // alt
-        m_plotter.setLabelX("");
+        m_plotter.setLabelX(tr(""));
         m_plotter.setLabelY(tr("alt [m]"));
-        m_plotter.multiplotXY(x, y1);
-
-/** with two plots in one subfigure
-m_plotter.setLabelX(tr("time"));
-m_plotter.setLabelY(tr("speed [km/h]"));
-m_plotter.multiplotXY(x, y1, tr("SOG"), y2, tr("TAS"));
-*/
+        m_plotter.multiplotXY(x, y1, tr("Barometric"), y2, tr("GNSS"));
 
         // vario
         m_plotter.setLabelX("");
