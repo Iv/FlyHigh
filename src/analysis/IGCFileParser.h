@@ -51,10 +51,11 @@ class IGCFileParser
 		QDate m_date;
 		FlightPointList m_flightPointList;
 		int m_prevAlt;
+		int m_prevAltBaro;
 
 		void parseHRecord(const char *record);
 
-		void parseBRecord(const char *record, bool gpsAlt);
+		void parseBRecord(const char *record);
 
 		void colonValue(const char *record, QString &str);
 };

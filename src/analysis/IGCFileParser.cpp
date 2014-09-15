@@ -47,7 +47,7 @@ void IGCFileParser::parse(const QByteArray &igcData)
 					parseHRecord(record);
 				break;
 				case 'B':
-					parseBRecord(record, true);
+					parseBRecord(record);
 				break;
 				default:
 				break;
@@ -124,7 +124,7 @@ void IGCFileParser::parseHRecord(const char *record)
 	}
 }
 
-void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
+void IGCFileParser::parseBRecord(const char *record)
 {
 	FlightPoint *pFlightPoint;
 	double lat;
@@ -139,8 +139,8 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 	int londeg;
 	int lonminute;
 	int lonmindec;
-	int altPress;
-	int altGPS;
+	int altBaro;
+	int altGnss;
 	char northsouth;
 	char eastwest;
 	char valid;
@@ -148,7 +148,7 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 	if(sscanf(record,
 			"%*c%2d%2d%2d%2d%2d%3d%c%3d%2d%3d%c%c%5d%5d",
 			&hh, &mm, &ss, &latdeg, &latminute, &latmindec, &northsouth, &londeg,
-			&lonminute, &lonmindec, &eastwest, &valid, &altPress, &altGPS) == 14)
+			&lonminute, &lonmindec, &eastwest, &valid, &altBaro, &altGnss) == 14)
 	{
     pFlightPoint = new FlightPoint();
 
@@ -174,24 +174,29 @@ void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
 		pFlightPoint->setPos(LatLng(lat, lon));
 
 		// altitude
-		if(gpsAlt)
-		{
-		  if(valid == 'A')
-		  {
-        alt = altGPS;
-        m_prevAlt = altGPS;
-		  }
-		  else
-		  {
-        alt = m_prevAlt;
-		  }
-		}
-		else
-		{
-			alt = altPress;
-		}
+    if(valid == 'A')
+    {
+      alt = altGnss;
+      m_prevAlt = altGnss;
+    }
+    else
+    {
+      alt = m_prevAlt;
+    }
 
     pFlightPoint->setAlt(alt);
+
+    if(valid == 'A')
+    {
+      alt = altBaro;
+      m_prevAltBaro = altBaro;
+    }
+    else
+    {
+      alt = m_prevAltBaro;
+    }
+
+    pFlightPoint->setAltBaro(alt);
 		m_flightPointList.push_back(pFlightPoint);
 	}
 }
