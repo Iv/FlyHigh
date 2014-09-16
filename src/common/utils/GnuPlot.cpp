@@ -1,22 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
-
-// A C++ interface to gnuplot.
-//
-// This is a direct translation from the C interface
-// written by N. Devillard (which is available from
-// http://ndevilla.free.fr/gnuplot/).
-//
-// As in the C interface this uses pipes and so wont
-// run on a system that does'nt have POSIX pipe
-// support
-//
-// Rajarshi Guha
-// <rajarshi@presidency.com>
-//
-// 07/03/03
-
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -57,43 +41,43 @@
 GnuPlot::GnuPlot(void)
 {
   m_nplots = 0;
-
-	if(findGnuplot())
-	{
-    m_pGnuPipe = popen(m_GnuplotBinary.toStdString().c_str(), "w");
-	}
-	else
-	{
-		m_pGnuPipe = NULL;
-		Error::verify(false, Error::GNUPLOT_OPEN);
-	}
-
-	setStyle("lines");
-	execCmd("set mouse");
+  m_pLogFile = NULL;
+  setStyle("lines");
+  findGnuplot();
 }
 
 GnuPlot::~GnuPlot()
 {
 	clear();
+}
 
-	if(m_pGnuPipe != NULL)
-	{
-		pclose(m_pGnuPipe);
-	}
+void GnuPlot::begin()
+{
+  clear();
+  m_pLogFile = getOpenTmpFile();
+}
+
+void GnuPlot::end()
+{
+  QString cmd;
+
+	m_pLogFile->close();
+  cmd = m_GnuplotBinary;
+  cmd += " -p ";
+  cmd += m_pLogFile->fileName();
+	system(cmd.toStdString().c_str());
 }
 
 void GnuPlot::clear()
 {
-  execCmd("unset multiplot");
+  TempFileList::iterator it;
 
 	if(m_filesToDel.size() > 0)
 	{
 		// delete temporary files
-		for(QList<QTemporaryFile*>::iterator iter=m_filesToDel.begin();
-			iter!=m_filesToDel.end();
-			++iter)
+		for(it=m_filesToDel.begin(); it!=m_filesToDel.end(); it++)
 		{
-			delete *iter;
+			delete *it;
 		}
 
 		m_filesToDel.clear();
@@ -107,6 +91,11 @@ void GnuPlot::setMultiplot(int rows, int cols, const QString &title)
 	QString cmdstr = QString("set multiplot layout %1, %2 title \"%3\"")
                           .arg(rows).arg(cols).arg(title);
 	execCmd(cmdstr);
+}
+
+void GnuPlot::unsetMultiplot()
+{
+  execCmd("unset multiplot");
 }
 
 void GnuPlot::setStyle(const QString &style)
@@ -131,13 +120,13 @@ void GnuPlot::setStyle(const QString &style)
 
 void GnuPlot::execCmd(const QString &cmd)
 {
-	QString locCmd = cmd;
+  QString locCmd;
 
-	if(m_pGnuPipe != NULL)
+	if(m_pLogFile != NULL)
 	{
-		locCmd += "\n";
-		fputs(locCmd.toLatin1().constData(), m_pGnuPipe);
-		fflush(m_pGnuPipe);
+	  locCmd = cmd;
+	  locCmd += "\n";
+    m_pLogFile->write(locCmd.toLatin1(), locCmd.length());
 	}
 }
 

@@ -1,22 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
-
-// A C++ interface to gnuplot.
-//
-// This is a direct translation from the C interface
-// written by N. Devillard (which is available from
-// http://ndevilla.free.fr/gnuplot/).
-//
-// As in the C interface this uses pipes and so wont
-// run on a system that does'nt have POSIX pipe
-// support
-//
-// Rajarshi Guha
-// <rajarshi@presidency.com>
-//
-// 07/03/03
-
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -37,10 +21,10 @@
 #ifndef GnuPlot_h
 #define GnuPlot_h
 
-#include <QVector>
-#include <QString>
 #include <QList>
-#include <QDateTime>
+#include <QString>
+#include <QTime>
+#include <QVector>
 
 class QTemporaryFile;
 class QFile;
@@ -55,10 +39,16 @@ class GnuPlot
 
 		~GnuPlot();
 
+void begin();
+
+void end();
+
 		void execCmd(const QString &cmd);
 
 		// plot setup
 		void setMultiplot(int rows, int cols, const QString &title);
+
+		void unsetMultiplot();
 
 		void setStyle(const QString &style);
 
@@ -104,11 +94,13 @@ class GnuPlot
 
 	private:
 		typedef enum {Float, Time}AxisDataType;
-		FILE *m_pGnuPipe;
+		typedef QList<QTemporaryFile*> TempFileList;
+
 		QString m_style;
-		QList<QTemporaryFile*> m_filesToDel;
+		TempFileList m_filesToDel;
 		int m_nplots;
     QString m_GnuplotBinary;
+    QFile *m_pLogFile;
 
 		QFile* getOpenTmpFile();
 
