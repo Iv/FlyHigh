@@ -130,9 +130,9 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
   pAction = new QAction(tr("&Plot Air Data"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(plot_airData()));
-  MDIWindow::addAction(pAction);
+  MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&OLC"), this);
+  pAction = new QAction(tr("&Plot OLC"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(plot_OLC()));
   MDIWindow::addAction(pAction);
 
@@ -198,8 +198,6 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
 
   m_fileName = "";
   file_update();
-
-  m_plotter.execCmd("set terminal qt size 800,600");
 }
 
 void FlightWindow::file_update()
@@ -923,7 +921,9 @@ void FlightWindow::plot_airData()
 ///          y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirspeed() * 3.6); // TAS in km/h
         }
 
-        m_plotter.clear();
+        m_plotter.begin();
+        m_plotter.execCmd("set terminal qt size 800,600");
+        m_plotter.execCmd("set mouse");
         m_plotter.execCmd("set lmargin 10");
         m_plotter.execCmd("set rmargin 5");
         m_plotter.setMultiplot(3, 1, tr("Airdata"));
@@ -948,6 +948,8 @@ m_plotter.setLabelX(tr("time [s]"));
 m_plotter.setLabelY(tr("speed [km/h]"));
 m_plotter.multiplotXY(x, y4, tr("SOG"), y5, tr("TAS"));
 */
+
+        m_plotter.end();
       }
     }
 
@@ -984,7 +986,8 @@ void FlightWindow::plot_OLC()
 
       if(igcParser.flightPointList().size() > 0)
       {
-        m_plotter.clear();
+        m_plotter.begin();
+        m_plotter.execCmd("set terminal qt size 800,600");
         m_plotter.setLabelX(tr("latitude [deg.min]"));
         m_plotter.setLabelY(tr("longitude [deg.min]"));
         m_plotter.setLabelZ(tr("altitude [m]"));
@@ -1026,6 +1029,8 @@ void FlightWindow::plot_OLC()
 
           title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.0);
           plotFlighPointList(tpList, title);
+
+          m_plotter.end();
         }
 
         progDlg.endProgress();
