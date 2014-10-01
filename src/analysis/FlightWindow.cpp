@@ -407,10 +407,9 @@ void FlightWindow::file_AddToSqlDB()
       if(newFlightForm.exec())
       {
         ISql::pInstance()->add(m_flightList[row]);
+        m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
         setFlightToRow(row, m_flightList[row]);
       }
-
-      m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
     }
 
     m_pDb->close();
