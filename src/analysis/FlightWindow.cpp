@@ -890,7 +890,7 @@ void FlightWindow::plot_airData()
   GnuPlot::PlotVectorType y2;
   GnuPlot::PlotVectorType y3;
   GnuPlot::PlotVectorType y4;
-///  GnuPlot::PlotVectorType y5;
+  GnuPlot::PlotVectorType y5;
   uint fpNr;
   uint tpListSize;
   int row;
@@ -918,7 +918,11 @@ void FlightWindow::plot_airData()
           y2.push_back(igcParser.flightPointList().at(fpNr)->altBaro()); // alt in m
           y3.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // vario in m/s
           y4.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1) * 3.6); // SOG in km/h
-///          y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirspeed() * 3.6); // TAS in km/h
+
+          if(igcParser.flightPointList().hasTrueAirSpeed())
+          {
+            y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirSpeed()); // TAS in km/h
+          }
         }
 
         m_plotter.begin();
@@ -939,15 +943,18 @@ void FlightWindow::plot_airData()
         m_plotter.multiplotXY(x, y3);
 
         // speed
-        m_plotter.setLabelX(tr("time"));
-        m_plotter.setLabelY(tr("speed [km/h]"));
-        m_plotter.multiplotXY(x, y4);
-
-/** with two plots in one subfigure
-m_plotter.setLabelX(tr("time [s]"));
-m_plotter.setLabelY(tr("speed [km/h]"));
-m_plotter.multiplotXY(x, y4, tr("SOG"), y5, tr("TAS"));
-*/
+        if(igcParser.flightPointList().hasTrueAirSpeed())
+        {
+          m_plotter.setLabelX(tr("time [s]"));
+          m_plotter.setLabelY(tr("speed [km/h]"));
+          m_plotter.multiplotXY(x, y4, tr("SOG"), y5, tr("TAS"));
+        }
+        else
+        {
+          m_plotter.setLabelX(tr("time"));
+          m_plotter.setLabelY(tr("speed [km/h]"));
+          m_plotter.multiplotXY(x, y4);
+        }
 
         m_plotter.end();
       }

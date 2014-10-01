@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qbuffer.h>
-#include <qfile.h>
+#include <QBuffer>
+#include <QFile>
 #include "IGCFileParser.h"
 
 IGCFileParser::IGCFileParser()
@@ -43,11 +43,14 @@ void IGCFileParser::parse(const QByteArray &igcData)
 		{
 			switch(*record)
 			{
+				case 'B':
+					parseBRecord(record);
+				break;
 				case 'H':
 					parseHRecord(record);
 				break;
-				case 'B':
-					parseBRecord(record);
+				case 'I':
+          parseIRecord(record);
 				break;
 				default:
 				break;
@@ -82,51 +85,11 @@ FlightPointList& IGCFileParser::flightPointList()
 	return m_flightPointList;
 }
 
-void IGCFileParser::parseHRecord(const char *record)
-{
-	int y;
-	int m;
-	int d;
-
-	if(strncmp(record, "HFPLTPILOT", 10) == 0) // Pilot
-	{
-		colonValue(record, m_pilot);
-	}
-	else if(strncmp(record, "HFGTYGLIDERTYPE", 15) == 0) // Glider
-	{
-		colonValue(record, m_model);
-/*		// HFGTYGLIDERTYPE:Spirit
-                start = rec.indexOf(':') + 1;
-		length = rec.length() - 2; // without \r\n
-
-		// strip white space @ end
-		for(end=length;end>0;end--)
-		{
-			if(rec[end-1] != ' ')
-			{
-				break;
-			}
-		}
-		m_model = rec.mid(start, end-start);*/
-	}
-	else if(strncmp(record, "HFGIDGLIDERID", 13) == 0) // Glider ID
-	{
-		colonValue(record, m_gliderId);
-	}
-	else if(strncmp(record, "HFDTE", 5) == 0) // Date
-	{
-		// HFDTE221204
-		if(sscanf(record, "%*5c%2d%2d%2d", &d, &m, &y) == 3)
-		{
-			y += 2000;
-      m_date.setDate(y, m, d);
-		}
-	}
-}
-
 void IGCFileParser::parseBRecord(const char *record)
 {
 	FlightPoint *pFlightPoint;
+	IRecordHash::const_iterator it;
+  QString rec;
 	double lat;
 	double lon;
 	int alt;
@@ -197,8 +160,98 @@ void IGCFileParser::parseBRecord(const char *record)
     }
 
     pFlightPoint->setAltBaro(alt);
+
+    // extension TAS
+    it = m_iRecordHash.find("TAS");
+
+    if(it != m_iRecordHash.end())
+    {
+      int tas;
+
+      rec = record;
+      tas = rec.mid((*it).begin, (*it).size).toInt();
+      pFlightPoint->setTrueAirSpeed(tas);
+    }
+
 		m_flightPointList.push_back(pFlightPoint);
 	}
+}
+
+void IGCFileParser::parseHRecord(const char *record)
+{
+	int y;
+	int m;
+	int d;
+
+	if(strncmp(record, "HFPLTPILOT", 10) == 0) // Pilot
+	{
+		colonValue(record, m_pilot);
+	}
+	else if(strncmp(record, "HFGTYGLIDERTYPE", 15) == 0) // Glider
+	{
+		colonValue(record, m_model);
+/*		// HFGTYGLIDERTYPE:Spirit
+                start = rec.indexOf(':') + 1;
+		length = rec.length() - 2; // without \r\n
+
+		// strip white space @ end
+		for(end=length;end>0;end--)
+		{
+			if(rec[end-1] != ' ')
+			{
+				break;
+			}
+		}
+		m_model = rec.mid(start, end-start);*/
+	}
+	else if(strncmp(record, "HFGIDGLIDERID", 13) == 0) // Glider ID
+	{
+		colonValue(record, m_gliderId);
+	}
+	else if(strncmp(record, "HFDTE", 5) == 0) // Date
+	{
+		// HFDTE221204
+		if(sscanf(record, "%*5c%2d%2d%2d", &d, &m, &y) == 3)
+		{
+			y += 2000;
+      m_date.setDate(y, m, d);
+		}
+	}
+}
+
+void IGCFileParser::parseIRecord(const char *record)
+{
+  QString rec = record;
+  QString key;
+  IRecord irec;
+  int nofExt;
+  int extNr;
+  int pos;
+
+  /*
+    // I013638TAS
+    Number of extensions	2 bytes	NN	Valid characters 0-9
+    Start byte number	2 bytes	SS	Valid characters 0-9
+    Finish byte number	2 bytes	FF	Valid characters 0-9
+    3-letter Code	3 bytes	CCC	Alphanumeric, see para 7 for
+    list of codes
+  */
+  pos = 1;
+  nofExt = rec.mid(pos, 2).toInt();
+  pos += 2;
+
+  for(extNr=0; extNr<nofExt; extNr++)
+  {
+    irec.begin = rec.mid(pos, 2).toInt();
+    pos += 2;
+    irec.size = (rec.mid(pos, 2).toInt() - irec.begin);
+    pos += 2;
+    key = rec.mid(pos, 3);
+    pos += 3;
+    m_iRecordHash.insert(key, irec);
+  }
+
+  m_flightPointList.setHasTrueAirSpeed(m_iRecordHash.contains("TAS"));
 }
 
 void IGCFileParser::colonValue(const char *record, QString &str)
