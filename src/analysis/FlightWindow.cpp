@@ -881,7 +881,6 @@ void FlightWindow::file_delete()
 
 void FlightWindow::plot_airData()
 {
-  QTime time;
   IGCFileParser igcParser;
   ProgressDlg progDlg(this);
   GnuPlot::TimeVectorType x;
@@ -925,7 +924,8 @@ void FlightWindow::plot_airData()
         }
 
         m_plotter.begin();
-        m_plotter.execCmd("set terminal qt size 800,600");
+        m_plotter.execCmd(QString("set terminal qt size 800,600 title \"Air Data Plot Flight %1 (%2)\"")
+                          .arg(m_flightList[row].number()).arg(m_flightList[row].date().toString("dd.MM.yyyy")));
         m_plotter.execCmd("set mouse");
         m_plotter.execCmd("set lmargin 10");
         m_plotter.execCmd("set rmargin 5");
@@ -993,7 +993,8 @@ void FlightWindow::plot_OLC()
       if(igcParser.flightPointList().size() > 0)
       {
         m_plotter.begin();
-        m_plotter.execCmd("set terminal qt size 800,600");
+        m_plotter.execCmd(QString("set terminal qt size 800,600 title \"3D Plot Flight %1 (%2)\"").
+                          arg(m_flightList[row].number()).arg(m_flightList[row].date().toString("dd.MM.yyyy")));
         m_plotter.setLabelX(tr("latitude [deg.min]"));
         m_plotter.setLabelY(tr("longitude [deg.min]"));
         m_plotter.setLabelZ(tr("altitude [m]"));

@@ -24,30 +24,36 @@
 #include <QStringList>
 #include <QRegExp>
 #include <QDir>
+#include <QProcess>
 #include "IFlyHighRC.h"
 #include "Error.h"
 #include "GnuPlot.h"
 
-// qnuplot executable name depends on OS
-// PATH separator char as well
-#ifdef Q_OS_WIN
-#define GNUPLOT_BIN_NAME "gnuplot.exe"
-#define PATH_SEP_CHAR ";"
-#else
+// command to start gnuplot
 #define GNUPLOT_BIN_NAME "gnuplot"
-#define PATH_SEP_CHAR ":"
-#endif
 
 GnuPlot::GnuPlot(void)
 {
   m_nplots = 0;
   m_pLogFile = NULL;
   setStyle("lines");
-  findGnuplot();
 }
 
 GnuPlot::~GnuPlot()
 {
+  // loop through running gnuplot processes an end them
+  for(QList<QProcess*>::Iterator it=m_Processes.begin();it!=m_Processes.end();++it) {
+    if((*it)->state()!=QProcess::NotRunning) {
+      // Terminating process politely
+      (*it)->terminate();
+      if(!(*it)->waitForFinished(3000)) {
+        // Process did not terminate within 3 secs. Try killing
+        (*it)->kill();
+      }
+    }
+    delete *it;
+  }
+  m_Processes.clear();
 	clear();
 }
 
@@ -59,37 +65,38 @@ void GnuPlot::begin()
 
 void GnuPlot::end()
 {
-  QString cmd;
+  // do not terminate gnuplot process until window is closed or any key is pressed
+  execCmd("pause mouse close,key");
 
 	m_pLogFile->close();
-  cmd = m_GnuplotBinary;
-  cmd += " -p ";
-  cmd += m_pLogFile->fileName();
-	system(cmd.toStdString().c_str());
+
+  QProcess* proc = new QProcess();
+  // unify stdout and stderr
+  proc->setProcessChannelMode(QProcess::MergedChannels);
+  // start gnuplot with command file as argument
+  proc->start(GNUPLOT_BIN_NAME, QStringList() << m_pLogFile->fileName(), QIODevice::ReadOnly);
+  m_Processes.append(proc);
+  // we do not communicate with the process
+  proc->closeReadChannel(QProcess::StandardOutput);
+  proc->closeReadChannel(QProcess::StandardError);
+  proc->closeWriteChannel();
 }
 
 void GnuPlot::clear()
 {
-  TempFileList::iterator it;
-
-	if(m_filesToDel.size() > 0)
-	{
-		// delete temporary files
-		for(it=m_filesToDel.begin(); it!=m_filesToDel.end(); it++)
-		{
-			delete *it;
-		}
-
-		m_filesToDel.clear();
-	}
+  // delete temporary files
+  for(TempFileList::Iterator it=m_filesToDel.begin(); it!=m_filesToDel.end(); it++)
+  {
+    delete *it;
+  }
+  m_filesToDel.clear();
 
 	m_nplots = 0;
 }
 
 void GnuPlot::setMultiplot(int rows, int cols, const QString &title)
 {
-	QString cmdstr = QString("set multiplot layout %1, %2 title \"%3\"")
-                          .arg(rows).arg(cols).arg(title);
+  QString cmdstr = QString("set multiplot layout %1, %2 title \"%3\"").arg(rows).arg(cols).arg(title);
 	execCmd(cmdstr);
 }
 
@@ -125,7 +132,7 @@ void GnuPlot::execCmd(const QString &cmd)
 	if(m_pLogFile != NULL)
 	{
 	  locCmd = cmd;
-	  locCmd += "\n";
+    locCmd += "\n";
     m_pLogFile->write(locCmd.toLatin1(), locCmd.length());
 	}
 }
@@ -138,13 +145,13 @@ void GnuPlot::setLabelX(const QString &label)
 
 void GnuPlot::setLabelY(const QString &label)
 {
-	QString cmdstr = QString("set ylabel \"%1\"").arg(label);
+  QString cmdstr = QString("set ylabel \"%1\"").arg(label);
 	execCmd(cmdstr);
 }
 
 void GnuPlot::setLabelZ(const QString &label)
 {
-	QString cmdstr = QString("set zlabel \"%1\"").arg(label);
+  QString cmdstr = QString("set zlabel \"%1\"").arg(label);
 	execCmd(cmdstr);
 }
 
@@ -154,7 +161,7 @@ void GnuPlot::setLabelZ(const QString &label)
 //
 void GnuPlot::plotSlope(double a, double b, const QString &title)
 {
-	QString cmdstr;
+  QString cmdstr;
 
 	if(m_nplots > 0)
 	{
@@ -177,7 +184,7 @@ void GnuPlot::plotSlope(double a, double b, const QString &title)
 //
 void GnuPlot::plotEquation(const QString &equation, const QString &title)
 {
-	QString cmdstr;
+  QString cmdstr;
 
 	if(m_nplots > 0)
 	{
@@ -195,7 +202,7 @@ void GnuPlot::plotEquation(const QString &equation, const QString &title)
 
 void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 {
-	QString cmdstr;
+  QString cmdstr;
 	QString line;
 	int valueNr;
 
@@ -228,7 +235,7 @@ void GnuPlot::plotX(PlotVectorType &x, const QString &title)
 
 void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 {
-	QString cmdstr;
+  QString cmdstr;
 	QString line;
 	int valueNr;
 	QFile* pFile = getOpenTmpFile();
@@ -260,7 +267,7 @@ void GnuPlot::plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title)
 
 void GnuPlot::plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title)
 {
-	QString cmdstr;
+  QString cmdstr;
 	QString line;
 	int valueNr;
 	QFile* pFile = getOpenTmpFile();
@@ -291,7 +298,6 @@ void GnuPlot::plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title)
 
 void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, const QString  &title)
 {
-	QFile file;
 	QString cmdstr;
 	QString line;
 	int valueNr;
@@ -324,7 +330,7 @@ void GnuPlot::plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, c
 
 void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y)
 {
-	QString cmdstr;
+  QString cmdstr;
 	QString line;
 	int valueNr;
 	QFile* pFile = getOpenTmpFile();
@@ -348,7 +354,7 @@ void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y)
 void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y1, const QString &title1,
                           PlotVectorType &y2, const QString &title2)
 {
-	QString cmdstr;
+  QString cmdstr;
 	QString line;
 	int valueNr;
 	QFile* pFile = getOpenTmpFile();
@@ -374,7 +380,7 @@ void GnuPlot::multiplotXY(TimeVectorType &x, PlotVectorType &y1, const QString &
 
 void GnuPlot::setMinMaxXYZ(double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
 {
-	QString cmdstr;
+  QString cmdstr;
 
 	cmdstr.sprintf("set xrange [%f:%f]\n", minX, maxX);
 	execCmd(cmdstr);
@@ -386,37 +392,9 @@ void GnuPlot::setMinMaxXYZ(double minX, double maxX, double minY, double maxY, d
 	execCmd(cmdstr);
 }
 
-void GnuPlot::setOutput(const QString &name)
-{
-	int pos;
-	QString cmdstr;
-	QString term;
-
-	// terminal by extension
-  pos = name.lastIndexOf(".");
-	term = name.right(pos+1);
-
-	if(term == "png")
-	{
-		execCmd("set terminal png");
-    cmdstr = QString("set output \"%1\"").arg(name);
-		execCmd(cmdstr);
-	}
-	else if(term == "ps")
-	{
-		execCmd("set terminal ps");
-		cmdstr = QString("set output \"%1\"").arg(name);
-		execCmd(cmdstr);
-	}
-	else
-	{
-		execCmd("set terminal \"x11\"");
-	}
-}
-
 QFile* GnuPlot::getOpenTmpFile()
 {
-	QTemporaryFile* pTemp = NULL;
+  QTemporaryFile* pTemp = NULL;
 
 	// create temporary files for output
 	pTemp = new QTemporaryFile();
@@ -436,7 +414,7 @@ QFile* GnuPlot::getOpenTmpFile()
 
 void GnuPlot::setAxisData(const char axis, AxisDataType axisData)
 {
-	QString cmd;
+  QString cmd;
 
 	switch(axisData)
 	{
@@ -456,47 +434,4 @@ void GnuPlot::setAxisData(const char axis, AxisDataType axisData)
 			execCmd(cmd);
 		break;
 	}
-}
-
-bool GnuPlot::findGnuplot()
-{
-  m_GnuplotBinary.clear();
-
-  // fetch environment variables
-  QStringList env = QProcess::systemEnvironment();
-
-  // Starting from Qt 4.6, reading the PATH environment variable
-  // may be shortened to
-  // QString path = QProcessEnvironment::systemEnvironment().value("PATH");
-  // Since a lot of distros still provide older Qt versions
-  // we stick to this rather clumsy way
-
-  // find PATH members
-  QRegExp rx("PATH=*", Qt::CaseInsensitive, QRegExp::Wildcard);
-  int idx = env.indexOf(rx);
-
-  if(idx!=-1)
-  {
-    // got PATH
-    QString path(env.at(idx));
-    // strip the prefix "PATH="
-    path.remove("PATH=");
-    // tokenize
-    QStringList parts = path.split(PATH_SEP_CHAR);
-    // iterate through PATH elements
-    QStringListIterator iter(parts);
-    while(iter.hasNext())
-    {
-      QDir dir(iter.next());
-      if(dir.exists(GNUPLOT_BIN_NAME))
-      {
-        m_GnuplotBinary = dir.filePath(GNUPLOT_BIN_NAME);
-        // there may be spaces in the path: surround with "
-        m_GnuplotBinary.prepend('"').append('"');
-        break;
-      }
-    }
-  }
-
-  return !m_GnuplotBinary.isEmpty();
 }

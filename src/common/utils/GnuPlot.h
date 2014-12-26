@@ -28,6 +28,7 @@
 
 class QTemporaryFile;
 class QFile;
+class QProcess;
 
 class GnuPlot
 {
@@ -87,11 +88,6 @@ void end();
 
 		void clear();
 
-		/**
-      selects output (x11, qt, png, ps)
-    */
-		void setOutput(const QString &name);
-
 	private:
 		typedef enum {Float, Time}AxisDataType;
 		typedef QList<QTemporaryFile*> TempFileList;
@@ -101,18 +97,10 @@ void end();
 		int m_nplots;
     QString m_GnuplotBinary;
     QFile *m_pLogFile;
-
 		QFile* getOpenTmpFile();
+    QList<QProcess*> m_Processes;
 
 		void setAxisData(const char axis, AxisDataType axisData);
-
-    /**
-     * look for the gnuplot executable
-     * the platform depending executable is searched in all
-     * PATH environment variable directories
-     * @return true if found
-     */
-    bool findGnuplot();
 };
 
 #endif
