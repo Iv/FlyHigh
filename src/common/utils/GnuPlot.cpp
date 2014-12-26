@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <unistd.h>
 #include <QTemporaryFile>
 #include <QProcess>
 #include <QStringList>
@@ -42,7 +41,7 @@ GnuPlot::GnuPlot(void)
 GnuPlot::~GnuPlot()
 {
   // loop through running gnuplot processes an end them
-  for(QList<QProcess*>::Iterator it=m_Processes.begin();it!=m_Processes.end();++it) {
+  for(ProcessList::Iterator it=m_Processes.begin();it!=m_Processes.end();++it) {
     if((*it)->state()!=QProcess::NotRunning) {
       // Terminating process politely
       (*it)->terminate();

@@ -91,6 +91,7 @@ void end();
 	private:
 		typedef enum {Float, Time}AxisDataType;
 		typedef QList<QTemporaryFile*> TempFileList;
+    typedef QList<QProcess*> ProcessList;
 
 		QString m_style;
 		TempFileList m_filesToDel;
@@ -98,7 +99,7 @@ void end();
     QString m_GnuplotBinary;
     QFile *m_pLogFile;
 		QFile* getOpenTmpFile();
-    QList<QProcess*> m_Processes;
+    ProcessList m_Processes;
 
 		void setAxisData(const char axis, AxisDataType axisData);
 };
