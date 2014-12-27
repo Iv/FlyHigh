@@ -64,8 +64,8 @@ void GnuPlot::begin()
 
 void GnuPlot::end()
 {
-  // do not terminate gnuplot process until window is closed or any key is pressed
-  execCmd("pause mouse close,key");
+  // do not terminate gnuplot process until window is closed
+  execCmd("pause mouse close");
 
 	m_pLogFile->close();
 
