@@ -17,7 +17,6 @@ set(analysis_SRCS FlightExpWindow.cpp
                   IGCFileParser.cpp
                   KmlWriter.cpp
                   OLCOptimizer.cpp
-                  OLCWebForm.cpp
                   ServicingWindow.cpp)
 
 set(analysis_HDRS FlightExpWindow.h

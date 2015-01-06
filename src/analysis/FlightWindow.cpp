@@ -567,22 +567,10 @@ void FlightWindow::file_import()
 void FlightWindow::file_exportIGC()
 {
   QFile file;
-  QString olcFileName;
+  QString fileName;
   QString selected;
   IGCFileParser igcParser;
-  OLCOptimizer olcOptimizer;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFree;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
-  FlightPointList simpleFpList;
-  OLCWebForm olcWebForm;
   ProgressDlg progDlg(this);
-  double distFree;
-  double distFAI;
-  double distFlat;
-  double ptsFree;
-  double ptsFAI;
-  double ptsFlat;
   int row;
   bool success;
 
@@ -600,14 +588,15 @@ void FlightWindow::file_exportIGC()
       // IGC file
       igcParser.parse(m_flightList[row].igcData());
 
-      // fetch olc filename
-      olcWebForm.setFlight(m_flightList[row]);
-      olcWebForm.olcFileName(olcFileName);
+      // suggest filename
+      fileName = m_flightList[row].startPt().name();
+      fileName += m_flightList[row].date().toString("_dd_MM_yyyy");
 
+      // file save dialog
       selected = QFileDialog::getSaveFileName(this,
       tr("IGC file export"),
       IFlyHighRC::pInstance()->lastDir() + QDir::separator()
-      + olcFileName
+      + fileName
       + ".igc",
       "IGC Files (*.igc)");
 
@@ -620,60 +609,18 @@ void FlightWindow::file_exportIGC()
         // use the same basename as the user has chosen
         if(selected.endsWith(".igc",Qt::CaseInsensitive))
         {
-          olcFileName = selected.replace(".igc", ".html", Qt::CaseInsensitive);
+          fileName = selected.replace(".igc", ".html", Qt::CaseInsensitive);
         }
         else
         {
           // just append '.html'
-          olcFileName = selected + ".html";
+          fileName = selected + ".html";
         }
 
         if(file.open(QIODevice::WriteOnly))
         {
           file.write(m_flightList[row].igcData());
           file.close();
-        }
-
-        // OLC file
-        igcParser.flightPointList().simplify(simpleFpList);
-        olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
-        progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
-
-        if(olcOptimizer.optimize())
-        {
-          distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
-          ptsFree = distFree * 1.5;
-          distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
-          ptsFAI = distFAI * 2.0;
-          distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
-          ptsFlat = distFlat * 1.75;
-
-          if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFree[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFree[4]));
-          }
-          else if(ptsFlat > ptsFAI)
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
-          }
-          else
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
-          }
-
-          olcWebForm.save(olcFileName);
         }
       }
 
