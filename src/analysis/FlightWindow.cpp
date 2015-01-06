@@ -37,6 +37,7 @@
 #include "IFlightForm.h"
 #include "IFlyHighRC.h"
 #include "IWayPointForm.h"
+#include "IUploadForm.h"
 #include "ISql.h"
 #include "Flight.h"
 #include "IGCFileParser.h"
@@ -47,6 +48,8 @@
 #include "MapView.h"
 #include "qexifimageheader.h"
 #include "WebMapFlightView.h"
+
+#include <QDebug>
 
 FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 :TableWindow(parent, name, wflags)
@@ -107,17 +110,25 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
     MDIWindow::addAction(pAction);
   }
 
-  pAction = new QAction(tr("&Export IGC..."), this);
+  pAction = new QAction(tr("E&xport IGC..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Export KML..."), this);
+  pAction = new QAction(tr("Export &KML..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportKML()));
   MDIWindow::addAction(pAction);
 
-  pAction = new QAction(tr("&Export all..."), this);
+  pAction = new QAction(tr("Export all..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
   MDIWindow::addAction(pAction);
+
+  pAction = new QAction(this);
+  pAction->setSeparator(true);
+  MDIWindow::addAction(pAction, true);
+
+  pAction = new QAction(tr("Up&load..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(upload2OLC()));
+  MDIWindow::addAction(pAction, true);
 
   /* - ground speed / time
   - vario / time
@@ -127,11 +138,11 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pAction->setSeparator(true);
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Plot Air Data"), this);
+  pAction = new QAction(tr("Plot &Air Data"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(plot_airData()));
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Plot OLC"), this);
+  pAction = new QAction(tr("Plot &OLC"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(plot_OLC()));
   MDIWindow::addAction(pAction);
 
@@ -1156,6 +1167,26 @@ void FlightWindow::showPhotos()
       view.exec();
     }
   }
+}
+
+void FlightWindow::upload2OLC()
+{
+  qDebug() << "upload2OLC() called";
+
+  IUploadForm uploadForm(this, tr("Upload Flight to Online Contest"));
+  ProgressDlg progDlg(this);
+  int row;
+  //bool success = false;
+
+  row = getCurrentFlightIndex();
+
+  qDebug() << "upload2OLC(): uploading flight row" << row;
+
+  // upload flight
+  uploadForm.setFlight(&m_flightList[row]);
+
+  uploadForm.exec();
+
 }
 
 void FlightWindow::confirmDownload(Elevation *pElevation, const QString &question)

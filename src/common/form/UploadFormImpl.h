@@ -17,76 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef FlightWindow_h
-#define FlightWindow_h
 
-#include "FlightPointList.h"
-#include "IDataBase.h"
-#include "GnuPlot.h"
-#include "Photo.h"
-#include "TableWindow.h"
+#ifndef UploadFormImpl_h
+#define UploadFormImpl_h
 
-class QWidget;
-class Elevation;
-class OLCOptimizer;
+#include "ui_UploadForm.h"
+#include "Account.h"
 
-class FlightWindow: public TableWindow
+class Flight;
+
+class UploadFormImpl : public QDialog, public Ui::UploadForm
 {
 	Q_OBJECT
+
 	public:
-		FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src);
+    UploadFormImpl(QWidget* parent, const QString &caption, Flight *pFlight);
 
-	private slots:
-		void file_update();
+		void setFlight(Flight *pFlight);
 
-		void file_AddToSqlDB();
+		void enableInput(bool b);
 
-		void file_new();
+	protected slots:
+		void accept();
+    void newAccount();
 
-		void file_edit();
-
-		void file_delete();
-
-		void file_import();
-
-		void file_exportIGC();
-
-		void file_exportKML();
-
-		void plot_airData();
-
-		void plot_OLC();
-
-		void showOnMap();
-
-		void showOnWebMap();
-
-		void showPhotos();
-
-    void upload2OLC();
-
-		void confirmDownload(Elevation *pElevation, const QString &question);
-
-	private:
-		enum Fields{Id, Nr, Icon, Date, Time, Duration, Model, StartPt, LandPt, Distance, Comment};
-
-		IDataBase *m_pDb;
-		QString m_fileName;
-		GnuPlot m_plotter;
-		Flight::FlightListType m_flightList;
-
-    void setFlightToRow(uint row, Flight &flight);
-
-    int getCurrentFlightIndex();
-
-		void plotFlighPointList(FlightPointList &fpList, const QString& title);
-
-    Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
-                           WayPoint::WayPointListType &tpList,
-                           uint &dist, float &score);
-
-    void resolvePhotos(const QString &path, const FlightPointList &fpList,
-                       Photo::PhotoListType &photoList);
+private:
+		Flight *m_pFlight;
+    void selectAccount();
 };
 
 #endif

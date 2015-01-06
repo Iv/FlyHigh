@@ -2,7 +2,8 @@ include(${QT_USE_FILE})
 
 include_directories(${QT_INCLUDES} )
 
-set(container_SRCS AirSpace.cpp
+set(container_SRCS Account.cpp
+                   AirSpace.cpp
                    AirSpaceList.cpp
                    BoundBox.cpp
                    Flight.cpp
