@@ -42,7 +42,6 @@
 #include "IGCFileParser.h"
 #include "KmlWriter.h"
 #include "OLCOptimizer.h"
-#include "OLCWebForm.h"
 #include "PhotoView.h"
 #include "ProgressDlg.h"
 #include "MapView.h"
