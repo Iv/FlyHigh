@@ -29,14 +29,20 @@ class Account
 	public:
     typedef QList<Account> AccountListType;
 
+    typedef enum OLCType { XCONTEST } OLCType;
+
     Account();
 
 		int id();
 
 		void setId(int id);
 
+    OLCType getType() const;
+
 	private:
 		int m_id;
+
+    OLCType m_oLCType;
 };
 
 #endif

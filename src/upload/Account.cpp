@@ -22,6 +22,7 @@
 Account::Account()
 {
 	m_id = -1;
+  m_oLCType = Account::XCONTEST;
 }
 
 int Account::id()
@@ -32,4 +33,9 @@ int Account::id()
 void Account::setId(int id)
 {
 	m_id = id;
+}
+
+Account::OLCType Account::getType() const
+{
+  return m_oLCType;
 }
