@@ -18,92 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QCursor>
-#include <QFileDialog>
-#include "ISql.h"
-#include "IFlyHighRC.h"
-#include "IAccountForm.h"
-#include "IOLCUploader.h"
-#include "OLCUploaderFactory.h"
 #include "Account.h"
-#include "UploadFormImpl.h"
+#include "IOLCUploader.h"
+#include "XContestUploader.h"
+#include "OLCUploaderFactory.h"
 
-#include <QDebug>
-
-UploadFormImpl::UploadFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
-  :QDialog(parent)
+OLCUploaderFactory::OLCUploaderFactory()
 {
-  setupUi(this);
-  setWindowTitle(caption);
-	setFlight(pFlight);
 }
 
-void UploadFormImpl::enableInput(bool b)
-{
-	buttonOk->setEnabled(b);
-  pushButtonAccount->setEnabled(b);
-  comboBoxModel->setEnabled(b);
-  checkBoxFlightActive->setEnabled(b);
+IOLCUploader* OLCUploaderFactory::getOLCUploader(Account *pAccount) {
 
-	if(b)
-	{
-		QWidget::unsetCursor();
-	}
-	else
-	{
-		QWidget::setCursor(QCursor(Qt::WaitCursor));
-	}
-}
+  IOLCUploader* pUploader = NULL;
 
-void UploadFormImpl::setFlight(Flight *pFlight)
-{
-  m_pFlight = pFlight;
-}
-
-void UploadFormImpl::accept()
-{
-
-  Account* pAccount = new Account();
-  IOLCUploader* pUploader = OLCUploaderFactory::getOLCUploader(pAccount);
-
-  if(pUploader)
+  if(pAccount != NULL)
   {
-    pUploader->uploadFlight(m_pFlight);
+    switch (pAccount->getType()) {
+    case Account::XCONTEST:
+      pUploader = new XContestUploader(pAccount);
+      break;
+    default:
+      break;
+    }
   }
 
-  QDialog::accept();
+  return pUploader;
 }
-
-
-void UploadFormImpl::selectAccount()
-{
-	int index;
-	int maxIndex;
-	bool found = false;
-
-	maxIndex = comboBoxModel->count();
-
-	for(index=0; index<maxIndex; index++)
-	{
-    //found = (m_gliderList[index] == m_pFlight->glider());
-    found = true;
-
-		if(found)
-		{
-			comboBoxModel->setCurrentIndex(index);
-			break;
-		}
-	}
-}
-
-void UploadFormImpl::newAccount()
-{
-  IAccountForm newAccount(this, "New Online Contest Account", NULL);
-
-  if(newAccount.exec())
-  {
-    qDebug() << "New Account created";
-  }
-}
-
-#include "moc_UploadFormImpl.cxx"

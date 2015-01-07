@@ -50,4 +50,4 @@ QT4_WRAP_UI(form_UI_HDRS ${form_UIS})
 
 add_library(form ${form_SRCS} ${form_HDRS} ${form_UI_HDRS})
 
-target_link_libraries(form dbsql)
+target_link_libraries(form dbsql upload)

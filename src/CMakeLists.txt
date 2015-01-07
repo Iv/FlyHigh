@@ -16,6 +16,7 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
+                    ${CMAKE_SOURCE_DIR}/src/upload
                     ${QT_INCLUDES} )
 
 add_subdirectory(analysis)
@@ -25,6 +26,7 @@ add_subdirectory(preparation)
 add_subdirectory(res)
 add_subdirectory(settings)
 add_subdirectory(tools)
+add_subdirectory(upload)
 
 set(flyhigh_SRCS main.cpp
                  MainWindow.cpp)
@@ -42,7 +44,7 @@ endif(WIN32)
 
 target_link_libraries(flyhigh
 	analysis
-  preparation
+	preparation
 	cfgflyhigh
 	cfgflytec
 	cfgflytec6015
@@ -61,6 +63,7 @@ target_link_libraries(flyhigh
 	res
 	qextserialport
 	qextmedia
+	upload
 	${QT_LIBRARIES})
 
 # install executable
