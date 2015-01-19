@@ -21,12 +21,14 @@
 #ifndef IOLCUploader_h
 #define IOLCUploader_h
 
+#include <QObject>
+
 class Flight;
 
 /**
  * Interface for all Online Contest Uploader classes
  */
-class IOLCUploader
+class IOLCUploader : public QObject
 {
 public:
 

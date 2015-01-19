@@ -23,11 +23,16 @@
 
 #include "IOLCUploader.h"
 
+class QNetworkReply;
+class Account;
+
+
 /**
  * Implements XContest uploading functionality
  */
 class XContestUploader : public IOLCUploader
 {
+  Q_OBJECT
 public:
 
   XContestUploader(Account* pAccount);
@@ -36,6 +41,17 @@ public:
 
   virtual void uploadFlight(Flight* pFlight);
 
+private:
+  QString getHash(QString str);
+
+public slots:
+  void finishedSlot(QNetworkReply* reply);
+
+private:
+
+  static const QString XCONTEST_API_BASE_URL;
+  static const QString XCONTEST_TICKET_URL;
+  static const QString XCONTEST_API_KEY;
 };
 
 #endif
