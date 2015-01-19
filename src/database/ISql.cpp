@@ -36,6 +36,7 @@
 #include "Servicings.h"
 #include "Upgrade.h"
 #include "WayPoints.h"
+#include "Account.h"
 
 ISql* ISql::m_pInst = NULL;
 
@@ -534,6 +535,26 @@ bool ISql::update(Pilot &pilot)
 bool ISql::pilot(int id, Pilot &pilot)
 {
 	return m_pPilots->pilot(id, pilot);
+}
+
+bool ISql::add(Account &account)
+{
+
+}
+
+bool ISql::update(Account &account)
+{
+
+}
+
+bool ISql::delAccount(Account &account)
+{
+
+}
+
+bool ISql::accountList(Account::AccountListType &accountList)
+{
+
 }
 
 AirSpaces* ISql::pAirSpaceTable()
