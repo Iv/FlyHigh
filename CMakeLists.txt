@@ -15,11 +15,11 @@ endif()
 message("Build type is: " ${CMAKE_BUILD_TYPE})
 
 # verbose makefiles if doing a Debug build
-# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#  set(CMAKE_VERBOSE_MAKEFILE TRUE)
-# else()
-#  set(CMAKE_VERBOSE_MAKEFILE FALSE)
-# endif()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+ set(CMAKE_VERBOSE_MAKEFILE TRUE)
+else()
+ set(CMAKE_VERBOSE_MAKEFILE FALSE)
+endif()
 
 # set file locations for installation
 # where to install binaries

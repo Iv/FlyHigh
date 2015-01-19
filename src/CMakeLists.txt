@@ -64,7 +64,8 @@ target_link_libraries(flyhigh
 	qextserialport
 	qextmedia
 	upload
-	${QT_LIBRARIES})
+  qjson4
+  ${QT_LIBRARIES})
 
 # install executable
 install(TARGETS flyhigh DESTINATION ${FLYHIGH_BIN_DIR} )
