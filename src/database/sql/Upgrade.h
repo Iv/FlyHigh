@@ -52,6 +52,9 @@ class Upgrade: public DataBaseSub
 		static const DataBaseVersion DataBaseVersion_0_9_2;
     static const DataBaseVersion DataBaseVersion_0_9_5;
     static const DataBaseVersion DataBaseVersion_0_9_8;
+    static const DataBaseVersion DataBaseVersion_1_0_0;
+
+    static const DataBaseVersion DataBaseCurrentVersion;
 
 		QueryExecutor* m_pExecutor;
 

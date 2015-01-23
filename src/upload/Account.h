@@ -34,13 +34,23 @@ class Account
     Account();
 
 		int id();
-
 		void setId(int id);
 
     OLCType getType() const;
+    void setType(OLCType type);
+
+    QString getUsername() const;
+    void setUsername(QString username);
+
+    QString getPassword() const;
+    void setPassword(QString password);
+
+    QString getTypeAsString() const;
 
 	private:
 		int m_id;
+    QString m_username;
+    QString m_password;
 
     OLCType m_oLCType;
 };

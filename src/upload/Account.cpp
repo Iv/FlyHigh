@@ -39,3 +39,41 @@ Account::OLCType Account::getType() const
 {
   return m_oLCType;
 }
+
+void Account::setType(OLCType type)
+{
+  m_oLCType = type;
+}
+
+QString Account::getUsername() const
+{
+  return m_username;
+}
+
+void Account::setUsername(QString username)
+{
+  m_username = username;
+}
+
+QString Account::getPassword() const
+{
+  return m_password;
+}
+
+void Account::setPassword(QString password)
+{
+  m_password = password;
+}
+
+QString Account::getTypeAsString() const
+{
+  QString res = "unknown";
+  switch(m_oLCType)
+  {
+  case Account::XCONTEST:
+    res = "XContest";
+    break;
+  }
+  return res;
+}
+
