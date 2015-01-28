@@ -47,6 +47,11 @@ class Accounts: public DataBaseSub
 		bool checkModified();
 
 	private:
+    static QString scramble(QString toScramble, QString key);
+    static QString unscramble(QString toUnscramble, QString key);
+
+  private:
+    int m_pilotId;
 };
 
 #endif

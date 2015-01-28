@@ -541,17 +541,32 @@ bool ISql::pilot(int id, Pilot &pilot)
 
 bool ISql::add(Account &account)
 {
-  return m_pAccounts->add(account);
+  bool success;
+
+  success = m_pAccounts->add(account);
+  emit accountsChanged();
+
+  return success;
 }
 
 bool ISql::update(Account &account)
 {
-  return m_pAccounts->update(account);
+  bool success;
+
+  success = m_pAccounts->update(account);
+  emit accountsChanged();
+
+  return success;
 }
 
 bool ISql::delAccount(Account &account)
 {
-  return m_pAccounts->delAccount(account);
+  bool success;
+
+  success = m_pAccounts->delAccount(account);
+  emit accountsChanged();
+
+  return success;
 }
 
 bool ISql::accountList(Account::AccountListType &accountList)

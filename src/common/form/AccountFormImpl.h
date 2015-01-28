@@ -32,8 +32,13 @@ class AccountFormImpl: public QDialog, public Ui::AccountForm
 	public:
     AccountFormImpl(QWidget* parent, const QString &caption, Account *pAccount);
 
+    void setAccount(Account *pAccount);
+
 	protected slots:
 		void accept();
+
+  private:
+    void select(QComboBox *pCombo, const QString &text);
 
 	private:
     Account *m_pAccount;

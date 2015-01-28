@@ -33,7 +33,7 @@ IOLCUploader* OLCUploaderFactory::getOLCUploader(Account *pAccount) {
 
   if(pAccount != NULL)
   {
-    switch (pAccount->getType()) {
+    switch (pAccount->type()) {
     case Account::XCONTEST:
       pUploader = new XContestUploader(pAccount);
       break;

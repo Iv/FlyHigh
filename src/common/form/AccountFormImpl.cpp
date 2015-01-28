@@ -23,17 +23,60 @@
 AccountFormImpl::AccountFormImpl(QWidget* parent, const QString &caption, Account *pAccount)
 	:QDialog(parent)
 {
-  setupUi(this);
+  QStringList contests;
 
-  //Q_CHECK_PTR(pAccount);
+  setupUi(this);
+  setWindowTitle(caption);
+
+  contests.push_back(Account::typeAsString(Account::XCONTEST));
+  comboBox->addItems(contests);
+
+  setAccount(pAccount);
+}
+
+void AccountFormImpl::setAccount(Account *pAccount)
+{
   m_pAccount = pAccount;
 
-  setWindowTitle(caption);
+  if(m_pAccount != NULL)
+  {
+    select(comboBox, Account::typeAsString(m_pAccount->type()));
+    lineEditUsername->setText(m_pAccount->username());
+    lineEditPassword->setText(m_pAccount->password());
+    textEditNotes->setText(m_pAccount->description());
+  }
 }
 
 void AccountFormImpl::accept()
 {
+  if(m_pAccount != NULL)
+  {
+    m_pAccount->setUsername(lineEditUsername->text());
+    m_pAccount->setPassword(lineEditPassword->text());
+    m_pAccount->setDescription(textEditNotes->toPlainText());
+    m_pAccount->setType((Account::OLCType)comboBox->currentIndex());
+  }
 	QDialog::accept();
+}
+
+void AccountFormImpl::select(QComboBox *pCombo, const QString &text)
+{
+  int index;
+  int maxIndex;
+  bool found = false;
+
+  maxIndex = pCombo->count();
+
+  for(index=0; index<maxIndex; index++)
+  {
+    found = (pCombo->itemText(index) == text);
+
+    if(found)
+    {
+      pCombo->setCurrentIndex(index);
+      break;
+    }
+  }
 }
 
 #include "moc_AccountFormImpl.cxx"

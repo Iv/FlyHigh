@@ -28,14 +28,13 @@
 #include "Account.h"
 #include "UploadFormImpl.h"
 
-#include <QDebug>
-
 UploadFormImpl::UploadFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
   :QDialog(parent)
 {
   setupUi(this);
   setWindowTitle(caption);
 	setFlight(pFlight);
+  updateAccount();
 }
 
 void UploadFormImpl::enableInput(bool b)
@@ -74,36 +73,37 @@ void UploadFormImpl::accept()
   QDialog::accept();
 }
 
-
-void UploadFormImpl::selectAccount()
-{
-	int index;
-	int maxIndex;
-	bool found = false;
-
-	maxIndex = comboBoxModel->count();
-
-	for(index=0; index<maxIndex; index++)
-	{
-    //found = (m_gliderList[index] == m_pFlight->glider());
-    found = true;
-
-		if(found)
-		{
-			comboBoxModel->setCurrentIndex(index);
-			break;
-		}
-	}
-}
-
 void UploadFormImpl::newAccount()
 {
-  IAccountForm newAccount(this, "New Online Contest Account", NULL);
+  Account::AccountListType accounts;
+  Account account;
+
+  ISql::pInstance()->accountList(accounts);
+
+  IAccountForm newAccount(this, "New Online Contest Account", &account, accounts);
 
   if(newAccount.exec())
   {
-    qDebug() << "New Account created";
+    ISql::pInstance()->add(account);
+    updateAccount();
   }
 }
+
+void UploadFormImpl::updateAccount()
+{
+  Account::AccountListType::iterator it;
+  QString entry;
+  m_accountList.clear();
+  ISql::pInstance()->accountList(m_accountList);
+  comboBoxModel->clear();
+
+  for(it=m_accountList.begin(); it!=m_accountList.end(); it++)
+  {
+    entry = it->username() + " (" + Account::typeAsString(it->type()) + ")";
+    comboBoxModel->addItem(entry);
+  }
+
+}
+
 
 #include "moc_UploadFormImpl.cxx"

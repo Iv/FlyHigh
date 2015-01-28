@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Alex Graf                                       *
+ *   Copyright (C) 2005 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,21 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef AccountWindow_h
+#define AccountWindow_h
 
-#include "IAccountForm.h"
-#include "AccountFormImpl.h"
+#include "Account.h"
+#include "TableWindow.h"
 
-IAccountForm::IAccountForm(QWidget* parent, const QString &caption, Account *pAccount, const Account::AccountListType& accountList)
+class QWidget;
+class IDataBase;
+
+class AccountWindow: public TableWindow
 {
-  m_pAccountForm = new AccountFormImpl(parent, caption, pAccount);
-}
+	Q_OBJECT
+	public:
+    AccountWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags);
 
-IAccountForm::~IAccountForm()
-{
-  delete m_pAccountForm;
-}
+	private:
+    void setAccountToRow(uint row, Account &account);
 
-bool IAccountForm::exec()
-{
-  return (m_pAccountForm->exec() == QDialog::Accepted);
-}
+	private slots:
+		void file_new();
+
+		void file_edit();
+
+		void file_delete();
+
+		void file_update();
+
+	private:
+    enum Fields{Username, Contest, Description};
+
+		IDataBase *m_pDb;
+    Account::AccountListType m_accountList;
+};
+
+#endif

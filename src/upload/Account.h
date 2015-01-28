@@ -36,22 +36,25 @@ class Account
 		int id();
 		void setId(int id);
 
-    OLCType getType() const;
+    OLCType type() const;
     void setType(OLCType type);
 
-    QString getUsername() const;
+    QString username() const;
     void setUsername(QString username);
 
-    QString getPassword() const;
+    QString password() const;
     void setPassword(QString password);
 
-    QString getTypeAsString() const;
+    QString description() const;
+    void setDescription(QString description);
+
+    static QString typeAsString(OLCType type);
 
 	private:
 		int m_id;
     QString m_username;
     QString m_password;
-
+    QString m_description;
     OLCType m_oLCType;
 };
 

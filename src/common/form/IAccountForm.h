@@ -21,15 +21,16 @@
 #ifndef IAccountForm_h
 #define IAccountForm_h
 
+#include "Account.h"
+
 class QString;
 class QWidget;
 class AccountFormImpl;
-class Account;
 
 class IAccountForm
 {
 	public:
-    IAccountForm(QWidget* parent, const QString &caption, Account *pAccount);
+    IAccountForm(QWidget* parent, const QString &caption, Account *pAccount, const Account::AccountListType& accountList);
 
   ~IAccountForm();
 

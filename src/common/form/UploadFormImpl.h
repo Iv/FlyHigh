@@ -43,7 +43,9 @@ class UploadFormImpl : public QDialog, public Ui::UploadForm
 
 private:
 		Flight *m_pFlight;
-    void selectAccount();
+    void updateAccount();
+
+    Account::AccountListType m_accountList;
 };
 
 #endif

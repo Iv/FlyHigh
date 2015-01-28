@@ -121,7 +121,7 @@ void XContestUploader::finishedSlot(QNetworkReply* reply)
 }
 
 QString XContestUploader::getHash(QString str) {
-  QString toHash = str + "";
+  QString toHash = str + "f218bd8158be7def6608ec9910dbf25c";
   QByteArray hash = QCryptographicHash::hash(toHash.toUtf8(), QCryptographicHash::Sha1);
   return hash.toHex();
 }

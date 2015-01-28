@@ -57,6 +57,8 @@ class MainWindow: public QMainWindow
 
 		void analysis_servicing();
 
+    void analysis_accounts();
+
 		void startLand_fromSQL();
 
 		void buoys_fromSQL();

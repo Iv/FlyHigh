@@ -35,7 +35,7 @@ void Account::setId(int id)
 	m_id = id;
 }
 
-Account::OLCType Account::getType() const
+Account::OLCType Account::type() const
 {
   return m_oLCType;
 }
@@ -45,7 +45,7 @@ void Account::setType(OLCType type)
   m_oLCType = type;
 }
 
-QString Account::getUsername() const
+QString Account::username() const
 {
   return m_username;
 }
@@ -55,7 +55,7 @@ void Account::setUsername(QString username)
   m_username = username;
 }
 
-QString Account::getPassword() const
+QString Account::password() const
 {
   return m_password;
 }
@@ -65,10 +65,20 @@ void Account::setPassword(QString password)
   m_password = password;
 }
 
-QString Account::getTypeAsString() const
+QString Account::description() const
+{
+  return m_description;
+}
+
+void Account::setDescription(QString description)
+{
+  m_description = description;
+}
+
+QString Account::typeAsString(OLCType type)
 {
   QString res = "unknown";
-  switch(m_oLCType)
+  switch(type)
   {
   case Account::XCONTEST:
     res = "XContest";
@@ -76,4 +86,3 @@ QString Account::getTypeAsString() const
   }
   return res;
 }
-
