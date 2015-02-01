@@ -21,11 +21,15 @@
 #ifndef XContestUploader_h
 #define XContestUploader_h
 
+#include <QMap>
+#include "Account.h"
 #include "IOLCUploader.h"
 
 class QNetworkReply;
-class Account;
-
+class QUrl;
+class QHttpMultiPart;
+class QNetworkReply;
+class QNetworkAccessManager;
 
 /**
  * Implements XContest uploading functionality
@@ -36,21 +40,32 @@ class XContestUploader : public IOLCUploader
 public:
 
   XContestUploader(Account* pAccount);
-
   virtual ~XContestUploader();
 
   virtual void uploadFlight(Flight* pFlight);
 
 private:
-  QString getHash(QString str);
+
+  typedef enum State {INIT,AUTH} State;
+
+  QHttpMultiPart* getLogin(QString ticket) const;
+  static QString getHash(QString str);
+  static QUrl urlEncodeParams(QString baseUrl, QMap<QString,QString>& params);
+  static QUrl getTicketUrl();
+
 
 public slots:
-  void finishedSlot(QNetworkReply* reply);
+  void reply(QNetworkReply* reply);
 
 private:
 
+  Account m_Account;
+  State m_state;
+  QNetworkAccessManager* m_pManager;
+
   static const QString XCONTEST_API_BASE_URL;
   static const QString XCONTEST_TICKET_URL;
+  static const QString XCONTEST_FLIGHT_URL;
   static const QString XCONTEST_API_KEY;
 };
 

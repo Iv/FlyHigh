@@ -62,7 +62,7 @@ void UploadFormImpl::setFlight(Flight *pFlight)
 void UploadFormImpl::accept()
 {
 
-  Account* pAccount = new Account();
+  Account* pAccount = &m_accountList[comboBoxModel->currentIndex()];
   IOLCUploader* pUploader = OLCUploaderFactory::getOLCUploader(pAccount);
 
   if(pUploader)
