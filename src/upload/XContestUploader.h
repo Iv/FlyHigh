@@ -46,21 +46,31 @@ public:
 
 private:
 
-  typedef enum State {INIT,AUTH} State;
+  /** state type for state machine */
+  typedef enum State {INIT,CLAIM,NEEDINFO,FINISH} State;
 
-  QHttpMultiPart* getLogin(QString ticket) const;
-  static QString getHash(QString str);
-  static QUrl urlEncodeParams(QString baseUrl, QMap<QString,QString>& params);
+  void addAuthControls(QHttpMultiPart* pForm) const;
+  void addFlightControls(QHttpMultiPart* pForm) const;
+
+  void sendTicketRequest();
+  void sendClaimRequest();
+
+  static QString getHash(const QString& str);
+  static QUrl urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params);
   static QUrl getTicketUrl();
 
 
 public slots:
-  void reply(QNetworkReply* reply);
+  void handleEvent(QNetworkReply* reply);
 
 private:
 
   Account m_Account;
   State m_state;
+  bool m_needTicket;
+  QString m_Ticket;
+  QString m_SessionId;
+  Flight* m_pFlight;
   QNetworkAccessManager* m_pManager;
 
   static const QString XCONTEST_API_BASE_URL;

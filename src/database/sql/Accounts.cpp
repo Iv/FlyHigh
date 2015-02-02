@@ -184,7 +184,7 @@ bool Accounts::checkModified()
   return DataBaseSub::checkModified("Accounts");
 }
 
-QString Accounts::scramble(QString toScramble, QString key)
+QString Accounts::scramble(const QString& toScramble, const QString& key)
 {
   // attempt to hide account password a bit: use key to generate a sha1 hash,
   // then use this (hex string) hash as key for encryption
@@ -194,7 +194,7 @@ QString Accounts::scramble(QString toScramble, QString key)
   return cipher.encryptToString(toScramble);
 }
 
-QString Accounts::unscramble(QString toUnscramble, QString key)
+QString Accounts::unscramble(const QString& toUnscramble, const QString& key)
 {
   QByteArray hash = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Sha1);
   SimpleCrypt cipher(QString(hash).toULongLong(NULL, 16));

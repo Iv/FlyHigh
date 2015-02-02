@@ -47,8 +47,8 @@ class Accounts: public DataBaseSub
 		bool checkModified();
 
 	private:
-    static QString scramble(QString toScramble, QString key);
-    static QString unscramble(QString toUnscramble, QString key);
+    static QString scramble(const QString& toScramble, const QString& key);
+    static QString unscramble(const QString& toUnscramble, const QString& key);
 
   private:
     int m_pilotId;

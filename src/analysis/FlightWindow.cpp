@@ -1176,16 +1176,26 @@ void FlightWindow::upload2OLC()
   IUploadForm uploadForm(this, tr("Upload Flight to Online Contest"));
   ProgressDlg progDlg(this);
   int row;
-  //bool success = false;
+  bool success = false;
 
   row = getCurrentFlightIndex();
 
-  qDebug() << "upload2OLC(): uploading flight row" << row;
+  progDlg.beginProgress(tr("read igc file..."), m_pDb);
+  success = m_pDb->loadIGCFile(m_flightList[row]);
+  progDlg.endProgress();
 
-  // upload flight
-  uploadForm.setFlight(&m_flightList[row]);
+  if(success)
+  {
+    qDebug() << "upload2OLC(): uploading flight row" << row;
 
-  uploadForm.exec();
+    // upload flight
+    uploadForm.setFlight(&m_flightList[row]);
+
+    uploadForm.exec();
+  } else
+  {
+    qDebug() << "upload2OLC(): reading igc data failed";
+  }
 
 }
 
