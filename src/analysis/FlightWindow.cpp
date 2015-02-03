@@ -49,7 +49,6 @@
 #include "qexifimageheader.h"
 #include "WebMapFlightView.h"
 
-#include <QDebug>
 
 FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 :TableWindow(parent, name, wflags)
@@ -1171,8 +1170,6 @@ void FlightWindow::showPhotos()
 
 void FlightWindow::upload2OLC()
 {
-  qDebug() << "upload2OLC() called";
-
   IUploadForm uploadForm(this, tr("Upload Flight to Online Contest"));
   ProgressDlg progDlg(this);
   int row;
@@ -1186,17 +1183,13 @@ void FlightWindow::upload2OLC()
 
   if(success)
   {
-    qDebug() << "upload2OLC(): uploading flight row" << row;
-
     // upload flight
     uploadForm.setFlight(&m_flightList[row]);
-
     uploadForm.exec();
   } else
   {
-    qDebug() << "upload2OLC(): reading igc data failed";
+    QMessageBox::critical(this,tr("Error"),tr("Reading igc data failed"),QMessageBox::Ok);
   }
-
 }
 
 void FlightWindow::confirmDownload(Elevation *pElevation, const QString &question)
