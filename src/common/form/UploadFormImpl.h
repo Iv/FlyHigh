@@ -39,6 +39,8 @@ class UploadFormImpl : public QDialog, public Ui::UploadForm
 		void accept();
     void newAccount();
     void validate();
+    void uploadSuccessful();
+    void errorOnUpload(const QString& msg);
 
   private:
     void updateAccount();

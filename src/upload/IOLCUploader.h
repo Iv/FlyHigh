@@ -24,6 +24,7 @@
 #include <QObject>
 
 class Flight;
+class QString;
 
 /**
  * Interface for all Online Contest Uploader classes
@@ -33,6 +34,10 @@ class IOLCUploader : public QObject
 public:
 
   virtual void uploadFlight(Flight* pFlight) = 0;
+
+signals:
+  virtual void finished() = 0;
+  virtual void error(QString message) = 0;
 
 };
 

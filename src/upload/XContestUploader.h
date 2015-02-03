@@ -60,8 +60,12 @@ private:
   static QUrl getTicketUrl();
 
 
-public slots:
+private slots:
   void handleEvent(QNetworkReply* reply);
+
+signals:
+  void finished();
+  void error(QString message);
 
 private:
 

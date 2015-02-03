@@ -20,6 +20,7 @@
 
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QMessageBox>
 #include "ISql.h"
 #include "IFlyHighRC.h"
 #include "IAccountForm.h"
@@ -27,6 +28,7 @@
 #include "OLCUploaderFactory.h"
 #include "Account.h"
 #include "UploadFormImpl.h"
+
 
 UploadFormImpl::UploadFormImpl(QWidget* parent, const QString &caption, Flight *pFlight)
   :QDialog(parent)
@@ -50,6 +52,8 @@ void UploadFormImpl::accept()
 
   Account* pAccount = &m_accountList[comboBoxModel->currentIndex()];
   IOLCUploader* pUploader = OLCUploaderFactory::getOLCUploader(pAccount);
+
+  connect(pUploader, SIGNAL(error(QString)), this, SLOT(errorOnUpload(QString)));
 
   // get password if none is provided
   if(pAccount->password().isEmpty())
@@ -116,5 +120,21 @@ void UploadFormImpl::updateAccount()
 
 }
 
+void UploadFormImpl::uploadSuccessful()
+{
+  QMessageBox::information(this,tr("Success"),tr("Flight successfully uploaded"),QMessageBox::Ok);
+}
+
+void UploadFormImpl::errorOnUpload(const QString& msg)
+{
+  QMessageBox errorDlg;
+  errorDlg.setWindowTitle(tr("Failure"));
+  errorDlg.setIcon(QMessageBox::Critical);
+  errorDlg.setText(tr("Uploading flight failed"));
+  errorDlg.setDetailedText(msg);
+  errorDlg.setStandardButtons(QMessageBox::Ok);
+
+  errorDlg.exec();
+}
 
 #include "moc_UploadFormImpl.cxx"
