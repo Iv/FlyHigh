@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QCursor>
-#include <QFileDialog>
+#include <QInputDialog>
+#include <QLineEdit>
 #include "ISql.h"
 #include "IFlyHighRC.h"
 #include "IAccountForm.h"
@@ -45,9 +45,28 @@ void UploadFormImpl::setFlight(Flight *pFlight)
 
 void UploadFormImpl::accept()
 {
+  bool ok;
+  QString password;
 
   Account* pAccount = &m_accountList[comboBoxModel->currentIndex()];
   IOLCUploader* pUploader = OLCUploaderFactory::getOLCUploader(pAccount);
+
+  // get password if none is provided
+  if(pAccount->password().isEmpty())
+  {
+    password = QInputDialog::getText(this,
+                                     tr("Password required"),
+                                     tr("Password for user %1:").arg(pAccount->username()),
+                                     QLineEdit::Password,
+                                     "",
+                                     &ok);
+    if(!ok)
+    {
+      // cancel pressed
+      return;
+    }
+    pAccount->setPassword(password);
+  }
 
   if(pUploader)
   {
