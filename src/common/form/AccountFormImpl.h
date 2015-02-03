@@ -36,6 +36,7 @@ class AccountFormImpl: public QDialog, public Ui::AccountForm
 
 	protected slots:
 		void accept();
+    void validate();
 
   private:
     void select(QComboBox *pCombo, const QString &text);

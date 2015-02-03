@@ -32,6 +32,8 @@ AccountFormImpl::AccountFormImpl(QWidget* parent, const QString &caption, Accoun
   comboBox->addItems(contests);
 
   setAccount(pAccount);
+
+  validate();
 }
 
 void AccountFormImpl::setAccount(Account *pAccount)
@@ -57,6 +59,13 @@ void AccountFormImpl::accept()
     m_pAccount->setType((Account::OLCType)comboBox->currentIndex());
   }
 	QDialog::accept();
+}
+
+void AccountFormImpl::validate()
+{
+  bool valid;
+  valid = !lineEditUsername->text().isEmpty();
+  buttonOk->setEnabled(valid);
 }
 
 void AccountFormImpl::select(QComboBox *pCombo, const QString &text)

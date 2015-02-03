@@ -73,6 +73,9 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If left blank, password will be requested when necessary&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="inputMethodHints">
     <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText</set>
    </property>
@@ -215,6 +218,22 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditUsername</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>AccountForm</receiver>
+   <slot>validate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>165</x>
+     <y>160</y>
     </hint>
    </hints>
   </connection>
