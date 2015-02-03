@@ -35,16 +35,16 @@ class UploadFormImpl : public QDialog, public Ui::UploadForm
 
 		void setFlight(Flight *pFlight);
 
-		void enableInput(bool b);
-
 	protected slots:
 		void accept();
     void newAccount();
+    void validate();
 
-private:
-		Flight *m_pFlight;
+  private:
     void updateAccount();
 
+  private:
+		Flight *m_pFlight;
     Account::AccountListType m_accountList;
 };
 

@@ -35,23 +35,7 @@ UploadFormImpl::UploadFormImpl(QWidget* parent, const QString &caption, Flight *
   setWindowTitle(caption);
 	setFlight(pFlight);
   updateAccount();
-}
-
-void UploadFormImpl::enableInput(bool b)
-{
-	buttonOk->setEnabled(b);
-  pushButtonAccount->setEnabled(b);
-  comboBoxModel->setEnabled(b);
-  checkBoxFlightActive->setEnabled(b);
-
-	if(b)
-	{
-		QWidget::unsetCursor();
-	}
-	else
-	{
-		QWidget::setCursor(QCursor(Qt::WaitCursor));
-	}
+  validate();
 }
 
 void UploadFormImpl::setFlight(Flight *pFlight)
@@ -87,6 +71,14 @@ void UploadFormImpl::newAccount()
     ISql::pInstance()->add(account);
     updateAccount();
   }
+}
+
+void UploadFormImpl::validate()
+{
+  bool valid;
+  valid = (comboBoxModel->currentIndex() >= 0);
+
+  buttonOk->setEnabled(valid);
 }
 
 void UploadFormImpl::updateAccount()

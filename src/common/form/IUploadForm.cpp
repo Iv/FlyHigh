@@ -36,11 +36,6 @@ bool IUploadForm::exec()
   return (m_pUploadForm->exec() == QDialog::Accepted);
 }
 
-void IUploadForm::enableInput(bool b)
-{
-  m_pUploadForm->enableInput(b);
-}
-
 void IUploadForm::setFlight(Flight *pFlight)
 {
   m_pUploadForm->setFlight(pFlight);

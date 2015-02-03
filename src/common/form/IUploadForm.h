@@ -35,8 +35,6 @@ class IUploadForm
 
 		bool exec();
 
-		void enableInput(bool b);
-
 		void setFlight(Flight *pFlight);
 
 	private:

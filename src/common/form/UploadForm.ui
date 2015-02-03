@@ -181,5 +181,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboBoxModel</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>UploadForm</receiver>
+   <slot>validate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>35</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
