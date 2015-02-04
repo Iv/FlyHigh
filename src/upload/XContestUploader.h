@@ -30,6 +30,8 @@ class QUrl;
 class QHttpMultiPart;
 class QNetworkReply;
 class QNetworkAccessManager;
+class QByteArray;
+class QJsonDocument;
 
 /**
  * Implements XContest uploading functionality
@@ -54,6 +56,10 @@ private:
 
   void sendTicketRequest();
   void sendClaimRequest();
+
+  bool parseResponse(const QByteArray& toParse, QJsonDocument& result, QString& error) const;
+  bool checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const;
+  bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket);
 
   static QString getHash(const QString& str);
   static QUrl urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params);

@@ -19,6 +19,8 @@
 ***************************************************************************/
 
 #include <QNetworkAccessManager>
+#include <QNetworkConfigurationManager>
+#include <QEventLoop>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -45,6 +47,11 @@ const QString XContestUploader::XCONTEST_API_KEY = "75F62615B235B6A0-C139EAE8D66
 XContestUploader::XContestUploader(Account* pAccount)
 {
   m_pManager = new QNetworkAccessManager();
+  // with these 2 lines, network availability may be checked _before_ doing any requests:
+  QNetworkConfigurationManager netConfig;
+  m_pManager->setConfiguration(netConfig.defaultConfiguration());
+
+  // network reply triggers our state machine:
   QObject::connect(m_pManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleEvent(QNetworkReply*)));
 
   // create local copy of account
@@ -64,127 +71,161 @@ XContestUploader::~XContestUploader()
 
 void XContestUploader::uploadFlight(Flight* pFlight)
 {
-  qDebug() << "Uploading flight to XContest";
+  QEventLoop pause;
+  // upload is done if either finished() or error() signal is emitted
+  connect(this, SIGNAL(finished()),&pause,SLOT(quit()));
+  connect(this, SIGNAL(error(QString)),&pause,SLOT(quit()));
+
   m_pFlight = pFlight;
+
+  // check network availability
+  if(m_pManager->networkAccessible()==QNetworkAccessManager::NotAccessible)
+  {
+    emit error(tr("Network not accessible. Check connections!"));
+    return;
+  }
 
   // call slot manually for kicking off state-machine
   handleEvent(NULL);
+
+  // wait until upload process is finished
+  pause.exec();
 }
 
 void XContestUploader::handleEvent(QNetworkReply* reply)
 {
+  QString errorMsg;
+  QVariant httpStatus;
+  QByteArray bytes;
+  QJsonDocument jsonDoc;
+  bool success;
 
   if(reply == NULL && m_needTicket) {
-    // probably invoked manually
+    // invoked directly / initial call
     // send ticket request
     sendTicketRequest();
     return;
   }
 
-  // Reading attributes of the reply
-  // e.g. the HTTP status code
-  QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-  qDebug() << "Got reply with status code " << statusCodeV;
-
-  if (reply->error() == QNetworkReply::NoError)
+  // check for basic errors
+  if (reply->error() != QNetworkReply::NoError)
   {
-    // read data from QNetworkReply here
-    QByteArray bytes = reply->readAll();
-    qDebug() << "Got response: " << QString(bytes);
+    // network reply had errors
+    errorMsg = reply->errorString();
+    emit error(errorMsg);
+    return;
+  }
 
-    // try json parsing
-    QJsonParseError e;
-    QJsonDocument d = QJsonDocument::fromJson(bytes, &e);
+  // Read the HTTP status code
+  httpStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+  if(!httpStatus.isValid())
+  {
+    // invalid http status code... how could this happen??
+    errorMsg = "Invalid http reply received";
+    emit error(errorMsg);
+    return;
+  } else
+  {
+    if(httpStatus.toInt()!=200)
+    {
+      // we're only happy with http status ok. Don't know how to deal with redirects and such...
+      errorMsg = reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
+      emit error(errorMsg);
+      return;
+    }
+  }
 
-    if(!d.isNull()) {
-      qDebug() << "JSON response: " << d.toJson(QJsonDocument::Indented);
+  // ok so far
+  // read data from QNetworkReply
+  bytes = reply->readAll();
 
-      QJsonObject obj = d.object();
-      QJsonValue error = obj.value(QString("error"));
+  // try json parsing
+  success = parseResponse(bytes,jsonDoc, errorMsg);
+  if(!success)
+  {
+    emit error(errorMsg);
+    return;
+  }
 
-      if(!error.isNull())
+  // so far we've got a good http response with a valid json body
+  qDebug() << "JSON response: " << jsonDoc.toJson(QJsonDocument::Indented);
+
+  success = checkErrorResponse(jsonDoc,errorMsg);
+  if(!success)
+  {
+    emit error(errorMsg);
+    return;
+  }
+
+  // sub-state machine: before each gate post, we need a gate ticket
+  if(m_needTicket) {
+    m_needTicket = false;
+
+    // we're expecting the response to a gate ticket request
+    success = readTicketResponse(jsonDoc, m_Ticket);
+    if(!success)
+    {
+      errorMsg = "Protocol error - gate ticket reply expected";
+      emit error(errorMsg);
+      return;
+    }
+  }
+
+  QJsonObject obj = jsonDoc.object();
+
+  // state machine
+  if(m_state == INIT)
+  {
+    // post request
+    sendClaimRequest();
+    m_state = CLAIM;
+  } else if(m_state == CLAIM)
+  {
+    // expecting claim reply
+    QJsonValue success = obj.value(QString("success"));
+    if(!success.isNull())
+    {
+      bool ok = success.toBool();
+      if(ok)
       {
-        QJsonObject errObj = error.toObject();
-        qDebug() << "Error message: " << errObj["message"].toString();
-        return;
-      }
+        qDebug() << "Request successful";
+        // read session id
+        QJsonValue sessionId = obj.value(QString("authTicket"));
+        if(!sessionId.isNull())
+        {
+          qDebug() << "Session ID:" << sessionId.toString();
+          m_SessionId = sessionId.toString();
 
-      if(m_needTicket) {
-        // expecting response to ticket request
-        m_needTicket = false;
-        QJsonValue ticket = obj.value(QString("ticket"));
-        if(!ticket.isNull())
-        {
-          qDebug() << "Ticket:" << ticket.toString();
-          m_Ticket = ticket.toString();
-        } else
-        {
-          qDebug() << "Not a valid Ticket";
-        }
-      }
-
-      // state machine
-      if(m_state == INIT)
-      {
-        // post request
-        sendClaimRequest();
-        m_state = CLAIM;
-      } else if(m_state == CLAIM)
-      {
-        // expecting claim reply
-        QJsonValue success = obj.value(QString("success"));
-        if(!success.isNull())
-        {
-          bool ok = success.toBool();
-          if(ok)
+          QJsonValue form = obj.value(QString("form"));
+          if(!form.isNull())
           {
-            qDebug() << "Request successful";
-            // read session id
-            QJsonValue sessionId = obj.value(QString("authTicket"));
-            if(!sessionId.isNull())
+            QJsonObject formObj = form.toObject();
+            QJsonValue valid = formObj.value(QString("isValid"));
+            if(!valid.isNull())
             {
-              qDebug() << "Session ID:" << sessionId.toString();
-              m_SessionId = sessionId.toString();
-
-              QJsonValue form = obj.value(QString("form"));
-              if(!form.isNull())
+              qDebug() << "Form is valid: " << valid.toBool();
+              QJsonValue phase = formObj.value(QString("phase"));
+              if(!phase.isNull())
               {
-                QJsonObject formObj = form.toObject();
-                QJsonValue valid = formObj.value(QString("isValid"));
-                if(!valid.isNull())
-                {
-                  qDebug() << "Form is valid: " << valid.toBool();
-                  QJsonValue phase = formObj.value(QString("phase"));
-                  if(!phase.isNull())
-                  {
-                    qDebug() << "Phase: " << phase.toDouble();
-                  }
-                }
-              } else
-              {
-                qDebug() << "No valid form in response";
+                qDebug() << "Phase: " << phase.toDouble();
               }
-            } else
-            {
-              qDebug() << "No valid session id";
             }
           } else
           {
-            qDebug() << "Claim failed";
+            qDebug() << "No valid form in response";
           }
         } else
         {
-          qDebug() << "Response invalid";
+          qDebug() << "No valid session id";
         }
+      } else
+      {
+        qDebug() << "Claim failed";
       }
-
     } else
     {
-      qDebug() << "Could not parse response" << e.errorString();
+      qDebug() << "Response invalid";
     }
-  } else
-  {
-    qDebug() << "Got error response: " << reply->errorString();
   }
 }
 
@@ -274,6 +315,73 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
   pForm->append(igcPart);
   pForm->append(commentPart);
   pForm->append(gliderNamePart);
+}
+
+/**
+ * Parses input and assign resulting Json document to jsonDoc.
+ * @param input - input bytes to parse
+ * @param jsonDoc - output QJsonDocument
+ * @param error - error message if a parsing error occurs. Not changed if parsing is successful
+ * @return true if parsing succeeds, false otherwise
+ */
+bool XContestUploader::parseResponse(const QByteArray& input, QJsonDocument& jsonDoc, QString& error) const
+{
+  QJsonParseError e;
+  QJsonDocument d;
+
+  d = QJsonDocument::fromJson(input, &e);
+  if(!d.isNull()){
+    jsonDoc = d;
+    return true;
+  } else
+  {
+    error = e.errorString();
+    return false;
+  }
+}
+
+/**
+ * Checks if the provided json document has the value error set. if yes, the respective message is assigned to errorMsg.
+ * @param jsonDoc - input the json document to traverse
+ * @param errorMsg - output error message that belongs to the error value
+ * @return true if there is _NO_ error found, false if there IS an error
+ */
+bool XContestUploader::checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue error = obj.value(QString("error"));
+
+  if(!error.isNull())
+  {
+    QJsonObject errObj = error.toObject();
+    errorMsg = errObj["message"].toString();
+    return false;
+  } else
+  {
+    // no error
+    return true;
+  }
+}
+
+/**
+ * Read the ticket value from the provided json document. If found, the ticket will be assigned to ticket
+ * @param jsonDoc - input the json document to traverse
+ * @param ticket - output where the ticket value will be assigned
+ * @return true if the ticket value has been found, false otherwise
+ */
+bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket)
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue t = obj.value(QString("ticket"));
+
+  if(!t.isNull())
+  {
+    ticket = t.toString();
+    return true;
+  } else
+  {
+    return false;
+  }
 }
 
 QUrl XContestUploader::urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params)
