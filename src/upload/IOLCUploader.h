@@ -36,8 +36,14 @@ public:
   virtual void uploadFlight(Flight* pFlight) = 0;
 
 signals:
+  /** upload process successfuly completed */
   virtual void finished() = 0;
-  virtual void error(QString message) = 0;
+
+  /** upload process aborted with error */
+  virtual void error(const QString& message) = 0;
+
+  /** upload process progress information. */
+  virtual void step(const QString& step, const int& percent) = 0;
 
 };
 

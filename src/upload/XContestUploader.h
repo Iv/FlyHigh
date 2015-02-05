@@ -59,7 +59,9 @@ private:
 
   bool parseResponse(const QByteArray& toParse, QJsonDocument& result, QString& error) const;
   bool checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const;
-  bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket);
+  bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket) const;
+  bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const;
+  bool readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const;
 
   static QString getHash(const QString& str);
   static QUrl urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params);
@@ -71,7 +73,9 @@ private slots:
 
 signals:
   void finished();
-  void error(QString message);
+  void error(const QString& message);
+  void step(const QString& step, const int& percent);
+
 
 private:
 

@@ -98,11 +98,15 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   QVariant httpStatus;
   QByteArray bytes;
   QJsonDocument jsonDoc;
+  bool valid;
   bool success;
+  bool formValid;
+  int phase;
 
   if(reply == NULL && m_needTicket) {
     // invoked directly / initial call
     // send ticket request
+    emit step(tr("Connecting to xcontest.org"), 10);
     sendTicketRequest();
     return;
   }
@@ -140,8 +144,8 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   bytes = reply->readAll();
 
   // try json parsing
-  success = parseResponse(bytes,jsonDoc, errorMsg);
-  if(!success)
+  valid = parseResponse(bytes,jsonDoc, errorMsg);
+  if(!valid)
   {
     emit error(errorMsg);
     return;
@@ -150,8 +154,8 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   // so far we've got a good http response with a valid json body
   qDebug() << "JSON response: " << jsonDoc.toJson(QJsonDocument::Indented);
 
-  success = checkErrorResponse(jsonDoc,errorMsg);
-  if(!success)
+  valid = checkErrorResponse(jsonDoc,errorMsg);
+  if(!valid)
   {
     emit error(errorMsg);
     return;
@@ -162,69 +166,54 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
     m_needTicket = false;
 
     // we're expecting the response to a gate ticket request
-    success = readTicketResponse(jsonDoc, m_Ticket);
-    if(!success)
+    valid = readTicketResponse(jsonDoc, m_Ticket);
+    if(!valid)
     {
       errorMsg = "Protocol error - gate ticket reply expected";
       emit error(errorMsg);
       return;
     }
+    emit step(tr("Application authorized"),20);
   }
-
-  QJsonObject obj = jsonDoc.object();
 
   // state machine
   if(m_state == INIT)
   {
     // post request
+    emit step(tr("Login for user %1").arg(m_Account.username()),30);
     sendClaimRequest();
+    emit step(tr("IGC file sent"),70);
     m_state = CLAIM;
   } else if(m_state == CLAIM)
   {
     // expecting claim reply
-    QJsonValue success = obj.value(QString("success"));
-    if(!success.isNull())
+    valid = readGateResponse(jsonDoc, success, m_SessionId);
+    if(!valid)
     {
-      bool ok = success.toBool();
-      if(ok)
-      {
-        qDebug() << "Request successful";
-        // read session id
-        QJsonValue sessionId = obj.value(QString("authTicket"));
-        if(!sessionId.isNull())
-        {
-          qDebug() << "Session ID:" << sessionId.toString();
-          m_SessionId = sessionId.toString();
+      errorMsg = "Protocol error - gate response not valid";
+      emit error(errorMsg);
+      return;
+    }
 
-          QJsonValue form = obj.value(QString("form"));
-          if(!form.isNull())
-          {
-            QJsonObject formObj = form.toObject();
-            QJsonValue valid = formObj.value(QString("isValid"));
-            if(!valid.isNull())
-            {
-              qDebug() << "Form is valid: " << valid.toBool();
-              QJsonValue phase = formObj.value(QString("phase"));
-              if(!phase.isNull())
-              {
-                qDebug() << "Phase: " << phase.toDouble();
-              }
-            }
-          } else
-          {
-            qDebug() << "No valid form in response";
-          }
-        } else
-        {
-          qDebug() << "No valid session id";
-        }
-      } else
+    if(success)
+    {
+      valid = readForm(jsonDoc,formValid,phase);
+      if(!valid)
       {
-        qDebug() << "Claim failed";
+        errorMsg = "Protocol error - form not valid";
+        emit error(errorMsg);
+        return;
       }
+
+      if(phase == 3) {
+        // ok
+        emit finished();
+        return;
+      }
+
     } else
     {
-      qDebug() << "Response invalid";
+      qDebug() << "Not successful";
     }
   }
 }
@@ -349,11 +338,11 @@ bool XContestUploader::parseResponse(const QByteArray& input, QJsonDocument& jso
 bool XContestUploader::checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const
 {
   QJsonObject obj = jsonDoc.object();
-  QJsonValue error = obj.value(QString("error"));
+  QJsonValue e = obj.value(QString("error"));
 
-  if(!error.isNull())
+  if(!e.isNull())
   {
-    QJsonObject errObj = error.toObject();
+    QJsonObject errObj = e.toObject();
     errorMsg = errObj["message"].toString();
     return false;
   } else
@@ -369,7 +358,7 @@ bool XContestUploader::checkErrorResponse(const QJsonDocument&jsonDoc, QString& 
  * @param ticket - output where the ticket value will be assigned
  * @return true if the ticket value has been found, false otherwise
  */
-bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket)
+bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket) const
 {
   QJsonObject obj = jsonDoc.object();
   QJsonValue t = obj.value(QString("ticket"));
@@ -382,6 +371,62 @@ bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& 
   {
     return false;
   }
+}
+
+/**
+ * Read the success and session id value from the provided json document. If found, the values will be assigned to success and sessionId
+ * @param jsonDoc - input the json document to traverse
+ * @param success - output where the success value will be assigned
+ * @param sessionId - output where the sessionId value will be assigned
+ * @return true if both the success and sessionId values have been found, false otherwise
+ */
+bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue s = obj.value(QString("success"));
+  QJsonValue a = obj.value(QString("authTicket"));
+
+  if(!s.isNull())
+  {
+    success = s.toBool();
+  }
+  if(!a.isNull())
+  {
+    sessionId = a.toString();
+  }
+  return !(s.isNull() || a.isNull());
+}
+
+/**
+ * Read the form values from the provided json document. If found, the values will be assigned to formValid and phase
+ * @param jsonDoc - input the json document to traverse
+ * @param formValid - output where the from.isValid value will be assigned
+ * @param phase - output where the form.phase value will be assigned
+ * @return
+ */
+bool XContestUploader::readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue f = obj.value(QString("form"));
+  QJsonObject form;
+  QJsonValue v;
+  QJsonValue p;
+
+  if(!f.isNull())
+  {
+    form = f.toObject();
+    v = form.value(QString("isValid"));
+    if(!v.isNull())
+    {
+      formValid = v.toBool();
+    }
+    p = form.value(QString("phase"));
+    if(!p.isNull())
+    {
+      phase = (int)p.toDouble();
+    }
+  }
+  return !(f.isNull() || v.isNull() || p.isNull());
 }
 
 QUrl XContestUploader::urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params)

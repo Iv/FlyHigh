@@ -25,6 +25,7 @@
 #include "Account.h"
 
 class Flight;
+class QAbstractButton;
 
 class UploadFormImpl : public QDialog, public Ui::UploadForm
 {
@@ -36,11 +37,13 @@ class UploadFormImpl : public QDialog, public Ui::UploadForm
 		void setFlight(Flight *pFlight);
 
 	protected slots:
-		void accept();
+    void upload();
+    void close();
     void newAccount();
     void validate();
     void uploadSuccessful();
     void errorOnUpload(const QString& msg);
+    void updateProgress(const QString& msg, const int& percent);
 
   private:
     void updateAccount();
@@ -48,6 +51,7 @@ class UploadFormImpl : public QDialog, public Ui::UploadForm
   private:
 		Flight *m_pFlight;
     Account::AccountListType m_accountList;
+    bool m_upload;
 };
 
 #endif
