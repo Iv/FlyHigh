@@ -28,6 +28,7 @@
 class QNetworkReply;
 class QUrl;
 class QHttpMultiPart;
+class QNetworkRequest;
 class QNetworkReply;
 class QNetworkAccessManager;
 class QByteArray;
@@ -56,6 +57,9 @@ private:
 
   void sendTicketRequest();
   void sendClaimRequest();
+  void sendClarificationRequest(const QMap<QString,QString>& clarifications);
+
+  QNetworkRequest buildGateRequestUrl() const;
 
   bool parseResponse(const QByteArray& toParse, QJsonDocument& result, QString& error) const;
   bool checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const;

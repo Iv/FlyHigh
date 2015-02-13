@@ -98,6 +98,7 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   QVariant httpStatus;
   QByteArray bytes;
   QJsonDocument jsonDoc;
+  QMap<QString,QString> clarifications;
   bool valid;
   bool success;
   bool formValid;
@@ -195,26 +196,55 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
       return;
     }
 
+    // read form controls
+    valid = readForm(jsonDoc,formValid,phase);
+    if(!valid)
+    {
+      errorMsg = "Protocol error - form not valid";
+      emit error(errorMsg);
+      return;
+    }
+
     if(success)
     {
-      valid = readForm(jsonDoc,formValid,phase);
-      if(!valid)
-      {
-        errorMsg = "Protocol error - form not valid";
-        emit error(errorMsg);
-        return;
-      }
-
       if(phase == 3) {
         // ok
+        m_state = FINISH;
         emit finished();
         return;
       }
-
+      qDebug() << "Whats up? Phase" << phase << "not expected here";
+      errorMsg = "Protocol error - form not valid";
+      emit error(errorMsg);
+      return;
     } else
     {
       qDebug() << "Not successful";
+      // maybe additional info is required (aka autocomplete not successful)
+      if(phase == 2) {
+        m_state = NEEDINFO;
+        emit step(tr("Additional is needed"),80);
+        m_needTicket = true;
+        sendTicketRequest();
+      } else
+      {
+        errorMsg = "Protocol error - unknown phase";
+        emit error(errorMsg);
+        return;
+      }
     }
+  } else if(m_state == NEEDINFO)
+  {
+    qDebug() << "send additional info";
+    // TODO:
+    // build gui
+    // read clarifications from gui
+    sendClarificationRequest(clarifications);
+    emit step(tr("Additional info sent"),90);
+
+    // debug: make sure we don't end in a loop!
+    emit finished();
+    m_state = FINISH;
   }
 }
 
@@ -228,20 +258,10 @@ void XContestUploader::sendTicketRequest()
 
 void XContestUploader::sendClaimRequest()
 {
-  QMap<QString,QString> params;
-  QUrl reqUrl;
   QNetworkRequest request;
   QHttpMultiPart* pClaim;
 
-  params.insert("key",XCONTEST_API_KEY);
-  params.insert("ticket",m_Ticket);
-  params.insert("hash",getHash(m_Ticket + XCONTEST_API_KEY));
-  params.insert("authticket",m_SessionId);
-
-  reqUrl = urlEncodeParams(XCONTEST_API_BASE_URL + XCONTEST_FLIGHT_URL, params);
-  qDebug() << "URL string: " << reqUrl.toString();
-
-  request = QNetworkRequest(reqUrl);
+  request = buildGateRequestUrl();
 
   pClaim = new QHttpMultiPart(QHttpMultiPart::FormDataType);
   addAuthControls(pClaim);
@@ -249,6 +269,30 @@ void XContestUploader::sendClaimRequest()
 
   m_pManager->post(request,pClaim);
   qDebug() << "Flight claim request sent";
+}
+
+void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& clarifications)
+{
+  QNetworkRequest request;
+  QHttpMultiPart* pClarification;
+
+  request = buildGateRequestUrl();
+
+  pClarification = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+  QMapIterator<QString,QString> iter(clarifications);
+  while(iter.hasNext())
+  {
+    QHttpPart part;
+
+    iter.next();
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(QString("form-data; name=\"%1\"").arg(iter.key())));
+    part.setBody(iter.value().toUtf8());
+    pClarification->append(part);
+  }
+
+  m_pManager->post(request,pClarification);
+  qDebug() << "Clarification request sent";
 }
 
 void XContestUploader::addAuthControls(QHttpMultiPart* pForm) const
@@ -284,7 +328,6 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
 
   // publish flight (NO for test purposes!)
   activePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[is_active]\""));
-  // TODO use flag from uploadform
   activePart.setBody("N");
 
   // add igc file
@@ -304,6 +347,22 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
   pForm->append(igcPart);
   pForm->append(commentPart);
   pForm->append(gliderNamePart);
+}
+
+QNetworkRequest XContestUploader::buildGateRequestUrl() const
+{
+  QMap<QString,QString> params;
+  QUrl reqUrl;
+
+  params.insert("key",XCONTEST_API_KEY);
+  params.insert("ticket",m_Ticket);
+  params.insert("hash",getHash(m_Ticket + XCONTEST_API_KEY));
+  params.insert("authticket",m_SessionId);
+
+  reqUrl = urlEncodeParams(XCONTEST_API_BASE_URL + XCONTEST_FLIGHT_URL, params);
+  qDebug() << "Gate request URL: " << reqUrl.toString();
+
+  return QNetworkRequest(reqUrl);
 }
 
 /**
