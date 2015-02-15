@@ -288,15 +288,18 @@ void FlightWindow::file_AddToSqlDB()
   OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
   FlightPointList simpleFpList;
+  QDateTime dt1;
+  QDateTime dt2;
   QTime time;
   Glider glider;
   Pilot pilot;
   WayPoint wp;
   OLCOptimizer::FlightPointIndexListType fpIndexList;
-  int row;
   uint gpsFlightNr;
   uint newFlightNr;
+  int offset;
   int id;
+  int row;
   bool success = false;
 
   row = getCurrentFlightIndex();
@@ -342,7 +345,11 @@ void FlightWindow::file_AddToSqlDB()
       if(id >= 0)
       {
         // start time
-        time = igcParser.flightPointList().at(id)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+        dt1 = QDateTime::currentDateTime();
+        dt2 = dt1.toUTC();
+        dt1.setTimeSpec(Qt::UTC);
+        offset = dt2.secsTo(dt1);
+        time = igcParser.flightPointList().at(id)->time().addSecs(offset);
         m_flightList[row].setTime(time);
 
         // start place
@@ -433,6 +440,8 @@ void FlightWindow::file_import()
   OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
   FlightPointList simpleFpList;
+  QDateTime dt1;
+  QDateTime dt2;
   QTime time;
   Flight flight;
   Glider glider;
@@ -442,6 +451,7 @@ void FlightWindow::file_import()
   QString selected;
   QFile file;
   int nr;
+  int offset;
   int startPtId;
   int landPtId;
   int duration;
@@ -491,7 +501,11 @@ void FlightWindow::file_import()
       if(startPtId >= 0)
       {
         // add UTC offset to start time
-        time = igcParser.flightPointList().at(startPtId)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+        dt1 = QDateTime::currentDateTime();
+        dt2 = dt1.toUTC();
+        dt1.setTimeSpec(Qt::UTC);
+        offset = dt2.secsTo(dt1);
+        time = igcParser.flightPointList().at(startPtId)->time().addSecs(offset);
         flight.setTime(time);
 
         // start place
