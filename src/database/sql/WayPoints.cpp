@@ -24,7 +24,6 @@
 #include <QVariant>
 #include "Error.h"
 #include "WayPoints.h"
-#include <QDebug>
 
 WayPoints::WayPoints(QSqlDatabase DB)
 	:DataBaseSub(DB)
@@ -34,19 +33,23 @@ WayPoints::WayPoints(QSqlDatabase DB)
 bool WayPoints::add(WayPoint &wp)
 {
   QSqlQuery query(db());
-  QString sqls;
   int id;
 	bool success;
 
   id = newId("WayPoints");
-  sqls = QString("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude,"
-                 "Latitude, Altitude, Description, Type) "
-                 "VALUES (%1, '%2', '%3', '%4', %5, %6, %7, '%8', %9);")
-              .arg(id).arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
-              .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
-              .arg(wp.type());
+  success = query.prepare("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type) "
+                          "VALUES (:id, :name, :spot, :country, :lon, :lat, :altitude, :description, :type)");
+  query.bindValue(":id", id);
+  query.bindValue(":name", wp.name());
+  query.bindValue(":spot", wp.spot());
+  query.bindValue(":country", wp.country());
+  query.bindValue(":lon", wp.lon());
+  query.bindValue(":lat", wp.lat());
+  query.bindValue(":altitude", wp.alt());
+  query.bindValue(":description", wp.description());
+  query.bindValue(":type", wp.type());
+  success &= query.exec();
 
-	success = query.exec(sqls);
   Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
 
@@ -61,16 +64,22 @@ bool WayPoints::add(WayPoint &wp)
 bool WayPoints::update(WayPoint &wp)
 {
   QSqlQuery query(db());
-  QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE WayPoints SET Name='%1', Spot='%2', Country='%3', Longitude=%4,"
-                  "Latitude=%5, Altitude=%6, Description='%7', Type=%8 WHERE Id=%9;")
-                  .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()))
-                  .arg(wp.lon()).arg(wp.lat()).arg(wp.alt()).arg(escape(wp.description()))
-                  .arg(wp.type())
-                  .arg(wp.id());
-	success = query.exec(sqls);
+  success = query.prepare("UPDATE WayPoints "
+                          "SET Name=:name, Spot=:spot, Country=:country, Longitude=:lon, Latitude=:lat, Altitude=:altitude, Description=:description, Type=:type "
+                          "WHERE Id=:id");
+  query.bindValue(":name", wp.name());
+  query.bindValue(":spot", wp.spot());
+  query.bindValue(":country", wp.country());
+  query.bindValue(":lon", wp.lon());
+  query.bindValue(":lat", wp.lat());
+  query.bindValue(":altitude", wp.alt());
+  query.bindValue(":description", wp.description());
+  query.bindValue(":type", wp.type());
+  query.bindValue(":id", wp.id());
+  success &= query.exec();
+
 	DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_CMD);
 
@@ -80,12 +89,13 @@ bool WayPoints::update(WayPoint &wp)
 bool WayPoints::delWayPoint(WayPoint &wp)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM WayPoints WHERE Id=%1;").arg(wp.id());
-	success = query.exec(sqls);
-	DataBaseSub::setLastModified("WayPoints");
+  success = query.prepare("DELETE FROM WayPoints WHERE Id=:id");
+  query.bindValue(":id", wp.id());
+  success &= query.exec();
+
+  DataBaseSub::setLastModified("WayPoints");
 	Error::verify(success, Error::SQL_DEL);
 
 	return success;
@@ -103,19 +113,18 @@ bool WayPoints::delAllWayPoints()
 	return success;
 }
 
-
 bool WayPoints::wayPoint(int id, WayPoint &wp)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	double lon;
 	double lat;
 	int alt;
 	bool success;
 
-	sqls = QString("SELECT Name, Spot, Country, Longitude, Latitude, Altitude,"
-                 "Description, Type FROM WayPoints WHERE Id = %1;").arg(id);
-    success = query.exec(sqls);
+  success = query.prepare("SELECT Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type FROM WayPoints "
+                          "WHERE Id=:id");
+  query.bindValue(":id", id);
+  success &= query.exec();
 
 	if(success)
 	{
@@ -137,7 +146,7 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 	}
 	else
 	{
-//		Error::verify(success, Error::SQL_CMD);
+		Error::verify(success, Error::SQL_CMD);
 	}
 
 	return success;
@@ -146,7 +155,6 @@ bool WayPoints::wayPoint(int id, WayPoint &wp)
 bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	WayPoint locWp;
 	double lat;
 	double lon;
@@ -155,16 +163,16 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 	bool success;
 	bool found = false;
 
-	sqls = QString("SELECT Id, Longitude, Latitude, Name FROM WayPoints WHERE Type=%1;")
-                .arg(wp.type());
-	success = query.exec(sqls);
+  success = query.prepare("SELECT Id, Longitude, Latitude, Name FROM WayPoints WHERE Type=:type");
+  query.bindValue(":type", wp.type());
+  success &= query.exec();
 
 	if(success)
 	{
 		while(query.next())
 		{
 			lon = query.value(1).toDouble();
-            lat = query.value(2).toDouble();
+      lat = query.value(2).toDouble();
 			locWp.setCoordinates(lat, lon, 0);
 			dist = wp.distance(locWp);
 			found = (dist <= radius);
@@ -172,9 +180,11 @@ bool WayPoints::findWayPoint(WayPoint &wp, uint radius)
 			if(found)
 			{
 			  id = query.value(0).toInt();
-        sqls = QString("SELECT Name, Spot, Country, Altitude, Description, Type "
-                       "FROM WayPoints WHERE Id=%1;").arg(id);
-        success = (query.exec(sqls) && query.first());
+        // we may reuse the query instance because we'll exit the while loop in every case
+        success = query.prepare("SELECT Name, Spot, Country, Altitude, Description, Type "
+                                "FROM WayPoints WHERE Id=:id");
+        query.bindValue(":id", id);
+        success &= (query.exec() && query.first());
 
         if(success)
         {
@@ -201,32 +211,31 @@ bool WayPoints::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wp
 {
 	WayPoint wp;
 	QSqlQuery query(db());
-	QString sqls;
 	double lon;
 	double lat;
 	int alt;
 	bool success;
 
-  sqls = QString("SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description,"
-                 "Type FROM WayPoints WHERE Type=%1 ORDER BY Country, Name, Spot ASC;")
-                 .arg(type);
-	success = query.exec(sqls);
+  success = query.prepare("SELECT Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type FROM WayPoints "
+                          "WHERE Type=:type ORDER BY Country, Name, Spot ASC");
+  query.bindValue(":type", type);
+  success &= query.exec();
 
 	if(success)
 	{
 		while(query.next())
 		{
-            wp.setId(query.value(0).toInt());
-            wp.setName(query.value(1).toString());
-            wp.setSpot(query.value(2).toString());
-            wp.setCountry(query.value(3).toString());
-            lon = query.value(4).toDouble();
-            lat = query.value(5).toDouble();
-            alt = query.value(6).toInt();
-            wp.setCoordinates(lat, lon, alt);
-            wp.setDescription(query.value(7).toString());
-            wp.setType((WayPoint::Type)query.value(8).toInt());
-            wpList.push_back(wp);
+      wp.setId(query.value(0).toInt());
+      wp.setName(query.value(1).toString());
+      wp.setSpot(query.value(2).toString());
+      wp.setCountry(query.value(3).toString());
+      lon = query.value(4).toDouble();
+      lat = query.value(5).toDouble();
+      alt = query.value(6).toInt();
+      wp.setCoordinates(lat, lon, alt);
+      wp.setDescription(query.value(7).toString());
+      wp.setType((WayPoint::Type)query.value(8).toInt());
+			wpList.push_back(wp);
 		}
 	}
 
@@ -243,15 +252,15 @@ bool WayPoints::checkModified()
 bool WayPoints::setId(WayPoint &wp)
 {
 	QSqlQuery query(db());
-	QString sqls;
 	bool success;
 	int id = -1;
 
-    sqls = QString("SELECT Id FROM WayPoints WHERE "
-                "Name='%1' AND Spot='%2' AND Country='%3';")
-                .arg(escape(wp.name())).arg(escape(wp.spot())).arg(escape(wp.country()));
-
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT Id FROM WayPoints "
+                          "WHERE Name=:name AND Spot=:spot AND Country=:country");
+  query.bindValue(":name", wp.name());
+  query.bindValue(":spot", wp.spot());
+  query.bindValue(":country", wp.country());
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{

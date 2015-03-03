@@ -35,6 +35,7 @@
 #include "CredentialsDlg.h"
 #include "DeviceConnectionParameters.h"
 #include "GliderWindow.h"
+#include "AccountWindow.h"
 #include "FlightWindow.h"
 #include "FlightExpWindow.h"
 #include "FlyHighSettingsDlg.h"
@@ -119,6 +120,10 @@ MainWindow::MainWindow()
 	pAction = new QAction(tr("&Servicing"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_servicing()));
 	m_pMenuAnalysis->addAction(pAction);
+
+  pAction = new QAction(tr("A&ccounts"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_accounts()));
+  m_pMenuAnalysis->addAction(pAction);
 
 	// Preparation
 	m_pMenuPreparation = menuBar()->addMenu(tr("&Preparation"));
@@ -378,6 +383,16 @@ void MainWindow::analysis_servicing()
 	pWin = new ServicingWindow(m_pMdiArea, "Servicing", 0);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
 	showWindow(pWin);
+}
+
+void MainWindow::analysis_accounts()
+{
+  MDIWindow* pWin;
+
+  pWin = new AccountWindow(m_pMdiArea, "Accounts", 0);
+  connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
+  showWindow(pWin);
+
 }
 
 void MainWindow::startLand_fromSQL()

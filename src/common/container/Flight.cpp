@@ -182,9 +182,3 @@ Flight& Flight::operator=(const Flight &flight)
 
 	return *this;
 }
-
-bool Flight::operator==(const Flight &flight){
-    if(m_id == flight.m_id)
-        return true;
-    return false;
-}

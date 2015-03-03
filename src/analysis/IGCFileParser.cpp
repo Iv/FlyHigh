@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004 by Alex Graf                                       *
- *   grafal@sourceforge.net                                                         *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <qbuffer.h>
-#include <qfile.h>
+#include <QBuffer>
+#include <QFile>
 #include "IGCFileParser.h"
 
 IGCFileParser::IGCFileParser()
@@ -43,11 +43,14 @@ void IGCFileParser::parse(const QByteArray &igcData)
 		{
 			switch(*record)
 			{
+				case 'B':
+					parseBRecord(record);
+				break;
 				case 'H':
 					parseHRecord(record);
 				break;
-				case 'B':
-					parseBRecord(record, true);
+				case 'I':
+          parseIRecord(record);
 				break;
 				default:
 				break;
@@ -80,6 +83,98 @@ const QDate& IGCFileParser::date()
 FlightPointList& IGCFileParser::flightPointList()
 {
 	return m_flightPointList;
+}
+
+void IGCFileParser::parseBRecord(const char *record)
+{
+	FlightPoint *pFlightPoint;
+	IRecordHash::const_iterator it;
+  QString rec;
+	double lat;
+	double lon;
+	int alt;
+	int hh;
+	int mm;
+	int ss;
+	int latdeg;
+	int latminute;
+	int latmindec;
+	int londeg;
+	int lonminute;
+	int lonmindec;
+	int altBaro;
+	int altGnss;
+	char northsouth;
+	char eastwest;
+	char valid;
+
+	if(sscanf(record,
+			"%*c%2d%2d%2d%2d%2d%3d%c%3d%2d%3d%c%c%5d%5d",
+			&hh, &mm, &ss, &latdeg, &latminute, &latmindec, &northsouth, &londeg,
+			&lonminute, &lonmindec, &eastwest, &valid, &altBaro, &altGnss) == 14)
+	{
+    pFlightPoint = new FlightPoint();
+
+		// time
+		pFlightPoint->setTime(QTime(hh, mm, ss));
+
+		// latitude
+		lat = ((double) latdeg + ((double) latminute / 60.0) + ((double) latmindec / 60000.0));
+
+		if(northsouth == 'S')
+		{
+			lat *= -1.0;
+		}
+
+		// longitude
+		lon = ((double) londeg + ((double) lonminute / 60.0) + ((double) lonmindec / 60000.0));
+
+		if(eastwest == 'W')
+		{
+			lon *= -1.0;
+		}
+
+		pFlightPoint->setPos(LatLng(lat, lon));
+
+		// altitude
+    if(valid == 'A')
+    {
+      alt = altGnss;
+      m_prevAlt = altGnss;
+    }
+    else
+    {
+      alt = m_prevAlt;
+    }
+
+    pFlightPoint->setAlt(alt);
+
+    if(valid == 'A')
+    {
+      alt = altBaro;
+      m_prevAltBaro = altBaro;
+    }
+    else
+    {
+      alt = m_prevAltBaro;
+    }
+
+    pFlightPoint->setAltBaro(alt);
+
+    // extension TAS
+    it = m_iRecordHash.find("TAS");
+
+    if(it != m_iRecordHash.end())
+    {
+      int tas;
+
+      rec = record;
+      tas = rec.mid((*it).begin, (*it).size).toInt();
+      pFlightPoint->setTrueAirSpeed(tas);
+    }
+
+		m_flightPointList.push_back(pFlightPoint);
+	}
 }
 
 void IGCFileParser::parseHRecord(const char *record)
@@ -124,76 +219,39 @@ void IGCFileParser::parseHRecord(const char *record)
 	}
 }
 
-void IGCFileParser::parseBRecord(const char *record, bool gpsAlt)
+void IGCFileParser::parseIRecord(const char *record)
 {
-	FlightPoint *pFlightPoint;
-	double lat;
-	double lon;
-	int alt;
-	int hh;
-	int mm;
-	int ss;
-	int latdeg;
-	int latminute;
-	int latmindec;
-	int londeg;
-	int lonminute;
-	int lonmindec;
-	int altPress;
-	int altGPS;
-	char northsouth;
-	char eastwest;
-	char valid;
+  QString rec = record;
+  QString key;
+  IRecord irec;
+  int nofExt;
+  int extNr;
+  int pos;
 
-	if(sscanf(record,
-			"%*c%2d%2d%2d%2d%2d%3d%c%3d%2d%3d%c%c%5d%5d",
-			&hh, &mm, &ss, &latdeg, &latminute, &latmindec, &northsouth, &londeg,
-			&lonminute, &lonmindec, &eastwest, &valid, &altPress, &altGPS) == 14)
-	{
-    pFlightPoint = new FlightPoint();
+  /*
+    // I013638TAS
+    Number of extensions	2 bytes	NN	Valid characters 0-9
+    Start byte number	2 bytes	SS	Valid characters 0-9
+    Finish byte number	2 bytes	FF	Valid characters 0-9
+    3-letter Code	3 bytes	CCC	Alphanumeric, see para 7 for
+    list of codes
+  */
+  pos = 1;
+  nofExt = rec.mid(pos, 2).toInt();
+  pos += 2;
 
-		// time
-		pFlightPoint->setTime(QTime(hh, mm, ss));
+  for(extNr=0; extNr<nofExt; extNr++)
+  {
+    irec.begin = rec.mid(pos, 2).toInt();
+    pos += 2;
+    irec.size = (rec.mid(pos, 2).toInt() - irec.begin);
+    pos += 2;
+    key = rec.mid(pos, 3);
+    pos += 3;
+    m_iRecordHash.insert(key, irec);
+  }
 
-		// latitude
-		lat = ((double) latdeg + ((double) latminute / 60.0) + ((double) latmindec / 60000.0));
-
-		if(northsouth == 'S')
-		{
-			lat *= -1.0;
-		}
-
-		// longitude
-		lon = ((double) londeg + ((double) lonminute / 60.0) + ((double) lonmindec / 60000.0));
-
-		if(eastwest == 'W')
-		{
-			lon *= -1.0;
-		}
-
-		pFlightPoint->setPos(LatLng(lat, lon));
-
-		// altitude
-		if(gpsAlt)
-		{
-		  if(valid == 'A')
-		  {
-        alt = altGPS;
-        m_prevAlt = altGPS;
-		  }
-		  else
-		  {
-        alt = m_prevAlt;
-		  }
-		}
-		else
-		{
-			alt = altPress;
-		}
-
-    pFlightPoint->setAlt(alt);
-		m_flightPointList.push_back(pFlightPoint);
-	}
+  m_flightPointList.setHasTrueAirSpeed(m_iRecordHash.contains("TAS"));
 }
 
 void IGCFileParser::colonValue(const char *record, QString &str)

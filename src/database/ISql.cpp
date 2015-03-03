@@ -36,6 +36,7 @@
 #include "Servicings.h"
 #include "Upgrade.h"
 #include "WayPoints.h"
+#include "Accounts.h"
 
 ISql* ISql::m_pInst = NULL;
 
@@ -53,6 +54,7 @@ ISql::ISql()
 	m_pRoutes = new Routes(m_DefaultDB);
 	m_pServicings = new Servicings(m_DefaultDB);
 	m_pPilots = new Pilots(m_DefaultDB);
+  m_pAccounts = new Accounts(m_DefaultDB);
 }
 
 ISql::~ISql()
@@ -66,6 +68,7 @@ ISql::~ISql()
 	delete m_pRoutes;
 	delete m_pServicings;
 	delete m_pPilots;
+  delete m_pAccounts;
 }
 
 bool ISql::open()
@@ -534,6 +537,41 @@ bool ISql::update(Pilot &pilot)
 bool ISql::pilot(int id, Pilot &pilot)
 {
 	return m_pPilots->pilot(id, pilot);
+}
+
+bool ISql::add(Account &account)
+{
+  bool success;
+
+  success = m_pAccounts->add(account);
+  emit accountsChanged();
+
+  return success;
+}
+
+bool ISql::update(Account &account)
+{
+  bool success;
+
+  success = m_pAccounts->update(account);
+  emit accountsChanged();
+
+  return success;
+}
+
+bool ISql::delAccount(Account &account)
+{
+  bool success;
+
+  success = m_pAccounts->delAccount(account);
+  emit accountsChanged();
+
+  return success;
+}
+
+bool ISql::accountList(Account::AccountListType &accountList)
+{
+  return m_pAccounts->accountList(accountList);
 }
 
 AirSpaces* ISql::pAirSpaceTable()

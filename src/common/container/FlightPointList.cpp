@@ -24,6 +24,7 @@
 FlightPointList::FlightPointList(bool dataOwner)
 {
   m_dataOwner = dataOwner;
+  m_hasTas = false;
 }
 
 FlightPointList::~FlightPointList()
@@ -269,6 +270,16 @@ void FlightPointList::boundBox(BoundBox &bbox)
 	{
     bbox.setMinMax(m_flightPointList[index]->pos());
 	}
+}
+
+void FlightPointList::setHasTrueAirSpeed(bool has)
+{
+  m_hasTas = has;
+}
+
+bool FlightPointList::hasTrueAirSpeed() const
+{
+  return m_hasTas;
 }
 
 void FlightPointList::douglasPeucker(const FlighPointListType &ptList, int begin, int end,

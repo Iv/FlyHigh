@@ -44,15 +44,25 @@ class FlightPoint
 
     double alt() const;
 
+    void setAltBaro(double alt);
+
+    double altBaro() const;
+
     void setElevation(double &elevation);
 
     double elevation() const;
+
+    void setTrueAirSpeed(double tas);
+
+    double trueAirSpeed() const;
 
   private:
     QTime m_time;
 		LatLng m_pos;
 		double m_alt;
+		double m_altBaro;
     double m_elevation;
+    double m_tas;
 };
 
 #endif

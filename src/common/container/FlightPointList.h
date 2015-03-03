@@ -81,11 +81,16 @@ class FlightPointList
 
 		void boundBox(BoundBox &bbox);
 
+		void setHasTrueAirSpeed(bool has);
+
+		bool hasTrueAirSpeed() const;
+
 	private:
     typedef QVector<bool> MarkerBuffer;
 
     FlighPointListType m_flightPointList;
     bool m_dataOwner;
+    bool m_hasTas;
 
     void douglasPeucker(const FlighPointListType &ptList, int begin, int end,
                         MarkerBuffer &marker, float epsilon) const;

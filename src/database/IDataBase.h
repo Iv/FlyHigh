@@ -29,6 +29,7 @@
 #include "Pilot.h"
 #include "Route.h"
 #include "WayPoint.h"
+#include "Account.h"
 
 class AirSpaceList;
 
@@ -127,6 +128,18 @@ class IDataBase: public QObject
 
 		virtual int pilotsLastModified();
 
+    // accounts
+    virtual bool add(Account &account);
+
+    virtual bool update(Account &account);
+
+    virtual bool delAccount(Account &account);
+
+    virtual bool accountList(Account::AccountListType &accountList);
+
+    virtual int accountsLastModified();
+
+
 	signals:
 		void progress(int percent);
 
@@ -137,6 +150,8 @@ class IDataBase: public QObject
 		void routesChanged();
 
 		void wayPointsChanged();
+
+    void accountsChanged();
 
 	public slots:
 		virtual void cancel();

@@ -18,7 +18,8 @@ set(dbsql_SRCS DataBaseSub.cpp
 							 QueryExecutor.cpp
 							 QueryStore.cpp
 							 Query.cpp
-							 DatabaseUtilities.cpp)
+               DatabaseUtilities.cpp
+               Accounts.cpp)
 
 set(dbsql_HDRS DataBaseSub.h
                Migrator.h)

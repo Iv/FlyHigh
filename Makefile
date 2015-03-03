@@ -16,10 +16,3 @@ clean:
 
 install:
 	cd $(TARGET_DIR); make install DESTDIR=$(prefix)
-
-# Workaround, because KDevelop doesn't change to build directory
-%.o:
-	@for file in "`find ./src/ -name $(@:%.o=%.cpp)`"; \
-	do \
-		cd $(TARGET_DIR)/`dirname $$file`; make VERBOSE=1 $@; \
-	done

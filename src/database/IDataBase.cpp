@@ -225,6 +225,31 @@ bool IDataBase::airspaceList(AirSpaceList &airspaceList)
 	return false;
 }
 
+bool IDataBase::add(Account &account)
+{
+  return false;
+}
+
+bool IDataBase::update(Account &account)
+{
+  return false;
+}
+
+bool IDataBase::delAccount(Account &account)
+{
+  return false;
+}
+
+bool IDataBase::accountList(Account::AccountListType &accountList)
+{
+  return false;
+}
+
+int IDataBase::accountsLastModified()
+{
+  return 0;
+}
+
 void IDataBase::cancel()
 {
 }

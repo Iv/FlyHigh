@@ -22,7 +22,9 @@
 FlightPoint::FlightPoint()
 {
   m_alt = 0;
+  m_altBaro = 0;
   m_elevation = 0;
+  m_tas = 0;
 }
 
 FlightPoint::FlightPoint(const FlightPoint *pFp)
@@ -67,6 +69,16 @@ double FlightPoint::alt() const
   return m_alt;
 }
 
+void FlightPoint::setAltBaro(double alt)
+{
+  m_altBaro = alt;
+}
+
+double FlightPoint::altBaro() const
+{
+  return m_altBaro;
+}
+
 void FlightPoint::setElevation(double &elevation)
 {
   m_elevation = elevation;
@@ -75,4 +87,14 @@ void FlightPoint::setElevation(double &elevation)
 double FlightPoint::elevation() const
 {
   return m_elevation;
+}
+
+void FlightPoint::setTrueAirSpeed(double tas)
+{
+  m_tas = tas;
+}
+
+double FlightPoint::trueAirSpeed() const
+{
+  return m_tas;
 }

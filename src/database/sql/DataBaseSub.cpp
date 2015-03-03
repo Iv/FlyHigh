@@ -81,7 +81,6 @@ int DataBaseSub::newId(const QString &table)
 
 void DataBaseSub::setLastModified(const QString &field)
 {
-	QString sqls;
 	QString date;
 	QSqlQuery query(m_DB);
 	QDateTime curTime;
@@ -92,39 +91,32 @@ void DataBaseSub::setLastModified(const QString &field)
 
 	if(lastModified(field) > 1)
 	{
-    sqls = QString("UPDATE LastModified SET Time = '%1' WHERE Name = '%2'").arg(date).arg(field);
-		query.exec(sqls);
+    query.prepare("UPDATE LastModified SET Time=:time WHERE Name=:name");
+    query.bindValue(":time", date);
+    query.bindValue(":name", field);
+    query.exec();
 	}
 	else
 	{
-    sqls = QString("INSERT INTO LastModified (Name, Time) VALUES ('%1', '%2')").arg(field).arg(date);
-		query.exec(sqls);
+    query.prepare("INSERT INTO LastModified (Name, Time) VALUES (:name, :time)");
+    query.bindValue(":name", field);
+    query.bindValue(":time", date);
+    query.exec();
 	}
 }
 
 int DataBaseSub::lastModified(const QString &field)
 {
-	QString sqls;
-	QString date;
   QSqlQuery query(m_DB);
 	int time = 1;
 
-  sqls = QString("SELECT Time FROM LastModified WHERE Name = '%1'").arg(field);
+  query.prepare("SELECT Time FROM LastModified WHERE Name=:name");
+  query.bindValue(":name", field);
 
-	if(query.exec(sqls) && query.first())
+  if(query.exec() && query.first())
 	{
 		time = query.value(0).toDateTime().toTime_t();
 	}
 
 	return time;
-}
-
-QString DataBaseSub::escape(const QString &str)
-{
-  QString locStr;
-
-  locStr = str;
-  locStr.replace(QRegExp("('|\")"), "\\\\1");
-
-  return locStr;
 }

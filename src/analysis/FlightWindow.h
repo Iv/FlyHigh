@@ -53,11 +53,7 @@ class FlightWindow: public TableWindow
 
 		void file_exportKML();
 
-		void plot_speedVsTime();
-
-		void plot_altVsTime();
-
-		void plot_varioVsTime();
+		void plot_airData();
 
 		void plot_OLC();
 
@@ -66,6 +62,8 @@ class FlightWindow: public TableWindow
 		void showOnWebMap();
 
 		void showPhotos();
+
+    void upload2OLC();
 
 		void confirmDownload(Elevation *pElevation, const QString &question);
 
@@ -77,16 +75,17 @@ class FlightWindow: public TableWindow
 		GnuPlot m_plotter;
 		Flight::FlightListType m_flightList;
 
-        int getCurrentFlightIndex();
+    void setFlightToRow(uint row, Flight &flight);
 
-        void setFlightToRow(uint row, Flight &flight);
+    int getCurrentFlightIndex();
+
 		void plotFlighPointList(FlightPointList &fpList, const QString& title);
 
-        Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
+    Route::Type getBestOlcTurnPts(const OLCOptimizer &optimizer,
                            WayPoint::WayPointListType &tpList,
                            uint &dist, float &score);
 
-        void resolvePhotos(const QString &path, const FlightPointList &fpList,
+    void resolvePhotos(const QString &path, const FlightPointList &fpList,
                        Photo::PhotoListType &photoList);
 };
 

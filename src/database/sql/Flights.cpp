@@ -40,23 +40,27 @@ Flights::Flights(QSqlDatabase DB)
 bool Flights::add(Flight &flight)
 {
   QSqlQuery query(db());
-  QString sqls;
   int id;
 	bool success;
 
   id = newId("Flights");
-  sqls = QString("INSERT INTO Flights(Id, Number, PilotId, Date, Time, GliderId, StartPtId, "
-                 "LandPtId, Duration, Distance, PhotoPath, Comment, IGCFile) "
-                 "VALUES(%1, %2, %3, '%4', '%5', %6, %7, %8, %9, %10, '%11', '%12', :igcdata);")
-                 .arg(id).arg(flight.number()).arg(flight.pilot().id())
-                 .arg(flight.date().toString("yyyy-MM-dd")).arg(flight.time().toString("hh:mm:ss"))
-                 .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(flight.photoPath())
-                 .arg(escape(flight.comment()));
-
-  query.prepare(sqls);
+  success = query.prepare("INSERT INTO Flights(Id, Number, PilotId, Date, Time, GliderId, StartPtId, "
+                          "LandPtId, Duration, Distance, PhotoPath, Comment, IGCFile) "
+                          "VALUES(:id, :number, :pilot, :date, :time, :glider, :start, :land, :duration, :distance, :photopath, :comment, :igcdata)");
+  query.bindValue(":id",id);
+  query.bindValue(":number",flight.number());
+  query.bindValue(":pilot",flight.pilot().id());
+  query.bindValue(":date",flight.date().toString("yyyy-MM-dd"));
+  query.bindValue(":time",flight.time().toString("hh:mm:ss"));
+  query.bindValue(":glider",flight.glider().id());
+  query.bindValue(":start",flight.startPt().id());
+  query.bindValue(":land",flight.landPt().id());
+  query.bindValue(":duration",flight.duration());
+  query.bindValue(":distance",flight.distance());
+  query.bindValue(":photopath",flight.photoPath());
+  query.bindValue(":comment",flight.comment());
   query.bindValue(":igcdata", flight.igcData());
-	success = query.exec();
+  success &= query.exec();
 	DataBaseSub::setLastModified("Flights");
 	Error::verify(success, Error::SQL_CMD);
 
@@ -71,19 +75,25 @@ bool Flights::add(Flight &flight)
 bool Flights::updateFlight(Flight &flight)
 {
   QSqlQuery query(db());
-  QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE Flights SET Number=%1, PilotId=%2, Date='%3', Time='%4', GliderId=%5, "
-                 "StartPtId=%6, LandPtId=%7, Duration=%8, Distance=%9, PhotoPath='%10', Comment='%11' "
-                 "WHERE Id=%12;")
-                 .arg(flight.number()).arg(flight.pilot().id()).arg(flight.date().toString("yyyy-MM-dd"))
-                 .arg(flight.time().toString("hh:mm:ss"))
-                 .arg(flight.glider().id()).arg(flight.startPt().id()).arg(flight.landPt().id())
-                 .arg(flight.duration()).arg(flight.distance()).arg(flight.photoPath())
-                 .arg(escape(flight.comment())).arg(flight.id());
+  success = query.prepare("UPDATE Flights SET Number=:number, PilotId=:pilot, Date=:date, Time=:time, GliderId=:glider, "
+                          "StartPtId=:start, LandPtId=:land, Duration=:duration, Distance=:distance, PhotoPath=:photopath, Comment=:comment "
+                          "WHERE Id=:id");
+  query.bindValue(":number",flight.number());
+  query.bindValue(":pilot",flight.pilot().id());
+  query.bindValue(":date",flight.date().toString("yyyy-MM-dd"));
+  query.bindValue(":time",flight.time().toString("hh:mm:ss"));
+  query.bindValue(":glider",flight.glider().id());
+  query.bindValue(":start",flight.startPt().id());
+  query.bindValue(":land",flight.landPt().id());
+  query.bindValue(":duration",flight.duration());
+  query.bindValue(":distance",flight.distance());
+  query.bindValue(":photopath",flight.photoPath());
+  query.bindValue(":comment",flight.comment());
+  query.bindValue(":id",flight.id());
+  success &= query.exec();
 
-	success = query.exec(sqls);
 	DataBaseSub::setLastModified("Flights");
 	Error::verify(success, Error::SQL_CMD);
 
@@ -93,12 +103,13 @@ bool Flights::updateFlight(Flight &flight)
 bool Flights::delFlight(Flight &flight)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM Flights WHERE PilotId=%1 AND Number=%2")
-                  .arg(flight.pilot().id()).arg(flight.number());
-	success = query.exec(sqls);
+  success = query.prepare("DELETE FROM Flights WHERE PilotId=:pilot AND Number=:number");
+  query.bindValue(":pilot",flight.pilot().id());
+  query.bindValue(":number",flight.number());
+  success &= query.exec();
+
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("Flights");
 
@@ -107,13 +118,13 @@ bool Flights::delFlight(Flight &flight)
 
 int Flights::newFlightNr(Pilot &pilot)
 {
-	QString sqls;
   QSqlQuery query(db());
 	int newFlightNr = -1;
 
-	sqls = QString("SELECT MAX(Number) FROM Flights WHERE PilotId=%1").arg(pilot.id());
+  query.prepare("SELECT MAX(Number) FROM Flights WHERE PilotId=:id");
+  query.bindValue(":id", pilot.id());
 
-	if(query.exec(sqls) && query.first())
+  if(query.exec() && query.first())
 	{
 		newFlightNr = query.value(0).toInt() + 1;
 	}
@@ -126,16 +137,14 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 	Pilot flightPilot;
 	Flight flight;
   QSqlQuery query(db());
-    QString sql;
 	bool success;
 	Glider glider;
 	WayPoint wayPoint;
 
-    sql = QString("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
-                  "Duration, Distance, PhotoPath, Comment FROM Flights WHERE PilotId=%1 ORDER BY Number DESC;")
-                .arg(pilot.id());
-
-    success = query.exec(sql);
+  success = query.prepare("SELECT Id, Number, PilotId, Date, Time, GliderId, StartPtId, LandPtId, "
+                          "Duration, Distance, PhotoPath, Comment FROM Flights WHERE PilotId=:id ORDER BY Number DESC");
+  query.bindValue(":id", pilot.id());
+  success &= query.exec();
 
 	if(success)
 	{
@@ -171,19 +180,20 @@ bool Flights::flightList(Pilot &pilot, Flight::FlightListType &flightList)
 bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 {
   QSqlQuery query(db());
-	QString sqls;
 	QDate now = QDate::currentDate();
 	FlightsPerYearType fpy;
 	bool success = false;
 	int year;
 
+  success = query.prepare("SELECT Duration FROM Flights "
+                          "WHERE PilotId=:pilot AND Date>=:from AND Date<=:to");
+  query.bindValue(":pilot", pilot.id());
+
 	for(year=2000; year<=now.year(); year++)
 	{
-		sqls = QString("SELECT Duration FROM Flights WHERE PilotId = %1 AND "
-                  "Date >= '%2-01-01' AND Date <= '%3-12-31';")
-                  .arg(pilot.id()).arg(year).arg(year);
-
-		success = query.exec(sqls);
+    query.bindValue(":from", QDate(year,1,1).toString("yyyy-MM-dd"));
+    query.bindValue(":to", QDate(year,12,31).toString("yyyy-MM-dd"));
+    success &= query.exec();
 
 		if(success)
 		{
@@ -216,12 +226,12 @@ bool Flights::flightsPerYear(Pilot &pilot, FlightsPerYearListType &fpyList)
 bool Flights::loadIGCFile(Flight &flight)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("SELECT IGCFile FROM Flights WHERE PilotId=%1 AND Number=%2;")
-                .arg(flight.pilot().id()).arg(flight.number());
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT IGCFile FROM Flights WHERE PilotId=:pilot AND Number=:number");
+  query.bindValue(":pilot", flight.pilot().id());
+  query.bindValue(":number", flight.number());
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{
@@ -236,13 +246,13 @@ bool Flights::loadIGCFile(Flight &flight)
 bool Flights::setFlightStatistic(Glider &glider)
 {
   QSqlQuery query(db());
-	QString sqls;
 	uint airtime = 0;
 	uint flights = 0;
 	bool success;
 
-	sqls = QString("SELECT Duration FROM Flights WHERE GliderId=%1;").arg(glider.id());
-	success = query.exec(sqls);
+  success = query.prepare("SELECT Duration FROM Flights WHERE GliderId=:glider");
+  query.bindValue(":glider", glider.id());
+  success &= query.exec();
 
 	if(success)
 	{
@@ -269,15 +279,13 @@ bool Flights::checkModified()
 bool Flights::setId(Flight &flight)
 {
   QSqlQuery query(db());
-	QString sqls;
-	QString dbModel;
 	bool success;
 	int id = -1;
 
-	sqls = QString("SELECT Id FROM Flights WHERE Number=%1 AND PilotId=%2;")
-                .arg(flight.number()).arg(flight.pilot().id());
-
-	success = (query.exec(sqls) && query.first());
+  success = query.prepare("SELECT Id FROM Flights WHERE Number=:number AND PilotId=:pilot");
+  query.bindValue(":number", flight.number());
+  query.bindValue(":pilot", flight.pilot().id());
+  success &= (query.exec() && query.first());
 
 	if(success)
 	{

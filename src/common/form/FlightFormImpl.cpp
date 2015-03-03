@@ -93,7 +93,7 @@ void FlightFormImpl::setFlight(Flight *pFlight)
 	QTime dur(0, 0, 0);
 	Pilot pilot;
 
-    m_pFlight = pFlight;
+  m_pFlight = pFlight;
 
 	if(pFlight != NULL)
 	{

@@ -32,6 +32,7 @@
 #include "Pilot.h"
 #include "Servicing.h"
 #include "DatabaseParameters.h"
+#include "Account.h"
 
 class QTimer;
 class AirSpaces;
@@ -41,6 +42,7 @@ class Flights;
 class Routes;
 class Servicings;
 class Pilots;
+class Accounts;
 
 /**
 @author Alex Graf
@@ -74,9 +76,9 @@ class ISql: public IDataBase
 
 		bool add(WayPoint::WayPointListType &wpList);
 
-        bool update(WayPoint &wp);
+    bool update(WayPoint &wp);
 
-        bool update(WayPoint::WayPointListType &wpList);
+    bool update(WayPoint::WayPointListType &wpList);
 
 		bool delWayPoint(WayPoint &wp);
 
@@ -146,6 +148,14 @@ class ISql: public IDataBase
 
 		bool setId(Pilot &pilot);
 
+    bool add(Account &account);
+
+    bool update(Account &account);
+
+    bool delAccount(Account &account);
+
+    bool accountList(Account::AccountListType &accountList);
+
   signals:
     void glidersChanged();
 
@@ -166,6 +176,8 @@ class ISql: public IDataBase
 
 		Pilots* pPilotTable();
 
+    Accounts* pAccountTable();
+
 	private:
 		static ISql* m_pInst;
     QTimer *m_pTimer;
@@ -176,6 +188,7 @@ class ISql: public IDataBase
 		Routes* m_pRoutes;
 		Servicings* m_pServicings;
 		Pilots* m_pPilots;
+    Accounts* m_pAccounts;
 		QSqlDatabase m_DefaultDB;
 
 		/**
@@ -199,6 +212,7 @@ class ISql: public IDataBase
 		friend class Servicings;
 		friend class Pilots;
 		friend class Routes;
+    friend class Accounts;
 };
 
 #endif

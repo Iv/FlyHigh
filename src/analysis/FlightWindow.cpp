@@ -37,17 +37,18 @@
 #include "IFlightForm.h"
 #include "IFlyHighRC.h"
 #include "IWayPointForm.h"
+#include "IUploadForm.h"
 #include "ISql.h"
 #include "Flight.h"
 #include "IGCFileParser.h"
 #include "KmlWriter.h"
 #include "OLCOptimizer.h"
-#include "OLCWebForm.h"
 #include "PhotoView.h"
 #include "ProgressDlg.h"
 #include "MapView.h"
 #include "qexifimageheader.h"
 #include "WebMapFlightView.h"
+
 
 FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
 :TableWindow(parent, name, wflags)
@@ -92,7 +93,6 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
     break;
   }
 
-
   pAction = new QAction(tr("&Update"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
   MDIWindow::addAction(pAction);
@@ -109,17 +109,25 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
     MDIWindow::addAction(pAction);
   }
 
-  pAction = new QAction(tr("&Export IGC..."), this);
+  pAction = new QAction(tr("E&xport IGC..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportIGC()));
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Export KML..."), this);
+  pAction = new QAction(tr("Export &KML..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_exportKML()));
   MDIWindow::addAction(pAction);
 
-  pAction = new QAction(tr("&Export all..."), this);
+  pAction = new QAction(tr("Export all..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
   MDIWindow::addAction(pAction);
+
+  pAction = new QAction(this);
+  pAction->setSeparator(true);
+  MDIWindow::addAction(pAction, true);
+
+  pAction = new QAction(tr("Up&load..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(upload2OLC()));
+  MDIWindow::addAction(pAction, true);
 
   /* - ground speed / time
   - vario / time
@@ -129,19 +137,11 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pAction->setSeparator(true);
   MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Speed vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_speedVsTime()));
-  MDIWindow::addAction(pAction);
+  pAction = new QAction(tr("Plot &Air Data"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_airData()));
+  MDIWindow::addAction(pAction, true);
 
-  pAction = new QAction(tr("&Alt vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_altVsTime()));
-  MDIWindow::addAction(pAction);
-
-  pAction = new QAction(tr("&Vario vs Time"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(plot_varioVsTime()));
-  MDIWindow::addAction(pAction);
-
-  pAction = new QAction(tr("&OLC"), this);
+  pAction = new QAction(tr("Plot &OLC"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(plot_OLC()));
   MDIWindow::addAction(pAction);
 
@@ -190,11 +190,20 @@ FlightWindow::FlightWindow(QWidget* parent, const QString &name, Qt::WindowFlags
   pTable->setColumnWidth(LandPt, 150);
   pTable->setColumnWidth(Distance, 70);
   pTable->setColumnWidth(Comment, 1000);
+
+  if(src == IDataBase::SqlDB)
+  {
+    pTable->sortByColumn(Nr, Qt::DescendingOrder);
+  }
+  else
+  {
+    pTable->sortByColumn(Nr, Qt::AscendingOrder);
+  }
+
   pTable->setSortingEnabled(true);
 
-    pTable->setSortingEnabled(true);
-  
-    pTable->setColumnHidden(0, true);
+  connect(m_pDb, SIGNAL(flightsChanged()), this, SLOT(file_update()));
+  connect(m_pDb, SIGNAL(wayPointsChanged()), this, SLOT(file_update()));
 
   m_fileName = "";
   file_update();
@@ -279,15 +288,18 @@ void FlightWindow::file_AddToSqlDB()
   OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
   FlightPointList simpleFpList;
+  QDateTime dt1;
+  QDateTime dt2;
   QTime time;
   Glider glider;
   Pilot pilot;
   WayPoint wp;
   OLCOptimizer::FlightPointIndexListType fpIndexList;
-  int row;
   uint gpsFlightNr;
   uint newFlightNr;
+  int offset;
   int id;
+  int row;
   bool success = false;
 
   row = getCurrentFlightIndex();
@@ -333,7 +345,11 @@ void FlightWindow::file_AddToSqlDB()
       if(id >= 0)
       {
         // start time
-        time = igcParser.flightPointList().at(id)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+        dt1 = QDateTime::currentDateTime();
+        dt2 = dt1.toUTC();
+        dt1.setTimeSpec(Qt::UTC);
+        offset = dt2.secsTo(dt1);
+        time = igcParser.flightPointList().at(id)->time().addSecs(offset);
         m_flightList[row].setTime(time);
 
         // start place
@@ -407,10 +423,9 @@ void FlightWindow::file_AddToSqlDB()
       if(newFlightForm.exec())
       {
         ISql::pInstance()->add(m_flightList[row]);
+        m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
         setFlightToRow(row, m_flightList[row]);
       }
-
-      m_flightList[row].setNumber(gpsFlightNr); // restore original track nr or gps will be confused
     }
 
     m_pDb->close();
@@ -425,6 +440,8 @@ void FlightWindow::file_import()
   OLCOptimizer olcOptimizer;
   Glider::GliderListType gliders;
   FlightPointList simpleFpList;
+  QDateTime dt1;
+  QDateTime dt2;
   QTime time;
   Flight flight;
   Glider glider;
@@ -434,6 +451,7 @@ void FlightWindow::file_import()
   QString selected;
   QFile file;
   int nr;
+  int offset;
   int startPtId;
   int landPtId;
   int duration;
@@ -483,7 +501,11 @@ void FlightWindow::file_import()
       if(startPtId >= 0)
       {
         // add UTC offset to start time
-        time = igcParser.flightPointList().at(startPtId)->time().addSecs(IFlyHighRC::pInstance()->utcOffset() * 3600);
+        dt1 = QDateTime::currentDateTime();
+        dt2 = dt1.toUTC();
+        dt1.setTimeSpec(Qt::UTC);
+        offset = dt2.secsTo(dt1);
+        time = igcParser.flightPointList().at(startPtId)->time().addSecs(offset);
         flight.setTime(time);
 
         // start place
@@ -568,22 +590,10 @@ void FlightWindow::file_import()
 void FlightWindow::file_exportIGC()
 {
   QFile file;
-  QString olcFileName;
+  QString fileName;
   QString selected;
   IGCFileParser igcParser;
-  OLCOptimizer olcOptimizer;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFree;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFAI;
-  OLCOptimizer::FlightPointIndexListType fpIndexListFlat;
-  FlightPointList simpleFpList;
-  OLCWebForm olcWebForm;
   ProgressDlg progDlg(this);
-  double distFree;
-  double distFAI;
-  double distFlat;
-  double ptsFree;
-  double ptsFAI;
-  double ptsFlat;
   int row;
   bool success;
 
@@ -601,14 +611,15 @@ void FlightWindow::file_exportIGC()
       // IGC file
       igcParser.parse(m_flightList[row].igcData());
 
-      // fetch olc filename
-      olcWebForm.setFlight(m_flightList[row]);
-      olcWebForm.olcFileName(olcFileName);
+      // suggest filename
+      fileName = m_flightList[row].startPt().name();
+      fileName += m_flightList[row].date().toString("_dd_MM_yyyy");
 
+      // file save dialog
       selected = QFileDialog::getSaveFileName(this,
       tr("IGC file export"),
       IFlyHighRC::pInstance()->lastDir() + QDir::separator()
-      + olcFileName
+      + fileName
       + ".igc",
       "IGC Files (*.igc)");
 
@@ -621,60 +632,18 @@ void FlightWindow::file_exportIGC()
         // use the same basename as the user has chosen
         if(selected.endsWith(".igc",Qt::CaseInsensitive))
         {
-          olcFileName = selected.replace(".igc", ".html", Qt::CaseInsensitive);
+          fileName = selected.replace(".igc", ".html", Qt::CaseInsensitive);
         }
         else
         {
           // just append '.html'
-          olcFileName = selected + ".html";
+          fileName = selected + ".html";
         }
 
         if(file.open(QIODevice::WriteOnly))
         {
           file.write(m_flightList[row].igcData());
           file.close();
-        }
-
-        // OLC file
-        igcParser.flightPointList().simplify(simpleFpList);
-        olcOptimizer.setFlightPoints(simpleFpList, 100, 200);
-        progDlg.beginProgress(tr("optimize flight..."), &olcOptimizer);
-
-        if(olcOptimizer.optimize())
-        {
-          distFree = olcOptimizer.freeDistance(fpIndexListFree) / 1000.0;
-          ptsFree = distFree * 1.5;
-          distFAI = olcOptimizer.FAITriangle(fpIndexListFAI) / 1000.0;
-          ptsFAI = distFAI * 2.0;
-          distFlat = olcOptimizer.flatTriangle(fpIndexListFlat) / 1000.0;
-          ptsFlat = distFlat * 1.75;
-
-          if((ptsFree > ptsFAI) && (ptsFree > ptsFlat))
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFree[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFree[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFree[4]));
-          }
-          else if(ptsFlat > ptsFAI)
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFlat[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFlat[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFlat[4]));
-          }
-          else
-          {
-            olcWebForm.setDeparture(*olcOptimizer.flyPointList().at(fpIndexListFAI[0]));
-            olcWebForm.set1stTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[1]));
-            olcWebForm.set2ndTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[2]));
-            olcWebForm.set3rdTurnPoint(*olcOptimizer.flyPointList().at(fpIndexListFAI[3]));
-            olcWebForm.setFinish(*olcOptimizer.flyPointList().at(fpIndexListFAI[4]));
-          }
-
-          olcWebForm.save(olcFileName);
         }
       }
 
@@ -848,11 +817,10 @@ int FlightWindow::getCurrentFlightIndex()
   return ret;
 }
 
-
 void FlightWindow::file_edit()
 {
-    IFlightForm flightForm(this, tr("Edit Flight"));
-    int row;
+  IFlightForm flightForm(this, tr("Edit Flight"));
+  int row;
 
   row = getCurrentFlightIndex();
 
@@ -871,6 +839,7 @@ void FlightWindow::file_edit()
 void FlightWindow::file_delete()
 {
   int row;
+
   row = getCurrentFlightIndex();
 
   if((row >= 0) && m_pDb->open())
@@ -880,13 +849,16 @@ void FlightWindow::file_delete()
   }
 }
 
-void FlightWindow::plot_speedVsTime()
+void FlightWindow::plot_airData()
 {
-  QTime time;
   IGCFileParser igcParser;
   ProgressDlg progDlg(this);
   GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
+  GnuPlot::PlotVectorType y1;
+  GnuPlot::PlotVectorType y2;
+  GnuPlot::PlotVectorType y3;
+  GnuPlot::PlotVectorType y4;
+  GnuPlot::PlotVectorType y5;
   uint fpNr;
   uint tpListSize;
   int row;
@@ -910,103 +882,50 @@ void FlightWindow::plot_speedVsTime()
         for(fpNr=0; fpNr<tpListSize; fpNr++)
         {
           x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1)*3.6); // in km/h
+          y1.push_back(igcParser.flightPointList().at(fpNr)->alt()); // alt in m
+          y2.push_back(igcParser.flightPointList().at(fpNr)->altBaro()); // alt in m
+          y3.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // vario in m/s
+          y4.push_back(igcParser.flightPointList().speedH(fpNr, fpNr+1) * 3.6); // SOG in km/h
+
+          if(igcParser.flightPointList().hasTrueAirSpeed())
+          {
+            y5.push_back(igcParser.flightPointList().at(fpNr)->trueAirSpeed()); // TAS in km/h
+          }
         }
 
-        m_plotter.clear();
-        m_plotter.setLabelX(tr("time [s]"));
-        m_plotter.setLabelY(tr("speed [km/h]"));
-        m_plotter.plotXY(x, y, tr("Speed vs Time"));
-      }
-    }
+        m_plotter.begin();
+        m_plotter.execCmd(QString("set terminal qt size 800,600 title \"Air Data Plot Flight %1 (%2)\"")
+                          .arg(m_flightList[row].number()).arg(m_flightList[row].date().toString("dd.MM.yyyy")));
+        m_plotter.execCmd("set mouse");
+        m_plotter.execCmd("set lmargin 10");
+        m_plotter.execCmd("set rmargin 5");
+        m_plotter.setMultiplot(3, 1, tr("Airdata"));
 
-    m_pDb->close();
-    TableWindow::unsetCursor();
-  }
-}
+        // alt
+        m_plotter.setLabelX(tr(""));
+        m_plotter.setLabelY(tr("alt [m]"));
+        m_plotter.multiplotXY(x, y1, tr("Barometric"), y2, tr("GNSS"));
 
-void FlightWindow::plot_altVsTime()
-{
-  QTime time;
-  IGCFileParser igcParser;
-  ProgressDlg progDlg(this);
-  GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
-  uint fpNr;
-  uint tpListSize;
-  int row;
-  bool success;
-
-  row = getCurrentFlightIndex();
-
-  if((row >= 0) && m_pDb->open())
-  {
-    progDlg.beginProgress(tr("read igc file..."), m_pDb);
-    success = m_pDb->loadIGCFile(m_flightList[row]);
-    progDlg.endProgress();
-
-    if(success)
-    {
-      igcParser.parse(m_flightList[row].igcData());
-      tpListSize = igcParser.flightPointList().size();
-
-      if(tpListSize > 0)
-      {
-        for(fpNr=0; fpNr<tpListSize; fpNr++)
-        {
-          x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().at(fpNr)->alt()); // in m
-        }
-
-        m_plotter.clear();
-        m_plotter.setLabelX(tr("time [s]"));
-        m_plotter.setLabelY(tr("altitude [m]"));
-        m_plotter.plotXY(x, y, tr("Altitude vs Time"));
-      }
-    }
-
-    m_pDb->close();
-    TableWindow::unsetCursor();
-  }
-}
-
-void FlightWindow::plot_varioVsTime()
-{
-  QTime time;
-  IGCFileParser igcParser;
-  GnuPlot::TimeVectorType x;
-  GnuPlot::PlotVectorType y;
-  ProgressDlg progDlg(this);
-  uint fpNr;
-  uint tpListSize;
-  int row;
-  bool success;
-
-  row = getCurrentFlightIndex();
-
-  if((row >= 0) && m_pDb->open())
-  {
-    progDlg.beginProgress(tr("read igc file..."), m_pDb);
-    success = m_pDb->loadIGCFile(m_flightList[row]);
-    progDlg.endProgress();
-
-    if(success)
-    {
-      igcParser.parse(m_flightList[row].igcData());
-      tpListSize = igcParser.flightPointList().size();
-
-      if(tpListSize > 0)
-      {
-        for(fpNr=0; fpNr<tpListSize; fpNr++)
-        {
-          x.push_back(igcParser.flightPointList().at(fpNr)->time());
-          y.push_back(igcParser.flightPointList().speedV(fpNr, fpNr + 1)); // in m/s
-        }
-
-        m_plotter.clear();
-        m_plotter.setLabelX(tr("time [s]"));
+        // vario
+        m_plotter.setLabelX("");
         m_plotter.setLabelY(tr("vario [m/s]"));
-        m_plotter.plotXY(x, y, tr("Vario vs Time"));
+        m_plotter.multiplotXY(x, y3);
+
+        // speed
+        if(igcParser.flightPointList().hasTrueAirSpeed())
+        {
+          m_plotter.setLabelX(tr("time [s]"));
+          m_plotter.setLabelY(tr("speed [km/h]"));
+          m_plotter.multiplotXY(x, y4, tr("SOG"), y5, tr("TAS"));
+        }
+        else
+        {
+          m_plotter.setLabelX(tr("time"));
+          m_plotter.setLabelY(tr("speed [km/h]"));
+          m_plotter.multiplotXY(x, y4);
+        }
+
+        m_plotter.end();
       }
     }
 
@@ -1043,7 +962,9 @@ void FlightWindow::plot_OLC()
 
       if(igcParser.flightPointList().size() > 0)
       {
-        m_plotter.clear();
+        m_plotter.begin();
+        m_plotter.execCmd(QString("set terminal qt size 800,600 title \"3D Plot Flight %1 (%2)\"").
+                          arg(m_flightList[row].number()).arg(m_flightList[row].date().toString("dd.MM.yyyy")));
         m_plotter.setLabelX(tr("latitude [deg.min]"));
         m_plotter.setLabelY(tr("longitude [deg.min]"));
         m_plotter.setLabelZ(tr("altitude [m]"));
@@ -1085,6 +1006,8 @@ void FlightWindow::plot_OLC()
 
           title.sprintf("free distance: %.3f km (%.2f pts)", dist/1000.0, dist/1000.0*1.0);
           plotFlighPointList(tpList, title);
+
+          m_plotter.end();
         }
 
         progDlg.endProgress();
@@ -1256,6 +1179,30 @@ void FlightWindow::showPhotos()
     {
       view.exec();
     }
+  }
+}
+
+void FlightWindow::upload2OLC()
+{
+  IUploadForm uploadForm(this, tr("Upload Flight to Online Contest"));
+  ProgressDlg progDlg(this);
+  int row;
+  bool success = false;
+
+  row = getCurrentFlightIndex();
+
+  progDlg.beginProgress(tr("read igc file..."), m_pDb);
+  success = m_pDb->loadIGCFile(m_flightList[row]);
+  progDlg.endProgress();
+
+  if(success)
+  {
+    // upload flight
+    uploadForm.setFlight(&m_flightList[row]);
+    uploadForm.exec();
+  } else
+  {
+    QMessageBox::critical(this,tr("Error"),tr("Reading igc data failed"),QMessageBox::Ok);
   }
 }
 

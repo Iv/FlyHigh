@@ -36,7 +36,6 @@ AirSpaces::AirSpaces(QSqlDatabase DB)
 bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
-  QString sqls;
   QString name;
   LatLngList::iterator it;
   int id;
@@ -44,11 +43,15 @@ bool AirSpaces::add(AirSpace &airspace)
 
   id = newId("AirSpaces");
   name = findUniqueName(airspace.name());
-  sqls = QString("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) "
-                 "VALUES(%1, '%2', '%3', %4, %5, '%6');")
-                 .arg(id).arg(name).arg(escape(airspace.airspaceClass()))
-                 .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()));
-  success = query.exec(sqls);
+
+  success = query.prepare("INSERT INTO AirSpaces(Id, Name, Class, Lower, Upper, Comment) VALUES(:id, :name, :class, :lower, :upper, :comment)");
+  query.bindValue(":id",id);
+  query.bindValue(":name",name);
+  query.bindValue(":class",airspace.airspaceClass());
+  query.bindValue(":lower",airspace.low());
+  query.bindValue(":upper",airspace.high());
+  query.bindValue(":comment",airspace.remark());
+  success &= query.exec();
 
   if(airspace.id() == -1)
   {
@@ -57,12 +60,14 @@ bool AirSpaces::add(AirSpace &airspace)
 
   if(success)
   {
+    success = query.prepare("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) VALUES(:id, :lon, :lat)");
+
     for(it=airspace.pointList().begin(); it!=airspace.pointList().end(); it++)
     {
-      sqls = QString("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) "
-                      "VALUES(%1, %2, %3);")
-                      .arg(id).arg((*it).lon()).arg((*it).lat());
-      success &= query.exec(sqls);
+      query.bindValue(":id",id);
+      query.bindValue(":lon",it->lon());
+      query.bindValue(":lat",it->lat());
+      success &= query.exec();
     }
   }
 
@@ -75,16 +80,17 @@ bool AirSpaces::add(AirSpace &airspace)
 bool AirSpaces::updateAirSpace(const AirSpace &airspace)
 {
   QSqlQuery query(db());
-  QString sqls;
 	bool success;
 
-  sqls = QString("UPDATE AirSpaces SET Name='%1', Class='%2', Lower=%3, Upper=%4,"
-                 "Comment='%5' WHERE ID=%6;")
-                  .arg(escape(airspace.name())).arg(escape(airspace.airspaceClass()))
-                  .arg(airspace.low()).arg(airspace.high()).arg(escape(airspace.remark()))
-                 .arg(airspace.id());
+  success = query.prepare("UPDATE AirSpaces SET Name=:name, Class=:class, Lower=:lower, Upper=:upper, Comment=:comment WHERE ID=:id");
+  query.bindValue(":name",airspace.name());
+  query.bindValue(":class",airspace.airspaceClass());
+  query.bindValue(":lower",airspace.low());
+  query.bindValue(":upper",airspace.high());
+  query.bindValue(":comment",airspace.remark());
+  query.bindValue(":id",airspace.id());
+  success &= query.exec();
 
-	success = query.exec(sqls);
 	DataBaseSub::setLastModified("AirSpaces");
 	Error::verify(success, Error::SQL_CMD);
 
@@ -94,13 +100,14 @@ bool AirSpaces::updateAirSpace(const AirSpace &airspace)
 bool AirSpaces::delAirSpace(const AirSpace &airspace)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success;
 
-	sqls = QString("DELETE FROM AirSpaceItems WHERE AirSpaceId=%1;").arg(airspace.id());
-	success = query.exec(sqls);
-  sqls = QString("DELETE FROM AirSpaces WHERE Id=%1;").arg(airspace.id());
-  success &= query.exec(sqls);
+  success = query.prepare("DELETE FROM AirSpaceItems WHERE AirSpaceId=:id");
+  query.bindValue(":id", airspace.id());
+  success &= query.exec();
+  success &= query.prepare("DELETE FROM AirSpaces WHERE Id=:id");
+  query.bindValue(":id", airspace.id());
+  success &= query.exec();
 
 	Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("AirSpaces");
@@ -111,14 +118,13 @@ bool AirSpaces::delAirSpace(const AirSpace &airspace)
 bool AirSpaces::airspace(const QString &name, AirSpace &airspace)
 {
   QSqlQuery query(db());
-	QString sqls;
 	bool success = false;
 
-	sqls = QString("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces WHERE Name='%1';")
-                  .arg(escape(name));
-  success = query.exec(sqls);
+  success = query.prepare("SELECT Id, Name, Class, Lower, Upper, Comment FROM AirSpaces WHERE Name=:name");
+  query.bindValue(":name", name);
+  success &= query.exec();
 
-	if(success)
+  if(success)
 	{
 		if(query.next())
 		{
@@ -176,13 +182,13 @@ bool AirSpaces::checkModified()
 bool AirSpaces::airSpaceItems(int id, LatLngList &itemList)
 {
   QSqlQuery query(db());
-	QString sqls;
 	LatLng latlng;
 	bool success = false;
 
-  sqls = QString("SELECT Latitude, Longitude FROM AirSpaceItems WHERE AirSpaceId=%1;")
-              .arg(id);
-  success = query.exec(sqls);
+  success = query.prepare("SELECT Latitude, Longitude FROM AirSpaceItems WHERE AirSpaceId=:id");
+  query.bindValue(":id", id);
+  success &= query.exec();
+
   itemList.clear();
 
   while(query.next())
@@ -197,24 +203,23 @@ bool AirSpaces::airSpaceItems(int id, LatLngList &itemList)
 QString AirSpaces::findUniqueName(const QString &name)
 {
   QSqlQuery query(db());
-	QString sqls;
-	QString locName;
 	QString newName;
 	QString number;
 	int count = 2;
 	bool found;
 
-	sqls = QString("SELECT Id FROM AirSpaces WHERE Name='%1';");
-	locName = escape(name);
-	newName = locName.left(NameSize);
-	query.exec(sqls.arg(newName));
+  newName = name.left(NameSize);
+  query.prepare("SELECT Id FROM AirSpaces WHERE Name=:name");
+  query.bindValue(":name", newName);
+  query.exec();
 	found = query.next();
 
   while(found)
   {
     number = QString("~%1").arg(count);
-    newName = (locName.left(NameSize - number.size()) + number);
-    query.exec(sqls.arg(newName));
+    newName = (name.left(NameSize - number.size()) + number);
+    query.bindValue(":name", newName);
+    query.exec();
     found = query.next();
     count++;
   }

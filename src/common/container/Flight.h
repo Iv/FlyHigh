@@ -91,7 +91,6 @@ class Flight
 		void setDistance(uint dist);
 
 		Flight& operator=(const Flight &flight);
-        bool operator==(const Flight &Flight);
 
 	private:
 		int m_id;

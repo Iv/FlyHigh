@@ -16,6 +16,7 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
+                    ${CMAKE_SOURCE_DIR}/src/upload
                     ${QT_INCLUDES} )
 
 add_subdirectory(analysis)
@@ -25,6 +26,7 @@ add_subdirectory(preparation)
 add_subdirectory(res)
 add_subdirectory(settings)
 add_subdirectory(tools)
+add_subdirectory(upload)
 
 set(flyhigh_SRCS main.cpp
                  MainWindow.cpp)
@@ -34,15 +36,15 @@ set(flyhigh_HDRS MainWindow.h)
 QT4_WRAP_CPP(flyhigh_SRCS ${flyhigh_HDRS})
 
 if(WIN32)
- # no console window for windows builds
-    add_executable(flyhigh WIN32 ${flyhigh_SRCS} ${flyhigh_HDRS})
+ # no console window for windoze builds
+ add_executable(flyhigh WIN32 ${flyhigh_SRCS} ${flyhigh_HDRS})
 else(WIN32)
-    add_executable(flyhigh ${flyhigh_SRCS} ${flyhigh_HDRS})
+ add_executable(flyhigh ${flyhigh_SRCS} ${flyhigh_HDRS})
 endif(WIN32)
 
 target_link_libraries(flyhigh
 	analysis
-  preparation
+	preparation
 	cfgflyhigh
 	cfgflytec
 	cfgflytec6015
@@ -61,7 +63,9 @@ target_link_libraries(flyhigh
 	res
 	qextserialport
 	qextmedia
-	${QT_LIBRARIES})
+	upload
+  qjson4
+  ${QT_LIBRARIES})
 
 # install executable
 install(TARGETS flyhigh DESTINATION ${FLYHIGH_BIN_DIR} )

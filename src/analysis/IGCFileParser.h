@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2004 by grafal,,,                                       *
- *   grafal@spirit                                                         *
+ *   Copyright (C) 2004 by Alex Graf                                       *
+ *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,8 +22,9 @@
 #define IGCFileParser_h
 
 #include <vector>
-#include <qstring.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QHash>
+#include <QString>
 #include "WayPoint.h"
 #include "FlightPointList.h"
 
@@ -45,16 +46,28 @@ class IGCFileParser
 		FlightPointList& flightPointList();
 
 	private:
+    typedef struct IRecord
+    {
+      int begin;
+      int size;
+    }IRecord;
+
+    typedef QHash<QString, IRecord> IRecordHash;
+
 		QString m_pilot;
 		QString m_model;
 		QString m_gliderId;
 		QDate m_date;
+		IRecordHash m_iRecordHash;
 		FlightPointList m_flightPointList;
 		int m_prevAlt;
+		int m_prevAltBaro;
 
-		void parseHRecord(const char *record);
+		void parseBRecord(const char *record);
 
-		void parseBRecord(const char *record, bool gpsAlt);
+    void parseHRecord(const char *record);
+
+		void parseIRecord(const char *record);
 
 		void colonValue(const char *record, QString &str);
 };

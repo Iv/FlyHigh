@@ -183,6 +183,7 @@ WayPointWindow::WayPointWindow(QWidget* parent, const QString &name, Qt::WindowF
 	pTable->setColumnWidth(Latitude, 90);
 	pTable->setColumnWidth(Altitude, 70);
 	pTable->setColumnWidth(Description, 500);
+	pTable->sortByColumn(Country, Qt::AscendingOrder);
 	pTable->setSortingEnabled(true);
 
   if(src == IDataBase::File)
@@ -448,14 +449,12 @@ void WayPointWindow::wayPointViewFinished(int res)
 
 void WayPointWindow::wayPointChanged(int id)
 {
+  QTableWidget *pTable = TableWindow::getTable();
   int row;
-  int listSize;
 
-  listSize = m_wpList.size();
-
-  for(row=0; row<listSize; row++)
+  for(row=0; row<pTable->rowCount(); row++)
   {
-    if(m_wpList[row].id() == id)
+    if(pTable->item(row, Id)->data(Qt::DisplayRole).toInt() == id)
     {
       m_externSelect = true;
       TableWindow::selectRow(row);

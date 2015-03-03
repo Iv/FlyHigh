@@ -24,8 +24,6 @@
 #include <QDialogButtonBox>
 #include "CredentialsDlg.h"
 
-#include "QDebug"
-
 
 CredentialsDlg::CredentialsDlg(QWidget* parent, const QString& text)
 	: QDialog(parent,Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint)

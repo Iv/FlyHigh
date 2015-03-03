@@ -375,6 +375,7 @@ bool Protocol6015::parseTrack(const QString &tlg, Flight &flight)
 	// number
 	tokenizer.getFirstToken(tlg, ';', token);
 	flight.setNumber(token.toInt());
+  flight.setId(flight.number()); // id == number
 
 	// date
 	tokenizer.getNextToken(tlg, ';', token);
