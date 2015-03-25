@@ -8,10 +8,14 @@ set(upload_SRCS Account.cpp
                 AccountWindow.cpp
                 IOLCUploader.cpp
                 OLCUploaderFactory.cpp
-                XContestUploader.cpp )
+                XContestUploader.cpp
+                XContestAdditionalInfoDlg.cpp
+                XContestAdditionalInfoWidgetFactory.cpp)
 
 set(upload_HDRS AccountWindow.h
-                XContestUploader.h)
+                XContestUploader.h
+                XContestAdditionalInfoDlg.h
+                XContestAdditionalInfoWidgetFactory.h)
 
 QT4_WRAP_CPP(upload_SRCS ${upload_HDRS})
 

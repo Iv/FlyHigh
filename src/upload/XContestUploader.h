@@ -33,6 +33,8 @@ class QNetworkReply;
 class QNetworkAccessManager;
 class QByteArray;
 class QJsonDocument;
+class QJsonObject;
+class XContestAdditionalInfoDlg;
 
 /**
  * Implements XContest uploading functionality
@@ -66,6 +68,7 @@ private:
   bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket) const;
   bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const;
   bool readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const;
+  bool readControls(const QJsonDocument&jsonDoc, QJsonObject& controls) const;
 
   static QString getHash(const QString& str);
   static QUrl urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params);
@@ -90,6 +93,7 @@ private:
   QString m_SessionId;
   Flight* m_pFlight;
   QNetworkAccessManager* m_pManager;
+  XContestAdditionalInfoDlg* m_pInfoDlg;
 
   static const QString XCONTEST_API_BASE_URL;
   static const QString XCONTEST_TICKET_URL;

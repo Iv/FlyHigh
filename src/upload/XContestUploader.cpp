@@ -34,6 +34,7 @@
 #include "QJsonValue.h"
 #include "Account.h"
 #include "Flight.h"
+#include "XContestAdditionalInfoDlg.h"
 #include "XContestUploader.h"
 
 #include <QDebug>
@@ -60,6 +61,7 @@ XContestUploader::XContestUploader(Account* pAccount)
   m_needTicket = true;
   m_Ticket = "";
   m_SessionId = "";
+  m_pInfoDlg = NULL;
 }
 
 XContestUploader::~XContestUploader()
@@ -98,6 +100,7 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   QVariant httpStatus;
   QByteArray bytes;
   QJsonDocument jsonDoc;
+  QJsonObject controls;
   QMap<QString,QString> clarifications;
   bool valid;
   bool success;
@@ -222,8 +225,20 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
       qDebug() << "Not successful";
       // maybe additional info is required (aka autocomplete not successful)
       if(phase == 2) {
+
+        valid = readControls(jsonDoc, controls);
+        if(!valid)
+        {
+          errorMsg = "Protocol error - controls not valid";
+          emit error(errorMsg);
+          return;
+        }
+
+        // create dialog (but don't show yet)
+        m_pInfoDlg = new XContestAdditionalInfoDlg(controls.toVariantMap());
+
         m_state = NEEDINFO;
-        emit step(tr("Additional is needed"),80);
+        emit step(tr("Additional info is needed"),80);
         m_needTicket = true;
         sendTicketRequest();
       } else
@@ -235,10 +250,18 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
     }
   } else if(m_state == NEEDINFO)
   {
-    qDebug() << "send additional info";
-    // TODO:
-    // build gui
+    // show dialog
+    if(m_pInfoDlg->exec()!= QDialog::Accepted)
+    {
+      errorMsg = "Aborted by user";
+      emit error(errorMsg);
+      return;
+    }
+
     // read clarifications from gui
+    m_pInfoDlg->clarifications(clarifications);
+
+    // send data
     sendClarificationRequest(clarifications);
     emit step(tr("Additional info sent"),90);
 
@@ -461,7 +484,7 @@ bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& succe
  * @param jsonDoc - input the json document to traverse
  * @param formValid - output where the from.isValid value will be assigned
  * @param phase - output where the form.phase value will be assigned
- * @return
+ * @return true if both formValid and phase values have been found, false otherwise
  */
 bool XContestUploader::readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const
 {
@@ -486,6 +509,31 @@ bool XContestUploader::readForm(const QJsonDocument&jsonDoc, bool& formValid, in
     }
   }
   return !(f.isNull() || v.isNull() || p.isNull());
+}
+
+/**
+ * Read the controls object from the provided json document. If found, the object will be assigned to controls
+ * @param jsonDoc - input the json document to traverse
+ * @param controls - output where the from.controls object will be assigned
+ * @return true if controls has been found, false otherwise
+ */
+bool XContestUploader::readControls(const QJsonDocument&jsonDoc, QJsonObject& controls) const
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue f = obj.value(QString("form"));
+  QJsonValue c;
+  QJsonObject form;
+
+  if(!f.isNull())
+  {
+    form = f.toObject();
+    c = form.value(QString("controls"));
+    if(!c.isNull())
+    {
+      controls = c.toObject();
+    }
+  }
+  return !(f.isNull() || c.isNull());
 }
 
 QUrl XContestUploader::urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params)
