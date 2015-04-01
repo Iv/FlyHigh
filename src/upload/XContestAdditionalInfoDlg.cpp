@@ -23,6 +23,9 @@
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QAbstractButton>
+#include <QComboBox>
+#include <QPlainTextEdit>
 #include <QStringList>
 #include "XContestAdditionalInfoWidgetFactory.h"
 #include "XContestAdditionalInfoDlg.h"
@@ -96,11 +99,11 @@ void XContestAdditionalInfoDlg::buildGui()
 
   adjustSize();
 
-  connect(pOkCancel,SIGNAL(accepted()),this,SLOT(accept()));
+  connect(pOkCancel,SIGNAL(accepted()),this,SLOT(submit()));
   connect(pOkCancel,SIGNAL(rejected()),this,SLOT(reject()));
 }
 
-QLayout* XContestAdditionalInfoDlg::buildDynamicGui() const
+QLayout* XContestAdditionalInfoDlg::buildDynamicGui()
 {
   QFormLayout* pElement = new QFormLayout();
   QFormLayout* pBoxLayout;
@@ -109,11 +112,13 @@ QLayout* XContestAdditionalInfoDlg::buildDynamicGui() const
   QVariantMap control;
   QString notes;
   QString label;
+  QString name;
 
   for(QVariantMap::ConstIterator iter = m_controls.constBegin(); iter != m_controls.constEnd(); ++iter)
   {
     control = iter.value().toMap();
     label = control["label"].toString();
+    name = control["name"].toString();
 
     pBox = new QGroupBox(label);
     pBoxLayout = new QFormLayout();
@@ -132,6 +137,7 @@ QLayout* XContestAdditionalInfoDlg::buildDynamicGui() const
     pBoxLayout->addRow("Notes:", new QLabel(notes));
 
     pWidget = XContestAdditionalInfoWidgetFactory::createWidget(control);
+    m_widgets.insert(pWidget,name);
     pBoxLayout->addRow(label, pWidget);
 
     pElement->addRow(pBox);
@@ -153,4 +159,37 @@ QString XContestAdditionalInfoDlg::readNotes(const QVariantMap& control, const Q
   }
 
   return result;
+}
+
+void XContestAdditionalInfoDlg::submit()
+{
+  QString value;
+  // read values from widgets and fill into clarifications
+
+  for(QMap<QWidget*,QString>::Iterator iter = m_widgets.begin(); iter != m_widgets.end(); ++iter)
+  {
+    if(qobject_cast<QComboBox*>(iter.key())!=NULL)
+    {
+      // is a combobox
+      QComboBox* pBox = dynamic_cast<QComboBox*>(iter.key());
+      value = pBox->itemData(pBox->currentIndex()).toString();
+      // todo: handle editable comboboxes
+    }
+    else if(qobject_cast<QAbstractButton*>(iter.key())!=NULL)
+    {
+      // is a checkbox
+      QAbstractButton* pCheckBox = dynamic_cast<QAbstractButton*>(iter.key());
+      value = pCheckBox->isChecked()?"Y":"N";
+    }
+    else if(qobject_cast<QPlainTextEdit*>(iter.key())!=NULL)
+    {
+      // is a text field
+      QPlainTextEdit* pTextEdit = dynamic_cast<QPlainTextEdit*>(iter.key());
+      value = pTextEdit->toPlainText();
+    }
+    qDebug() << "Add clarification " << iter.value() << "=" << value;
+    m_clarifications.insert(iter.value(),value);
+  }
+
+  QDialog::accept();
 }

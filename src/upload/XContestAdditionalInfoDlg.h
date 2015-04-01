@@ -37,13 +37,15 @@ class XContestAdditionalInfoDlg: public QDialog
 
 	public:
     XContestAdditionalInfoDlg(const QVariantMap& controls);
-
     void clarifications(QMap<QString,QString>& clarifications) const;
+
+  protected slots:
+    void submit();
 
   private:
     void selectControls(const QVariantMap& controls);
     void buildGui();
-    QLayout* buildDynamicGui() const;
+    QLayout* buildDynamicGui();
     QString readNotes(const QVariantMap& control, const QString& key, const QString& prefix) const;
 
   private:
@@ -52,6 +54,9 @@ class XContestAdditionalInfoDlg: public QDialog
 
     /** controls selected for display */
     QVariantMap m_controls;
+
+    /** collection of widgets for retrieval of user input */
+    QMap<QWidget*,QString> m_widgets;
 };
 
 #endif

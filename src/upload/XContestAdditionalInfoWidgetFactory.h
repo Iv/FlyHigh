@@ -22,7 +22,6 @@
 #define XContestAdditionalInfoWidgetFactory_h
 
 #include <QMap>
-#include <QVariant>
 
 class QWidget;
 

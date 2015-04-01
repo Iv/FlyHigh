@@ -71,7 +71,6 @@ QWidget* XContestAdditionalInfoWidgetFactory::createWidget(const QVariantMap &co
     }
 
     pWidget = pBox;
-
   } else if (type == "TYPE_LOGICAL")
   {
     QCheckBox* pBox = new QCheckBox();
