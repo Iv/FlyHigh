@@ -351,7 +351,7 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
 
   // publish flight (NO for test purposes!)
   activePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[is_active]\""));
-  activePart.setBody("N");
+  activePart.setBody("Y");
 
   // add igc file
   igcPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[tracklog]\"; filename=\"flight.igc\""));
