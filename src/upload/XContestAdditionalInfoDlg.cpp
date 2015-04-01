@@ -172,8 +172,14 @@ void XContestAdditionalInfoDlg::submit()
     {
       // is a combobox
       QComboBox* pBox = dynamic_cast<QComboBox*>(iter.key());
-      value = pBox->itemData(pBox->currentIndex()).toString();
-      // todo: handle editable comboboxes
+      if(pBox->isEditable())
+      {
+        value = pBox->currentText();
+      }
+      else
+      {
+        value = pBox->itemData(pBox->currentIndex()).toString();
+      }
     }
     else if(qobject_cast<QAbstractButton*>(iter.key())!=NULL)
     {
