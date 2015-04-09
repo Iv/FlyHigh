@@ -37,9 +37,11 @@ bool AirSpaces::add(AirSpace &airspace)
 {
   QSqlQuery query(db());
   QString name;
+  QString sqls;
   LatLngList::iterator it;
   int id;
   bool success;
+  bool first = true;
 
   id = newId("AirSpaces");
   name = findUniqueName(airspace.name());
@@ -60,15 +62,21 @@ bool AirSpaces::add(AirSpace &airspace)
 
   if(success)
   {
-    success = query.prepare("INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) VALUES(:id, :lon, :lat)");
+    sqls = "INSERT INTO AirSpaceItems(AirSpaceId, Longitude, Latitude) VALUES";
 
     for(it=airspace.pointList().begin(); it!=airspace.pointList().end(); it++)
     {
-      query.bindValue(":id",id);
-      query.bindValue(":lon",it->lon());
-      query.bindValue(":lat",it->lat());
-      success &= query.exec();
+      if(!first)
+      {
+        sqls += ",";
+      }
+
+      first = false;
+      sqls += QString("(%1, %2, %3)").arg(id).arg((*it).lon()).arg((*it).lat());
     }
+
+    sqls += ";";
+    success &= query.exec(sqls);
   }
 
 	Error::verify(success, Error::SQL_CMD);
