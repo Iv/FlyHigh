@@ -39,20 +39,24 @@ QWidget* XContestAdditionalInfoWidgetFactory::createWidget(const QVariantMap &co
   if(type == "TYPE_CHOOSE_ONE" || type == "TYPE_TEXT_CHOOSE_ONE" || type == "TYPE_CHOOSE_MORE")
   {
     QComboBox* pBox = new QComboBox();
+    QVariantList options = control["options"].toList();
     int selectedIdx = -1;
     int idx = 0;
 
-    QVariantList options = control["options"].toList();
-
+    // check if control allows an empty value
+    if(control.contains("emptyValueLabel"))
+    {
+      pBox->addItem(control["emptyValueLabel"].toString(),"");
+      selectedIdx = 0;
+    }
+    // fill in options
     for(QVariantList::ConstIterator iter = options.constBegin(); iter != options.constEnd(); ++iter)
     {
       QVariantMap option = iter->toMap();
-      QString text = option["text"].toString();
-      QString value = option["value"].toString();
-      bool selected = option["selected"].toString() == "true";
 
-      pBox->addItem(text,value);
-      if(selected)
+      pBox->addItem(option["text"].toString(),option["value"].toString());
+      // check for preselected option
+      if(option["selected"].toString() == "true")
       {
         selectedIdx = idx;
       }
@@ -64,10 +68,10 @@ QWidget* XContestAdditionalInfoWidgetFactory::createWidget(const QVariantMap &co
     if(type == "TYPE_TEXT_CHOOSE_ONE")
     {
       pBox->setEditable(true);
-    }
-    else if (type == "TYPE_CHOOSE_MORE")
+    } else if (type == "TYPE_CHOOSE_MORE")
     {
-      qDebug() << "Multiselection not supported";
+      // qt4 does not offer multiselection comboboxes
+      // you have to live with a single choice
     }
 
     pWidget = pBox;
@@ -81,7 +85,7 @@ QWidget* XContestAdditionalInfoWidgetFactory::createWidget(const QVariantMap &co
     pWidget = new QPlainTextEdit(value);
   } else
   {
-    qDebug() << type << "not implemented";
+    // other types of controls not implemented, e.g. TYPE_FILE
   }
 
   return pWidget;
