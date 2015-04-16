@@ -30,8 +30,6 @@
 #include "XContestAdditionalInfoWidgetFactory.h"
 #include "XContestAdditionalInfoDlg.h"
 
-#include <QDebug>
-
 
 XContestAdditionalInfoDlg::XContestAdditionalInfoDlg(const QVariantMap& controls)
 {
@@ -75,9 +73,9 @@ void XContestAdditionalInfoDlg::selectControls(const QVariantMap& controls)
   }
 }
 
-void XContestAdditionalInfoDlg::clarifications(QMap<QString,QString>& clarifications) const
+const QMap<QString,QString>& XContestAdditionalInfoDlg::clarifications() const
 {
-  clarifications = m_clarifications;
+  return m_clarifications;
 }
 
 void XContestAdditionalInfoDlg::buildGui()
@@ -219,7 +217,6 @@ void XContestAdditionalInfoDlg::submit()
     }
     if(!value.isEmpty())
     {
-      qDebug() << "Add clarification " << iter.value() << "=" << value;
       m_clarifications.insert(iter.value(),value);
     }
   }

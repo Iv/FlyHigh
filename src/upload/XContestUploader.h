@@ -55,11 +55,11 @@ private:
   typedef enum State {INIT,CLAIM,NEEDINFO,FINISH} State;
 
   void addAuthControls(QHttpMultiPart* pForm) const;
-  void addFlightControls(QHttpMultiPart* pForm) const;
+  void addFlightControls(QHttpMultiPart* pForm);
 
   void sendTicketRequest();
   void sendClaimRequest();
-  void sendClarificationRequest(const QMap<QString,QString>& clarifications);
+  void sendClarificationRequest();
 
   QNetworkRequest buildGateRequestUrl() const;
 
@@ -94,6 +94,7 @@ private:
   Flight* m_pFlight;
   QNetworkAccessManager* m_pManager;
   XContestAdditionalInfoDlg* m_pInfoDlg;
+  QMap<QString,QString> m_Controls;
 
   static const QString XCONTEST_API_BASE_URL;
   static const QString XCONTEST_TICKET_URL;

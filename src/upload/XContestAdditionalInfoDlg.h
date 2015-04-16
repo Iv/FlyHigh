@@ -37,7 +37,7 @@ class XContestAdditionalInfoDlg: public QDialog
 
 	public:
     XContestAdditionalInfoDlg(const QVariantMap& controls);
-    void clarifications(QMap<QString,QString>& clarifications) const;
+    const QMap<QString,QString>& clarifications() const;
 
   protected slots:
     void submit();

@@ -100,7 +100,6 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   QByteArray bytes;
   QJsonDocument jsonDoc;
   QJsonObject controls;
-  QMap<QString,QString> clarifications;
   bool valid;
   bool success;
   bool formValid;
@@ -176,16 +175,20 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
       emit error(errorMsg);
       return;
     }
-    emit step(tr("Application authorized"),20);
+    if(m_SessionId.isEmpty())
+    {
+      // notify only in first ticket request
+      emit step(tr("Application authorized"),20);
+    }
   }
 
   // state machine
   if(m_state == INIT)
   {
     // post request
-    emit step(tr("Login for user %1").arg(m_Account.username()),30);
+    emit step(tr("Login for user %1 succeeded").arg(m_Account.username()),40);
     sendClaimRequest();
-    emit step(tr("IGC file sent"),70);
+    emit step(tr("IGC file sent"),60);
     m_state = CLAIM;
   } else if(m_state == CLAIM)
   {
@@ -257,10 +260,15 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
     }
 
     // read clarifications from gui
-    m_pInfoDlg->clarifications(clarifications);
+    const QMap<QString,QString>& clarifications = m_pInfoDlg->clarifications();
+    // don't use QMap::unite(), it might create multiple values per key
+    for(QMap<QString,QString>::ConstIterator iter = clarifications.constBegin(); iter != clarifications.constEnd(); ++iter)
+    {
+      m_Controls.insert(iter.key(),iter.value());
+    }
 
     // send data
-    sendClarificationRequest(clarifications);
+    sendClarificationRequest();
     emit step(tr("Additional info sent"),90);
 
     // back to claim state
@@ -288,7 +296,7 @@ void XContestUploader::sendClaimRequest()
   m_pManager->post(request,pClaim);
 }
 
-void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& clarifications)
+void XContestUploader::sendClarificationRequest()
 {
   QNetworkRequest request;
   QHttpMultiPart* pClarification;
@@ -297,12 +305,10 @@ void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& cla
 
   pClarification = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
-  QMapIterator<QString,QString> iter(clarifications);
-  while(iter.hasNext())
+  for(QMap<QString,QString>::ConstIterator iter = m_Controls.constBegin(); iter != m_Controls.constEnd(); ++iter)
   {
     QHttpPart part;
 
-    iter.next();
     part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(QString("form-data; name=\"%1\"").arg(iter.key())));
     part.setBody(iter.value().toUtf8());
     pClarification->append(part);
@@ -334,7 +340,7 @@ void XContestUploader::addAuthControls(QHttpMultiPart* pForm) const
   pForm->append(pwPart);
 }
 
-void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
+void XContestUploader::addFlightControls(QHttpMultiPart *pForm)
 {
   QString gliderName;
   QHttpPart activePart;
@@ -345,19 +351,23 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
   // publish flight (NO for test purposes!)
   activePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[is_active]\""));
   activePart.setBody("Y");
+  m_Controls.insert("flight[is_active]","Y");
 
   // add igc file
   igcPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[tracklog]\"; filename=\"flight.igc\""));
   igcPart.setBody(m_pFlight->igcData());
+  // don't add igc to subsequent requests
 
   // add comment
   commentPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[comment]\""));
   commentPart.setBody(m_pFlight->comment().toUtf8());
+  m_Controls.insert("flight[comment]",m_pFlight->comment());
 
   // add glider name: what in the igc stands might differ from flyhigh db. Lets trust the flyhigh db...
   gliderNamePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[glider_name]\""));
   m_pFlight->glider().olcName(gliderName);
   gliderNamePart.setBody(gliderName.toUtf8());
+  m_Controls.insert("flight[glider_name]",gliderName);
 
   pForm->append(activePart);
   pForm->append(igcPart);
@@ -376,7 +386,6 @@ QNetworkRequest XContestUploader::buildGateRequestUrl() const
   params.insert("authticket",m_SessionId);
 
   reqUrl = urlEncodeParams(XCONTEST_API_BASE_URL + XCONTEST_FLIGHT_URL, params);
-  qDebug() << "Gate request URL: " << reqUrl.toString();
 
   return QNetworkRequest(reqUrl);
 }
