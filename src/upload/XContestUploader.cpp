@@ -66,7 +66,6 @@ XContestUploader::XContestUploader(Account* pAccount)
 
 XContestUploader::~XContestUploader()
 {
-  qDebug() << "Deleting uploader for XContest (user:" << m_Account.username() << ")";
   delete m_pManager;
 }
 
@@ -191,7 +190,7 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   } else if(m_state == CLAIM)
   {
     // expecting claim reply
-    valid = readGateResponse(jsonDoc, success, m_SessionId);
+    valid = readGateResponse(jsonDoc, success, m_SessionId, m_SessionId.isEmpty());
     if(!valid)
     {
       errorMsg = "Protocol error - gate response not valid";
@@ -222,7 +221,6 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
       return;
     } else
     {
-      qDebug() << "Not successful";
       // maybe additional info is required (aka autocomplete not successful)
       if(phase == 2) {
 
@@ -265,9 +263,8 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
     sendClarificationRequest(clarifications);
     emit step(tr("Additional info sent"),90);
 
-    // debug: make sure we don't end in a loop!
-    emit finished();
-    m_state = FINISH;
+    // back to claim state
+    m_state = CLAIM;
   }
 }
 
@@ -275,8 +272,6 @@ void XContestUploader::sendTicketRequest()
 {
   QNetworkRequest request(getTicketUrl());
   m_pManager->get(request);
-
-  qDebug() << "Ticket request sent";
 }
 
 void XContestUploader::sendClaimRequest()
@@ -291,7 +286,6 @@ void XContestUploader::sendClaimRequest()
   addFlightControls(pClaim);
 
   m_pManager->post(request,pClaim);
-  qDebug() << "Flight claim request sent";
 }
 
 void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& clarifications)
@@ -315,7 +309,6 @@ void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& cla
   }
 
   m_pManager->post(request,pClarification);
-  qDebug() << "Clarification request sent";
 }
 
 void XContestUploader::addAuthControls(QHttpMultiPart* pForm) const
@@ -460,9 +453,10 @@ bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& 
  * @param jsonDoc - input the json document to traverse
  * @param success - output where the success value will be assigned
  * @param sessionId - output where the sessionId value will be assigned
+ * @param isFirst - true if this is the first gate response of the session (only first response carries a authTicket control)
  * @return true if both the success and sessionId values have been found, false otherwise
  */
-bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const
+bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId, bool isFirst) const
 {
   QJsonObject obj = jsonDoc.object();
   QJsonValue s = obj.value(QString("success"));
@@ -472,11 +466,17 @@ bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& succe
   {
     success = s.toBool();
   }
-  if(!a.isNull())
+  if(isFirst)
   {
-    sessionId = a.toString();
+    if(!a.isNull())
+    {
+      sessionId = a.toString();
+    }
+    return !(s.isNull() || a.isNull());
+  } else
+  {
+    return !s.isNull();
   }
-  return !(s.isNull() || a.isNull());
 }
 
 /**

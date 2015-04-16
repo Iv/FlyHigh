@@ -66,7 +66,7 @@ private:
   bool parseResponse(const QByteArray& toParse, QJsonDocument& result, QString& error) const;
   bool checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const;
   bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket) const;
-  bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const;
+  bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId, bool isFirst) const;
   bool readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const;
   bool readControls(const QJsonDocument&jsonDoc, QJsonObject& controls) const;
 
