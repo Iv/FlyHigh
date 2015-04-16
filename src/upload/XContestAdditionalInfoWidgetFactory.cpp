@@ -24,8 +24,6 @@
 #include <QWidget>
 #include "XContestAdditionalInfoWidgetFactory.h"
 
-#include <QDebug>
-
 
 XContestAdditionalInfoWidgetFactory::XContestAdditionalInfoWidgetFactory()
 {

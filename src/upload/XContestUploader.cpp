@@ -37,7 +37,6 @@
 #include "XContestAdditionalInfoDlg.h"
 #include "XContestUploader.h"
 
-#include <QDebug>
 
 const QString XContestUploader::XCONTEST_API_BASE_URL = "http://www.xcontest.org";
 const QString XContestUploader::XCONTEST_TICKET_URL = "/api/gate/ticket/?key=%1&hash=%2";
@@ -154,7 +153,8 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   }
 
   // so far we've got a good http response with a valid json body
-  qDebug() << "JSON response: " << jsonDoc.toJson(QJsonDocument::Indented);
+  // un-comment for debugging:
+  //emit step("Response: " + jsonDoc.toJson(QJsonDocument::Indented),0);
 
   valid = checkErrorResponse(jsonDoc,errorMsg);
   if(!valid)
@@ -218,7 +218,6 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
         emit finished();
         return;
       }
-      qDebug() << "Whats up? Phase" << phase << "not expected here";
       errorMsg = "Protocol error - form not valid";
       emit error(errorMsg);
       return;
