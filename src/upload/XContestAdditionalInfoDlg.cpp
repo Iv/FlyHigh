@@ -117,7 +117,15 @@ QLayout* XContestAdditionalInfoDlg::buildDynamicGui()
   for(QVariantMap::ConstIterator iter = m_controls.constBegin(); iter != m_controls.constEnd(); ++iter)
   {
     control = iter.value().toMap();
-    label = control["label"].toString();
+    if(control.contains("label"))
+    {
+      label = control["label"].toString();
+    }
+    else
+    {
+      // fallback if control has no label. we'd like to add a proper title to the widget
+      label = control["ident"].toString();
+    }
     name = control["name"].toString();
 
     pBox = new QGroupBox(label);
@@ -148,13 +156,29 @@ QLayout* XContestAdditionalInfoDlg::buildDynamicGui()
 
 QString XContestAdditionalInfoDlg::readNotes(const QVariantMap& control, const QString& key, const QString& prefix) const {
   QString result = "";
+  QVariantMap messageMap;
+
+  // fill messages map first
+  QVariantList messages = control["messages"].toList();
+  for(QVariantList::ConstIterator iter = messages.constBegin(); iter != messages.constEnd(); ++iter)
+  {
+    QVariantMap message = iter->toMap();
+    messageMap.insert(message["code"].toString(), message["label"]);
+  }
 
   if(control.find(key) != control.constEnd())
   {
     QVariantMap notes = control[key].toMap();
     for(QVariantMap::ConstIterator iter = notes.constBegin(); iter != notes.constEnd(); ++iter)
     {
-      result += QString("(%1) %2: %3\n").arg(prefix,iter.key(),iter.value().toString());
+      if(messageMap.contains(iter.key()))
+      {
+        result += QString("(%1) %2\n     %3").arg(prefix,iter.value().toString(), messageMap[iter.key()].toString());
+      }
+      else
+      {
+        result += QString("(%1) %2\n").arg(prefix,iter.value().toString());
+      }
     }
   }
 
@@ -193,8 +217,11 @@ void XContestAdditionalInfoDlg::submit()
       QPlainTextEdit* pTextEdit = dynamic_cast<QPlainTextEdit*>(iter.key());
       value = pTextEdit->toPlainText();
     }
-    qDebug() << "Add clarification " << iter.value() << "=" << value;
-    m_clarifications.insert(iter.value(),value);
+    if(!value.isEmpty())
+    {
+      qDebug() << "Add clarification " << iter.value() << "=" << value;
+      m_clarifications.insert(iter.value(),value);
+    }
   }
 
   QDialog::accept();
