@@ -121,10 +121,6 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_servicing()));
 	m_pMenuAnalysis->addAction(pAction);
 
-  pAction = new QAction(tr("A&ccounts"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_accounts()));
-  m_pMenuAnalysis->addAction(pAction);
-
 	// Preparation
 	m_pMenuPreparation = menuBar()->addMenu(tr("&Preparation"));
 
@@ -183,7 +179,11 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
 	m_pMenuSettings->addAction(pAction);
 
-	// Menu Tools
+  pAction = new QAction(tr("A&ccounts"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(settings_accounts()));
+  m_pMenuSettings->addAction(pAction);
+
+  // Menu Tools
 	m_pMenuTools = menuBar()->addMenu(tr("&Tools"));
 	pAction = new QAction(tr("&Database migration..."), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(tools_migrateDB()));
@@ -385,16 +385,6 @@ void MainWindow::analysis_servicing()
 	showWindow(pWin);
 }
 
-void MainWindow::analysis_accounts()
-{
-  MDIWindow* pWin;
-
-  pWin = new AccountWindow(m_pMdiArea, "Accounts", 0);
-  connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-  showWindow(pWin);
-
-}
-
 void MainWindow::startLand_fromSQL()
 {
 	MDIWindow* pWin;
@@ -525,6 +515,16 @@ void MainWindow::settings_pilotInfo()
 	IPilotInfoFrame rcFrame;
 
 	rcFrame.show();
+}
+
+void MainWindow::settings_accounts()
+{
+  MDIWindow* pWin;
+
+  pWin = new AccountWindow(m_pMdiArea, "Accounts", 0);
+  connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
+  showWindow(pWin);
+
 }
 
 void MainWindow::tools_migrateDB()

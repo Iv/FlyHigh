@@ -57,8 +57,6 @@ class MainWindow: public QMainWindow
 
 		void analysis_servicing();
 
-    void analysis_accounts();
-
 		void startLand_fromSQL();
 
 		void buoys_fromSQL();
@@ -82,6 +80,8 @@ class MainWindow: public QMainWindow
     void settings_configure_flyhigh();
 
 		void settings_pilotInfo();
+
+    void settings_accounts();
 
     void tools_migrateDB();
 
