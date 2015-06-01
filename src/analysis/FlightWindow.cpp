@@ -403,6 +403,8 @@ void FlightWindow::file_AddToSqlDB()
       // glider
       if(!ISql::pInstance()->glider(igcParser.model(), glider))
       {
+        // glider in igc has no match in our db
+        // offer to add a new glider
         ISql::pInstance()->gliderList(gliders);
         IGliderForm newGlider(this, tr("New Glider"), &glider, gliders);
 
@@ -412,6 +414,10 @@ void FlightWindow::file_AddToSqlDB()
           {
             ISql::pInstance()->add(glider);
           }
+        } else
+        {
+          // cancel pressed - preselect pilots' primary glider
+          glider = pilot.glider();
         }
       }
 
