@@ -14,8 +14,7 @@ set(upload_SRCS Account.cpp
 
 set(upload_HDRS AccountWindow.h
                 XContestUploader.h
-                XContestAdditionalInfoDlg.h
-                XContestAdditionalInfoWidgetFactory.h)
+                XContestAdditionalInfoDlg.h)
 
 QT4_WRAP_CPP(upload_SRCS ${upload_HDRS})
 
