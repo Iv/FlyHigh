@@ -21,7 +21,6 @@
 #ifndef IGCFileParser_h
 #define IGCFileParser_h
 
-#include <vector>
 #include <QDateTime>
 #include <QHash>
 #include <QString>
