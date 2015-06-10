@@ -25,27 +25,26 @@
 #include <QDateTime>
 #include <QHash>
 #include <QString>
-#include "WayPoint.h"
 #include "FlightPointList.h"
 
 class IGCFileParser
 {
-	public:
-		IGCFileParser();
+  public:
+    IGCFileParser();
 
-		void parse(const QByteArray &igcData);
+    void parse(const QByteArray &igcData);
 
-		const QString& pilot();
+    const QString& pilot();
 
-		const QString& model();
+    const QString& model();
 
-		const QString& gliderId();
+    const QString& gliderId();
 
-		const QDate& date();
+    const QDate& date();
 
-		FlightPointList& flightPointList();
+    FlightPointList& flightPointList();
 
-	private:
+  private:
     typedef struct IRecord
     {
       int begin;
@@ -54,22 +53,22 @@ class IGCFileParser
 
     typedef QHash<QString, IRecord> IRecordHash;
 
-		QString m_pilot;
-		QString m_model;
-		QString m_gliderId;
-		QDate m_date;
-		IRecordHash m_iRecordHash;
-		FlightPointList m_flightPointList;
-		int m_prevAlt;
-		int m_prevAltBaro;
+    QString m_pilot;
+    QString m_model;
+    QString m_gliderId;
+    QDate m_date;
+    IRecordHash m_iRecordHash;
+    FlightPointList m_flightPointList;
+    int m_prevAlt;
+    int m_prevAltBaro;
 
-		void parseBRecord(const char *record);
+    void parseBRecord(const char *record);
 
     void parseHRecord(const char *record);
 
-		void parseIRecord(const char *record);
+    void parseIRecord(const char *record);
 
-		void colonValue(const char *record, QString &str);
+    void colonValue(const char *record, QString &str);
 };
 
 #endif
