@@ -388,7 +388,5 @@ src/CMakeLists.txt
 src/main.cpp
 src/MainWindow.cpp
 src/MainWindow.h
-tools/CMakeLists.txt
-tools/compe2gpligc.c
 CMakeLists.txt
 Makefile
