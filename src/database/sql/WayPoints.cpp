@@ -37,6 +37,8 @@ bool WayPoints::add(WayPoint &wp)
 	bool success;
 
   id = newId("WayPoints");
+  wp.setId(id);
+
   success = query.prepare("INSERT INTO WayPoints(Id, Name, Spot, Country, Longitude, Latitude, Altitude, Description, Type) "
                           "VALUES (:id, :name, :spot, :country, :lon, :lat, :altitude, :description, :type)");
   query.bindValue(":id", id);
@@ -52,11 +54,6 @@ bool WayPoints::add(WayPoint &wp)
 
   Error::verify(success, Error::SQL_CMD);
 	DataBaseSub::setLastModified("WayPoints");
-
-	if(wp.id() == -1)
-	{
-	  wp.setId(id);
-	}
 
 	return success;
 }

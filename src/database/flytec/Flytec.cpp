@@ -354,6 +354,7 @@ bool Flytec::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpLis
 	WayPoint wp;
 	bool success = false;
 	int prog = 0;
+  int synId = 0;
 
 	m_cancel = false;
 	success = m_protocol->wpListReq();
@@ -371,6 +372,8 @@ bool Flytec::wayPointList(WayPoint::Type type, WayPoint::WayPointListType &wpLis
 			}
 
       wp.setType(WayPoint::TypeBuoy);
+      // set a synthetic id
+      wp.setId(++synId);
 			wpList.push_back(wp);
 		}
 	}
