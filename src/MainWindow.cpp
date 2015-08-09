@@ -136,7 +136,7 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
 	m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("&Waypoints (File)"), this);
+  pAction = new QAction(tr("Waypoints (&File)"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
 	m_pMenuPreparation->addAction(pAction);
 
@@ -156,11 +156,11 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromSQL()));
 	m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("&Airspaces (GPS)"), this);
+  pAction = new QAction(tr("Air&spaces (GPS)"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
 	m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("Airspaces (&File)"), this);
+  pAction = new QAction(tr("A&irspaces (File)"), this);
 	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromFile()));
 	m_pMenuPreparation->addAction(pAction);
 
@@ -179,7 +179,7 @@ MainWindow::MainWindow()
 	connect(pAction, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
 	m_pMenuSettings->addAction(pAction);
 
-  pAction = new QAction(tr("A&ccounts"), this);
+  pAction = new QAction(tr("&Accounts"), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(settings_accounts()));
   m_pMenuSettings->addAction(pAction);
 
