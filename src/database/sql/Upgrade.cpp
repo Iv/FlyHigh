@@ -121,6 +121,7 @@ bool Upgrade::setup(const DatabaseParameters& params)
 	m_pExecutor->executeQuery("setup-create-lastmodified", db());
   m_pExecutor->executeQuery("setup-create-airspaces", db());
   m_pExecutor->executeQuery("setup-create-airspaceitems", db());
+  m_pExecutor->executeQuery("setup-create-accounts", db());
 
 	// finalize db setup
 	replacements.clear();
