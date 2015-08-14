@@ -107,6 +107,7 @@ void UploadFormImpl::newAccount()
   {
     ISql::pInstance()->add(account);
     updateAccount();
+    validate();
   }
 }
 
