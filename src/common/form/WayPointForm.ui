@@ -326,7 +326,7 @@
   </connection>
   <connection>
    <sender>lineEditLat</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>WayPointForm</receiver>
    <slot>limitLatitude()</slot>
    <hints>
@@ -342,7 +342,7 @@
   </connection>
   <connection>
    <sender>lineEditLon</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>WayPointForm</receiver>
    <slot>limitLongitude()</slot>
    <hints>
