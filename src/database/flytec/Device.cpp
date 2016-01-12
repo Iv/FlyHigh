@@ -145,7 +145,10 @@ bool Device::getChar(char &ch)
 {
   enum {XON = 0x11, XOFF = 0x13};
 
-  bool success = m_serialPort->waitForReadyRead(100);
+  bool success = (m_serialPort->bytesAvailable() > 0);
+
+  if(!success)
+    success = m_serialPort->waitForReadyRead(100);
 
   if(success)
   {
