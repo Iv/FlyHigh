@@ -133,7 +133,7 @@ MainWindow::MainWindow()
   m_pMenuPreparation->addAction(pAction);
 
   pAction = new QAction(tr("Waypoints (G&PS)"), this);
-  connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
+  connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromGPS()));
   m_pMenuPreparation->addAction(pAction);
 
   pAction = new QAction(tr("Waypoints (&File)"), this);
@@ -412,11 +412,11 @@ void MainWindow::buoys_fromFile()
   showWindow(pWin);
 }
 
-void MainWindow::waypoints_fromGPS()
+void MainWindow::buoys_fromGPS()
 {
   MDIWindow* pWin;
 
-  pWin = new WayPointWindow(m_pMdiArea, "Waypoints (GPS)", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
+  pWin = new WayPointWindow(m_pMdiArea, "Waypoints (GPS)", 0, IDataBase::GPSdevice, WayPoint::TypeBuoy);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
   showWindow(pWin);
 }
