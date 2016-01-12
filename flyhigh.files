@@ -111,7 +111,6 @@ src/common/map/SwissMap100.h
 src/common/qextmedia/CMakeLists.txt
 src/common/qextmedia/qexifimageheader.cpp
 src/common/qextmedia/qexifimageheader.h
-src/common/qextserialport/CMakeLists.txt
 src/common/qextserialport/qextserialenumerator.cpp
 src/common/qextserialport/qextserialenumerator.h
 src/common/qextserialport/qextserialenumerator_linux.cpp
