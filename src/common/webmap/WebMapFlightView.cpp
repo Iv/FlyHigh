@@ -105,6 +105,7 @@ void WebMapFlightView::appReady()
 {
   AirSpaceList::iterator it;
   uint begin;
+  uint end;
 
   m_pWebMap->setSize(width(), height());
   m_pWebMap->getRoute()->setName(m_location);
@@ -116,8 +117,9 @@ void WebMapFlightView::appReady()
   }
 
   begin = m_pFpList->firstValidFlightData();
-  m_pWebMap->getFlight()->setSogList(m_sogList, begin);
-  m_pWebMap->getFlight()->setVarioList(m_varioList, begin);
+  end = m_pFpList->lastValidFlightData();
+  m_pWebMap->getFlight()->setSogList(m_sogList, begin, end);
+  m_pWebMap->getFlight()->setVarioList(m_varioList, begin, end);
 
   if(m_pAirSpaceList != NULL)
   {

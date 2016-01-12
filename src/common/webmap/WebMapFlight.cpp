@@ -55,7 +55,8 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
   QString strLatLon = "";
   QTime time;
   uint fpNr;
-  uint fpListSize;
+  uint begin;
+  uint end;
   uint start;
   uint duration;
   double alt;
@@ -65,24 +66,23 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
   int epochTime;
   int secsOfDay;
   int prevSecsOfDay;
-  int begin;
   bool first = true;
 
   begin = pFpList->firstValidFlightData();
-  fpListSize = pFpList->lastValidFlightData() - begin;
+  end = pFpList->lastValidFlightData();
 
-  if(fpListSize > 0)
+  if(end > 0)
   {
     minAlt = pFpList->at(begin)->alt();
     maxAlt = minAlt;
     time = pFpList->at(begin)->time();
     start = time.hour() * 3600 + time.minute() * 60 + time.second();
-    time = pFpList->at(fpListSize - 1)->time();
+    time = pFpList->at(end - 1)->time();
     duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
     epochDate = QDateTime(date).toTime_t();
     prevSecsOfDay = start;
 
-    for(fpNr=begin; fpNr<fpListSize; fpNr++)
+    for(fpNr=begin; fpNr<end; fpNr++)
     {
       if(!first)
       {
@@ -136,7 +136,7 @@ void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *
 }
 
 void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList,
-                              uint begin)
+                              uint begin, uint end)
 {
   QString code = "fl_setSog([%1]);";
   QWebFrame *pFrame;
@@ -146,7 +146,7 @@ void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList,
   uint listSize;
   bool first = true;
 
-  listSize = sogList.size();
+  listSize = std::min((uint)sogList.size(), end);
 
   if(listSize > 0)
   {
@@ -169,7 +169,7 @@ void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList,
 }
 
 void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList,
-                                uint begin)
+                                uint begin, uint end)
 {
   QString code = "fl_setVario([%1]);";
   QWebFrame *pFrame;
@@ -179,7 +179,7 @@ void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList,
   uint listSize;
   bool first = true;
 
-  listSize = varioList.size();
+  listSize = std::min((uint)varioList.size(), end);
 
   if(listSize > 0)
   {
