@@ -82,10 +82,11 @@ IFlyHighRC::IFlyHighRC()
 
   m_versionInfo = "FlyHigh Version 0.9.9";
   m_copyInfo =
-      "Copyright (c): 2004-2015 by Alex Graf <grafal@sf.net>, \n"
-      "Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n"
+      "Copyright (c): 2004-2016 by Alex Graf <grafal@sf.net>, \n"
+      "Jurg Allemann <ja_kern@sf.net> and Markus Franke.\n\n"
       "Thank you Thomas Kuhlmann for OLC optimizer, Luke Mahe\n"
       "for MarkerClusterer and George MacKerron for Spiderfy.\n"
+      "Thank you Siegmar Schultz to point out some bugs.\n\n"
       "FlyHigh is distributed under the terms of the General Public\n"
       "License (GPL Version 2). Visit www.gnu.org for more information.\n";
 
