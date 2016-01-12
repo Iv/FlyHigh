@@ -905,6 +905,7 @@ void FlightWindow::plot_airData()
         m_plotter.execCmd("set mouse");
         m_plotter.execCmd("set lmargin 10");
         m_plotter.execCmd("set rmargin 5");
+        m_plotter.showGrid(true);
         m_plotter.setMultiplot(3, 1, tr("Airdata"));
 
         // alt

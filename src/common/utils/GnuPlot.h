@@ -32,76 +32,78 @@ class QProcess;
 
 class GnuPlot
 {
-	public:
-		typedef QVector<double> PlotVectorType;
-		typedef QVector<QTime> TimeVectorType;
+  public:
+    typedef QVector<double> PlotVectorType;
+    typedef QVector<QTime> TimeVectorType;
 
-		GnuPlot();
+    GnuPlot();
 
-		~GnuPlot();
+    ~GnuPlot();
 
 void begin();
 
 void end();
 
-		void execCmd(const QString &cmd);
+    void execCmd(const QString &cmd);
 
-		// plot setup
-		void setMultiplot(int rows, int cols, const QString &title);
+    // plot setup
+    void setMultiplot(int rows, int cols, const QString &title);
 
-		void unsetMultiplot();
+    void unsetMultiplot();
 
-		void setStyle(const QString &style);
+    void setStyle(const QString &style);
 
-		void setLabelX(const QString &label);
+    void setLabelX(const QString &label);
 
-		void setLabelY(const QString &label);
+    void setLabelY(const QString &label);
 
-		void setLabelZ(const QString &label);
+    void setLabelZ(const QString &label);
 
-		void setMinMaxXYZ(double minX, double maxX, double minY=0, double maxY=0, double minZ=0, double maxZ=0);
+    void showGrid(bool show);
 
-		/**
+    void setMinMaxXYZ(double minX, double maxX, double minY=0, double maxY=0, double minZ=0, double maxZ=0);
+
+    /**
       Plots a linear equation (where you supply the slope and intercept)
-		*/
-		void plotSlope(double a, double b, const QString &title);
+    */
+    void plotSlope(double a, double b, const QString &title);
 
-		/**
+    /**
       Plot an equation which is supplied as a string
     */
-		void plotEquation(const QString &equation, const QString &title);
+    void plotEquation(const QString &equation, const QString &title);
 
-		// plot vectors
-		void plotX(PlotVectorType &d, const QString &title);
+    // plot vectors
+    void plotX(PlotVectorType &d, const QString &title);
 
-		void plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title);
+    void plotXY(PlotVectorType &x, PlotVectorType &y, const QString &title);
 
-		void plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title);
+    void plotXY(TimeVectorType &x, PlotVectorType &y, const QString &title);
 
-		void plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, const QString &title);
+    void plotXYZ(PlotVectorType &x, PlotVectorType &y, PlotVectorType &z, const QString &title);
 
     // multiple plots in one figure
-		void multiplotXY(TimeVectorType &x, PlotVectorType &y);
+    void multiplotXY(TimeVectorType &x, PlotVectorType &y);
 
-		void multiplotXY(TimeVectorType &x, PlotVectorType &y1, const QString &title1,
+    void multiplotXY(TimeVectorType &x, PlotVectorType &y1, const QString &title1,
                      PlotVectorType &y2, const QString &title2);
 
-		void clear();
+    void clear();
 
-	private:
-		typedef enum {Float, Time}AxisDataType;
-		typedef QList<QTemporaryFile*> TempFileList;
+  private:
+    typedef enum {Float, Time}AxisDataType;
+    typedef QList<QTemporaryFile*> TempFileList;
     typedef QList<QProcess*> ProcessList;
 
-		QString m_style;
-		TempFileList m_filesToDel;
-		int m_nplots;
+    QString m_style;
+    TempFileList m_filesToDel;
+    int m_nplots;
     QString m_GnuplotBinary;
     QFile *m_pLogFile;
-		QFile* getOpenTmpFile();
+    QFile* getOpenTmpFile();
     ProcessList m_Processes;
 
-		void setAxisData(const char axis, AxisDataType axisData);
+    void setAxisData(const char axis, AxisDataType axisData);
 };
 
 #endif
