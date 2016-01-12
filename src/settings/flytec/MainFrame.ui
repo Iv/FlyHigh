@@ -49,8 +49,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>131</width>
-       <height>343</height>
+       <width>141</width>
+       <height>352</height>
       </rect>
      </property>
      <attribute name="label">
@@ -80,7 +80,7 @@
      <x>0</x>
      <y>0</y>
      <width>585</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="File">
@@ -90,33 +90,11 @@
     <addaction name="File_Read"/>
     <addaction name="File_Write"/>
     <addaction name="separator"/>
-    <addaction name="fileCloseAction"/>
+    <addaction name="File_Close"/>
    </widget>
    <addaction name="File"/>
   </widget>
-  <action name="File_Read">
-   <property name="text">
-    <string>Read</string>
-   </property>
-   <property name="iconText">
-    <string>Read</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>File_Read</cstring>
-   </property>
-  </action>
-  <action name="File_Write">
-   <property name="text">
-    <string>Write</string>
-   </property>
-   <property name="iconText">
-    <string>Write</string>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>File_Write</cstring>
-   </property>
-  </action>
-  <action name="fileCloseAction">
+  <action name="File_Close">
    <property name="text">
     <string>Close</string>
    </property>
@@ -127,80 +105,26 @@
     <cstring>fileCloseAction</cstring>
    </property>
   </action>
+  <action name="File_Read">
+   <property name="text">
+    <string>Read</string>
+   </property>
+  </action>
+  <action name="File_Write">
+   <property name="text">
+    <string>Write</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
  <connections>
   <connection>
-   <sender>File_Read</sender>
-   <signal>activated()</signal>
-   <receiver>MainFrame</receiver>
-   <slot>read()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>File_Save</sender>
-   <signal>activated()</signal>
-   <receiver>MainFrame</receiver>
-   <slot>save()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>File_Open</sender>
-   <signal>activated()</signal>
-   <receiver>MainFrame</receiver>
-   <slot>open()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>fileCloseAction</sender>
-   <signal>activated()</signal>
+   <sender>File_Close</sender>
+   <signal>triggered()</signal>
    <receiver>MainFrame</receiver>
    <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>File_Write</sender>
-   <signal>activated()</signal>
-   <receiver>MainFrame</receiver>
-   <slot>write()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -225,6 +149,38 @@
     <hint type="destinationlabel">
      <x>157</x>
      <y>83</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Read</sender>
+   <signal>triggered()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>read()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_Write</sender>
+   <signal>triggered()</signal>
+   <receiver>MainFrame</receiver>
+   <slot>write()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>249</y>
     </hint>
    </hints>
   </connection>
