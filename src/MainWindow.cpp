@@ -59,29 +59,29 @@
 
 MainWindow::MainWindow()
 //	:QMainWindow(0, Qt::WDestructiveClose)
-	:QMainWindow(0)
+  :QMainWindow(0)
 {
   QPalette palette;
-	QAction *pAction;
+  QAction *pAction;
 
   createAndConnectDb();
 
-	// Workspace
-	m_pMdiArea = new QMdiArea(this);
-	setCentralWidget(m_pMdiArea);
+  // Workspace
+  m_pMdiArea = new QMdiArea(this);
+  setCentralWidget(m_pMdiArea);
 
-	palette.setColor(m_pMdiArea->backgroundRole(), Qt::lightGray);
-	m_pMdiArea->setPalette(palette);
+  palette.setColor(m_pMdiArea->backgroundRole(), Qt::lightGray);
+  m_pMdiArea->setPalette(palette);
 
-	connect(m_pMdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(subWindowActivated(QMdiSubWindow*)));
+  connect(m_pMdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(subWindowActivated(QMdiSubWindow*)));
 
-	m_pWinMapper = new QSignalMapper(this);
-	connect(m_pWinMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
+  m_pWinMapper = new QSignalMapper(this);
+  connect(m_pWinMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
-	QMainWindow::setWindowTitle("FlyHigh");
+  QMainWindow::setWindowTitle("FlyHigh");
 
-	// Menu File
-	m_pMenuFile = menuBar()->addMenu(tr("&File"));
+  // Menu File
+  m_pMenuFile = menuBar()->addMenu(tr("&File"));
 
   pAction = new QAction(tr("New &Flight..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(file_newFlight()));
@@ -92,135 +92,135 @@ MainWindow::MainWindow()
   m_pMenuFile->addAction(pAction);
   m_pMenuFile->addSeparator();
 
-	pAction = new QAction(tr("&Quit"), this);
-	connect(pAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-	m_pMenuFile->addAction(pAction);
+  pAction = new QAction(tr("&Quit"), this);
+  connect(pAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+  m_pMenuFile->addAction(pAction);
 
-	// Analysis
-	m_pMenuAnalysis = menuBar()->addMenu(tr("&Analysis"));
+  // Analysis
+  m_pMenuAnalysis = menuBar()->addMenu(tr("&Analysis"));
 
-	pAction = new QAction(tr("&Flights (DB)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(flights_fromSQL()));
-	m_pMenuAnalysis->addAction(pAction);
+  pAction = new QAction(tr("&Flights (DB)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(flights_fromSQL()));
+  m_pMenuAnalysis->addAction(pAction);
 
-	pAction = new QAction(tr("Flights (G&PS)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(flights_fromGPS()));
-	m_pMenuAnalysis->addAction(pAction);
-	m_pMenuAnalysis->addSeparator();
+  pAction = new QAction(tr("Flights (G&PS)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(flights_fromGPS()));
+  m_pMenuAnalysis->addAction(pAction);
+  m_pMenuAnalysis->addSeparator();
 
-	pAction = new QAction(tr("Flight &Exp"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(flights_experience()));
-	m_pMenuAnalysis->addAction(pAction);
-	m_pMenuAnalysis->addSeparator();
+  pAction = new QAction(tr("Flight &Exp"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(flights_experience()));
+  m_pMenuAnalysis->addAction(pAction);
+  m_pMenuAnalysis->addSeparator();
 
-	pAction = new QAction(tr("&Gliders"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_gliders()));
-	m_pMenuAnalysis->addAction(pAction);
+  pAction = new QAction(tr("&Gliders"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_gliders()));
+  m_pMenuAnalysis->addAction(pAction);
 
-	pAction = new QAction(tr("&Servicing"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_servicing()));
-	m_pMenuAnalysis->addAction(pAction);
+  pAction = new QAction(tr("&Servicing"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(analysis_servicing()));
+  m_pMenuAnalysis->addAction(pAction);
 
-	// Preparation
-	m_pMenuPreparation = menuBar()->addMenu(tr("&Preparation"));
+  // Preparation
+  m_pMenuPreparation = menuBar()->addMenu(tr("&Preparation"));
 
-	pAction = new QAction(tr("&Start/Land (DB)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(startLand_fromSQL()));
-	m_pMenuPreparation->addAction(pAction);
+  pAction = new QAction(tr("&Start/Land (DB)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(startLand_fromSQL()));
+  m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("&Waypoints (DB)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
-	m_pMenuPreparation->addAction(pAction);
+  pAction = new QAction(tr("&Waypoints (DB)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromSQL()));
+  m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("Waypoints (G&PS)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
-	m_pMenuPreparation->addAction(pAction);
+  pAction = new QAction(tr("Waypoints (G&PS)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(waypoints_fromGPS()));
+  m_pMenuPreparation->addAction(pAction);
 
   pAction = new QAction(tr("Waypoints (&File)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
-	m_pMenuPreparation->addAction(pAction);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(buoys_fromFile()));
+  m_pMenuPreparation->addAction(pAction);
 
-	// routes
-	m_pMenuPreparation->addSeparator();
+  // routes
+  m_pMenuPreparation->addSeparator();
 
-	pAction = new QAction(tr("&Routes (DB)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(routes_fromSQL()));
-	m_pMenuPreparation->addAction(pAction);
+  pAction = new QAction(tr("&Routes (DB)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(routes_fromSQL()));
+  m_pMenuPreparation->addAction(pAction);
 
-	pAction = new QAction(tr("Routes (&GPS)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(routes_fromGPS()));
-	m_pMenuPreparation->addAction(pAction);
-	m_pMenuPreparation->addSeparator();
+  pAction = new QAction(tr("Routes (&GPS)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(routes_fromGPS()));
+  m_pMenuPreparation->addAction(pAction);
+  m_pMenuPreparation->addSeparator();
 
-	pAction = new QAction(tr("&Airspaces (DB)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromSQL()));
-	m_pMenuPreparation->addAction(pAction);
+  pAction = new QAction(tr("&Airspaces (DB)"), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromSQL()));
+  m_pMenuPreparation->addAction(pAction);
 
   pAction = new QAction(tr("Air&spaces (GPS)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
-	m_pMenuPreparation->addAction(pAction);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromGPS()));
+  m_pMenuPreparation->addAction(pAction);
 
   pAction = new QAction(tr("A&irspaces (File)"), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromFile()));
-	m_pMenuPreparation->addAction(pAction);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(airspaces_fromFile()));
+  m_pMenuPreparation->addAction(pAction);
 
-	// Menu Configuration
-	m_pMenuSettings = menuBar()->addMenu(tr("&Settings"));
+  // Menu Configuration
+  m_pMenuSettings = menuBar()->addMenu(tr("&Settings"));
 
   pAction = new QAction(tr("&Configure FlyHigh..."), this);
   connect(pAction, SIGNAL(triggered()),this, SLOT(settings_configure_flyhigh()));
   m_pMenuSettings->addAction(pAction);
 
-	pAction = new QAction(tr("&Setup Device..."), this);
-	connect(pAction, SIGNAL(triggered()), SLOT(settings_configure_device()));
-	m_pMenuSettings->addAction(pAction);
+  pAction = new QAction(tr("&Setup Device..."), this);
+  connect(pAction, SIGNAL(triggered()), SLOT(settings_configure_device()));
+  m_pMenuSettings->addAction(pAction);
 
-	pAction = new QAction(tr("Pilot &Info..."), this);
-	connect(pAction, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
-	m_pMenuSettings->addAction(pAction);
+  pAction = new QAction(tr("Pilot &Info..."), this);
+  connect(pAction, SIGNAL(triggered()), SLOT(settings_pilotInfo()));
+  m_pMenuSettings->addAction(pAction);
 
-  pAction = new QAction(tr("&Accounts"), this);
+  pAction = new QAction(tr("&Accounts..."), this);
   connect(pAction, SIGNAL(triggered()), this, SLOT(settings_accounts()));
   m_pMenuSettings->addAction(pAction);
 
   // Menu Tools
-	m_pMenuTools = menuBar()->addMenu(tr("&Tools"));
-	pAction = new QAction(tr("&Database migration..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(tools_migrateDB()));
-	m_pMenuTools->addAction(pAction);
+  m_pMenuTools = menuBar()->addMenu(tr("&Tools"));
+  pAction = new QAction(tr("&Database migration..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(tools_migrateDB()));
+  m_pMenuTools->addAction(pAction);
 
   // Menu Windows
-	m_pMenuWindows = menuBar()->addMenu(tr("&Windows"));
+  m_pMenuWindows = menuBar()->addMenu(tr("&Windows"));
 
-	m_pCascade = new QAction(tr("&Cascade"), this);
-	connect(m_pCascade, SIGNAL(triggered()), this, SLOT(cascadeSubWindows()));
+  m_pCascade = new QAction(tr("&Cascade"), this);
+  connect(m_pCascade, SIGNAL(triggered()), this, SLOT(cascadeSubWindows()));
 
-	m_pTile = new QAction(tr("&Tile"), this);
-	connect(m_pTile, SIGNAL(triggered()), m_pMdiArea, SLOT(tileSubWindows()));
+  m_pTile = new QAction(tr("&Tile"), this);
+  connect(m_pTile, SIGNAL(triggered()), m_pMdiArea, SLOT(tileSubWindows()));
 
-	m_pTileHor = new QAction(tr("Tile &Horizontally"), this);
-	connect(m_pTileHor, SIGNAL(triggered()), SLOT(windows_tile_horizontally()));
+  m_pTileHor = new QAction(tr("Tile &Horizontally"), this);
+  connect(m_pTileHor, SIGNAL(triggered()), SLOT(windows_tile_horizontally()));
 
-	m_pWinSeparator = new QAction(this);
-	m_pWinSeparator->setSeparator(true);
+  m_pWinSeparator = new QAction(this);
+  m_pWinSeparator->setSeparator(true);
 
-	connect(m_pMenuWindows, SIGNAL(aboutToShow()), this, SLOT(updateMenuWindow()));
+  connect(m_pMenuWindows, SIGNAL(aboutToShow()), this, SLOT(updateMenuWindow()));
 
-	// Menu Help
-	menuBar()->addSeparator();
-	m_pMenuHelp = menuBar()->addMenu(tr("&Help"));
+  // Menu Help
+  menuBar()->addSeparator();
+  m_pMenuHelp = menuBar()->addMenu(tr("&Help"));
 
-	pAction = new QAction(tr("&About"), this);
-	connect(pAction, SIGNAL(triggered()), SLOT(help_about()));
-	m_pMenuHelp->addAction(pAction);
+  pAction = new QAction(tr("&About"), this);
+  connect(pAction, SIGNAL(triggered()), SLOT(help_about()));
+  m_pMenuHelp->addAction(pAction);
 
-	statusBar()->showMessage(tr("Ready"), 2000);
+  statusBar()->showMessage(tr("Ready"), 2000);
 
-	// if pilot info is not set
-	if(IFlyHighRC::pInstance()->pilotId() < 0)
-	{
-		settings_pilotInfo();
-	}
+  // if pilot info is not set
+  if(IFlyHighRC::pInstance()->pilotId() < 0)
+  {
+    settings_pilotInfo();
+  }
 }
 
 MainWindow::~MainWindow()
@@ -229,87 +229,87 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *pEvent)
 {
-	QList<QMdiSubWindow*> winList;
-	QWidget *pWin;
-	uint nofWin;
-	uint winNr;
+  QList<QMdiSubWindow*> winList;
+  QWidget *pWin;
+  uint nofWin;
+  uint winNr;
 
-	winList = m_pMdiArea->subWindowList();
-	nofWin = winList.count();
+  winList = m_pMdiArea->subWindowList();
+  nofWin = winList.count();
 
-	if(nofWin > 0)
-	{
-		for(winNr=0; winNr<nofWin; winNr++)
-		{
-			pWin = winList.at(winNr);
+  if(nofWin > 0)
+  {
+    for(winNr=0; winNr<nofWin; winNr++)
+    {
+      pWin = winList.at(winNr);
 
-			if(!pWin->close())
-			{
-				pEvent->ignore();
-				return;
-			}
-		}
-	}
+      if(!pWin->close())
+      {
+        pEvent->ignore();
+        return;
+      }
+    }
+  }
 
-	QMainWindow::closeEvent(pEvent);
+  QMainWindow::closeEvent(pEvent);
 }
 
 void MainWindow::file_newFlight()
 {
-	IFlightForm newFlightForm(this, tr("New Flight"));
-	Pilot pilot;
-	Flight flight;
-	IDataBase *pDb;
-	int nr;
+  IFlightForm newFlightForm(this, tr("New Flight"));
+  Pilot pilot;
+  Flight flight;
+  IDataBase *pDb;
+  int nr;
 
-	// pilot info
-	ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
+  // pilot info
+  ISql::pInstance()->pilot(IFlyHighRC::pInstance()->pilotId(), pilot);
 
-	// nr
-	nr = ISql::pInstance()->newFlightNr(pilot);
-	flight.setNumber(nr);
+  // nr
+  nr = ISql::pInstance()->newFlightNr(pilot);
+  flight.setNumber(nr);
 
-	// current date and time
-	flight.setDate(QDate::currentDate());
-	flight.setTime(QTime::currentTime());
-	flight.setDuration(QTime(0, 0, 0));
+  // current date and time
+  flight.setDate(QDate::currentDate());
+  flight.setTime(QTime::currentTime());
+  flight.setDuration(QTime(0, 0, 0));
 
-	// current glider
-	flight.setGlider(pilot.glider());
+  // current glider
+  flight.setGlider(pilot.glider());
 
-	// a new flight
-	newFlightForm.setFlight(&flight);
-	pDb = ISql::pInstance();
+  // a new flight
+  newFlightForm.setFlight(&flight);
+  pDb = ISql::pInstance();
 
-	if(newFlightForm.exec() && pDb->open())
-	{
-		ISql::pInstance()->add(flight);
-		pDb->close();
-	}
+  if(newFlightForm.exec() && pDb->open())
+  {
+    ISql::pInstance()->add(flight);
+    pDb->close();
+  }
 }
 
 void MainWindow::file_newRoute()
 {
-	Route route;
-	Route *pLatest = NULL;
-	Route::RouteListType routeList;
+  Route route;
+  Route *pLatest = NULL;
+  Route::RouteListType routeList;
   Route::RouteListType::iterator it;
-	WayPoint wp;
-	ProgressDlg progDlg(this);
-	IDataBase *pDb;
+  WayPoint wp;
+  ProgressDlg progDlg(this);
+  IDataBase *pDb;
   int maxId = -1;
 
-	route.setName("New route");
-	route.setType(Route::Straight);
+  route.setName("New route");
+  route.setType(Route::Straight);
   pDb = ISql::pInstance();
 
-	if(pDb->open())
-	{
-		progDlg.beginProgress("read routes...", pDb);
-		pDb->routeList(routeList);
-		progDlg.endProgress();
-		pDb->close();
-	}
+  if(pDb->open())
+  {
+    progDlg.beginProgress("read routes...", pDb);
+    pDb->routeList(routeList);
+    progDlg.endProgress();
+    pDb->close();
+  }
 
   for(it=routeList.begin(); it!=routeList.end(); it++)
   {
@@ -320,33 +320,33 @@ void MainWindow::file_newRoute()
     }
   }
 
-	if((pLatest != NULL) && (pLatest->wayPointList().size() > 0))
-	{
-	  // take two points around start of first route as initial
+  if((pLatest != NULL) && (pLatest->wayPointList().size() > 0))
+  {
+    // take two points around start of first route as initial
     wp = pLatest->wayPointList().at(0);
     wp.setLon(wp.lon() - 0.25);
     route.wayPointList().push_back(wp);
     wp = pLatest->wayPointList().at(0);
     wp.setLon(wp.lon() + 0.25);
     route.wayPointList().push_back(wp);
-	}
-	else
-	{
-	  // default
+  }
+  else
+  {
+    // default
     route.wayPointList().push_back(WayPoint(47.0, 8.5));
     route.wayPointList().push_back(WayPoint(47.0, 9.0));
-	}
+  }
 
-	newRoute(route, true);
+  newRoute(route, true);
 }
 
 void MainWindow::flights_fromSQL()
 {
-	MDIWindow *pWin;
+  MDIWindow *pWin;
 
-	pWin = new FlightWindow(m_pMdiArea, "Flights (DB)", 0, IDataBase::SqlDB);
+  pWin = new FlightWindow(m_pMdiArea, "Flights (DB)", 0, IDataBase::SqlDB);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::flights_fromGPS()
@@ -355,166 +355,166 @@ void MainWindow::flights_fromGPS()
 
   pWin = new FlightWindow(m_pMdiArea, "Flights (GPS)", 0, IDataBase::GPSdevice);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::flights_experience()
 {
-	MDIWindow *pWin;
+  MDIWindow *pWin;
 
-	pWin = new FlightExpWindow(m_pMdiArea, "Flight Experience", 0);
+  pWin = new FlightExpWindow(m_pMdiArea, "Flight Experience", 0);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::analysis_gliders()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new GliderWindow(m_pMdiArea, "Glider", 0);
+  pWin = new GliderWindow(m_pMdiArea, "Glider", 0);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::analysis_servicing()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new ServicingWindow(m_pMdiArea, "Servicing", 0);
+  pWin = new ServicingWindow(m_pMdiArea, "Servicing", 0);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::startLand_fromSQL()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Start/Land (DB)", 0, IDataBase::SqlDB, WayPoint::TypeStartLand);
+  pWin = new WayPointWindow(m_pMdiArea, "Start/Land (DB)", 0, IDataBase::SqlDB, WayPoint::TypeStartLand);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::buoys_fromSQL()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (DB)", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
+  pWin = new WayPointWindow(m_pMdiArea, "Waypoints (DB)", 0, IDataBase::SqlDB, WayPoint::TypeBuoy);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::buoys_fromFile()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (File)", 0, IDataBase::File, WayPoint::TypeBuoy);
+  pWin = new WayPointWindow(m_pMdiArea, "Waypoints (File)", 0, IDataBase::File, WayPoint::TypeBuoy);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::waypoints_fromGPS()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new WayPointWindow(m_pMdiArea, "Waypoints (GPS)", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
+  pWin = new WayPointWindow(m_pMdiArea, "Waypoints (GPS)", 0, IDataBase::GPSdevice, WayPoint::TypeTurnPoint);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::routes_fromSQL()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new RouteWindow(m_pMdiArea, "Routes (DB)", 0, IDataBase::SqlDB);
+  pWin = new RouteWindow(m_pMdiArea, "Routes (DB)", 0, IDataBase::SqlDB);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::routes_fromGPS()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new RouteWindow(m_pMdiArea, "Routes (GPS)", 0, IDataBase::GPSdevice);
+  pWin = new RouteWindow(m_pMdiArea, "Routes (GPS)", 0, IDataBase::GPSdevice);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::airspaces_fromSQL()
 {
   MDIWindow* pWin;
 
-	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (DB)", 0, IDataBase::SqlDB);
+  pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (DB)", 0, IDataBase::SqlDB);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::airspaces_fromGPS()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (GPS)", 0, IDataBase::GPSdevice);
+  pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (GPS)", 0, IDataBase::GPSdevice);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::airspaces_fromFile()
 {
-	MDIWindow* pWin;
+  MDIWindow* pWin;
 
-	pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (File)", 0, IDataBase::File);
+  pWin = new AirSpaceWindow(m_pMdiArea, "Airspaces (File)", 0, IDataBase::File);
   connect(pWin, SIGNAL(message(const QString&, int)), statusBar(), SLOT(showMessage(const QString&, int)));
-	showWindow(pWin);
+  showWindow(pWin);
 }
 
 void MainWindow::settings_configure_device()
 {
-	IFlytecConfig *pFrame;
-	IFlytec6015Config *pConfig6015;
+  IFlytecConfig *pFrame;
+  IFlytec6015Config *pConfig6015;
 
-	switch(IFlyHighRC::pInstance()->deviceNameIndex())
-	{
-		case IFlyHighRC::DevFlytec5020:
-		case IFlyHighRC::DevFlytec6020:
-			pFrame = new IFlytecConfig();
-			pFrame->show();
-		break;
-		case IFlyHighRC::DevFlytec6015:
-			pConfig6015 = new IFlytec6015Config();
-			pConfig6015->show();
-		break;
-			/*
-			handle here other devices
-			case 1:
-			break;
-			*/
-	}
+  switch(IFlyHighRC::pInstance()->deviceNameIndex())
+  {
+    case IFlyHighRC::DevFlytec5020:
+    case IFlyHighRC::DevFlytec6020:
+      pFrame = new IFlytecConfig();
+      pFrame->show();
+    break;
+    case IFlyHighRC::DevFlytec6015:
+      pConfig6015 = new IFlytec6015Config();
+      pConfig6015->show();
+    break;
+      /*
+      handle here other devices
+      case 1:
+      break;
+      */
+  }
 }
 
 void MainWindow::settings_configure_flyhigh()
 {
   FlyHighSettingsDlg dlg(this);
 
-	if(dlg.exec() == QDialog::Accepted)
-	{
-		// save values
-		const DatabaseParameters dbparams(dlg.getDBParameters());
-		dbparams.writeToConfig();
+  if(dlg.exec() == QDialog::Accepted)
+  {
+    // save values
+    const DatabaseParameters dbparams(dlg.getDBParameters());
+    dbparams.writeToConfig();
     const DeviceConnectionParameters devparams(dlg.getDeviceConnectionParameters());
     devparams.writeToConfig();
 
-		// notify database mngr
-		ISql::pInstance()->setDBParameters(dbparams);
+    // notify database mngr
+    ISql::pInstance()->setDBParameters(dbparams);
     createAndConnectDb();
 
-		// todo: notify open windows
-	}
+    // todo: notify open windows
+  }
 }
 
 void MainWindow::settings_pilotInfo()
 {
-	IPilotInfoFrame rcFrame;
+  IPilotInfoFrame rcFrame;
 
-	rcFrame.show();
+  rcFrame.show();
 }
 
 void MainWindow::settings_accounts()
@@ -529,86 +529,86 @@ void MainWindow::settings_accounts()
 
 void MainWindow::tools_migrateDB()
 {
-	MigrationDlg dlg(this);
+  MigrationDlg dlg(this);
 
-	dlg.exec();
+  dlg.exec();
 }
 
 void MainWindow::windows_tile_horizontally()
 {
   QList<QMdiSubWindow*> winList;
-	QWidget *pWin;
-	uint winNr;
-	uint nofWin;
-	int heightForEach;
-	int y = 0;
+  QWidget *pWin;
+  uint winNr;
+  uint nofWin;
+  int heightForEach;
+  int y = 0;
 
-	winList = m_pMdiArea->subWindowList();
+  winList = m_pMdiArea->subWindowList();
 
-	// if 0 or 1 windows do normal tiling
-	if(winList.count() < 2)
-	{
-		m_pMdiArea->tileSubWindows();
-		return;
-	}
+  // if 0 or 1 windows do normal tiling
+  if(winList.count() < 2)
+  {
+    m_pMdiArea->tileSubWindows();
+    return;
+  }
 
-	// primitive horizontal tiling
-	nofWin = winList.count();
-	heightForEach = m_pMdiArea->height() / nofWin;
+  // primitive horizontal tiling
+  nofWin = winList.count();
+  heightForEach = m_pMdiArea->height() / nofWin;
 
-	for(winNr= 0; winNr<nofWin; winNr++)
-	{
-		pWin = winList.at(winNr);
+  for(winNr= 0; winNr<nofWin; winNr++)
+  {
+    pWin = winList.at(winNr);
 
-		if(pWin->isMaximized())
-		{
-			// prevent flicker
-			pWin->hide();
-			pWin->showNormal();
-		}
+    if(pWin->isMaximized())
+    {
+      // prevent flicker
+      pWin->hide();
+      pWin->showNormal();
+    }
 
-		// set new height
-		pWin->resize(m_pMdiArea->width(), heightForEach);
-		pWin->move(0,y);
-		y += heightForEach;
-	}
+    // set new height
+    pWin->resize(m_pMdiArea->width(), heightForEach);
+    pWin->move(0,y);
+    y += heightForEach;
+  }
 }
 
 void MainWindow::help_about()
 {
-	QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
-	IFlyHighRC::pInstance()->copyInfo());
+  QMessageBox::about(this, IFlyHighRC::pInstance()->versionInfo(),
+  IFlyHighRC::pInstance()->copyInfo());
 }
 
 void MainWindow::updateMenuWindow()
 {
-	QList<QMdiSubWindow*> winList;
-	QString text;
-	QAction *pAction;
-	MDIWindow *pChild;
-	int childNr;
-	bool hasMdiChild;
+  QList<QMdiSubWindow*> winList;
+  QString text;
+  QAction *pAction;
+  MDIWindow *pChild;
+  int childNr;
+  bool hasMdiChild;
 
-	m_pMenuWindows->clear();
+  m_pMenuWindows->clear();
 
   // window behaviour
-	m_pMenuWindows->addAction(m_pCascade);
-	m_pMenuWindows->addAction(m_pTile);
-	m_pMenuWindows->addAction(m_pTileHor);
-	m_pMenuWindows->addAction(m_pWinSeparator);
+  m_pMenuWindows->addAction(m_pCascade);
+  m_pMenuWindows->addAction(m_pTile);
+  m_pMenuWindows->addAction(m_pTileHor);
+  m_pMenuWindows->addAction(m_pWinSeparator);
 
-	// set enabled
-	hasMdiChild = !m_pMdiArea->subWindowList().isEmpty();
-	m_pCascade->setEnabled(hasMdiChild);
-	m_pTile->setEnabled(hasMdiChild);
-	m_pTileHor->setEnabled(hasMdiChild);
+  // set enabled
+  hasMdiChild = !m_pMdiArea->subWindowList().isEmpty();
+  m_pCascade->setEnabled(hasMdiChild);
+  m_pTile->setEnabled(hasMdiChild);
+  m_pTileHor->setEnabled(hasMdiChild);
 
   // windows list
-	winList = m_pMdiArea->subWindowList();
-	m_pWinSeparator->setVisible(!winList.isEmpty());
+  winList = m_pMdiArea->subWindowList();
+  m_pWinSeparator->setVisible(!winList.isEmpty());
 
-	for(childNr=0; childNr<winList.size(); childNr++)
-	{
+  for(childNr=0; childNr<winList.size(); childNr++)
+  {
     pChild = qobject_cast<MDIWindow*>(winList.at(childNr));
 
     if(childNr < 9)
@@ -625,7 +625,7 @@ void MainWindow::updateMenuWindow()
     pAction ->setChecked(pChild == activeMdiChild());
     connect(pAction, SIGNAL(triggered()), m_pWinMapper, SLOT(map()));
     m_pWinMapper->setMapping(pAction, winList.at(childNr));
-	}
+  }
 }
 
 void MainWindow::setActiveSubWindow(QWidget *pWin)
@@ -662,17 +662,17 @@ void MainWindow::cascadeSubWindows()
   QList<QMdiSubWindow*> winList;
   MDIWindow *pWin;
   uint winNr;
-	uint nofWin;
+  uint nofWin;
 
   m_pMdiArea->cascadeSubWindows();
   winList = m_pMdiArea->subWindowList();
-	nofWin = winList.count();
+  nofWin = winList.count();
 
-	for(winNr= 0; winNr<nofWin; winNr++)
-	{
-		pWin = qobject_cast<MDIWindow*>(winList.at(winNr));
-		resizeSubWindow(pWin);
-	}
+  for(winNr= 0; winNr<nofWin; winNr++)
+  {
+    pWin = qobject_cast<MDIWindow*>(winList.at(winNr));
+    resizeSubWindow(pWin);
+  }
 }
 
 void MainWindow::showWindow(MDIWindow *pWin)
@@ -680,7 +680,7 @@ void MainWindow::showWindow(MDIWindow *pWin)
   MDIWindow *pActWin = NULL;
 
   pActWin = activeMdiChild();
-	m_pMdiArea->addSubWindow(pWin);
+  m_pMdiArea->addSubWindow(pWin);
   resizeSubWindow(pWin);
 
   if((pActWin == NULL) || pActWin->isMaximized())
@@ -710,7 +710,7 @@ MDIWindow* MainWindow::activeMdiChild()
 
 void MainWindow::resizeSubWindow(MDIWindow *pWin)
 {
-	pWin->resize(m_pMdiArea->width() / 2, m_pMdiArea->height() / 2);
+  pWin->resize(m_pMdiArea->width() / 2, m_pMdiArea->height() / 2);
 }
 
 bool MainWindow::createAndConnectDb()
@@ -747,23 +747,23 @@ bool MainWindow::createAndConnectDb()
 
 void MainWindow::newRoute(Route &route, bool glue)
 {
-	WebMapRouteView *pView;
-	AirSpaceList airSpaceList;
-	IDataBase *pDb;
+  WebMapRouteView *pView;
+  AirSpaceList airSpaceList;
+  IDataBase *pDb;
 
-	pView = new WebMapRouteView(tr("Add Route to DB"));
-	pView->setRoute(&route);
+  pView = new WebMapRouteView(tr("Add Route to DB"));
+  pView->setRoute(&route);
   ISql::pInstance()->airspaceList(airSpaceList);
   pView->setAirSpaceList(&airSpaceList);
   pView->setGlueToCenter(glue);
-	pView->loadMap();
+  pView->loadMap();
   pDb = ISql::pInstance();
 
-	if((pView->exec() == QDialog::Accepted) && pDb->open())
-	{
-		// save new route
+  if((pView->exec() == QDialog::Accepted) && pDb->open())
+  {
+    // save new route
     pDb->add(route.wayPointList());
-		pDb->add(route);
-		pDb->close();
-	}
+    pDb->add(route);
+    pDb->close();
+  }
 }
