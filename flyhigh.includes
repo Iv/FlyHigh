@@ -20,3 +20,4 @@ src/settings/flytec
 src/settings/flytec6015
 src/tools/dbmigrator
 src/upload
+/usr/include/i386-linux-gnu/qt5/

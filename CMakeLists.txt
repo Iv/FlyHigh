@@ -1,9 +1,22 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0.2)
 
 project(flyhigh)
 
-# at least Qt 4.8 is required.
-find_package(Qt4 4.8.2 COMPONENTS QtCore QtGui QtXml QtWebKit QtNetwork QtSql REQUIRED)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+SET(CMAKE_AUTOUIC ON)
+
+# at least Qt 5.3 is required.
+find_package(Qt5Core 5.3.2 REQUIRED)
+find_package(Qt5Gui 5.3.2 REQUIRED)
+find_package(Qt5Network 5.3.2 REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
+find_package(Qt5SerialPort REQUIRED)
+find_package(Qt5Sql 5.3.2 REQUIRED)
+find_package(Qt5Widgets 5.3.2 REQUIRED)
+find_package(Qt5Xml 5.3.2 REQUIRED)
+find_package(Qt5WebKit 5.3.2 REQUIRED)
+find_package(Qt5WebKitWidgets 5.3.2 REQUIRED)
 
 set(QT_USE_QTWEBKIT TRUE)
 
@@ -39,13 +52,11 @@ if(NOT FLYHIGH_DOC_DIR)
  set(FLYHIGH_DOC_DIR "${CMAKE_INSTALL_PREFIX}/usr/share/doc/flyhigh")
 endif()
 
-add_definitions(${QT_DEFINITIONS})
-add_definitions(-DCOMPILE_USE_QT4)
-add_definitions(-Wall)
+add_definitions(-Wall -fPIC -std=c++11 -msse2)
 
-include(${QT_USE_FILE})
 include(Functions.cmake) # custom functions
-include_directories(${CMAKE_SOURCE_DIR} ${QT_INCLUDES})
+include_directories(${CMAKE_SOURCE_DIR}
+)
 
 add_subdirectory(src)
 add_subdirectory(tools)

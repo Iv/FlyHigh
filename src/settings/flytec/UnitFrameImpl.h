@@ -26,16 +26,16 @@
 
 class UnitFrameImpl: public QWidget, public Ui::UnitFrame, public Frame
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		UnitFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  public:
+    UnitFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
-		~UnitFrameImpl();
+    ~UnitFrameImpl();
 
-		void update();
+    void update();
 
-		void store();
+    void store();
 };
 
 #endif

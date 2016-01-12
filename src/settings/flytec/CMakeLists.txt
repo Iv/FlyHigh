@@ -1,5 +1,3 @@
-include(${QT_USE_FILE})
-
 include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/common/form
                     ${CMAKE_SOURCE_DIR}/src/common/window
@@ -7,8 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/container
                     ${CMAKE_SOURCE_DIR}/src/database/flytec
                     ${CMAKE_SOURCE_DIR}/src/database/sql
                     ${CMAKE_SOURCE_DIR}/src/images
-                    ${QT_INCLUDES}
-                    ${CMAKE_CURRENT_BINARY_DIR} )
+                    ${CMAKE_CURRENT_BINARY_DIR})
 
 set(cfgflytec_SRCS VelocityFrameImpl.cpp
                    VarioFrameImpl.cpp
@@ -26,37 +23,4 @@ set(cfgflytec_SRCS VelocityFrameImpl.cpp
                    IFlytecConfig.cpp
                    SmsFrameImpl.cpp )
 
-set(cfgflytec_HDRS AcousticFrameImpl.h
-                   CorrFrameImpl.h
-                   DeviceFrameImpl.h
-                   DisplayFrameImpl.h
-                   FlyCalcFrameImpl.h
-                   GPSFrameImpl.h
-                   MainFrameImpl.h
-                   MemoryFrameImpl.h
-                   PolareFrameImpl.h
-                   UnitFrameImpl.h
-                   VarioFrameImpl.h
-                   SmsFrameImpl.h
-                   VelocityFrameImpl.h)
-
-set(cfgflytec_UIS
-	AcousticFrame.ui
-	CorrFrame.ui
-	DeviceFrame.ui
-	DisplayFrame.ui
-	FlyCalcFrame.ui
-	GPSFrame.ui
-	MainFrame.ui
-	MemoryFrame.ui
-	PolareFrame.ui
-	SmsFrame.ui
-	UnitFrame.ui
-	VarioFrame.ui
-	VelocityFrame.ui)
-
-QT4_WRAP_CPP(cfgflytec_SRCS ${cfgflytec_HDRS} )
-
-QT4_WRAP_UI(cfgflytec_UI_HDRS ${cfgflytec_UIS} )
-
-add_library(cfgflytec ${cfgflytec_SRCS} ${cfgflytec_HDRS} ${cfgflytec_UI_HDRS})
+add_library(cfgflytec ${cfgflytec_SRCS})

@@ -26,16 +26,16 @@
 
 class VelocityFrameImpl: public QWidget, public Ui::VelocityFrame, public Frame
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  public:
+    VelocityFrameImpl(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 
-		~VelocityFrameImpl();
+    ~VelocityFrameImpl();
 
-		void update();
+    void update();
 
-		void store();
+    void store();
 };
 
 #endif

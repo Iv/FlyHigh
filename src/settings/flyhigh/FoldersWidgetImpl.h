@@ -26,19 +26,19 @@
 
 class FoldersWidgetImpl: public QWidget, public Ui::FoldersWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
   public:
     FoldersWidgetImpl(QWidget* parent = 0, const QString& title = "");
 
     virtual ~FoldersWidgetImpl();
 
-	protected slots:
-		void selectDirFlyHigh();
+  protected slots:
+    void selectDirFlyHigh();
 
-		void selectDirElevation();
+    void selectDirElevation();
 
-		void selectDirSwissTopo();
+    void selectDirSwissTopo();
 
   private:
     bool selectDir(QString &path);

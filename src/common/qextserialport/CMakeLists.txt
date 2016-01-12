@@ -1,9 +1,7 @@
-include(${QT_USE_FILE})
 
 # ${CMAKE_CURRENT_BINARY_DIR} needs to be in the includ path
 # because of the mox_*.cxx files are #include'd in source
-include_directories(${CMAKE_CURRENT_BINARY_DIR}
-                    ${QT_INCLUDES})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(qextserialport_HDRS
     qextserialport.h
@@ -36,7 +34,7 @@ IF(WIN32)
 
       # this header needs to be moc'ed, compiled AND included in
       # the library (see below)
-      QT4_WRAP_CPP(qextserialport_WIN_MOC_SRCS qextwineventnotifier_p.h)
+      qt5_wrap_cpp(qextserialport_WIN_MOC_SRCS qextwineventnotifier_p.h)
 
       add_definitions(-DQESP_NO_QT4_PRIVATE)
      ENDIF()
@@ -102,7 +100,7 @@ ENDIF()
 set(qextserialport_MOC_HDRS
     qextserialport.h
     qextserialenumerator.h)
-QT4_WRAP_CPP(qextserialport_MOC_SRCS ${qextserialport_MOC_HDRS})
+qt5_wrap_cpp(qextserialport_MOC_SRCS ${qextserialport_MOC_HDRS})
 # prevent compilation of the moc generated files. It would fail anyway.
 SET_SOURCE_FILES_PROPERTIES(${qextserialport_MOC_SRCS}
                             PROPERTIES

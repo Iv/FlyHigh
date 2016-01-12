@@ -21,7 +21,7 @@
 #include "AccountFormImpl.h"
 
 AccountFormImpl::AccountFormImpl(QWidget* parent, const QString &caption, Account *pAccount)
-	:QDialog(parent)
+  :QDialog(parent)
 {
   QStringList contests;
 
@@ -58,7 +58,7 @@ void AccountFormImpl::accept()
     m_pAccount->setDescription(textEditNotes->toPlainText());
     m_pAccount->setType((Account::OLCType)comboBox->currentIndex());
   }
-	QDialog::accept();
+  QDialog::accept();
 }
 
 void AccountFormImpl::validate()
@@ -87,6 +87,3 @@ void AccountFormImpl::select(QComboBox *pCombo, const QString &text)
     }
   }
 }
-
-#include "moc_AccountFormImpl.cxx"
-

@@ -1,19 +1,8 @@
-include(${QT_USE_FILE})
-
-include_directories(${CMAKE_SOURCE_DIR}/src/database/sql
-                    ${QT_INCLUDES} )
-
+include_directories(${CMAKE_SOURCE_DIR}/src/database/sql)
 
 set(window_SRCS MDIWindow.cpp
                PhotoView.cpp
                ProgressDlg.cpp
                TableWindow.cpp)
 
-set(window_HDRS MDIWindow.h
-              PhotoView.h
-              ProgressDlg.h
-              TableWindow.h)
-
-QT4_WRAP_CPP(window_SRCS ${window_HDRS})
-
-add_library(window ${window_SRCS} ${window_HDRS})
+add_library(window ${window_SRCS})

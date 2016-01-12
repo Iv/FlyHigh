@@ -6,7 +6,7 @@ create-dir:
 	[ -x  $(TARGET_DIR) ] || mkdir $(TARGET_DIR)
 
 Debug:	create-dir
-	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=Debug ..; make -j4
+	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=Debug ..; make -j4 VERBOSE=1
 
 Release:	create-dir
 	cd $(TARGET_DIR); cmake -DCMAKE_BUILD_TYPE=Release ..; make -j4

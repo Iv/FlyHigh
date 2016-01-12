@@ -1,8 +1,5 @@
-include(${QT_USE_FILE})
-
 include_directories( ${CMAKE_SOURCE_DIR}/src/common/form
-                     ${CMAKE_SOURCE_DIR}/src/common/qjson4
-                     ${QT_INCLUDES} )
+                     ${CMAKE_SOURCE_DIR}/src/common/qjson4)
 
 set(upload_SRCS Account.cpp
                 AccountWindow.cpp
@@ -11,12 +8,5 @@ set(upload_SRCS Account.cpp
                 XContestUploader.cpp
                 XContestAdditionalInfoDlg.cpp
                 XContestAdditionalInfoWidgetFactory.cpp)
-
-set(upload_HDRS AccountWindow.h
-                XContestUploader.h
-                XContestAdditionalInfoDlg.h)
-
-QT4_WRAP_CPP(upload_SRCS ${upload_HDRS})
-
 
 add_library(upload ${upload_SRCS})
