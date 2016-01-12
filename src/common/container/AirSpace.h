@@ -26,59 +26,61 @@
 
 class AirSpace
 {
-	public:
-		AirSpace();
+  public:
+    AirSpace();
 
-		virtual ~AirSpace();
+    virtual ~AirSpace();
 
     int id() const;
 
-		void setId(int id);
+    void setId(int id);
 
-		const QString& name() const;
+    const QString& name() const;
 
-		void setName(const QString &name);
+    void setName(const QString &name);
 
-		int high() const;
+    int high() const;
 
-		void setHigh(int high);
+    void setHigh(int high);
 
-		int low() const;
+    int low() const;
 
-		void setLow(int low);
+    void setLow(int low);
 
-		const QString& airspaceClass() const;
+    const QString& airspaceClass() const;
 
-		void setAirspaceClass(const QString &airspaceClass);
+    void setAirspaceClass(const QString &airspaceClass);
 
-		void setWarnDist(uint meters);
+    void setWarnDist(uint meters);
 
-		uint warnDist() const;
+    uint warnDist() const;
 
-		void setRemark(const QString &remark);
+    void setRemark(const QString &remark);
 
-		const QString& remark() const;
+    const QString& remark() const;
 
-		LatLngList& pointList();
+    LatLngList& pointList();
 
-		void setBoundBox(const BoundBox &bbox);
+    void setBoundBox(const BoundBox &bbox);
 
-		const BoundBox& boundBox() const;
+    const BoundBox& boundBox();
+
+    const BoundBox& boundBox() const;
 
     bool isInside(const WayPoint &wp) const;
 
-	private:
+  private:
     int m_id;
-		QString m_name;
-		QString m_airspaceClass;
-		int m_high;
-		int m_low;
-		LatLngList m_pointList;
-		BoundBox m_boundBox;
-		QString m_remark;
+    QString m_name;
+    QString m_airspaceClass;
+    int m_high;
+    int m_low;
+    LatLngList m_pointList;
+    BoundBox m_boundBox;
+    QString m_remark;
     uint m_warnDist;
 
-		bool getNextBear(bool dir, double endBear, double prevBear, double &bear);
+    bool getNextBear(bool dir, double endBear, double prevBear, double &bear);
 };
 
 #endif

@@ -26,12 +26,12 @@
 AirSpace::AirSpace()
 {
   m_id = -1;
-	m_name = "";
-	m_airspaceClass = "";
+  m_name = "";
+  m_airspaceClass = "";
   m_high = 0;
-	m_low = 0;
-	m_warnDist = 0;
-	m_remark = "";
+  m_low = 0;
+  m_warnDist = 0;
+  m_remark = "";
 }
 
 AirSpace::~AirSpace()
@@ -50,70 +50,70 @@ void AirSpace::setId(int id)
 
 const QString& AirSpace::name() const
 {
-	return m_name;
+  return m_name;
 }
 
 void AirSpace::setName(const QString &name)
 {
-	QString locName = name;
+  QString locName = name;
 
-	locName.remove('#');
-	m_name = locName.trimmed();
+  locName.remove('#');
+  m_name = locName.trimmed();
 }
 
 int AirSpace::high() const
 {
-	return m_high;
+  return m_high;
 }
 
 void AirSpace::setHigh(int high)
 {
-	m_high = high;
+  m_high = high;
 }
 
 int AirSpace::low() const
 {
-	return m_low;
+  return m_low;
 }
 
 void AirSpace::setLow(int low)
 {
-	m_low = low;
+  m_low = low;
 }
 
 const QString& AirSpace::airspaceClass() const
 {
-	return m_airspaceClass;
+  return m_airspaceClass;
 }
 
 void AirSpace::setAirspaceClass(const QString &airspaceClass)
 {
-	m_airspaceClass = airspaceClass;
+  m_airspaceClass = airspaceClass;
 }
 
 void AirSpace::setWarnDist(uint meters)
 {
-	m_warnDist = meters;
+  m_warnDist = meters;
 }
 
 uint AirSpace::warnDist() const
 {
-	return m_warnDist;
+  return m_warnDist;
 }
 
 void AirSpace::setRemark(const QString &remark)
 {
-	m_remark = remark;
+  m_remark = remark;
 }
 
 const QString& AirSpace::remark() const
 {
-	return m_remark;
+  return m_remark;
 }
 
 LatLngList& AirSpace::pointList()
 {
-	return m_pointList;
+  return m_pointList;
 }
 
 void AirSpace::setBoundBox(const BoundBox &bbox)
@@ -121,36 +121,47 @@ void AirSpace::setBoundBox(const BoundBox &bbox)
   m_boundBox = bbox;
 }
 
+const BoundBox& AirSpace::boundBox()
+{
+  if(!m_boundBox.isInit())
+  {
+    for(const LatLng &latlng: m_pointList)
+      m_boundBox.setMinMax(latlng);
+  }
+
+  return m_boundBox;
+}
+
 const BoundBox& AirSpace::boundBox() const
 {
-	return m_boundBox;
+  return m_boundBox;
 }
 
 bool AirSpace::isInside(const WayPoint &wp) const
 {
-	// cn_PnPoly(): crossing number test for a point in a polygon
-	//      Input:   P = a point,
-	//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-	//      Return:  0 = outside, 1 = inside
-	// This code is patterned after [Franklin, 2000]
+  // cn_PnPoly(): crossing number test for a point in a polygon
+  //      Input:   P = a point,
+  //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+  //      Return:  0 = outside, 1 = inside
+  // This code is patterned after [Franklin, 2000]
 
   int i;
-	int j;
-	bool cross = 0;
-	int nvert = m_pointList.size();
+  int j;
+  bool cross = 0;
+  int nvert = m_pointList.size();
 
   for(i = 0, j = nvert-1; i < nvert; j = i++)
-	{
+  {
     if(((m_pointList[i].lat() > wp.lat()) != (m_pointList[j].lat() > wp.lat())) &&
-				(wp.lon() < (m_pointList[j].lon() - m_pointList[i].lon()) *
-				(wp.lat() - m_pointList[i].lat()) / (m_pointList[j].lat() - m_pointList[i].lat()) +
-				m_pointList[i].lon()))
-		{
+        (wp.lon() < (m_pointList[j].lon() - m_pointList[i].lon()) *
+        (wp.lat() - m_pointList[i].lat()) / (m_pointList[j].lat() - m_pointList[i].lat()) +
+        m_pointList[i].lon()))
+    {
        cross = !cross;
-		}
+    }
   }
 
-	return (cross) && (wp.alt() >= m_low) && (wp.alt() <= m_high);
+  return (cross) && (wp.alt() >= m_low) && (wp.alt() <= m_high);
 }
 
 bool AirSpace::getNextBear(bool dir, double endBear, double prevBear, double &bear)

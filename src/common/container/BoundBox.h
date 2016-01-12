@@ -25,45 +25,47 @@
 
 class BoundBox
 {
-	public:
-		BoundBox();
+  public:
+    BoundBox();
 
-		BoundBox(const LatLng &sw, const LatLng &ne);
+    BoundBox(const LatLng &sw, const LatLng &ne);
 
-		void init();
+    void init();
 
-		void setMinMax(const LatLng &wp);
+    bool isInit() const;
 
-		void setMinMax(const BoundBox &bbox);
+    void setMinMax(const LatLng &wp);
 
-		void setNorthEast(const LatLng &ne);
+    void setMinMax(const BoundBox &bbox);
 
-		const LatLng& northEast() const;
+    void setNorthEast(const LatLng &ne);
 
-		double north() const;
+    const LatLng& northEast() const;
 
-		double west() const;
+    double north() const;
 
-		void setSouthWest(const LatLng &sw);
+    double west() const;
+
+    void setSouthWest(const LatLng &sw);
 
     const LatLng& southWest() const;
 
-		double south() const;
+    double south() const;
 
-		double east() const;
+    double east() const;
 
-		double width() const;
+    double width() const;
 
-		double height() const;
+    double height() const;
 
-		bool intersect(const BoundBox &bb) const;
+    bool intersect(const BoundBox &bb) const;
 
-		bool isInside(const LatLng &latlng) const;
+    bool isInside(const LatLng &latlng) const;
 
-	private:
-		LatLng m_sw;
-		LatLng m_ne;
-		bool m_isInit;
+  private:
+    LatLng m_sw;
+    LatLng m_ne;
+    bool m_isInit;
 };
 
 #endif

@@ -20,7 +20,8 @@
 #ifndef AirSpaceView_h
 #define AirSpaceView_h
 
-#include <QDialog>
+#include <QtCore/QPoint>
+#include <QtWidgets/QDialog>
 
 class QPaintEvent;
 class QMouseEvent;
@@ -30,41 +31,40 @@ class AirSpaceList;
 
 class AirSpaceView: public QDialog
 {
-	public:
-		AirSpaceView();
+  public:
+    AirSpaceView();
 
-		~AirSpaceView();
+    ~AirSpaceView();
 
-		void setAirSpaceList(AirSpaceList *pAirSpaceList, int selected);
+    void setAirSpaceList(AirSpaceList *pAirSpaceList, int selected);
 
-		void setSelected(int selected);
+    void setSelected(int selected);
 
-	protected:
-		void paintEvent(QPaintEvent *pEvent);
+  protected:
+    void paintEvent(QPaintEvent *pEvent);
 
-		void mousePressEvent(QMouseEvent *pEvent);
+    void mousePressEvent(QMouseEvent *pEvent);
 
-		void mouseReleaseEvent(QMouseEvent *pEvent);
+    void mouseReleaseEvent(QMouseEvent *pEvent);
 
-		void mouseMoveEvent(QMouseEvent *pEvent);
+    void mouseMoveEvent(QMouseEvent *pEvent);
 
-		void wheelEvent(QWheelEvent * pEvent);
+    void wheelEvent(QWheelEvent * pEvent);
 
-	private:
-		enum {MinScale=1, MaxScale=10};
+  private:
+    enum {MinScale=1, MaxScale=10};
 
-		AirSpaceList *m_pAirSpaceList;
-		BoundBox m_bbox;
-		QPoint m_offset;
-		int m_scale;
-		bool m_mouseDown;
-		QPoint m_prevPos;
+    AirSpaceList *m_pAirSpaceList;
+    BoundBox m_bbox;
+    QPoint m_offset;
+    QPoint m_prevPos;
+    int m_scale;
+    int m_selected;
+    bool m_mouseDown;
 
-		int m_selected;
+    void drawAirspace();
 
-		void drawAirspace();
-
-		void calcOffset(const QPoint &mousePos);
+    void calcOffset(const QPoint &mousePos);
 };
 
 #endif
