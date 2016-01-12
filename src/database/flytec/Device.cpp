@@ -23,6 +23,8 @@
 #include <sys/timeb.h>
 #include "Device.h"
 
+#include <QtCore/QDebug>
+
 Device::Device(bool flow)
 {
   m_tlg = "";
@@ -54,12 +56,7 @@ bool Device::openDevice(const QString &dev, int baud)
   bool success;
 
   m_serialPort->setPortName(dev);
-
-  if(baud == 57600)
-  {
-    m_serialPort->setBaudRate(baud);
-  }
-
+  m_serialPort->setBaudRate(baud);
   success = m_serialPort->open(QIODevice::ReadWrite);
 
   return success;
@@ -141,17 +138,14 @@ bool Device::sendTlg(const QString &tlg)
 void Device::flush()
 {
   m_tlg = "";
-  // Flush buffer
-  m_serialPort->readAll();
+  m_serialPort->clear();
 }
 
 bool Device::getChar(char &ch)
 {
   enum {XON = 0x11, XOFF = 0x13};
 
-  bool success;
-
-  success = (m_serialPort->bytesAvailable() > 0);
+  bool success = m_serialPort->waitForReadyRead(100);
 
   if(success)
   {
