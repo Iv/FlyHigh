@@ -21,3 +21,12 @@ src/settings/flytec6015
 src/tools/dbmigrator
 src/upload
 /usr/include/i386-linux-gnu/qt5/
+src/res/flight/js
+src/res/lib/plot
+src/res/airspace/js
+src/res/airspace
+src/res/lib
+src/res/route
+src/res/route/js
+src/res/waypoint
+src/res/waypoint/js
