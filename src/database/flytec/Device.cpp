@@ -23,8 +23,6 @@
 #include <sys/timeb.h>
 #include "Device.h"
 
-//#include "qextserialport.h"
-
 Device::Device(bool flow)
 {
   m_tlg = "";
@@ -44,7 +42,6 @@ Device::Device(bool flow)
   m_serialPort->setParity(QSerialPort::NoParity);
   m_serialPort->setDataBits(QSerialPort::Data8);
   m_serialPort->setStopBits(QSerialPort::OneStop);
-//  m_serialPort->setTimeout(-1);
 }
 
 Device::~Device()
@@ -154,8 +151,13 @@ bool Device::getChar(char &ch)
 
   bool success;
 
-  success = m_serialPort->getChar(&ch);
-  success &= (ch != XON) && (ch != XOFF);
+  success = (m_serialPort->bytesAvailable() > 0);
+
+  if(success)
+  {
+    success = m_serialPort->getChar(&ch);
+    success &= (ch != XON) && (ch != XOFF);
+  }
 
   return success;
 }
