@@ -29,30 +29,30 @@ class WebMap;
 
 class WebMapFlight: public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		WebMapFlight(WebMap *pWebMap);
+  public:
+    WebMapFlight(WebMap *pWebMap);
 
-		~WebMapFlight();
+    ~WebMapFlight();
 
-		void init();
+    void init();
 
     void setFlightPointList(const QDate &date, const FlightPointList *pFpList);
 
-		void setSogList(const FlightPointList::SogListType &sogList);
+    void setSogList(const FlightPointList::SogListType &sogList, uint begin);
 
-		void setVarioList(const FlightPointList::VarioListType &varioList);
+    void setVarioList(const FlightPointList::VarioListType &varioList, uint begin);
 
-		void setPhotoList(const Photo::PhotoListType &photoList);
+    void setPhotoList(const Photo::PhotoListType &photoList);
 
-		void showPlot();
+    void showPlot();
 
-		void setPlotEnable(bool en);
+    void setPlotEnable(bool en);
 
-	private:
-		WebMap *m_pWebMap;
-		uint m_plotEn;
+  private:
+    WebMap *m_pWebMap;
+    uint m_plotEn;
 };
 
 #endif
