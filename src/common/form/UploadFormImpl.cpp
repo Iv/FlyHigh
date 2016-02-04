@@ -43,7 +43,7 @@ UploadFormImpl::UploadFormImpl(QWidget* parent, const QString &caption, Flight *
   connect(buttonBox->button(QDialogButtonBox::Apply),SIGNAL(clicked()),this,SLOT(upload()));
   connect(buttonBox->button(QDialogButtonBox::Close),SIGNAL(clicked()),this,SLOT(close()));
 
-	setFlight(pFlight);
+  setFlight(pFlight);
   updateAccount();
   validate();
 }
@@ -107,6 +107,7 @@ void UploadFormImpl::newAccount()
   {
     ISql::pInstance()->add(account);
     updateAccount();
+    validate();
   }
 }
 
@@ -169,5 +170,3 @@ void UploadFormImpl::errorOnUpload(const QString& msg)
   messages->appendPlainText(msg);
   messages->appendPlainText(tr("Error while uploading flight"));
 }
-
-#include "moc_UploadFormImpl.cxx"

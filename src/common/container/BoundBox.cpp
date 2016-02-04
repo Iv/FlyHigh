@@ -23,54 +23,59 @@
 
 BoundBox::BoundBox()
 {
-	m_isInit = false;
+  m_isInit = false;
 }
 
 BoundBox::BoundBox(const LatLng &sw, const LatLng &ne)
 {
-	m_isInit = false;
+  m_isInit = false;
   m_ne = ne;
   m_sw = sw;
 }
 
 void BoundBox::init()
 {
-	m_isInit = false;
+  m_isInit = false;
+}
+
+bool BoundBox::isInit() const
+{
+  return m_isInit;
 }
 
 void BoundBox::setMinMax(const LatLng &latlng)
 {
-	if(m_isInit)
-	{
-		m_sw.setMin(latlng);
-		m_ne.setMax(latlng);
-	}
-	else
-	{
-		m_isInit = true;
-		m_sw = latlng;
-		m_ne = latlng;
-	}
+  if(m_isInit)
+  {
+    m_sw.setMin(latlng);
+    m_ne.setMax(latlng);
+  }
+  else
+  {
+    m_isInit = true;
+    m_sw = latlng;
+    m_ne = latlng;
+  }
 }
 
 void BoundBox::setMinMax(const BoundBox &bbox)
 {
-	if(m_isInit)
-	{
-		m_sw.setMin(bbox.m_sw);
-		m_ne.setMax(bbox.m_ne);
-	}
-	else
-	{
-		m_isInit = true;
-		m_sw = bbox.m_sw;
-		m_ne = bbox.m_ne;
-	}
+  if(m_isInit)
+  {
+    m_sw.setMin(bbox.m_sw);
+    m_ne.setMax(bbox.m_ne);
+  }
+  else
+  {
+    m_isInit = true;
+    m_sw = bbox.m_sw;
+    m_ne = bbox.m_ne;
+  }
 }
 
 void BoundBox::setNorthEast(const LatLng &ne)
 {
-	m_ne = ne;
+  m_ne = ne;
 }
 
 const LatLng& BoundBox::northEast() const
@@ -80,27 +85,27 @@ const LatLng& BoundBox::northEast() const
 
 double BoundBox::north() const
 {
-	return m_ne.lat();
+  return m_ne.lat();
 }
 
 double BoundBox::east() const
 {
-	return m_ne.lon();
+  return m_ne.lon();
 }
 
 double BoundBox::width() const
 {
-	return (east() - west());
+  return (east() - west());
 }
 
 double BoundBox::height() const
 {
-	return (north() - south());
+  return (north() - south());
 }
 
 void BoundBox::setSouthWest(const LatLng &sw)
 {
-	m_sw = sw;
+  m_sw = sw;
 }
 
 const LatLng& BoundBox::southWest() const
@@ -110,12 +115,12 @@ const LatLng& BoundBox::southWest() const
 
 double BoundBox::south() const
 {
-	return m_sw.lat();
+  return m_sw.lat();
 }
 
 double BoundBox::west() const
 {
-	return m_sw.lon();
+  return m_sw.lon();
 }
 
 bool BoundBox::intersect(const BoundBox &bb) const
@@ -123,9 +128,9 @@ bool BoundBox::intersect(const BoundBox &bb) const
   bool inter;
 
   inter = !((bb.west() > east()) || (bb.east() < west()) ||
-			(bb.north() < south()) || (bb.south() > north()));
+      (bb.north() < south()) || (bb.south() > north()));
 
-	return inter;
+  return inter;
 }
 
 bool BoundBox::isInside(const LatLng &latlng) const
@@ -133,7 +138,7 @@ bool BoundBox::isInside(const LatLng &latlng) const
   bool inside;
 
   inside = ((latlng.lon() >= west()) && (latlng.lon() <= east()) &&
-			(latlng.lat() >= south()) && (latlng.lat() <= north()));
+      (latlng.lat() >= south()) && (latlng.lat() <= north()));
 
   return inside;
 }

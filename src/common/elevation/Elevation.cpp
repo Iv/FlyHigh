@@ -134,14 +134,11 @@ void Elevation::elevations(FlightPointList &fpList)
   }
 
   // read elevations
-qDebug() << "read elevations";
-
   for(tileIt=m_tileList.begin(); tileIt!=m_tileList.end(); tileIt++)
   {
     if(bbox.intersect((*tileIt)->boundBox()))
     {
       (*tileIt)->open();
-qDebug() << "use" << (*tileIt)->path() << " " << (*tileIt)->type();
       affTileList.push_back(*tileIt);
     }
   }

@@ -1,7 +1,3 @@
-include(${QT_USE_FILE})
-
-include_directories( ${QT_INCLUDES} )
-
 add_subdirectory(airspace)
 add_subdirectory(flight)
 add_subdirectory(lib)
@@ -10,7 +6,7 @@ add_subdirectory(waypoint)
 
 set(res_RC res.qrc)
 
-qt4_add_resources(res_RC_SRCS ${res_RC})
+qt5_add_resources(res_RC_SRCS ${res_RC})
 
 add_library(res ${res_RC_SRCS})
 

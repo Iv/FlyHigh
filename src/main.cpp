@@ -28,31 +28,33 @@
 
 int main( int argc, char ** argv )
 {
-	int res;
-	QApplication appl(argc, argv);
-	Q_INIT_RESOURCE(res);
-	MainWindow* pMainWin;
+  int res;
+  QApplication appl(argc, argv);
+  Q_INIT_RESOURCE(res);
+  MainWindow* pMainWin;
 
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+/* removed in Qt5
+  QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+  QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+  QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+*/
 
-	// setup db
-	ISql::pInstance()->setDBParameters(IFlyHighRC::pInstance()->getDBParameters());
+  // setup db
+  ISql::pInstance()->setDBParameters(IFlyHighRC::pInstance()->getDBParameters());
 
-	pMainWin = new MainWindow();
-	pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
-	pMainWin->show();
-	appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
+  pMainWin = new MainWindow();
+  pMainWin->setWindowIcon(QIcon(":/flyhigh.png"));
+  pMainWin->show();
+  appl.connect(&appl, SIGNAL(lastWindowClosed()), &appl, SLOT(quit()));
 
-	res = appl.exec();
+  res = appl.exec();
 
-	// exit
-	IGPSDevice::pInstance()->close();
+  // exit
+  IGPSDevice::pInstance()->close();
 
-	delete IGPSDevice::pInstance();
-	delete IFlyHighRC::pInstance();
-	delete ISql::pInstance();
+  delete IGPSDevice::pInstance();
+  delete IFlyHighRC::pInstance();
+  delete ISql::pInstance();
 
-	return res;
+  return res;
 }

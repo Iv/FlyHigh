@@ -33,6 +33,8 @@ class QNetworkReply;
 class QNetworkAccessManager;
 class QByteArray;
 class QJsonDocument;
+class QJsonObject;
+class XContestAdditionalInfoDlg;
 
 /**
  * Implements XContest uploading functionality
@@ -53,19 +55,20 @@ private:
   typedef enum State {INIT,CLAIM,NEEDINFO,FINISH} State;
 
   void addAuthControls(QHttpMultiPart* pForm) const;
-  void addFlightControls(QHttpMultiPart* pForm) const;
+  void addFlightControls(QHttpMultiPart* pForm);
 
   void sendTicketRequest();
   void sendClaimRequest();
-  void sendClarificationRequest(const QMap<QString,QString>& clarifications);
+  void sendClarificationRequest();
 
   QNetworkRequest buildGateRequestUrl() const;
 
   bool parseResponse(const QByteArray& toParse, QJsonDocument& result, QString& error) const;
   bool checkErrorResponse(const QJsonDocument&jsonDoc, QString& errorMsg) const;
   bool readTicketResponse(const QJsonDocument&jsonDoc, QString& ticket) const;
-  bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const;
+  bool readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId, bool isFirst) const;
   bool readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const;
+  bool readControls(const QJsonDocument&jsonDoc, QJsonObject& controls) const;
 
   static QString getHash(const QString& str);
   static QUrl urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params);
@@ -90,6 +93,8 @@ private:
   QString m_SessionId;
   Flight* m_pFlight;
   QNetworkAccessManager* m_pManager;
+  XContestAdditionalInfoDlg* m_pInfoDlg;
+  QMap<QString,QString> m_Controls;
 
   static const QString XCONTEST_API_BASE_URL;
   static const QString XCONTEST_TICKET_URL;

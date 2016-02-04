@@ -20,50 +20,47 @@
 #ifndef Device_h
 #define Device_h
 
-#include <QString>
+#include <QtCore/QString>
 
-class QextSerialPort;
+class QSerialPort;
 
 class Device
 {
-	public:
-		Device(bool flow);
+  public:
+    Device(bool flow);
 
-		~Device();
+    ~Device();
 
-		bool openDevice(const QString &dev, int baud);
+    bool openDevice(const QString &dev, int baud);
 
-		bool isOpen();
+    bool isOpen();
 
-		void closeDevice();
+    void closeDevice();
 
-		bool recieveTlg(int tout, bool head);
+    bool recieveTlg(int tout, bool head);
 
-		const QString& getTlg();
+    const QString& getTlg();
 
-		bool sendTlg(const QString &tlg);
+    bool sendTlg(const QString &tlg);
 
-		void flush();
+    void flush();
 
-	private:
-		typedef enum State{SearchHead, ReadTlg}State;
+  private:
+    typedef enum State{SearchHead, ReadTlg}State;
 
-		enum {MaxTlgSize = 255};
+    enum {MaxTlgSize = 255};
 
-		QextSerialPort *m_serialPort;
+    QSerialPort *m_serialPort;
+    QString m_tlg;
+    int m_tout;
 
-		QString m_tlg;
-		int m_tout;
+    bool getChar(char &ch);
 
-		bool getChar(char &ch);
+    bool writeBuffer(const char *pBuff, int len);
 
-		bool writeBuffer(const char *pBuff, int len);
+    void startTimer(int tout);
 
-		void startTimer(int tout);
-
-		bool isElapsed();
-
-	private:
+    bool isElapsed();
 };
 
 #endif

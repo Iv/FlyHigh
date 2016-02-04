@@ -92,7 +92,13 @@ void QueryStore::init()
 	addQuery("migrate-write-pilots",
 					 "common",
 					 "INSERT INTO Pilots (Id, FirstName, LastName, BirthDate, CallSign, GliderId) VALUES (:Id, :FirstName, :LastName, :BirthDate, :CallSign, :GliderId)");
-	addQuery("migrate-read-routes",
+  addQuery("migrate-read-accounts",
+           "common",
+           "SELECT Id, Username, Password, Type, PilotId, Comment FROM Accounts");
+  addQuery("migrate-write-accounts",
+           "common",
+           "INSERT INTO Accounts (Id, Username, Password, Type, PilotId, Comment) VALUES (:Id, :Username, :Password, :Type, :PilotId, :Comment)");
+  addQuery("migrate-read-routes",
 					 "common",
 					 "SELECT Id, Name, Type FROM Routes");
 	addQuery("migrate-write-routes",
@@ -130,13 +136,13 @@ void QueryStore::init()
 								"DROP TABLE IF EXISTS RouteItems" <<
 								"DROP TABLE IF EXISTS Routes" <<
 								"DROP TABLE IF EXISTS LastModified" <<
-								"DROP TABLE IF EXISTS Pilots" <<
+                "DROP TABLE IF EXISTS Accounts" <<
+                "DROP TABLE IF EXISTS Pilots" <<
 								"DROP TABLE IF EXISTS Servicings" <<
 								"DROP TABLE IF EXISTS Gliders" <<
                 "DROP TABLE IF EXISTS WayPoints" <<
                 "DROP TABLE IF EXISTS AirSpaceItems" <<
-                "DROP TABLE IF EXISTS AirSpaces" <<
-                "DROP TABLE IF EXISTS Accounts";
+                "DROP TABLE IF EXISTS AirSpaces";
 	addQuery("migrate-drop-tables",
 					 "common",
 					 droptables);

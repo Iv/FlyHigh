@@ -512,7 +512,7 @@
   </connection>
   <connection>
    <sender>lineEditDistance</sender>
-   <signal>lostFocus()</signal>
+   <signal>editingFinished()</signal>
    <receiver>FlightForm</receiver>
    <slot>limitDistance()</slot>
    <hints>

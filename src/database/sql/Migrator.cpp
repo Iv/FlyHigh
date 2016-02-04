@@ -213,19 +213,13 @@ void Migrator::copyDatabases(DatabaseParameters fromDBParameters, DatabaseParame
 		res = false;
 	}
 
-	/*
-		@todo
-		copying LastModified will fail, since it was
-		already populated in the setup part.
-		dont know yet if this is ok
-	if (res && !copyTable(tr("Copy LastModified..."),
-								 "migrate-read-lastmodified",
-								 "migrate-write-lastmodified"))
-	{
-	 err = tr("Error while migrating LastModified");
-	 res = false;
-	}
-	*/
+  if (res && !copyTable(tr("Copy Accounts..."),
+                 "migrate-read-accounts",
+                 "migrate-write-accounts"))
+  {
+    err = tr("Error while migrating Accounts");
+    res = false;
+  }
 
 	if (res && !copyTable(tr("Copy Flights..."),
 								 "migrate-read-flights",

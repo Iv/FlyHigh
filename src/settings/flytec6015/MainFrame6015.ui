@@ -49,8 +49,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>131</width>
-       <height>343</height>
+       <width>141</width>
+       <height>352</height>
       </rect>
      </property>
      <attribute name="label">
@@ -77,7 +77,7 @@
      <x>0</x>
      <y>0</y>
      <width>585</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="File">
@@ -161,7 +161,7 @@
  <connections>
   <connection>
    <sender>File_Read</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainFrame6015</receiver>
    <slot>read()</slot>
    <hints>
@@ -177,7 +177,7 @@
   </connection>
   <connection>
    <sender>fileCloseAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainFrame6015</receiver>
    <slot>close()</slot>
    <hints>
@@ -193,7 +193,7 @@
   </connection>
   <connection>
    <sender>File_Write</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainFrame6015</receiver>
    <slot>write()</slot>
    <hints>

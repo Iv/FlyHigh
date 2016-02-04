@@ -1,5 +1,3 @@
-include(${QT_USE_FILE})
-
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/analysis
                     ${CMAKE_SOURCE_DIR}/src/common
@@ -17,7 +15,17 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_SOURCE_DIR}/src/settings/flytec6015
                     ${CMAKE_SOURCE_DIR}/src/tools/dbmigrator
                     ${CMAKE_SOURCE_DIR}/src/upload
-                    ${QT_INCLUDES} )
+                    ${Qt5_INCLUDE_DIRS}
+                    ${Qt5Core_INCLUDE_DIRS}
+                    ${Qt5Gui_INCLUDE_DIRS}
+                    ${Qt5Network_INCLUDE_DIRS}
+                    ${Qt5PrintSupport_INCLUDE_DIRS}
+                    ${Qt5Sql_INCLUDE_DIRS}
+                    ${Qt5SerialPort_INCLUDE_DIRS}
+                    ${Qt5WebKit_INCLUDE_DIRS}
+                    ${Qt5WebKitWidgets_INCLUDE_DIRS}
+                    ${Qt5Widgets_INCLUDE_DIRS}
+                    ${Qt5Xml_INCLUDE_DIRS})
 
 add_subdirectory(analysis)
 add_subdirectory(common)
@@ -31,41 +39,37 @@ add_subdirectory(upload)
 set(flyhigh_SRCS main.cpp
                  MainWindow.cpp)
 
-set(flyhigh_HDRS MainWindow.h)
-
-QT4_WRAP_CPP(flyhigh_SRCS ${flyhigh_HDRS})
-
 if(WIN32)
  # no console window for windoze builds
- add_executable(flyhigh WIN32 ${flyhigh_SRCS} ${flyhigh_HDRS})
+ add_executable(flyhigh WIN32 ${flyhigh_SRCS})
 else(WIN32)
- add_executable(flyhigh ${flyhigh_SRCS} ${flyhigh_HDRS})
+ add_executable(flyhigh ${flyhigh_SRCS})
 endif(WIN32)
 
 target_link_libraries(flyhigh
-	analysis
-	preparation
-	cfgflyhigh
-	cfgflytec
-	cfgflytec6015
-	dbmigrator
-	window
-	database
-	dbflytec
-	dbgarmin
-	dbsql
-	container
-	elevation
-	form
-	map
-	webmap
-	utils
-	res
-	qextserialport
-	qextmedia
-	upload
+  analysis
+  preparation
+  cfgflyhigh
+  cfgflytec
+  cfgflytec6015
+  dbmigrator
+  window
+  database
+  dbflytec
+  dbgarmin
+  dbsql
+  container
+  elevation
+  form
+  map
+  webmap
+  utils
+  res
+  qextmedia
+  upload
   qjson4
-  ${QT_LIBRARIES})
+  Qt5Core Qt5Gui Qt5Network Qt5PrintSupport Qt5Sql Qt5SerialPort Qt5WebKit
+  Qt5WebKitWidgets Qt5Widgets Qt5Xml)
 
 # install executable
 install(TARGETS flyhigh DESTINATION ${FLYHIGH_BIN_DIR} )

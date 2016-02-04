@@ -1,7 +1,3 @@
-include(${QT_USE_FILE})
-
-include_directories(${QT_INCLUDES} )
-
 set(container_SRCS AirSpace.cpp
                    AirSpaceList.cpp
                    BoundBox.cpp

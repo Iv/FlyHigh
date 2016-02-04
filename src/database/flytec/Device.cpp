@@ -18,170 +18,171 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QString>
+#include <QtCore/QString>
+#include <QtSerialPort/QSerialPort>
 #include <sys/timeb.h>
-#include "qextserialport.h"
 #include "Device.h"
+
+#include <QtCore/QDebug>
 
 Device::Device(bool flow)
 {
-	m_tlg = "";
-	m_tout = 0;
+  m_tlg = "";
+  m_tout = 0;
 
-	m_serialPort = new QextSerialPort(QextSerialPort::Polling);
+  m_serialPort = new QSerialPort();
 
-	if(flow)
-	{
-    m_serialPort->setFlowControl(FLOW_XONXOFF);
-	}
-	else
-	{
-    m_serialPort->setFlowControl(FLOW_OFF);
-	}
+  if(flow)
+  {
+    m_serialPort->setFlowControl(QSerialPort::SoftwareControl);
+  }
+  else
+  {
+    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
+  }
 
-	m_serialPort->setParity(PAR_NONE);
-	m_serialPort->setDataBits(DATA_8);
-	m_serialPort->setStopBits(STOP_1);
-  m_serialPort->setTimeout(-1);
+  m_serialPort->setParity(QSerialPort::NoParity);
+  m_serialPort->setDataBits(QSerialPort::Data8);
+  m_serialPort->setStopBits(QSerialPort::OneStop);
 }
 
 Device::~Device()
 {
-	delete m_serialPort;
+  delete m_serialPort;
 }
 
 bool Device::openDevice(const QString &dev, int baud)
 {
-	bool success;
+  bool success;
 
-	m_serialPort->setPortName(dev);
+  m_serialPort->setPortName(dev);
+  m_serialPort->setBaudRate(baud);
+  success = m_serialPort->open(QIODevice::ReadWrite);
 
-	if(baud == 57600)
-	{
-		m_serialPort->setBaudRate(BAUD57600);
-	}
-
-	success = m_serialPort->open(QIODevice::ReadWrite);
-
-	return success;
+  return success;
 }
 
 bool Device::isOpen()
 {
-	return m_serialPort->isOpen();
+  return m_serialPort->isOpen();
 }
 
 void Device::closeDevice()
 {
-	m_serialPort->close();
+  m_serialPort->close();
 }
 
 bool Device::recieveTlg(int tout, bool head)
 {
-	int charNr = 0;
-	bool validTlg = false;
-	char ch;
-	State state;
+  int charNr = 0;
+  bool validTlg = false;
+  char ch;
+  State state;
 
-	if(head)
-	{
-		state = SearchHead;
-	}
-	else
-	{
-		state = ReadTlg;
-	}
+  if(head)
+  {
+    state = SearchHead;
+  }
+  else
+  {
+    state = ReadTlg;
+  }
 
-	m_tlg = "";
-	startTimer(tout);
+  m_tlg = "";
+  startTimer(tout);
 
-	do
-	{
-		if(getChar(ch))
-		{
-			if(state == SearchHead)
-			{
-				if(ch == '$')
-				{
-					state = ReadTlg;
-					m_tlg = ch;
-				}
-			}
-			else
-			{
-				charNr++;
-				m_tlg += ch;
-				validTlg = (ch == '\n');
+  do
+  {
+    if(getChar(ch))
+    {
+      if(state == SearchHead)
+      {
+        if(ch == '$')
+        {
+          state = ReadTlg;
+          m_tlg = ch;
+        }
+      }
+      else
+      {
+        charNr++;
+        m_tlg += ch;
+        validTlg = (ch == '\n');
 
-				if(charNr > MaxTlgSize)
-				{
-					m_tlg = "";
-				}
+        if(charNr > MaxTlgSize)
+        {
+          m_tlg = "";
+        }
 
-				if(validTlg || (charNr > MaxTlgSize))
-				{
-					break;
-				}
-			}
-		}
-	}while(!isElapsed());
+        if(validTlg || (charNr > MaxTlgSize))
+        {
+          break;
+        }
+      }
+    }
+  }while(!isElapsed());
 
-	return validTlg;
+  return validTlg;
 }
 
 const QString& Device::getTlg()
 {
-	return m_tlg;
+  return m_tlg;
 }
 
 bool Device::sendTlg(const QString &tlg)
 {
-	return writeBuffer(tlg.toLatin1().constData(), tlg.length());
+  return writeBuffer(tlg.toLatin1().constData(), tlg.length());
 }
 
 void Device::flush()
 {
-	m_tlg = "";
-	// Flush buffer
-	m_serialPort->readAll();
+  m_tlg = "";
+  m_serialPort->clear();
 }
 
 bool Device::getChar(char &ch)
 {
   enum {XON = 0x11, XOFF = 0x13};
 
-	bool success;
+  bool success = (m_serialPort->bytesAvailable() > 0);
 
-	success = m_serialPort->getChar(&ch);
-  success &= (ch != XON) && (ch != XOFF);
+  if(!success)
+    success = m_serialPort->waitForReadyRead(100);
 
-	return success;
+  if(success)
+  {
+    success = m_serialPort->getChar(&ch);
+    success &= (ch != XON) && (ch != XOFF);
+  }
+
+  return success;
 }
 
 bool Device::writeBuffer(const char *pBuff, int len)
 {
-	int nWrite;
+  int nWrite;
 
-	nWrite = m_serialPort->write(pBuff, len);
+  nWrite = m_serialPort->write(pBuff, len);
 
-	return (nWrite == len);
+  return (nWrite == len);
 }
 
 void Device::startTimer(int tout)
 {
-	struct timeb tb;
+  struct timeb tb;
 
-	ftime(&tb);
-	m_tout = (tb.time % 1000) * 1000 + tb.millitm + tout;
+  ftime(&tb);
+  m_tout = (tb.time % 1000) * 1000 + tb.millitm + tout;
 }
 
 bool Device::isElapsed()
 {
-	struct timeb tb;
-	int curTime;
+  struct timeb tb;
+  int curTime;
 
-	ftime(&tb);
-	curTime = (tb.time % 1000) * 1000 + tb.millitm;
+  ftime(&tb);
+  curTime = (tb.time % 1000) * 1000 + tb.millitm;
 
-	return (curTime >= m_tout);
+  return (curTime >= m_tout);
 }

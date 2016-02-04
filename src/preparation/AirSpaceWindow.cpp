@@ -37,61 +37,61 @@
 #include "WebMapAirSpaceView.h"
 
 AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowFlags wflags, IDataBase::SourceType src)
-	:TableWindow(parent, name, wflags)
+  :TableWindow(parent, name, wflags)
 {
-	QStringList nameList;
-	QAction* pAction;
-	QTableWidget *pTable;
+  QStringList nameList;
+  QAction* pAction;
+  QTableWidget *pTable;
 
-	pTable = TableWindow::getTable();
+  pTable = TableWindow::getTable();
   m_pWebMapView = NULL;
   m_pAirSpaceView = NULL;
   m_externSelect = false;
 
-	switch(src)
-	{
-		case IDataBase::SqlDB:
+  switch(src)
+  {
+    case IDataBase::SqlDB:
       m_pDb = ISql::pInstance();
 
       connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
-			pAction = new QAction(tr("&Edit"), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
-			MDIWindow::addAction(pAction, true);
+      pAction = new QAction(tr("&Edit"), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_edit()));
+      MDIWindow::addAction(pAction, true);
 
-			pAction = new QAction(tr("&Delete"), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
-			MDIWindow::addAction(pAction);
+      pAction = new QAction(tr("&Delete"), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+      MDIWindow::addAction(pAction);
 
-			pAction = new QAction(tr("&Add to GPS..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			MDIWindow::addAction(pAction, true);
-		break;
-		case IDataBase::GPSdevice:
-		{
-			m_pDb = IGPSDevice::pInstance();
+      pAction = new QAction(tr("&Add to GPS..."), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+      MDIWindow::addAction(pAction, true);
+    break;
+    case IDataBase::GPSdevice:
+    {
+      m_pDb = IGPSDevice::pInstance();
 
-			connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
+      connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
-			pAction = new QAction(tr("&Delete"), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
-			MDIWindow::addAction(pAction);
+      pAction = new QAction(tr("&Delete"), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_delete()));
+      MDIWindow::addAction(pAction);
 
-			pAction = new QAction(tr("&Update"), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
-			MDIWindow::addAction(pAction);
-		}
-		break;
-		case IDataBase::File:
-		{
-			m_pDb = NULL;
+      pAction = new QAction(tr("&Update"), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_update()));
+      MDIWindow::addAction(pAction);
+    }
+    break;
+    case IDataBase::File:
+    {
+      m_pDb = NULL;
 
-			pAction = new QAction(tr("&Add to GPS..."), this);
-			connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
-			MDIWindow::addAction(pAction, true);
-		}
-		break;
-	}
+      pAction = new QAction(tr("&Add to GPS..."), this);
+      connect(pAction, SIGNAL(triggered()), this, SLOT(file_AddToGPS()));
+      MDIWindow::addAction(pAction, true);
+    }
+    break;
+  }
 
   if(src != IDataBase::SqlDB)
   {
@@ -104,54 +104,54 @@ AirSpaceWindow::AirSpaceWindow(QWidget* parent, const QString &name, Qt::WindowF
     MDIWindow::addAction(pAction);
   }
 
-	// import/export
-	pAction = new QAction(this);
-	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+  // import/export
+  pAction = new QAction(this);
+  pAction->setSeparator(true);
+  MDIWindow::addAction(pAction);
 
-	if(src == IDataBase::File)
-	{
+  if(src == IDataBase::File)
+  {
     pAction = new QAction(tr("&Import..."), this);
     connect(pAction, SIGNAL(triggered()), this, SLOT(file_open()));
     MDIWindow::addAction(pAction);
-	}
+  }
 
-	pAction = new QAction(tr("&Export all..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
-	MDIWindow::addAction(pAction);
+  pAction = new QAction(tr("&Export all..."), this);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(exportTable()));
+  MDIWindow::addAction(pAction);
 
-	// view
-	pAction = new QAction(this);
-	pAction->setSeparator(true);
-	MDIWindow::addAction(pAction);
+  // view
+  pAction = new QAction(this);
+  pAction->setSeparator(true);
+  MDIWindow::addAction(pAction);
 
   pAction = new QAction(tr("&View..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
-	MDIWindow::addAction(pAction);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewAirSpace()));
+  MDIWindow::addAction(pAction);
 
   pAction = new QAction(tr("View &Web Map..."), this);
-	connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
-	MDIWindow::addAction(pAction, true);
+  connect(pAction, SIGNAL(triggered()), this, SLOT(file_viewWebMap()));
+  MDIWindow::addAction(pAction, true);
 
-	TableWindow::setWindowIcon(QIcon(":/document.xpm"));
+  TableWindow::setWindowIcon(QIcon(":/document.xpm"));
 
-	// configure the table
-	pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	pTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  // configure the table
+  pTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  pTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	// header
-	nameList += tr("Name");
-	nameList += tr("Low [m]");
-	nameList += tr("High [m]");
-	nameList += tr("Class");
-	nameList += tr("Comment");
-	setupHeader(nameList);
+  // header
+  nameList += tr("Name");
+  nameList += tr("Low [m]");
+  nameList += tr("High [m]");
+  nameList += tr("Class");
+  nameList += tr("Comment");
+  setupHeader(nameList);
 
-	pTable->setColumnWidth(Name, 200);
-	pTable->setColumnWidth(High, 100);
-	pTable->setColumnWidth(Low, 100);
-	pTable->setColumnWidth(Class, 80);
-	pTable->setColumnWidth(Comment, 750);
+  pTable->setColumnWidth(Name, 200);
+  pTable->setColumnWidth(High, 100);
+  pTable->setColumnWidth(Low, 100);
+  pTable->setColumnWidth(Class, 80);
+  pTable->setColumnWidth(Comment, 750);
 
   connect(m_pDb, SIGNAL(airSpacesChanged()), this, SLOT(file_update()));
 
@@ -184,9 +184,9 @@ void AirSpaceWindow::closeEvent(QCloseEvent *pEvent)
 
 void AirSpaceWindow::file_update()
 {
-	ProgressDlg progDlg(this);
-	uint airspaceNr;
-	uint maxAirspaceNr;
+  ProgressDlg progDlg(this);
+  uint airspaceNr;
+  uint maxAirspaceNr;
 
   if(m_pDb != NULL)
   {
@@ -212,53 +212,53 @@ void AirSpaceWindow::file_update()
       m_pDb->close();
       TableWindow::unsetCursor();
     }
-	}
+  }
 }
 
 void AirSpaceWindow::file_open()
 {
-	QString fileName;
-	OpenAirFileParser parser;
-	uint airspaceNr;
-	uint maxAirspaceNr;
-	bool success;
+  QString fileName;
+  OpenAirFileParser parser;
+  uint airspaceNr;
+  uint maxAirspaceNr;
+  bool success;
 
-	fileName = QFileDialog::getOpenFileName(this,
-																					tr("Open OpenAir File"),
-																					IFlyHighRC::pInstance()->lastDir(),
-																					"OpenAir Files (*.txt);;"
-																					"Flytec Files (*.faf *.fas)");
+  fileName = QFileDialog::getOpenFileName(this,
+                                          tr("Open OpenAir File"),
+                                          IFlyHighRC::pInstance()->lastDir(),
+                                          "OpenAir Files (*.txt);;"
+                                          "Flytec Files (*.faf *.fas)");
 
-	if(fileName != "")
-	{
-		IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
+  if(fileName != "")
+  {
+    IFlyHighRC::pInstance()->setLastDir(QFileInfo(fileName).absoluteDir().absolutePath());
+    TableWindow::setCursor(QCursor(Qt::WaitCursor));
 
-		if(fileName.contains(QRegExp("faf$|fas$")))
-		{
-		  parser.setDefaultUnit(OpenAirFileParser::Meter);
-		}
+    if(fileName.contains(QRegExp("faf$|fas$")))
+    {
+      parser.setDefaultUnit(OpenAirFileParser::Meter);
+    }
 
-		success = parser.parse(fileName, m_airSpaceList);
-		Error::verify(success, Error::FILE_PARSE);
+    success = parser.parse(fileName, m_airSpaceList);
+    Error::verify(success, Error::FILE_PARSE);
 
-		if(success)
-		{
-			m_airSpaceList.sort();
-			maxAirspaceNr = m_airSpaceList.size();
-			TableWindow::setNumRows(maxAirspaceNr);
+    if(success)
+    {
+      m_airSpaceList.sort();
+      maxAirspaceNr = m_airSpaceList.size();
+      TableWindow::setNumRows(maxAirspaceNr);
 
-			for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
-			{
-				setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
-			}
+      for(airspaceNr=0; airspaceNr<maxAirspaceNr; airspaceNr++)
+      {
+        setAirSpaceToRow(airspaceNr, m_airSpaceList.at(airspaceNr));
+      }
 
-			TableWindow::selectRow(0);
-			selectionChanged();
-		}
+      TableWindow::selectRow(0);
+      selectionChanged();
+    }
 
-		TableWindow::unsetCursor();
-	}
+    TableWindow::unsetCursor();
+  }
 }
 
 void AirSpaceWindow::file_edit()
@@ -266,10 +266,10 @@ void AirSpaceWindow::file_edit()
   IAirSpaceForm airspaceForm(this, tr("Edit AirSpace"));
   int row;
 
-	row = getTable()->currentRow();
+  row = getTable()->currentRow();
 
-	if(row >= 0)
-	{
+  if(row >= 0)
+  {
     airspaceForm.setAirSpace(m_airSpaceList[row]);
 
     if(airspaceForm.exec() && m_pDb->open())
@@ -277,7 +277,7 @@ void AirSpaceWindow::file_edit()
       ISql::pInstance()->update(*m_airSpaceList[row]);
       m_pDb->close();
     }
-	}
+  }
 }
 
 void AirSpaceWindow::file_delete()
@@ -285,17 +285,17 @@ void AirSpaceWindow::file_delete()
   AirSpaceList airspaceList(false);
   ProgressDlg progDlg(this);
 
-	selectionToList(airspaceList);
+  selectionToList(airspaceList);
 
-	if((airspaceList.size() > 0) && m_pDb->open())
-	{
-	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+  if((airspaceList.size() > 0) && m_pDb->open())
+  {
+    TableWindow::setCursor(QCursor(Qt::WaitCursor));
     progDlg.beginProgress(tr("delete airspaces..."), m_pDb);
     m_pDb->delAirSpaces(airspaceList);
     progDlg.endProgress();
-		TableWindow::unsetCursor();
-		m_pDb->close();
-	}
+    TableWindow::unsetCursor();
+    m_pDb->close();
+  }
 }
 
 void AirSpaceWindow::file_AddToSqlDB()
@@ -303,65 +303,65 @@ void AirSpaceWindow::file_AddToSqlDB()
   AirSpaceList airspaceList(false);
   ProgressDlg progDlg(this);
 
-	selectionToList(airspaceList);
+  selectionToList(airspaceList);
 
-	if((airspaceList.size() > 0) && ISql::pInstance()->open())
-	{
-	  TableWindow::setCursor(QCursor(Qt::WaitCursor));
+  if((airspaceList.size() > 0) && ISql::pInstance()->open())
+  {
+    TableWindow::setCursor(QCursor(Qt::WaitCursor));
     progDlg.beginProgress(tr("add airspaces..."), ISql::pInstance());
     ISql::pInstance()->add(airspaceList);
     progDlg.endProgress();
-		TableWindow::unsetCursor();
-		ISql::pInstance()->close();
-	}
+    TableWindow::unsetCursor();
+    ISql::pInstance()->close();
+  }
 }
 
 void AirSpaceWindow::file_AddToGPS()
 {
   AirSpaceList airspaceList(false);
-	ProgressDlg progDlg(this);
+  ProgressDlg progDlg(this);
 
-	selectionToList(airspaceList);
+  selectionToList(airspaceList);
 
-	if((airspaceList.size() > 0) && IGPSDevice::pInstance()->open())
-	{
-		TableWindow::setCursor(QCursor(Qt::WaitCursor));
-		progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
-		IGPSDevice::pInstance()->add(airspaceList);
-		progDlg.endProgress();
-		TableWindow::unsetCursor();
-		IGPSDevice::pInstance()->close();
-	}
+  if((airspaceList.size() > 0) && IGPSDevice::pInstance()->open())
+  {
+    TableWindow::setCursor(QCursor(Qt::WaitCursor));
+    progDlg.beginProgress("add airspace...", IGPSDevice::pInstance());
+    IGPSDevice::pInstance()->add(airspaceList);
+    progDlg.endProgress();
+    TableWindow::unsetCursor();
+    IGPSDevice::pInstance()->close();
+  }
 }
 
 void AirSpaceWindow::file_viewAirSpace()
 {
-	if((m_airSpaceList.size() > 0) && (m_pAirSpaceView == NULL))
-	{
-	  m_pAirSpaceView = new AirSpaceView();
-    m_pAirSpaceView->setGeometry(QRect(0, 0, 500, 500));
+  if((m_airSpaceList.size() > 0) && (m_pAirSpaceView == NULL))
+  {
+    m_pAirSpaceView = new AirSpaceView();
+    m_pAirSpaceView->setGeometry(QRect(0, 0, 800, 800));
     m_pAirSpaceView->setWindowTitle(tr("View AirSpaces"));
     m_pAirSpaceView->setAirSpaceList(&m_airSpaceList, 0);
     connect(m_pAirSpaceView, SIGNAL(finished(int)), this, SLOT(airSpaceViewFinished(int)));
     m_pAirSpaceView->show();
     selectionChanged();
-	}
+  }
 }
 
 void AirSpaceWindow::file_viewWebMap()
 {
-	if((m_airSpaceList.size() > 0) && (m_pWebMapView == NULL))
-	{
+  if((m_airSpaceList.size() > 0) && (m_pWebMapView == NULL))
+  {
     menu()->setEnabled(false);
-		m_pWebMapView = new WebMapAirSpaceView(tr("View AirSpaces"));
-		m_pWebMapView->setAirSpaceList(&m_airSpaceList);
-		m_pWebMapView->loadMap();
+    m_pWebMapView = new WebMapAirSpaceView(tr("View AirSpaces"));
+    m_pWebMapView->setAirSpaceList(&m_airSpaceList);
+    m_pWebMapView->loadMap();
     connect(m_pWebMapView, SIGNAL(airSpaceChanged(int)), this, SLOT(airSpaceChanged(int)));
     connect(m_pWebMapView, SIGNAL(finished(int)), this, SLOT(webMapFinished(int)));
     m_pWebMapView->setWindowModality(Qt::NonModal);
-		m_pWebMapView->show();
-		selectionChanged();
-	}
+    m_pWebMapView->show();
+    selectionChanged();
+  }
 }
 
 void AirSpaceWindow::selectionChanged()
@@ -415,11 +415,11 @@ void AirSpaceWindow::airSpaceChanged(int id)
 
 void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
 {
-	QTableWidget *pTable = TableWindow::getTable();
-	QString str = "%1";
+  QTableWidget *pTable = TableWindow::getTable();
+  QString str = "%1";
 
-	pTable->item(row, Name)->setText(pAirSpace->name());
-	pTable->item(row, High)->setText(str.arg(pAirSpace->high()));
+  pTable->item(row, Name)->setText(pAirSpace->name());
+  pTable->item(row, High)->setText(str.arg(pAirSpace->high()));
 
   if(pAirSpace->low() == 0)
   {
@@ -430,8 +430,8 @@ void AirSpaceWindow::setAirSpaceToRow(uint row, const AirSpace *pAirSpace)
     pTable->item(row, Low)->setText(str.arg(pAirSpace->low()));
   }
 
-	pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
-	pTable->item(row, Comment)->setText(pAirSpace->remark());
+  pTable->item(row, Class)->setText(pAirSpace->airspaceClass());
+  pTable->item(row, Comment)->setText(pAirSpace->remark());
 }
 
 void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList)
@@ -439,9 +439,9 @@ void AirSpaceWindow::selectionToList(AirSpaceList &airspaceList)
   QList<QTableWidgetSelectionRange> selRange;
   QList<QTableWidgetSelectionRange>::iterator rangeIt;
   QTableWidget *pTable;
-	int topRow;
-	int bottomRow;
-	int row;
+  int topRow;
+  int bottomRow;
+  int row;
 
   pTable = TableWindow::getTable();
   selRange = pTable->selectedRanges();

@@ -34,9 +34,9 @@
 #include "QJsonValue.h"
 #include "Account.h"
 #include "Flight.h"
+#include "XContestAdditionalInfoDlg.h"
 #include "XContestUploader.h"
 
-#include <QDebug>
 
 const QString XContestUploader::XCONTEST_API_BASE_URL = "http://www.xcontest.org";
 const QString XContestUploader::XCONTEST_TICKET_URL = "/api/gate/ticket/?key=%1&hash=%2";
@@ -60,11 +60,11 @@ XContestUploader::XContestUploader(Account* pAccount)
   m_needTicket = true;
   m_Ticket = "";
   m_SessionId = "";
+  m_pInfoDlg = NULL;
 }
 
 XContestUploader::~XContestUploader()
 {
-  qDebug() << "Deleting uploader for XContest (user:" << m_Account.username() << ")";
   delete m_pManager;
 }
 
@@ -98,7 +98,7 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   QVariant httpStatus;
   QByteArray bytes;
   QJsonDocument jsonDoc;
-  QMap<QString,QString> clarifications;
+  QJsonObject controls;
   bool valid;
   bool success;
   bool formValid;
@@ -153,7 +153,8 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
   }
 
   // so far we've got a good http response with a valid json body
-  qDebug() << "JSON response: " << jsonDoc.toJson(QJsonDocument::Indented);
+  // un-comment for debugging:
+  //emit step("Response: " + jsonDoc.toJson(QJsonDocument::Indented),0);
 
   valid = checkErrorResponse(jsonDoc,errorMsg);
   if(!valid)
@@ -174,21 +175,25 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
       emit error(errorMsg);
       return;
     }
-    emit step(tr("Application authorized"),20);
+    if(m_SessionId.isEmpty())
+    {
+      // notify only in first ticket request
+      emit step(tr("Application authorized"),20);
+    }
   }
 
   // state machine
   if(m_state == INIT)
   {
     // post request
-    emit step(tr("Login for user %1").arg(m_Account.username()),30);
+    emit step(tr("Login for user %1 succeeded").arg(m_Account.username()),40);
     sendClaimRequest();
-    emit step(tr("IGC file sent"),70);
+    emit step(tr("IGC file sent"),60);
     m_state = CLAIM;
   } else if(m_state == CLAIM)
   {
     // expecting claim reply
-    valid = readGateResponse(jsonDoc, success, m_SessionId);
+    valid = readGateResponse(jsonDoc, success, m_SessionId, m_SessionId.isEmpty());
     if(!valid)
     {
       errorMsg = "Protocol error - gate response not valid";
@@ -213,17 +218,27 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
         emit finished();
         return;
       }
-      qDebug() << "Whats up? Phase" << phase << "not expected here";
       errorMsg = "Protocol error - form not valid";
       emit error(errorMsg);
       return;
     } else
     {
-      qDebug() << "Not successful";
       // maybe additional info is required (aka autocomplete not successful)
       if(phase == 2) {
+
+        valid = readControls(jsonDoc, controls);
+        if(!valid)
+        {
+          errorMsg = "Protocol error - controls not valid";
+          emit error(errorMsg);
+          return;
+        }
+
+        // create dialog (but don't show yet)
+        m_pInfoDlg = new XContestAdditionalInfoDlg(controls.toVariantMap());
+
         m_state = NEEDINFO;
-        emit step(tr("Additional is needed"),80);
+        emit step(tr("Additional info is needed"),80);
         m_needTicket = true;
         sendTicketRequest();
       } else
@@ -235,16 +250,28 @@ void XContestUploader::handleEvent(QNetworkReply* reply)
     }
   } else if(m_state == NEEDINFO)
   {
-    qDebug() << "send additional info";
-    // TODO:
-    // build gui
+    // show dialog
+    if(m_pInfoDlg->exec()!= QDialog::Accepted)
+    {
+      errorMsg = "Aborted by user";
+      emit error(errorMsg);
+      return;
+    }
+
     // read clarifications from gui
-    sendClarificationRequest(clarifications);
+    const QMap<QString,QString>& clarifications = m_pInfoDlg->clarifications();
+    // don't use QMap::unite(), it might create multiple values per key
+    for(QMap<QString,QString>::ConstIterator iter = clarifications.constBegin(); iter != clarifications.constEnd(); ++iter)
+    {
+      m_Controls.insert(iter.key(),iter.value());
+    }
+
+    // send data
+    sendClarificationRequest();
     emit step(tr("Additional info sent"),90);
 
-    // debug: make sure we don't end in a loop!
-    emit finished();
-    m_state = FINISH;
+    // back to claim state
+    m_state = CLAIM;
   }
 }
 
@@ -252,8 +279,6 @@ void XContestUploader::sendTicketRequest()
 {
   QNetworkRequest request(getTicketUrl());
   m_pManager->get(request);
-
-  qDebug() << "Ticket request sent";
 }
 
 void XContestUploader::sendClaimRequest()
@@ -268,10 +293,9 @@ void XContestUploader::sendClaimRequest()
   addFlightControls(pClaim);
 
   m_pManager->post(request,pClaim);
-  qDebug() << "Flight claim request sent";
 }
 
-void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& clarifications)
+void XContestUploader::sendClarificationRequest()
 {
   QNetworkRequest request;
   QHttpMultiPart* pClarification;
@@ -280,19 +304,16 @@ void XContestUploader::sendClarificationRequest(const QMap<QString,QString>& cla
 
   pClarification = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
-  QMapIterator<QString,QString> iter(clarifications);
-  while(iter.hasNext())
+  for(QMap<QString,QString>::ConstIterator iter = m_Controls.constBegin(); iter != m_Controls.constEnd(); ++iter)
   {
     QHttpPart part;
 
-    iter.next();
     part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(QString("form-data; name=\"%1\"").arg(iter.key())));
     part.setBody(iter.value().toUtf8());
     pClarification->append(part);
   }
 
   m_pManager->post(request,pClarification);
-  qDebug() << "Clarification request sent";
 }
 
 void XContestUploader::addAuthControls(QHttpMultiPart* pForm) const
@@ -318,7 +339,7 @@ void XContestUploader::addAuthControls(QHttpMultiPart* pForm) const
   pForm->append(pwPart);
 }
 
-void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
+void XContestUploader::addFlightControls(QHttpMultiPart *pForm)
 {
   QString gliderName;
   QHttpPart activePart;
@@ -328,20 +349,24 @@ void XContestUploader::addFlightControls(QHttpMultiPart *pForm) const
 
   // publish flight (NO for test purposes!)
   activePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[is_active]\""));
-  activePart.setBody("N");
+  activePart.setBody("Y");
+  m_Controls.insert("flight[is_active]","Y");
 
   // add igc file
   igcPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[tracklog]\"; filename=\"flight.igc\""));
   igcPart.setBody(m_pFlight->igcData());
+  // don't add igc to subsequent requests
 
   // add comment
   commentPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[comment]\""));
   commentPart.setBody(m_pFlight->comment().toUtf8());
+  m_Controls.insert("flight[comment]",m_pFlight->comment());
 
   // add glider name: what in the igc stands might differ from flyhigh db. Lets trust the flyhigh db...
   gliderNamePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"flight[glider_name]\""));
   m_pFlight->glider().olcName(gliderName);
   gliderNamePart.setBody(gliderName.toUtf8());
+  m_Controls.insert("flight[glider_name]",gliderName);
 
   pForm->append(activePart);
   pForm->append(igcPart);
@@ -360,7 +385,6 @@ QNetworkRequest XContestUploader::buildGateRequestUrl() const
   params.insert("authticket",m_SessionId);
 
   reqUrl = urlEncodeParams(XCONTEST_API_BASE_URL + XCONTEST_FLIGHT_URL, params);
-  qDebug() << "Gate request URL: " << reqUrl.toString();
 
   return QNetworkRequest(reqUrl);
 }
@@ -437,9 +461,10 @@ bool XContestUploader::readTicketResponse(const QJsonDocument&jsonDoc, QString& 
  * @param jsonDoc - input the json document to traverse
  * @param success - output where the success value will be assigned
  * @param sessionId - output where the sessionId value will be assigned
+ * @param isFirst - true if this is the first gate response of the session (only first response carries a authTicket control)
  * @return true if both the success and sessionId values have been found, false otherwise
  */
-bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId) const
+bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& success, QString& sessionId, bool isFirst) const
 {
   QJsonObject obj = jsonDoc.object();
   QJsonValue s = obj.value(QString("success"));
@@ -449,11 +474,17 @@ bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& succe
   {
     success = s.toBool();
   }
-  if(!a.isNull())
+  if(isFirst)
   {
-    sessionId = a.toString();
+    if(!a.isNull())
+    {
+      sessionId = a.toString();
+    }
+    return !(s.isNull() || a.isNull());
+  } else
+  {
+    return !s.isNull();
   }
-  return !(s.isNull() || a.isNull());
 }
 
 /**
@@ -461,7 +492,7 @@ bool XContestUploader::readGateResponse(const QJsonDocument&jsonDoc, bool& succe
  * @param jsonDoc - input the json document to traverse
  * @param formValid - output where the from.isValid value will be assigned
  * @param phase - output where the form.phase value will be assigned
- * @return
+ * @return true if both formValid and phase values have been found, false otherwise
  */
 bool XContestUploader::readForm(const QJsonDocument&jsonDoc, bool& formValid, int& phase) const
 {
@@ -486,6 +517,31 @@ bool XContestUploader::readForm(const QJsonDocument&jsonDoc, bool& formValid, in
     }
   }
   return !(f.isNull() || v.isNull() || p.isNull());
+}
+
+/**
+ * Read the controls object from the provided json document. If found, the object will be assigned to controls
+ * @param jsonDoc - input the json document to traverse
+ * @param controls - output where the from.controls object will be assigned
+ * @return true if controls has been found, false otherwise
+ */
+bool XContestUploader::readControls(const QJsonDocument&jsonDoc, QJsonObject& controls) const
+{
+  QJsonObject obj = jsonDoc.object();
+  QJsonValue f = obj.value(QString("form"));
+  QJsonValue c;
+  QJsonObject form;
+
+  if(!f.isNull())
+  {
+    form = f.toObject();
+    c = form.value(QString("controls"));
+    if(!c.isNull())
+    {
+      controls = c.toObject();
+    }
+  }
+  return !(f.isNull() || c.isNull());
 }
 
 QUrl XContestUploader::urlEncodeParams(const QString& baseUrl, QMap<QString,QString>& params)

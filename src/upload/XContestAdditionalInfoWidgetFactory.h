@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Alex Graf                                       *
+ *   Copyright (C) 2010 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,54 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef BoundBox_h
-#define BoundBox_h
+#ifndef XContestAdditionalInfoWidgetFactory_h
+#define XContestAdditionalInfoWidgetFactory_h
 
-#include "LatLng.h"
+#include <QMap>
 
-class BoundBox
+class QWidget;
+
+/**
+ * Factory class that creates input widgets based on xcontest api replies
+ */
+class XContestAdditionalInfoWidgetFactory
 {
-  public:
-    BoundBox();
-
-    BoundBox(const LatLng &sw, const LatLng &ne);
-
-    void init();
-
-    bool isInit() const;
-
-    void setMinMax(const LatLng &wp);
-
-    void setMinMax(const BoundBox &bbox);
-
-    void setNorthEast(const LatLng &ne);
-
-    const LatLng& northEast() const;
-
-    double north() const;
-
-    double west() const;
-
-    void setSouthWest(const LatLng &sw);
-
-    const LatLng& southWest() const;
-
-    double south() const;
-
-    double east() const;
-
-    double width() const;
-
-    double height() const;
-
-    bool intersect(const BoundBox &bb) const;
-
-    bool isInside(const LatLng &latlng) const;
 
   private:
-    LatLng m_sw;
-    LatLng m_ne;
-    bool m_isInit;
+    XContestAdditionalInfoWidgetFactory();
+
+  public:
+    static QWidget* createWidget(const QVariantMap& control);
+
 };
 
 #endif

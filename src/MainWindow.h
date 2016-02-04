@@ -32,92 +32,92 @@ class Route;
 
 class MainWindow: public QMainWindow
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		MainWindow();
+  public:
+    MainWindow();
 
-		virtual ~MainWindow();
+    virtual ~MainWindow();
 
-	protected:
-		void closeEvent(QCloseEvent *pEvent);
+  protected:
+    void closeEvent(QCloseEvent *pEvent);
 
-	private slots:
+  private slots:
     void file_newFlight();
 
     void file_newRoute();
 
-		void flights_fromSQL();
+    void flights_fromSQL();
 
-		void flights_fromGPS();
+    void flights_fromGPS();
 
-		void flights_experience();
+    void flights_experience();
 
-		void analysis_gliders();
+    void analysis_gliders();
 
-		void analysis_servicing();
+    void analysis_servicing();
 
-    void analysis_accounts();
+    void startLand_fromSQL();
 
-		void startLand_fromSQL();
+    void buoys_fromSQL();
 
-		void buoys_fromSQL();
+    void buoys_fromFile();
 
-		void buoys_fromFile();
+    void buoys_fromGPS();
 
-		void waypoints_fromGPS();
+    void routes_fromSQL();
 
-		void routes_fromSQL();
+    void routes_fromGPS();
 
-		void routes_fromGPS();
+    void airspaces_fromSQL();
 
-		void airspaces_fromSQL();
+    void airspaces_fromGPS();
 
-		void airspaces_fromGPS();
+    void airspaces_fromFile();
 
-		void airspaces_fromFile();
-
-		void settings_configure_device();
+    void settings_configure_device();
 
     void settings_configure_flyhigh();
 
-		void settings_pilotInfo();
+    void settings_pilotInfo();
+
+    void settings_accounts();
 
     void tools_migrateDB();
 
     void windows_tile_horizontally();
 
-		void help_about();
+    void help_about();
 
-		void updateMenuWindow();
+    void updateMenuWindow();
 
-		void setActiveSubWindow(QWidget *pWin);
+    void setActiveSubWindow(QWidget *pWin);
 
-		void subWindowActivated(QMdiSubWindow *pSubWin);
+    void subWindowActivated(QMdiSubWindow *pSubWin);
 
-		void cascadeSubWindows();
+    void cascadeSubWindows();
 
-	private:
-		QMdiArea* m_pMdiArea;
-		QSignalMapper* m_pWinMapper;
-		QMenu *m_pMenuFile;
-		QMenu *m_pMenuAnalysis;
-		QMenu *m_pMenuPreparation;
-		QMenu *m_pMenuSettings;
-		QMenu *m_pMenuTools;
-		QMenu* m_pMenuWindows;
-		QMenu* m_pMenuHelp;
-		QMenu* m_pMenuDevice;
-		QAction* m_pCascade;
-		QAction* m_pTile;
-		QAction* m_pTileHor;
-		QAction* m_pWinSeparator;
+  private:
+    QMdiArea* m_pMdiArea;
+    QSignalMapper* m_pWinMapper;
+    QMenu *m_pMenuFile;
+    QMenu *m_pMenuAnalysis;
+    QMenu *m_pMenuPreparation;
+    QMenu *m_pMenuSettings;
+    QMenu *m_pMenuTools;
+    QMenu* m_pMenuWindows;
+    QMenu* m_pMenuHelp;
+    QMenu* m_pMenuDevice;
+    QAction* m_pCascade;
+    QAction* m_pTile;
+    QAction* m_pTileHor;
+    QAction* m_pWinSeparator;
 
-		void showWindow(MDIWindow *pWin);
+    void showWindow(MDIWindow *pWin);
 
-		MDIWindow* activeMdiChild();
+    MDIWindow* activeMdiChild();
 
-		void resizeSubWindow(MDIWindow *pWin);
+    void resizeSubWindow(MDIWindow *pWin);
 
     bool createAndConnectDb();
 

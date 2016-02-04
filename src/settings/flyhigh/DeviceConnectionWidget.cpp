@@ -52,7 +52,7 @@ DeviceConnectionWidget::DeviceConnectionWidget(QWidget* parent, const QString& t
   deviceBoxLayout->addWidget(m_pDevicePort);
   deviceBoxLayout->addWidget(m_pDeviceLineSpeedLabel);
   deviceBoxLayout->addWidget(m_pDeviceLineSpeed);
-  deviceBoxLayout->setSpacing(0);
+  deviceBoxLayout->setSpacing(5);
 
   layout->setMargin(0);
   layout->addWidget(deviceSettings);

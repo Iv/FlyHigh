@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _WebMapRouteView_h
-#define _WebMapRouteView_h
+#ifndef _WebMapWayPointView_h
+#define _WebMapWayPointView_h
 
 #include <QDialog>
 #include "FlightPointList.h"
@@ -29,45 +29,45 @@ class WebMap;
 
 class WebMapWayPointView: public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		WebMapWayPointView(const QString &name, WayPoint::Type type);
+  public:
+    WebMapWayPointView(const QString &name, WayPoint::Type type);
 
-		~WebMapWayPointView();
+    ~WebMapWayPointView();
 
-		void setWayPointList(WayPoint::WayPointListType *pWpList, int selItem);
+    void setWayPointList(WayPoint::WayPointListType *pWpList, int selItem);
 
     WayPoint::WayPointListType& getModifiedWayPointList();
 
-		void selectWayPoint(uint id);
+    void selectWayPoint(uint id);
 
-		void loadMap();
+    void loadMap();
 
-		void setEditable(bool en);
+    void setEditable(bool en);
 
-		bool editable() const;
+    bool editable() const;
 
-	signals:
-		void wayPointChanged(int id);
+  signals:
+    void wayPointChanged(int id);
 
-	protected:
-		void resizeEvent(QResizeEvent *pEvent);
+  protected:
+    void resizeEvent(QResizeEvent *pEvent);
 
-	private:
-		WebMap *m_pWebMap;
-		WayPoint::Type m_wpType;
-		WayPoint::WayPointListType *m_pWpList;
-		WayPoint::WayPointListType m_modWayPointList;
-		int m_selItem;
-		bool m_editable;
+  private:
+    WebMap *m_pWebMap;
+    WayPoint::Type m_wpType;
+    WayPoint::WayPointListType *m_pWpList;
+    WayPoint::WayPointListType m_modWayPointList;
+    int m_selItem;
+    bool m_editable;
 
-	private slots:
-		void mapReady();
+  private slots:
+    void mapReady();
 
-		void appReady();
+    void appReady();
 
-		void finished(int res);
+    void finished(int res);
 };
 
 #endif

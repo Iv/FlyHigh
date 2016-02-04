@@ -18,16 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QObject>
-#include <QWebFrame>
+#include <QtCore/QObject>
+#include <QtWebKitWidgets/QWebFrame>
 #include <math.h>
 #include "WebMap.h"
 #include "WebMapFlight.h"
 
 WebMapFlight::WebMapFlight(WebMap *pWebMap)
 {
-	m_pWebMap = pWebMap;
-	m_plotEn = false;
+  m_pWebMap = pWebMap;
+  m_plotEn = false;
 }
 
 WebMapFlight::~WebMapFlight()
@@ -36,210 +36,212 @@ WebMapFlight::~WebMapFlight()
 
 void WebMapFlight::init()
 {
-	QString code = "fl_init();";
-	QWebFrame *pFrame;
+  QString code = "fl_init();";
+  QWebFrame *pFrame;
 
-	pFrame = m_pWebMap->page()->mainFrame();
-	pFrame->evaluateJavaScript(code);
+  pFrame = m_pWebMap->page()->mainFrame();
+  pFrame->evaluateJavaScript(code);
 }
 
 void WebMapFlight::setFlightPointList(const QDate &date, const FlightPointList *pFpList)
 {
-	QString code;
-	QWebFrame *pFrame;
-	QString value = "%1";
-	QString latLonArg = "[%1,%2]";
-	QString strTime = "";
-	QString strAlt = "";
-	QString strElevation = "";
-	QString strLatLon = "";
-	QTime time;
-	uint fpNr;
-	uint fpListSize;
-	uint start;
-	uint duration;
-	double alt;
-	double minAlt;
-	double maxAlt;
-	int epochDate;
-	int epochTime;
-	int secsOfDay;
-	int prevSecsOfDay;
-	int begin;
-	bool first = true;
+  QString code;
+  QWebFrame *pFrame;
+  QString value = "%1";
+  QString latLonArg = "[%1,%2]";
+  QString strTime = "";
+  QString strAlt = "";
+  QString strElevation = "";
+  QString strLatLon = "";
+  QTime time;
+  uint fpNr;
+  uint begin;
+  uint end;
+  uint start;
+  uint duration;
+  double alt;
+  double minAlt;
+  double maxAlt;
+  int epochDate;
+  int epochTime;
+  int secsOfDay;
+  int prevSecsOfDay;
+  bool first = true;
 
   begin = pFpList->firstValidFlightData();
-  fpListSize = pFpList->lastValidFlightData() - begin;
+  end = pFpList->lastValidFlightData();
 
-	if(fpListSize > 0)
-	{
-		minAlt = pFpList->at(begin)->alt();
-		maxAlt = minAlt;
-		time = pFpList->at(begin)->time();
-		start = time.hour() * 3600 + time.minute() * 60 + time.second();
-		time = pFpList->at(fpListSize - 1)->time();
-		duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
+  if(end > 0)
+  {
+    minAlt = pFpList->at(begin)->alt();
+    maxAlt = minAlt;
+    time = pFpList->at(begin)->time();
+    start = time.hour() * 3600 + time.minute() * 60 + time.second();
+    time = pFpList->at(end - 1)->time();
+    duration = time.hour() * 3600 + time.minute() * 60 + time.second() - start;
     epochDate = QDateTime(date).toTime_t();
     prevSecsOfDay = start;
 
-		for(fpNr=begin; fpNr<fpListSize; fpNr++)
-		{
-			if(!first)
-			{
-				strTime += ",";
-				strAlt += ",";
-				strElevation += ",";
-				strLatLon += ",";
-			}
+    for(fpNr=begin; fpNr<end; fpNr++)
+    {
+      if(!first)
+      {
+        strTime += ",";
+        strAlt += ",";
+        strElevation += ",";
+        strLatLon += ",";
+      }
 
-			first = false;
+      first = false;
 
-			// time
+      // time
       time = pFpList->at(fpNr)->time();
-			secsOfDay = time.hour() * 3600 + time.minute() * 60 + time.second();
+      secsOfDay = time.hour() * 3600 + time.minute() * 60 + time.second();
 
-			if(secsOfDay < prevSecsOfDay)
-			{
-			  epochDate += 86400; // next day
-			}
+      if(secsOfDay < prevSecsOfDay)
+      {
+        epochDate += 86400; // next day
+      }
 
       epochTime = (epochDate + secsOfDay);
       prevSecsOfDay = secsOfDay;
-			strTime += value.arg(epochTime);
+      strTime += value.arg(epochTime);
 
-			// altitude
+      // altitude
       alt = pFpList->at(fpNr)->alt();
-			minAlt = qMin(alt, minAlt);
-			maxAlt = qMax(alt, maxAlt);
-			strAlt += value.arg(alt);
+      minAlt = qMin(alt, minAlt);
+      maxAlt = qMax(alt, maxAlt);
+      strAlt += value.arg(alt);
 
-			// elevation
-			strElevation += value.arg(pFpList->at(fpNr)->elevation());
+      // elevation
+      strElevation += value.arg(pFpList->at(fpNr)->elevation());
 
-			// lat, lon
-			strLatLon += latLonArg.arg(pFpList->at(fpNr)->pos().lat()).arg(pFpList->at(fpNr)->pos().lon());
-		}
+      // lat, lon
+      strLatLon += latLonArg.arg(pFpList->at(fpNr)->pos().lat()).arg(pFpList->at(fpNr)->pos().lon());
+    }
 
-		minAlt = floor(minAlt / 100.0) * 100;
-		maxAlt = ceil(maxAlt / 100.0) * 100;
+    minAlt = floor(minAlt / 100.0) * 100;
+    maxAlt = ceil(maxAlt / 100.0) * 100;
 
-		pFrame = m_pWebMap->page()->mainFrame();
-		code = "fl_setFlightTime([%1], %2, %3);";
-		pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
-		code = "fl_setFlightAlt([%1], %2, %3);";
-		pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
-		code = "fl_setFlightElevation([%1]);";
-		pFrame->evaluateJavaScript(code.arg(strElevation));
-		code = "fl_setFlightLatLon([%1]);";
-		pFrame->evaluateJavaScript(code.arg(strLatLon));
-	}
+    pFrame = m_pWebMap->page()->mainFrame();
+    code = "fl_setFlightTime([%1], %2, %3);";
+    pFrame->evaluateJavaScript(code.arg(strTime).arg(start).arg(duration));
+    code = "fl_setFlightAlt([%1], %2, %3);";
+    pFrame->evaluateJavaScript(code.arg(strAlt).arg(minAlt).arg(maxAlt));
+    code = "fl_setFlightElevation([%1]);";
+    pFrame->evaluateJavaScript(code.arg(strElevation));
+    code = "fl_setFlightLatLon([%1]);";
+    pFrame->evaluateJavaScript(code.arg(strLatLon));
+  }
 }
 
-void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList)
+void WebMapFlight::setSogList(const FlightPointList::SogListType &sogList,
+                              uint begin, uint end)
 {
-	QString code = "fl_setSog([%1]);";
-	QWebFrame *pFrame;
-	QString value = "%1";
-	QString strSog = "";
-	uint itemNr;
-	uint listSize;
-	bool first = true;
+  QString code = "fl_setSog([%1]);";
+  QWebFrame *pFrame;
+  QString value = "%1";
+  QString strSog = "";
+  uint itemNr;
+  uint listSize;
+  bool first = true;
 
-	listSize = sogList.size();
+  listSize = std::min((uint)sogList.size(), end);
 
-	if(listSize > 0)
-	{
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
-			if(!first)
-			{
-				strSog += ",";
-			}
+  if(listSize > 0)
+  {
+    for(itemNr=begin; itemNr<listSize; itemNr++)
+    {
+      if(!first)
+      {
+        strSog += ",";
+      }
 
-			first = false;
+      first = false;
 
-			// sog
-			strSog += value.arg(round(sogList.at(itemNr) * 10.0) / 10.0);
-		}
+      // sog
+      strSog += value.arg(round(sogList.at(itemNr) * 10.0) / 10.0);
+    }
 
-		pFrame = m_pWebMap->page()->mainFrame();
-		pFrame->evaluateJavaScript(code.arg(strSog));
-	}
+    pFrame = m_pWebMap->page()->mainFrame();
+    pFrame->evaluateJavaScript(code.arg(strSog));
+  }
 }
 
-void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList)
+void WebMapFlight::setVarioList(const FlightPointList::VarioListType &varioList,
+                                uint begin, uint end)
 {
-	QString code = "fl_setVario([%1]);";
-	QWebFrame *pFrame;
-	QString value = "%1";
-	QString strVario = "";
-	uint itemNr;
-	uint listSize;
-	bool first = true;
+  QString code = "fl_setVario([%1]);";
+  QWebFrame *pFrame;
+  QString value = "%1";
+  QString strVario = "";
+  uint itemNr;
+  uint listSize;
+  bool first = true;
 
-	listSize = varioList.size();
+  listSize = std::min((uint)varioList.size(), end);
 
-	if(listSize > 0)
-	{
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
-			if(!first)
-			{
-				strVario += ",";
-			}
+  if(listSize > 0)
+  {
+    for(itemNr=begin; itemNr<listSize; itemNr++)
+    {
+      if(!first)
+      {
+        strVario += ",";
+      }
 
-			first = false;
+      first = false;
 
-			// sog
-			strVario += value.arg(round(varioList.at(itemNr) * 10.0) / 10.0);
-		}
+      // sog
+      strVario += value.arg(round(varioList.at(itemNr) * 10.0) / 10.0);
+    }
 
-		pFrame = m_pWebMap->page()->mainFrame();
-		pFrame->evaluateJavaScript(code.arg(strVario));
-	}
+    pFrame = m_pWebMap->page()->mainFrame();
+    pFrame->evaluateJavaScript(code.arg(strVario));
+  }
 }
 
 // qrc:/home/grafal/pictures/rigi_20131101/IMG_1483.JPG
 
 void WebMapFlight::setPhotoList(const Photo::PhotoListType &photoList)
 {
-	QString code = "fl_pushPhoto({lat: %1, lng: %2, path: '%3'});";
-	QWebFrame *pFrame;
-	uint listSize;
-	uint itemNr;
-	QString path;
-	double lat;
-	double lon;
+  QString code = "fl_pushPhoto({lat: %1, lng: %2, path: '%3'});";
+  QWebFrame *pFrame;
+  uint listSize;
+  uint itemNr;
+  QString path;
+  double lat;
+  double lon;
 
-	listSize = photoList.size();
+  listSize = photoList.size();
 
-	if(listSize > 0)
-	{
+  if(listSize > 0)
+  {
     pFrame = m_pWebMap->page()->mainFrame();
 
-		for(itemNr=0; itemNr<listSize; itemNr++)
-		{
+    for(itemNr=0; itemNr<listSize; itemNr++)
+    {
       lat = photoList.at(itemNr).pos().lat();
       lon = photoList.at(itemNr).pos().lon();
       path = photoList.at(itemNr).path();
       pFrame->evaluateJavaScript(code.arg(lat).arg(lon).arg(path));
-		}
+    }
   }
 }
 
 void WebMapFlight::showPlot()
 {
-	QString code = "fl_showPlot();";
-	QWebFrame *pFrame;
+  QString code = "fl_showPlot();";
+  QWebFrame *pFrame;
 
-	if(m_plotEn)
-	{
-		pFrame = m_pWebMap->page()->mainFrame();
-		pFrame->evaluateJavaScript(code);
-	}
+  if(m_plotEn)
+  {
+    pFrame = m_pWebMap->page()->mainFrame();
+    pFrame->evaluateJavaScript(code);
+  }
 }
 
 void WebMapFlight::setPlotEnable(bool en)
 {
-	m_plotEn = en;
+  m_plotEn = en;
 }

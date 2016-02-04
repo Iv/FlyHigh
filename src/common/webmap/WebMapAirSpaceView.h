@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _WebMapRouteView_h
-#define _WebMapRouteView_h
+#ifndef _WebMapAirSpaceView_h
+#define _WebMapAirSpaceView_h
 
 #include <QDialog>
 
@@ -28,37 +28,37 @@ class AirSpaceList;
 
 class WebMapAirSpaceView: public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		WebMapAirSpaceView(const QString &name);
+  public:
+    WebMapAirSpaceView(const QString &name);
 
-		~WebMapAirSpaceView();
+    ~WebMapAirSpaceView();
 
-		void loadMap();
+    void loadMap();
 
-		void setAirSpaceList(AirSpaceList *pAirSpaceList);
+    void setAirSpaceList(AirSpaceList *pAirSpaceList);
 
-		void selectAirSpace(int id);
+    void selectAirSpace(int id);
 
-	signals:
-		void airSpaceChanged(int line);
+  signals:
+    void airSpaceChanged(int line);
 
-	protected:
-		void resizeEvent(QResizeEvent *pEvent);
+  protected:
+    void resizeEvent(QResizeEvent *pEvent);
 
-	private:
-		WebMap *m_pWebMap;
-		AirSpaceList *m_pAirSpaceList;
+  private:
+    WebMap *m_pWebMap;
+    AirSpaceList *m_pAirSpaceList;
 
-		void setAirSpaceList();
+    void setAirSpaceList();
 
-	private slots:
-		void mapReady();
+  private slots:
+    void mapReady();
 
-		void appReady();
+    void appReady();
 
-		void finished(int res);
+    void finished(int res);
 };
 
 #endif

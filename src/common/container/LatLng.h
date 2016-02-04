@@ -32,56 +32,56 @@ typedef QVector<LatLng> LatLngList;
 */
 class LatLng
 {
-	public:
-		static const double EarthRadius;
+  public:
+    static constexpr double EarthRadius = 6371000.0;
 
-		LatLng();
+    LatLng();
 
-		LatLng(double lat, double lon);
+    LatLng(double lat, double lon);
 
-		// latitude and longitude are in WGS84 (degree)
-		void setPos(double lat, double lon);
+    // latitude and longitude are in WGS84 (degree)
+    void setPos(double lat, double lon);
 
-		void setLat(double lat);
+    void setLat(double lat);
 
-		double lat() const;
+    double lat() const;
 
-		void setLon(double lon);
+    void setLon(double lon);
 
-		double lon() const;
+    double lon() const;
 
-		double distance(const LatLng &latlng) const;
+    double distance(const LatLng &latlng) const;
 
-		/**
-			Calculates distance and bearing from this waypoint to wp. The
-			calculation is done by the Haversine formula.
-			@param wp distance and bearing are calculated to this waypoint
-			@param dist distance in meters
-			@param bear bearing in degrees
-		*/
-		void distBear(const LatLng &latlng, double &dist, double &bear) const;
+    /**
+      Calculates distance and bearing from this waypoint to wp. The
+      calculation is done by the Haversine formula.
+      @param wp distance and bearing are calculated to this waypoint
+      @param dist distance in meters
+      @param bear bearing in degrees
+    */
+    void distBear(const LatLng &latlng, double &dist, double &bear) const;
 
     void setMin(const LatLng &latlng);
 
     void setMax(const LatLng &latlng);
 
-		bool operator==(const LatLng &latlng);
+    bool operator==(const LatLng &latlng);
 
     LatLng operator+(const LatLng& right) const;
 
     LatLng operator-(const LatLng& right) const;
 
-		LatLng operator*(double right) const;
+    LatLng operator*(double right) const;
 
-		static uint distance(const LatLng &latlng1, const LatLng &latlng2);
+    static uint distance(const LatLng &latlng1, const LatLng &latlng2);
 
-		static double arc(double distance);
+    static double arc(double distance);
 
-		static double meters(double nautmil);
+    static double meters(double nautmil);
 
-	private:
-		double m_lat;
-		double m_lon;
+  private:
+    double m_lat;
+    double m_lon;
 };
 
 #endif

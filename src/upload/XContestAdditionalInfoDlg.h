@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Alex Graf                                       *
+ *   Copyright (C) 2010 by Alex Graf                                       *
  *   grafal@sourceforge.net                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,54 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef BoundBox_h
-#define BoundBox_h
+#ifndef XContestAdditionalInfoDlg_h
+#define XContestAdditionalInfoDlg_h
 
-#include "LatLng.h"
+#include <QMap>
+#include <QVariant>
+#include <QDialog>
 
-class BoundBox
+class QLayout;
+
+/**
+ * Dialog class that asks for additional info if the data uploaded
+ * to xcontest is ambiguos
+ */
+class XContestAdditionalInfoDlg: public QDialog
 {
-  public:
-    BoundBox();
+	Q_OBJECT
 
-    BoundBox(const LatLng &sw, const LatLng &ne);
+	public:
+    XContestAdditionalInfoDlg(const QVariantMap& controls);
+    const QMap<QString,QString>& clarifications() const;
 
-    void init();
-
-    bool isInit() const;
-
-    void setMinMax(const LatLng &wp);
-
-    void setMinMax(const BoundBox &bbox);
-
-    void setNorthEast(const LatLng &ne);
-
-    const LatLng& northEast() const;
-
-    double north() const;
-
-    double west() const;
-
-    void setSouthWest(const LatLng &sw);
-
-    const LatLng& southWest() const;
-
-    double south() const;
-
-    double east() const;
-
-    double width() const;
-
-    double height() const;
-
-    bool intersect(const BoundBox &bb) const;
-
-    bool isInside(const LatLng &latlng) const;
+  protected slots:
+    void submit();
 
   private:
-    LatLng m_sw;
-    LatLng m_ne;
-    bool m_isInit;
+    void selectControls(const QVariantMap& controls);
+    void buildGui();
+    QLayout* buildDynamicGui();
+    QString readNotes(const QVariantMap& control, const QString& key, const QString& prefix) const;
+
+  private:
+    /** collected clarifications to be used as additional info, outcome of this dialog */
+    QMap<QString,QString> m_clarifications;
+
+    /** controls selected for display */
+    QVariantMap m_controls;
+
+    /** collection of widgets for retrieval of user input */
+    QMap<QWidget*,QString> m_widgets;
 };
 
 #endif
