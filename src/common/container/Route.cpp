@@ -19,7 +19,9 @@
  ***************************************************************************/
 
 #include <QStringList>
+#include <QObject>
 #include "Route.h"
+
 
 QStringList TypeTextList = QStringList()
 << QObject::tr("Undefined")
